@@ -25,6 +25,7 @@ jobs:
           cp -r public/. site/
           cp site/pioneer-dj-pro-max-v2.html site/index.html
           touch site/.nojekyll
+          ls -la site/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
