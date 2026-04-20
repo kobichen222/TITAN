@@ -1910,6 +1910,193 @@ body.theme-light .shortcut-item kbd{background:linear-gradient(180deg,#fff 0%,#d
 
 /* Ambient RGB strip reads softer on light */
 body.theme-light .rgb-ambient{opacity:.9}
+
+/* ============================================================
+   LIGHT THEME v2.1 — final polish pass for accessibility + clarity
+   ============================================================ */
+
+/* Upload / URL / YT / Playlist buttons + all tool buttons */
+body.theme-light .upload-btn{background:linear-gradient(180deg,#ffa84a 0%,var(--orange) 50%,#c85a00 100%);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 8px rgba(255,138,26,.35)}
+body.theme-light .url-btn{background:linear-gradient(180deg,#5ce0ff 0%,#00a0d0 50%,#006088 100%);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 8px rgba(0,160,208,.35)}
+body.theme-light .yt-btn{background:linear-gradient(180deg,#ff6464 0%,#dc2e2e 60%,#8a0a0a 100%);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 3px 8px rgba(220,46,46,.3)}
+body.theme-light .playlist-btn{background:linear-gradient(180deg,#c85aff 0%,#8c00c8 60%,#5a008a 100%);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 3px 8px rgba(140,0,200,.3)}
+
+/* Focus ring + visible outline on every interactive element */
+body.theme-light button:focus-visible,body.theme-light input:focus-visible,body.theme-light select:focus-visible{
+  outline:2px solid var(--orange);outline-offset:2px;
+}
+
+/* Knob labels / parameter readouts — always dark + clear */
+body.theme-light .knob-label,body.theme-light .studio-val,body.theme-light .eq-label,
+body.theme-light .eq-value,body.theme-light .compact-vol-label,body.theme-light .dsb-label,
+body.theme-light .beat-fx-label,body.theme-light .scene-fx-label,body.theme-light .crossfader-label{
+  color:#2a2a30;font-weight:700;text-shadow:0 1px 0 rgba(255,255,255,.7);
+}
+body.theme-light .beat-fx-label{color:var(--orange-glow)}
+body.theme-light .scene-fx-label{color:#c82e5a}
+
+/* Channel labels + mixer brand */
+body.theme-light .channel-label{color:#1a1a1c;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+body.theme-light .mixer-brand{color:#1a1a1c;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+body.theme-light .mixer-brand .model{color:var(--orange)}
+
+/* Waveform, time values stay LED-bright on their dark screens */
+body.theme-light .waveform{border-color:#00405a}
+body.theme-light .track-artist{color:#5aa0c8}
+body.theme-light .time-label{color:#5a8fa8}
+body.theme-light .time-value{color:#fff;text-shadow:0 0 6px rgba(255,255,255,.6)}
+body.theme-light .time-value.remain{color:#ffb366}
+body.theme-light .screen-bpm-label{color:#5a8fa8}
+body.theme-light .phrase-mark{background:#ffb366;box-shadow:0 0 3px rgba(255,138,26,.9)}
+
+/* Tab bar */
+body.theme-light .tab-btn{background:transparent;color:#4a4a52}
+body.theme-light .tab-btn:hover{background:rgba(255,138,26,.08);color:#1a1a1c}
+
+/* Library actions + search panel */
+body.theme-light .search-src-btn{color:#5a5a60}
+body.theme-light .search-src-btn.active{background:linear-gradient(180deg,var(--orange),#c85a00);color:#fff}
+body.theme-light .search-card{background:linear-gradient(180deg,#fff 0%,#f4f4f8 100%);border-color:rgba(0,0,0,.1)}
+body.theme-light .search-card:hover{border-color:var(--orange);box-shadow:0 10px 22px rgba(0,0,0,.12)}
+body.theme-light .search-card .sc-title{color:#1a1a1c}
+body.theme-light .search-card .sc-artist{color:#5a5a60}
+body.theme-light .search-card .sc-meta{color:#0088b4}
+body.theme-light .search-card .sc-actions button{background:linear-gradient(180deg,#fff,#e0e0e6);color:#3a3a40;border-color:rgba(0,0,0,.1)}
+body.theme-light .search-card .sc-actions button:hover{border-color:var(--orange);color:var(--orange)}
+body.theme-light .search-status-row{color:#5a5a60}
+body.theme-light .url-status{color:#5a5a60}
+body.theme-light .url-status.success{color:#007a3c}
+body.theme-light .url-status.error{color:var(--red)}
+
+/* Studio panel extras */
+body.theme-light .studio-panel{background:linear-gradient(180deg,#fff 0%,#eaeaef 100%);color:#1a1a1c}
+body.theme-light .studio-preset-btn{color:#3a3a42}
+body.theme-light .studio-preset-btn.active{background:linear-gradient(180deg,var(--orange),#c85a00);color:#fff}
+body.theme-light .studio-eq-band{background:#f0f0f4;border:1px solid rgba(0,0,0,.05)}
+body.theme-light .studio-sub-label{color:var(--orange-glow)}
+body.theme-light .studio-gr-meter{background:#d8d8dc;border-color:rgba(0,0,0,.1)}
+body.theme-light .studio-level-bar{background:#d8d8dc;border-color:rgba(0,0,0,.1)}
+body.theme-light .studio-level-label{color:#5a5a60}
+body.theme-light .studio-level-val{color:var(--orange-glow)}
+body.theme-light .studio-block-title{color:#1a1a1c;border-bottom-color:rgba(0,0,0,.08)}
+
+/* Analytics — stat cards, mix history */
+body.theme-light .stat-card h5{color:#5a5a60;letter-spacing:2px}
+body.theme-light .stat-card .stat-sub{color:#0088b4}
+body.theme-light .mix-history{background:#fff;border:1px solid rgba(0,0,0,.08)}
+body.theme-light .mix-history h4{color:var(--orange-glow)}
+body.theme-light .mix-entry{color:#3a3a42;border-bottom-color:rgba(0,0,0,.05)}
+body.theme-light .mix-entry:hover{background:rgba(255,138,26,.06)}
+body.theme-light .mix-entry .time{color:#7a7a80}
+
+/* MIDI devices */
+body.theme-light .midi-devices{background:#f4f4f8;border:1px solid rgba(0,0,0,.05)}
+body.theme-light .midi-device{background:#fff;color:#3a3a42}
+body.theme-light .midi-device .status{color:#007a3c}
+body.theme-light .midi-log{background:#020608;color:#7ff0ff}
+
+/* AI DJ */
+body.theme-light .ai-dj-panel{background:linear-gradient(135deg,rgba(200,0,255,.04) 0%,rgba(0,180,220,.04) 100%),linear-gradient(180deg,#fff 0%,#f0f0f4 100%);border-color:rgba(200,0,255,.15);color:#1a1a1c}
+body.theme-light .ai-dj-title{background:linear-gradient(90deg,#8c00c8,#0088b4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+body.theme-light .ai-dj-status{color:#5a5a60}
+body.theme-light .ai-dj-btn{background:linear-gradient(180deg,#fff,#dcdce0);color:#3a3a42;border-color:rgba(0,0,0,.12)}
+body.theme-light .ai-dj-btn.primary{background:linear-gradient(180deg,#c85aff,var(--purple));color:#fff;border-color:var(--purple)}
+body.theme-light .ai-config-item label{color:#4a4a52}
+body.theme-light .ai-log{background:#020608;color:#7ff0ff;border:1px solid rgba(0,0,0,.2)}
+
+/* Help — shortcut badges */
+body.theme-light .shortcut-grid{background:#f4f4f8;border:1px solid rgba(0,0,0,.05)}
+body.theme-light .shortcut-item{background:#fff;color:#3a3a42}
+body.theme-light .shortcut-item:hover{background:rgba(255,138,26,.06)}
+
+/* Library title badges */
+body.theme-light .library-title{color:#1a1a1c}
+body.theme-light .library-title .count{color:var(--orange-glow);font-weight:700}
+
+/* Rating stars */
+body.theme-light .star{color:#c8c8ce}
+body.theme-light .star.filled{color:var(--yellow);text-shadow:0 0 4px rgba(232,165,0,.3)}
+
+/* Modal box */
+body.theme-light .modal-box input{background:#f4f4f8;color:#1a1a1c;border-color:rgba(0,0,0,.15)}
+body.theme-light .modal-actions button{color:#3a3a42;border-color:rgba(0,0,0,.12)}
+body.theme-light .modal-actions button.primary{background:var(--orange);color:#fff;border-color:var(--orange)}
+
+/* Color FX channel labels + master */
+body.theme-light .master-knob-wrap .knob-label{color:var(--orange-glow)}
+body.theme-light .color-fx-channel .knob-label{color:#c82e5a}
+body.theme-light .isolator-panel .knob-wrap .knob-label{color:var(--red)}
+body.theme-light .headphone-section .knob-label{color:#0088b4}
+
+/* Deck switch bar label */
+body.theme-light .dsb-label{color:var(--orange-glow)}
+body.theme-light .dsb-btn{color:#3a3a42}
+body.theme-light .dsb-btn:hover{border-color:var(--orange);color:var(--orange-glow)}
+body.theme-light .dsb-btn.active{background:linear-gradient(180deg,#ffa84a 0%,var(--orange) 55%,#c85a00 100%);color:#fff;border-color:#aa3a00;text-shadow:0 1px 0 rgba(0,0,0,.25)}
+body.theme-light .dsb-chip{background:#fff;border-color:rgba(0,0,0,.1)}
+body.theme-light .dsb-chip .dsb-id{color:var(--orange-glow)}
+body.theme-light .dsb-chip .dsb-bpm{color:#0088b4}
+
+/* Auto-mix panel */
+body.theme-light .automix-panel{background:linear-gradient(180deg,#faf6ff 0%,#ecdcf4 100%);border-color:rgba(140,0,200,.25)}
+body.theme-light .automix-title{color:var(--purple)}
+body.theme-light .automix-title span{background:#fff;color:var(--orange-glow);border-color:rgba(0,0,0,.1)}
+body.theme-light .automix-btn{background:linear-gradient(180deg,#fff,#dcdce0);color:#3a3a42}
+body.theme-light .automix-btn:hover{border-color:var(--purple);color:var(--purple);box-shadow:0 0 10px rgba(140,0,200,.25)}
+body.theme-light .automix-sync{background:linear-gradient(180deg,#fff,#e4e4e8);color:var(--orange-glow);border-color:var(--orange)}
+body.theme-light .automix-sync:hover{background:var(--orange);color:#fff}
+body.theme-light .automix-sub{color:#5a5a60;border-top-color:rgba(0,0,0,.06)}
+
+/* XFader + crossfader area */
+body.theme-light .crossfader-ab{color:var(--orange-glow)}
+body.theme-light .curve-switch button{background:linear-gradient(180deg,#fff,#e4e4e8);color:#3a3a42;border-color:rgba(0,0,0,.12)}
+body.theme-light .curve-switch button.active{background:var(--orange);color:#fff}
+body.theme-light .xfader-assign .assign-btn{background:linear-gradient(180deg,#fff,#e4e4e8);color:#3a3a42;border-color:rgba(0,0,0,.12)}
+body.theme-light .xfader-assign .assign-btn.active{background:var(--orange);color:#fff}
+
+/* Tempo display big */
+body.theme-light .tempo-display-big{background:#020608;color:#ffb366;border-color:#00405a}
+body.theme-light .tempo-value{color:var(--orange-glow)}
+body.theme-light .tempo-range{background:#fff;color:#0088b4;border-color:rgba(0,0,0,.12)}
+
+/* Autoloop + fx selectors */
+body.theme-light .fx-selector{background:#020608;color:#7ff0ff;border-color:#00405a}
+
+/* Preview / deck load buttons in track rows */
+body.theme-light .track-row .actions button{background:#fff;color:#5a5a60;border-color:rgba(0,0,0,.1)}
+body.theme-light .track-row .actions .preview:hover{border-color:var(--yellow);color:#a08800}
+body.theme-light .track-row .actions .deck-a:hover{border-color:#0088b4;color:#0088b4}
+body.theme-light .track-row .actions .deck-b:hover{border-color:#c82e5a;color:#c82e5a}
+body.theme-light .track-row .actions .remove:hover{border-color:var(--red);color:var(--red)}
+
+/* Session cards */
+body.theme-light .session-card::before{background:linear-gradient(180deg,var(--play-green),#0088b4)}
+body.theme-light .session-card .session-actions button{background:#fff;color:#5a5a60;border-color:rgba(0,0,0,.12)}
+body.theme-light .session-card .session-actions button:hover{border-color:var(--orange);color:var(--orange-glow)}
+
+/* Playlist cards */
+body.theme-light .playlist-card .pl-actions button{background:#fff;color:#5a5a60;border-color:rgba(0,0,0,.12)}
+body.theme-light .playlist-card .pl-actions button:hover{background:rgba(255,138,26,.08);border-color:var(--orange);color:var(--orange)}
+
+/* Sample pads get their signature color when loaded/playing even in light mode */
+body.theme-light .sample-pad.loaded{box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 0 2px var(--pad-color,var(--orange)),0 3px 6px rgba(0,0,0,.15)}
+body.theme-light .sample-pad.playing{background:var(--pad-color,var(--orange));color:#fff;box-shadow:0 0 22px var(--pad-color,var(--orange))}
+
+/* YouTube player box */
+body.theme-light .yt-player-box{border-color:var(--red);box-shadow:0 0 16px rgba(220,46,46,.2)}
+body.theme-light .yt-controls{background:#fff;border-top:1px solid rgba(0,0,0,.06)}
+body.theme-light .yt-title{color:#1a1a1c}
+
+/* Deck header, track title glow visibility */
+body.theme-light .brand span{color:var(--orange)}
+body.theme-light .power-led{box-shadow:0 0 8px var(--play-green),0 0 2px rgba(0,0,0,.3)}
+
+/* General hover accents */
+body.theme-light .cdj:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 14px 34px -8px rgba(60,60,80,.3),0 0 0 1px rgba(255,138,26,.15)}
+body.theme-light .cdj.drop-target{border-color:var(--orange);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 0 1px var(--orange),0 0 40px rgba(255,138,26,.4)}
+
+/* Help tab */
+body.theme-light .shortcut-grid{padding:16px}
 body.work-mode .library{display:block !important}
 body.work-mode .tab-content#tab-deck{display:flex !important;flex-direction:column;align-items:center;gap:12px}
 body.work-mode .rgb-ambient{display:block;height:3px;opacity:.85;max-width:1700px;margin:0 auto}
@@ -2271,11 +2458,11 @@ body.lang-he input[type=text],body.lang-he input[type=password]{direction:ltr;te
 
 <div class="deck-switch-bar">
   <span class="dsb-label" data-t="deck_focus">DECK FOCUS</span>
-  <button class="dsb-btn active" data-pair="AB">1 · 2</button>
+  <button class="dsb-btn" data-pair="AB">1 · 2</button>
   <button class="dsb-btn" data-pair="CD">3 · 4</button>
   <button class="dsb-btn dsb-split" data-pair="AC">1 · 3</button>
   <button class="dsb-btn dsb-split" data-pair="BD">2 · 4</button>
-  <button class="dsb-btn dsb-all" data-pair="ALL" data-t="all_4">ALL 4</button>
+  <button class="dsb-btn dsb-all active" data-pair="ALL" data-t="all_4">ALL 4</button>
   <button class="dsb-btn dsb-work" id="workModeBtn" title="Stage-ready performance view" data-t="work_mode">🎆 WORK MODE</button>
   <button class="dsb-btn dsb-wmlib" id="wmLibBtn" title="Show / hide the track library in work mode" data-t="library_btn">📚 LIBRARY</button>
   <button class="dsb-btn dsb-wmexit" id="wmExitInlineBtn" title="Exit work mode (Esc)">✕ EXIT WORK</button>
@@ -5086,7 +5273,7 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{['A','B','C','
    Deck focus toggle — show any pair (AB/CD/AC/BD) or ALL 4
    ======================================================== */
 const DSB_PAIRS={AB:['A','B'],CD:['C','D'],AC:['A','C'],BD:['B','D'],ALL:['A','B','C','D']};
-let dsbPair='AB';
+let dsbPair='ALL';
 function applyDeckPair(pair){
   dsbPair=pair;
   const visible=new Set(DSB_PAIRS[pair]||DSB_PAIRS.AB);
@@ -5154,7 +5341,7 @@ function updateDsbMonitor(){
 document.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>{
     document.querySelectorAll('.dsb-btn[data-pair]').forEach(b=>b.addEventListener('click',()=>applyDeckPair(b.dataset.pair)));
-    applyDeckPair('AB');
+    applyDeckPair('ALL');
     setInterval(updateDsbMonitor,500);
   },200);
 });
