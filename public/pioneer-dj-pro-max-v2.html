@@ -837,23 +837,21 @@ button:focus-visible{outline:2px solid var(--orange-glow);outline-offset:2px}
 .jog-ring-light{
   background:conic-gradient(from 0deg,
     transparent 0deg,
-    rgba(255,138,26,.12) 10deg,
-    rgba(255,138,26,.35) 25deg,
-    rgba(255,180,100,.55) 38deg,
-    rgba(255,138,26,.35) 52deg,
-    rgba(255,138,26,.12) 70deg,
-    transparent 95deg,
+    rgba(255,160,50,.45) 6deg,
+    rgba(255,200,120,.7) 12deg,
+    rgba(255,160,50,.45) 18deg,
+    transparent 26deg,
     transparent 360deg);
-  filter:blur(2.5px);
+  filter:blur(.4px);
   animation:jogSpin 4s linear infinite;
   animation-play-state:paused;
   will-change:transform;
-  opacity:.85;
+  opacity:.55;
   transition:opacity .35s ease;
+  mix-blend-mode:screen;
 }
-.jog-wheel.playing .jog-ring-light{animation-play-state:running}
-.jog-wheel:not(.playing) .jog-ring-light{opacity:.35;animation:jogBreathe 3.5s ease-in-out infinite}
-@keyframes jogBreathe{0%,100%{opacity:.22}50%{opacity:.5}}
+.jog-wheel.playing .jog-ring-light{animation-play-state:running;opacity:.65}
+.jog-wheel:not(.playing) .jog-ring-light{opacity:0;animation:none}
 @keyframes jogSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 /* Subtle idle glow so paused decks still feel alive */
 .jog-wheel:not(.playing) .jog-outer{box-shadow:
@@ -864,24 +862,11 @@ button:focus-visible{outline:2px solid var(--orange-glow);outline-offset:2px}
   inset 0 -6px 18px rgba(0,0,0,.92),
   0 16px 36px rgba(0,0,0,.75);
 }
-/* Inner platter disc has its own counter-rotating shine for added depth */
-.jog-platter.spinning .jog-platter-disc::before{
-  content:'';position:absolute;inset:0;border-radius:50%;
-  background:conic-gradient(from 0deg,
-    transparent 0deg,
-    rgba(255,255,255,.04) 30deg,
-    rgba(255,255,255,.08) 45deg,
-    rgba(255,255,255,.04) 60deg,
-    transparent 90deg,
-    transparent 360deg);
-  animation:platterSpin 6.4s linear infinite reverse;
-  will-change:transform;
-  pointer-events:none;
-}
-/* The orange indicator tick gets a smooth motion blur only while playing */
+/* Inner platter carries a very subtle radial shine, no counter-rotating
+   gradient (those cause visible motion trails on large wheels). */
+/* Indicator tick — clean narrow glow, no motion smear */
 .jog-wheel.playing .jog-indicator{
-  box-shadow:0 0 14px rgba(255,138,26,.95),0 0 3px rgba(255,255,255,.9);
-  filter:drop-shadow(0 0 4px rgba(255,138,26,.6));
+  box-shadow:0 0 4px rgba(255,255,255,.7);
 }
 /* On hover while NOT playing, subtle lift */
 .jog-wheel:not(.playing):hover .jog-outer{filter:brightness(1.05)}
@@ -890,10 +875,17 @@ button:focus-visible{outline:2px solid var(--orange-glow);outline-offset:2px}
   .jog-platter.spinning,.jog-ring-light,.jog-platter.spinning .jog-platter-disc::before{animation:none !important}
 }
 
-/* Work-mode jog wheels: slower + smoother since they render larger */
-body.work-mode .jog-platter.spinning{animation-duration:4.4s}
-body.work-mode .jog-platter.spinning .jog-platter-disc::before{animation-duration:8s}
-body.work-mode .jog-ring-light{animation-duration:5.5s;filter:blur(3.5px)}
+/* Work-mode jog wheels: clean, slow, crisp — no motion trails. */
+body.work-mode .jog-platter.spinning{animation-duration:4.8s}
+body.work-mode .jog-ring-light{animation-duration:6s;filter:none;opacity:.45;
+  background:conic-gradient(from 0deg,
+    transparent 0deg,
+    rgba(255,160,50,.35) 8deg,
+    rgba(255,210,140,.55) 14deg,
+    rgba(255,160,50,.35) 20deg,
+    transparent 30deg,
+    transparent 360deg);
+}
 body.work-mode .jog-wheel,
 body.work-mode .jog-platter,
 body.work-mode .jog-platter-disc,
@@ -911,14 +903,12 @@ body.work-mode .console::before,body.work-mode .console::after{
   contain:strict;
 }
 @media(min-width:1900px){
-  body.work-mode .jog-platter.spinning{animation-duration:5.2s}
-  body.work-mode .jog-platter.spinning .jog-platter-disc::before{animation-duration:10s}
-  body.work-mode .jog-ring-light{animation-duration:6.5s}
+  body.work-mode .jog-platter.spinning{animation-duration:5.6s}
+  body.work-mode .jog-ring-light{animation-duration:7s}
 }
 @media(min-width:2400px){
-  body.work-mode .jog-platter.spinning{animation-duration:6s}
-  body.work-mode .jog-platter.spinning .jog-platter-disc::before{animation-duration:12s}
-  body.work-mode .jog-ring-light{animation-duration:7.5s}
+  body.work-mode .jog-platter.spinning{animation-duration:6.4s}
+  body.work-mode .jog-ring-light{animation-duration:8s}
 }
 
 /* ============================================================
