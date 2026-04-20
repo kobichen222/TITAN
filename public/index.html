@@ -1104,6 +1104,199 @@ button:focus-visible{outline:2px solid var(--orange-glow);outline-offset:2px}
 /* Compact monitor in mixer — list style */
 .compact-decks{min-height:0}
 .compact-decks:empty{display:none}
+
+/* ============================================================
+   RESPONSIVE LAYER — fits every screen size gracefully
+   ============================================================ */
+
+/* Wide tablet / small laptop */
+@media(max-width:1400px){
+  .console{grid-template-columns:1fr}
+  .console.show-all{grid-template-columns:1fr 1fr}
+  .console.show-all .mixer{grid-column:1/-1}
+  .beat-fx-panel{grid-template-columns:repeat(2,1fr) 1fr}
+  .scene-fx-panel{grid-template-columns:auto 1fr auto}
+}
+
+/* Tablet portrait */
+@media(max-width:1100px){
+  body{padding:8px 4px;gap:8px}
+  .header-bar{padding:0 6px;gap:8px}
+  .brand{font-size:18px;letter-spacing:2px}
+  .master-bpm{font-size:12px;padding:4px 8px}
+  .main-tabs{gap:2px;padding:3px}
+  .tab-btn{min-width:78px;padding:7px 4px;font-size:9px;letter-spacing:1.5px}
+  .deck-switch-bar{padding:6px 8px;gap:4px}
+  .dsb-btn{padding:6px 10px;font-size:10px;letter-spacing:1.8px}
+  .dsb-monitor{margin-left:0;width:100%;margin-top:4px;order:99}
+  .dsb-chip{padding:3px 7px;font-size:9px}
+  .jog-wheel{width:220px;height:220px}
+  .jog-center-screen{width:68px;height:68px}
+  .jog-center-screen .bpm-display{font-size:18px}
+  .cdj{padding:10px}
+  .hot-cues{grid-template-columns:repeat(4,1fr);gap:4px}
+  .cue-btn{font-size:10px}
+  .loop-btn,.jump-btn,.util-btn{font-size:8px;padding:5px 1px}
+  .compact-decks{grid-template-columns:1fr 1fr;gap:6px;padding:6px}
+  .beat-fx-panel{grid-template-columns:repeat(3,1fr);padding:8px;gap:8px}
+  .beat-fx-label,.scene-fx-label{font-size:10px;letter-spacing:2px}
+  .automix-panel{padding:8px}
+  .automix-title{font-size:10px}
+  .automix-btn{padding:8px 2px;font-size:8px}
+  .library{padding:8px}
+  .track-row{grid-template-columns:24px 1.5fr 1fr 45px 40px 70px 120px;gap:6px;padding:5px 6px;font-size:10px}
+  .stat-card .stat-value{font-size:22px}
+  .stats-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+}
+
+/* Small tablet / large phone */
+@media(max-width:820px){
+  body{padding:6px 3px;gap:6px}
+  .brand{font-size:15px;letter-spacing:1.5px}
+  .brand .max{font-size:9px;padding:1px 4px}
+  .header-right{font-size:10px;letter-spacing:1.5px;gap:6px}
+  .rec-btn{padding:5px 10px;font-size:9px;letter-spacing:1.5px}
+  .main-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tab-btn{flex:0 0 auto;min-width:96px}
+  .rgb-ambient{height:4px}
+  .console,.console.show-all{grid-template-columns:1fr}
+  .console.show-all .mixer{grid-column:auto}
+  .jog-wheel{width:75vw;height:75vw;max-width:260px;max-height:260px}
+  .jog-center-screen{width:62px;height:62px}
+  .jog-indicator{top:26px;height:12px}
+  .beat-fx-panel{grid-template-columns:1fr 1fr;padding:6px;gap:6px}
+  .beat-fx-panel .beat-fx-label{grid-column:1/-1;text-align:center}
+  .beat-fx-panel .beat-display{grid-column:auto}
+  .fx-onoff{padding:10px 14px;font-size:11px;letter-spacing:2px}
+  .scene-fx-panel{grid-template-columns:1fr;gap:6px}
+  .scene-fx-buttons{justify-content:center}
+  .x-pad{width:100%;max-width:300px;height:70px}
+  .mixer{padding:8px}
+  .channels{grid-template-columns:repeat(4,1fr);gap:4px}
+  .channel .fader-wrap,.channel .vu-meter{height:120px}
+  .channel .knob.small{width:28px;height:28px}
+  .knob{width:36px;height:36px}
+  .knob.small{width:28px;height:28px}
+  .knob.large{width:46px;height:46px}
+  .automix-grid{grid-template-columns:1fr 1fr}
+  .library-header{flex-direction:column;align-items:stretch;gap:8px}
+  .library-actions{justify-content:center;flex-wrap:wrap}
+  .search-wrap{order:99}
+  .track-row{grid-template-columns:20px 1fr 70px 70px;gap:5px}
+  .track-row .t-artist,.track-row .t-rating,.track-row .t-added{display:none}
+  .track-row .actions{grid-column:1/-1;justify-content:flex-start;margin-top:4px}
+  .sampler-grid{grid-template-columns:repeat(4,1fr)}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .stat-card{padding:10px}
+  .stat-card .stat-value{font-size:20px}
+  .ai-dj-config{grid-template-columns:1fr;gap:10px;padding:10px}
+  .ai-dj-controls{grid-template-columns:1fr}
+  .playlist-grid{grid-template-columns:1fr}
+  .shortcut-grid{grid-template-columns:1fr}
+  .yt-grid{grid-template-columns:1fr}
+  .mic-section{grid-template-columns:auto 1fr 1fr 1fr auto;gap:4px}
+  .master-section{grid-template-columns:1fr 1fr 1fr;gap:4px}
+  .isolator-panel{grid-template-columns:1fr 1fr 1fr;gap:4px}
+  .compact-decks{grid-template-columns:1fr}
+}
+
+/* Phone */
+@media(max-width:520px){
+  body{padding:5px 2px;gap:5px}
+  .brand{font-size:13px}
+  .header-right{width:100%;justify-content:space-between;margin-top:2px}
+  .deck-switch-bar{padding:5px 6px}
+  .dsb-label{font-size:9px;letter-spacing:2px;width:100%;margin-bottom:2px}
+  .dsb-btn{padding:5px 8px;font-size:9px;letter-spacing:1.5px;flex:1}
+  .dsb-monitor{margin-top:2px}
+  .jog-wheel{width:86vw;height:86vw;max-width:320px;max-height:320px}
+  .jog-center-screen{width:56px;height:56px}
+  .jog-center-screen .bpm-display{font-size:16px}
+  .deck-number{font-size:24px}
+  .deck-label{font-size:10px;letter-spacing:2px}
+  .screen{padding:6px}
+  .track-title{font-size:11px}
+  .screen-bpm{font-size:18px}
+  .time-value{font-size:13px}
+  .hot-cues{grid-template-columns:repeat(4,1fr);gap:3px}
+  .cue-btn{font-size:9px}
+  .big-btn{padding:9px 6px;font-size:10px;letter-spacing:2px}
+  .tempo-slider-wrap{gap:4px}
+  .tempo-ticks{font-size:8px}
+  .tempo-slider{height:70px}
+  .tempo-btn{padding:7px 2px;font-size:12px}
+  .beat-fx-panel{padding:5px;gap:4px}
+  .fx-selector{min-width:70px;padding:4px 6px;font-size:10px}
+  .beat-display{font-size:16px;padding:4px 8px;min-width:56px}
+  .beat-btn{padding:4px 5px;font-size:8px;min-width:28px}
+  .fx-onoff{padding:8px 12px;font-size:10px;letter-spacing:1.5px}
+  .tap-btn{padding:7px 10px;font-size:9px}
+  .channels{grid-template-columns:repeat(2,1fr);gap:6px}
+  .channel .fader-wrap,.channel .vu-meter{height:100px}
+  .automix-grid{grid-template-columns:1fr 1fr}
+  .automix-btn{padding:9px 2px;font-size:8px;letter-spacing:1px}
+  .automix-sub{grid-template-columns:auto 1fr auto;font-size:8px;gap:4px}
+  .sampler-grid{grid-template-columns:repeat(3,1fr);gap:5px}
+  .sample-pad .pad-num{font-size:18px}
+  .sample-pad .pad-name{font-size:8px}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .stat-card .stat-value{font-size:18px}
+  .track-row{grid-template-columns:18px 1fr 55px;gap:4px;padding:5px;font-size:10px}
+  .track-row .t-bpm{font-size:10px}
+  .track-row .t-key{display:none}
+  .brand .max{margin-right:4px}
+  .upload-btn,.url-btn,.yt-btn,.playlist-btn{padding:6px 9px;font-size:9px;letter-spacing:1.2px}
+  .search-input,.sort-select,.filter-select{font-size:10px;padding:5px 7px}
+  .modal-box{padding:16px}
+  .modal-box h3{font-size:12px}
+  .toast{font-size:11px;padding:10px 14px;right:10px;bottom:10px}
+  /* keep mixer stacked tightly on phone */
+  .mixer{padding:6px;gap:5px}
+  .master-section,.isolator-panel{grid-template-columns:1fr 1fr 1fr;gap:3px;padding:4px}
+  .crossfader-section,.headphone-section{padding:5px}
+  .cue-hp-btn{padding:4px;font-size:8px;letter-spacing:1.5px}
+  .mic-section{grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;padding:4px}
+  .mic-label{writing-mode:horizontal-tb;transform:none;grid-column:1/-1;text-align:center}
+  .mic-btn{padding:6px 8px;font-size:8px}
+  .isolator-panel,.color-fx-row,.color-fx-grid{padding:4px}
+}
+
+/* Prevent overflow of the ambient bar on narrow viewports */
+@media(max-width:520px){
+  .rgb-ambient{max-width:calc(100% - 6px)}
+}
+
+/* Tiny phone */
+@media(max-width:360px){
+  .tab-btn{min-width:74px;font-size:8px}
+  .brand{font-size:11px}
+  .jog-wheel{max-width:96vw;max-height:96vw}
+  .hot-cues{grid-template-columns:repeat(4,1fr)}
+  .sampler-grid{grid-template-columns:repeat(2,1fr)}
+  .channels{grid-template-columns:1fr 1fr}
+  .automix-grid{grid-template-columns:1fr}
+}
+
+/* Hover-capable devices get nicer affordances; touch devices skip transform hovers */
+@media(hover:none){
+  button:hover:not(:disabled),.tool-btn:hover,.tab-btn:hover,.big-btn:hover,
+  .loop-btn:hover,.jump-btn:hover,.util-btn:hover,.scene-btn:hover,
+  .pad-mode-btn:hover,.tempo-btn:hover,.beat-btn:hover,.mic-btn:hover,
+  .automix-btn:hover{transform:none}
+  .track-row:hover{transform:none}
+  .playlist-card:hover{transform:none}
+  .stat-card:hover{transform:none}
+}
+
+/* Landscape phone — fit console side-by-side */
+@media(max-height:520px) and (orientation:landscape){
+  body{padding:4px 3px;gap:4px}
+  .header-bar{display:none}
+  .rgb-ambient{display:none}
+  .jog-wheel{width:40vh;height:40vh;max-width:220px;max-height:220px}
+  .main-tabs{padding:2px}
+  .tab-btn{padding:5px 6px;font-size:9px;min-width:auto}
+}
 </style>
 </head>
 <body>
