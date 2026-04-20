@@ -2502,7 +2502,7 @@ body.theme-light .deck-header .deck-lib-btn:hover{background:#00a656;color:#fff}
   position:relative;overflow:hidden;
 }
 .deck-header .deck-lib-btn::before{
-  content:'';position:absolute;inset:0;
+  content:'';position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(120deg,transparent 30%,rgba(28,255,143,.35) 50%,transparent 70%);
   transform:translateX(-120%);transition:transform .6s ease;
 }
@@ -6601,37 +6601,43 @@ function renderQuickLib(q){
     });
   });
 }
-document.addEventListener('DOMContentLoaded',()=>{
-  setTimeout(()=>{
-    document.querySelectorAll('[data-deck-lib]').forEach(btn=>{
-      btn.addEventListener('click',()=>openQuickLib(btn.dataset.deckLib));
+/* Event delegation — works for all 4 decks in every mode (split / ALL 4 / WORK),
+   regardless of render timing, and survives deck rebuilds. */
+document.addEventListener('click',(e)=>{
+  const libBtn=e.target.closest('[data-deck-lib]');
+  if(libBtn){e.preventDefault();e.stopPropagation();openQuickLib(libBtn.dataset.deckLib);return;}
+  const upBtn=e.target.closest('[data-deck-upload]');
+  if(upBtn){
+    e.preventDefault();e.stopPropagation();
+    if(upBtn._uploading)return;
+    const deckId=upBtn.dataset.deckUpload;
+    const inp=document.createElement('input');
+    inp.type='file';inp.accept='audio/*,video/*,.mp3,.wav,.ogg,.m4a,.mp4,.aac,.flac,.weba,.webm,.opus,.aiff,.aif,.wma,.3gp';
+    inp.multiple=true;
+    inp.addEventListener('change',async ev=>{
+      const files=Array.from(ev.target.files||[]);if(!files.length)return;
+      upBtn._uploading=true;upBtn.classList.add('loading');upBtn.textContent='⬆ LOADING…';
+      let firstTrack=null;
+      for(const f of files){
+        try{const t=await loadAudioFile(f);if(!firstTrack&&t)firstTrack=t;}
+        catch(err){console.warn('upload fail',f.name,err);toast&&toast(`Failed "${f.name}"`,'error');}
+      }
+      upBtn.classList.remove('loading');upBtn.textContent='⬆ UPLOAD';upBtn._uploading=false;
+      if(firstTrack){try{await loadTrackToDeck(deckId,firstTrack);toast&&toast(`Loaded "${firstTrack.title}" → Deck ${deckId}`,'success');}catch(e){}}
     });
-    // Upload button per deck — opens file picker, uploads + loads first track to deck
-    document.querySelectorAll('[data-deck-upload]').forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        const deckId=btn.dataset.deckUpload;
-        const inp=document.createElement('input');
-        inp.type='file';inp.accept='audio/*,video/*,.mp3,.wav,.ogg,.m4a,.mp4,.aac,.flac,.weba,.webm,.opus,.aiff,.aif,.wma,.3gp';
-        inp.multiple=true;
-        inp.addEventListener('change',async e=>{
-          const files=Array.from(e.target.files||[]);if(!files.length)return;
-          btn.classList.add('loading');btn.textContent='⬆ LOADING…';
-          let firstTrack=null;
-          for(const f of files){
-            try{const t=await loadAudioFile(f);if(!firstTrack&&t)firstTrack=t;}
-            catch(err){console.warn('upload fail',f.name,err);toast&&toast(`Failed "${f.name}"`,'error');}
-          }
-          btn.classList.remove('loading');btn.textContent='⬆ UPLOAD';
-          if(firstTrack){try{await loadTrackToDeck(deckId,firstTrack);toast&&toast(`Loaded "${firstTrack.title}" → Deck ${deckId}`,'success');}catch(e){}}
-        });
-        inp.click();
-      });
-    });
-    document.getElementById('quickLibClose')?.addEventListener('click',closeQuickLib);
-    document.getElementById('quickLibOverlay')?.addEventListener('click',(e)=>{if(e.target.id==='quickLibOverlay')closeQuickLib();});
-    document.getElementById('quickLibSearch')?.addEventListener('input',e=>renderQuickLib(e.target.value));
-    window.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('quickLibOverlay')?.classList.contains('open')){e.preventDefault();closeQuickLib();}});
-  },300);
+    inp.click();
+    return;
+  }
+  if(e.target.id==='quickLibClose'){closeQuickLib();return;}
+  if(e.target.id==='quickLibOverlay'){closeQuickLib();return;}
+});
+document.addEventListener('input',(e)=>{
+  if(e.target.id==='quickLibSearch')renderQuickLib(e.target.value);
+});
+window.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&document.getElementById('quickLibOverlay')?.classList.contains('open')){
+    e.preventDefault();closeQuickLib();
+  }
 });
 
 /* ========================================================
