@@ -1591,10 +1591,14 @@ body{align-items:center;justify-content:flex-start}
 body.work-mode .header-bar,
 body.work-mode .main-tabs,
 body.work-mode canvas#spectrumCanvas,
-body.work-mode .beat-fx-panel,
-body.work-mode .scene-fx-panel,
 body.work-mode .tab-content:not(#tab-deck),
-body.work-mode #tab-deck > *:not(.console):not(.library){display:none !important;}
+body.work-mode #tab-deck > *:not(.console):not(.library):not(.beat-fx-panel):not(.scene-fx-panel){display:none !important;}
+body.work-mode .beat-fx-panel,body.work-mode .scene-fx-panel{
+  display:grid !important;
+  background:linear-gradient(180deg,rgba(40,40,46,.8) 0%,rgba(23,23,26,.9) 100%);
+  backdrop-filter:blur(8px);
+  border:1px solid rgba(255,138,26,.18);
+}
 body.work-mode .library{display:block !important}
 body.work-mode .tab-content#tab-deck{display:flex !important;flex-direction:column;align-items:center;gap:12px}
 body.work-mode .rgb-ambient{display:block;height:3px;opacity:.85;max-width:1700px;margin:0 auto}
@@ -1632,7 +1636,8 @@ body.work-mode{
     radial-gradient(ellipse at 80% 95%,rgba(46,224,255,.08) 0%,transparent 50%),
     radial-gradient(ellipse at center,#0b0b0e 0%,#040405 80%);
 }
-body.work-mode .deck-switch-bar,body.work-mode .console,body.work-mode .library{
+body.work-mode .deck-switch-bar,body.work-mode .console,body.work-mode .library,
+body.work-mode .beat-fx-panel,body.work-mode .scene-fx-panel{
   max-width:none !important;width:calc(100vw - 12px) !important;
 }
 body.work-mode .console{grid-template-columns:1fr 420px 1fr}
