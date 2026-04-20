@@ -800,6 +800,207 @@ button:focus-visible{outline:2px solid var(--orange-glow);outline-offset:2px}
   background:linear-gradient(90deg,transparent,#ff3c00 50%,transparent);
   box-shadow:0 0 8px #ff3c00;
 }
+
+/* ============================================================
+   VISUAL POLISH LAYER v4 — per-tab refinements + interactions
+   ============================================================ */
+
+/* Jog wheel — active scrubbing/scratching state */
+.jog-platter{transition:filter .12s ease;will-change:transform}
+.jog-platter.jog-active{filter:brightness(1.18) contrast(1.05)}
+.jog-platter.jog-active~.jog-ring .jog-ring-light,
+.jog-wheel:has(.jog-platter.jog-active) .jog-ring-light{
+  background:conic-gradient(from 0deg,
+    transparent 0deg,
+    rgba(46,224,255,.3) 3deg,
+    var(--screen-glow) 8deg,
+    rgba(127,240,255,.4) 14deg,
+    transparent 24deg);
+  animation-play-state:running !important;
+  animation-duration:.6s !important;
+}
+.jog-wheel{cursor:grab}
+.jog-wheel:active{cursor:grabbing}
+
+/* CUE preview — pulsing glow while held */
+.big-btn.cue:active,.big-btn.cue.preview{
+  background:linear-gradient(180deg,#ffb066 0%,var(--cue-orange) 60%,#aa3a00 100%);
+  color:#0a0a0a;
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.45),0 0 32px rgba(255,106,26,.95),0 0 4px rgba(255,220,180,.9);
+  animation:cuePulse .3s ease-in-out infinite alternate;
+}
+@keyframes cuePulse{
+  from{box-shadow:inset 0 2px 4px rgba(0,0,0,.45),0 0 24px rgba(255,106,26,.7)}
+  to{box-shadow:inset 0 2px 4px rgba(0,0,0,.45),0 0 40px rgba(255,106,26,1),0 0 6px rgba(255,255,255,.9)}
+}
+
+/* SAMPLER — ripple on trigger + pad-bank header */
+.sampler-grid{position:relative}
+.sample-pad::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:radial-gradient(circle at center,rgba(255,255,255,.25) 0%,transparent 60%);
+  opacity:0;transform:scale(.5);pointer-events:none;
+  transition:none;
+}
+.sample-pad.playing::before{
+  opacity:1;transform:scale(1.4);
+  transition:opacity .6s ease-out,transform .6s ease-out;
+}
+.sample-pad{position:relative;overflow:hidden}
+.sample-pad .pad-num{transition:transform .12s ease}
+.sample-pad.playing .pad-num{transform:scale(1.15)}
+.sampler-header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.sampler-header .sub{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1.5px}
+
+/* PLAYLISTS — richer cards */
+.playlist-card{position:relative;overflow:hidden;min-height:104px}
+.playlist-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--orange),var(--screen-glow),var(--purple));
+  opacity:.6;
+}
+.playlist-card h4{display:flex;align-items:center;gap:8px}
+.playlist-card h4::before{
+  content:'♪';color:var(--orange);font-size:18px;
+  text-shadow:0 0 8px rgba(255,138,26,.7);
+}
+.playlist-card .pl-meta{font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.playlist-card .pl-meta strong{color:var(--screen-glow);font-weight:700}
+.playlist-card .pl-actions button{transition:all .15s ease}
+.playlist-card .pl-actions button:hover{background:rgba(255,138,26,.1)}
+
+/* SESSIONS — deck-state preview chips */
+.session-card{position:relative;display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:14px}
+.session-card::before{
+  content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;
+  background:linear-gradient(180deg,var(--play-green),var(--screen-glow));
+  border-radius:2px;
+}
+.session-card .session-name{color:#fff;font-family:'Orbitron',sans-serif;letter-spacing:1.5px}
+.session-card .session-meta{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1.5px}
+.session-card .session-actions{display:flex;gap:6px}
+.session-card .session-actions button{
+  padding:6px 11px;background:transparent;border:1px solid #333;
+  color:var(--text-dim);font-family:'Orbitron',sans-serif;font-size:9px;
+  letter-spacing:1.5px;border-radius:4px;cursor:pointer;
+}
+.session-card .session-actions button:hover{border-color:var(--orange);color:var(--orange)}
+.session-card .session-actions button.danger:hover{border-color:var(--red);color:var(--red)}
+
+/* AI DJ — energy bar + status indicators */
+.ai-dj-config{position:relative}
+.ai-energy-bar{
+  grid-column:1/-1;height:6px;background:#0a0a0c;border-radius:3px;overflow:hidden;
+  position:relative;margin-top:8px;border:1px solid rgba(255,255,255,.04);
+}
+.ai-energy-bar::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:var(--energy,30%);
+  background:linear-gradient(90deg,var(--play-green),var(--yellow),var(--orange),var(--red));
+  transition:width .4s ease;box-shadow:0 0 12px rgba(255,138,26,.5);
+}
+.ai-dj-status .dot{box-shadow:0 0 4px currentColor}
+.ai-dj-status.active .dot{box-shadow:0 0 12px var(--play-green)}
+.ai-dj-btn{position:relative;overflow:hidden}
+.ai-dj-btn::after{
+  content:'';position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.08) 50%,transparent 70%);
+  transform:translateX(-100%);transition:transform .6s ease;
+}
+.ai-dj-btn:hover::after{transform:translateX(100%)}
+
+/* ANALYTICS — lift cards + tiny sparkline placeholder */
+.stat-card{transition:transform .2s ease,box-shadow .2s ease;position:relative;overflow:hidden}
+.stat-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.6),0 0 0 1px rgba(255,138,26,.3)}
+.stat-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--orange),transparent);
+}
+.stat-card .stat-value{
+  font-feature-settings:'tnum';
+  background:linear-gradient(180deg,#fff 0%,var(--orange-glow) 50%,var(--orange) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  filter:drop-shadow(0 0 10px rgba(255,138,26,.4));
+}
+.mix-history h4{display:flex;align-items:center;gap:8px}
+.mix-history h4::before{content:'⏱';font-size:14px}
+.mix-entry{padding:8px 4px;transition:padding .15s}
+.mix-entry:hover{padding-left:8px;background:rgba(255,138,26,.04)}
+
+/* MIDI — devices + log */
+.midi-device{position:relative;padding:10px 12px;border:1px solid #2a2a2e;transition:border-color .15s}
+.midi-device:hover{border-color:var(--screen-glow)}
+.midi-device .status::before{content:'●';margin-right:5px;animation:blink 1.5s infinite}
+.midi-log{font-size:11px;line-height:1.5}
+.midi-log::before{
+  content:'> MIDI MONITOR';display:block;color:var(--orange);
+  font-weight:700;margin-bottom:6px;letter-spacing:2px;
+}
+
+/* SETTINGS — section headings + nicer toggles */
+.settings-section{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.settings-section:last-of-type{border-bottom:none}
+.settings-section h3{
+  display:flex;align-items:center;gap:10px;
+  text-transform:uppercase;
+}
+.settings-section h3::before{
+  content:'';width:4px;height:14px;background:var(--orange);
+  border-radius:2px;box-shadow:0 0 8px rgba(255,138,26,.6);
+}
+.toggle-switch{
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.5),0 1px 0 rgba(255,255,255,.05);
+  transition:background .2s;
+}
+.toggle-switch::after{
+  box-shadow:0 2px 4px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.3);
+  transition:left .2s ease,background .2s;
+}
+.toggle-switch.on{box-shadow:inset 0 1px 3px rgba(0,0,0,.4),0 0 12px rgba(255,138,26,.4)}
+
+/* HELP — searchable shortcuts */
+.shortcut-grid{position:relative}
+.shortcut-item{transition:background .15s,transform .15s}
+.shortcut-item:hover{background:#1a1a1e;transform:translateX(2px)}
+.shortcut-item kbd{
+  box-shadow:inset 0 -2px 0 rgba(0,0,0,.35),0 1px 0 rgba(255,255,255,.2);
+  text-transform:uppercase;
+}
+
+/* TRACK LIST — drag affordance + better row */
+.track-row{position:relative;padding-left:16px}
+.track-row::before{
+  content:'⋮⋮';position:absolute;left:5px;top:50%;transform:translateY(-50%);
+  font-family:monospace;color:#3a3a3e;font-size:14px;line-height:.6;letter-spacing:-3px;
+  transition:color .15s;
+}
+.track-row:hover::before{color:var(--orange)}
+.track-row .t-bpm{font-weight:700;text-shadow:0 0 6px rgba(46,224,255,.3)}
+.track-row .t-key{font-weight:700;text-shadow:0 0 6px rgba(28,255,143,.3)}
+
+/* WAVEFORM — beat-pulse on phrase markers */
+.phrase-mark{box-shadow:0 0 4px var(--yellow),0 0 8px rgba(255,212,0,.4)}
+
+/* HEADER — beat-pulse on master BPM when any deck plays */
+.master-bpm{transition:text-shadow .1s ease}
+
+/* Loop active glow */
+.loop-btn.active{
+  background:linear-gradient(180deg,#7ff0ff 0%,var(--screen-glow) 55%,#0e88a6 100%);
+  color:#000;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 18px rgba(46,224,255,.7);
+}
+
+/* Toast variants — softer arrival */
+.toast{animation:slideIn .35s cubic-bezier(.2,.8,.3,1)}
+
+/* Tab content — fade-in transition */
+.tab-content.active{animation:tabFade .3s ease}
+@keyframes tabFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* Scrollbar inside panels */
+.track-list,.ai-log,.mix-history-list,.midi-devices,.midi-log{
+  scrollbar-width:thin;
+  scrollbar-color:var(--orange) #0a0a0b;
+}
 </style>
 </head>
 <body>
@@ -1794,6 +1995,13 @@ function playDeck(deckId){
   d.source.buffer=d.buffer;d.source.playbackRate.value=d.playbackRate;
   d.source.connect(d.trimGain);
   d.source.start(0,d.offset);d.startTime=audioCtx.currentTime;d.playing=true;
+  if(d.volumeGain){
+    const target=d.volume!==undefined?d.volume:0.8;
+    const now=audioCtx.currentTime;
+    d.volumeGain.gain.cancelScheduledValues(now);
+    d.volumeGain.gain.setValueAtTime(0,now);
+    d.volumeGain.gain.linearRampToValueAtTime(target,now+0.008);
+  }
   if(deckId==='A'||deckId==='B'){
     document.getElementById(`jog-${deckId}`).classList.add('playing');
     document.getElementById(`platter-${deckId}`).classList.add('spinning');
@@ -1828,8 +2036,19 @@ function playDeck(deckId){
 function pauseDeck(deckId){
   const d=decks[deckId];if(!d.playing||!d.source)return;
   d.offset=getCurrentTime(deckId);
-  try{d.source.stop();}catch(e){}
-  d.source.disconnect();d.source=null;d.playing=false;
+  const src=d.source;
+  if(d.volumeGain&&audioCtx){
+    const now=audioCtx.currentTime;
+    const cur=d.volumeGain.gain.value;
+    d.volumeGain.gain.cancelScheduledValues(now);
+    d.volumeGain.gain.setValueAtTime(cur,now);
+    d.volumeGain.gain.linearRampToValueAtTime(0,now+0.006);
+    setTimeout(()=>{try{src.stop();src.disconnect();}catch(e){}d.volumeGain.gain.setValueAtTime(d.volume!==undefined?d.volume:0.8,audioCtx.currentTime);},12);
+  }else{
+    try{d.source.stop();}catch(e){}
+    d.source.disconnect();
+  }
+  d.source=null;d.playing=false;
   if(deckId==='A'||deckId==='B'){
     document.getElementById(`jog-${deckId}`).classList.remove('playing');
     document.getElementById(`platter-${deckId}`).classList.remove('spinning');
@@ -2152,20 +2371,34 @@ function renderPlaylists(){
   const g=document.getElementById('playlistGrid');g.innerHTML='';
   if(!playlists.length)g.innerHTML='<div style="color:var(--text-dim);font-family:Share Tech Mono,monospace;font-size:12px;padding:20px;">No playlists yet. Click NEW PLAYLIST.</div>';
   playlists.forEach((pl,idx)=>{
+    const tracks=pl.trackIds.map(id=>library.find(t=>t.id===id)).filter(Boolean);
+    const totalSec=tracks.reduce((s,t)=>s+(t.duration||0),0);
+    const totalMin=Math.floor(totalSec/60),totalRest=Math.round(totalSec%60);
+    const dur=`${totalMin}:${String(totalRest).padStart(2,'0')}`;
+    const avgBpm=tracks.length?Math.round(tracks.reduce((s,t)=>s+(t.bpm||0),0)/tracks.length):0;
     const c=document.createElement('div');c.className='playlist-card';
     c.innerHTML=`<h4>${escapeHtml(pl.name)}</h4>
-      <div class="pl-meta">${pl.trackIds.length} tracks · ${new Date(pl.createdAt).toLocaleDateString()}</div>
+      <div class="pl-meta"><strong>${pl.trackIds.length}</strong> tracks · <strong>${dur}</strong> · avg <strong>${avgBpm||'--'}</strong> BPM</div>
       <div class="pl-actions">
-        <button data-pl-load="${idx}">LOAD</button>
+        <button data-pl-queue="${idx}">QUEUE A</button>
+        <button data-pl-queueb="${idx}">QUEUE B</button>
         <button data-pl-rename="${idx}">RENAME</button>
-        <button data-pl-delete="${idx}">DELETE</button>
+        <button data-pl-delete="${idx}">DEL</button>
       </div>`;
     g.appendChild(c);
   });
   document.getElementById('playlistCount').textContent=playlists.length;
-  g.querySelectorAll('[data-pl-load]').forEach(b=>b.addEventListener('click',()=>{
-    const pl=playlists[parseInt(b.dataset.plLoad)];
-    toast(`Loaded "${pl.name}" (${pl.trackIds.length} tracks)`,'success');
+  g.querySelectorAll('[data-pl-queue]').forEach(b=>b.addEventListener('click',()=>{
+    const pl=playlists[parseInt(b.dataset.plQueue)];
+    const first=pl.trackIds.map(id=>library.find(t=>t.id===id)).find(t=>t&&t.source!=='yt');
+    if(first){loadTrackToDeck('A',first);toast(`Loaded "${first.title}" → Deck A`,'success');}
+    else toast('No playable tracks in playlist','error');
+  }));
+  g.querySelectorAll('[data-pl-queueb]').forEach(b=>b.addEventListener('click',()=>{
+    const pl=playlists[parseInt(b.dataset.plQueueb)];
+    const first=pl.trackIds.map(id=>library.find(t=>t.id===id)).find(t=>t&&t.source!=='yt');
+    if(first){loadTrackToDeck('B',first);toast(`Loaded "${first.title}" → Deck B`,'success');}
+    else toast('No playable tracks in playlist','error');
   }));
   g.querySelectorAll('[data-pl-delete]').forEach(b=>b.addEventListener('click',()=>{
     playlists.splice(parseInt(b.dataset.plDelete),1);renderPlaylists();saveToDB();
@@ -2180,8 +2413,9 @@ function renderPlaylists(){
 }
 
 function createPlaylist(name){
-  playlists.push({name,createdAt:Date.now(),trackIds:library.map(t=>t.id)});
+  playlists.push({name,createdAt:Date.now(),trackIds:[]});
   renderPlaylists();saveToDB();
+  toast(`Created "${name}" — drag tracks from library to add`,'success');
 }
 
 /* AI DJ */
@@ -3365,6 +3599,78 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('SW register failed',err));
   });
 }
+
+/* ========================================================
+   Touch/mouse jog wheel — scrub-locate when paused, pitch-bend when playing
+   ======================================================== */
+function setupJogWheel(deckId){
+  const platter=document.getElementById('platter-'+deckId);
+  if(!platter)return;
+  let dragging=false,lastAngle=0,totalDelta=0,lastMoveTime=0,velocity=0;
+  let originalRate=1,bendActive=false;
+  function getAngle(clientX,clientY){
+    const r=platter.getBoundingClientRect();
+    return Math.atan2(clientY-(r.top+r.height/2),clientX-(r.left+r.width/2));
+  }
+  function start(clientX,clientY){
+    const d=decks[deckId];if(!d.track||!d.buffer)return;
+    dragging=true;totalDelta=0;velocity=0;
+    lastAngle=getAngle(clientX,clientY);
+    lastMoveTime=performance.now();
+    platter.style.cursor='grabbing';
+    platter.classList.add('jog-active');
+    if(d.playing){originalRate=d.playbackRate;bendActive=true;}
+  }
+  function move(clientX,clientY){
+    if(!dragging)return;
+    const d=decks[deckId];if(!d.buffer)return;
+    const ang=getAngle(clientX,clientY);
+    let delta=ang-lastAngle;
+    if(delta>Math.PI)delta-=2*Math.PI;
+    if(delta<-Math.PI)delta+=2*Math.PI;
+    lastAngle=ang;
+    const now=performance.now();
+    const dt=Math.max(1,now-lastMoveTime);
+    velocity=delta/dt;
+    lastMoveTime=now;
+    totalDelta+=delta;
+    if(d.playing&&d.source){
+      const bend=1+(velocity*120);
+      const clamped=Math.max(0.25,Math.min(2.5,bend));
+      try{d.source.playbackRate.setTargetAtTime(clamped*originalRate,audioCtx.currentTime,0.01);}catch(e){}
+    }else{
+      const secsPerRev=4;
+      const seekDelta=delta/(2*Math.PI)*secsPerRev;
+      const next=Math.max(0,Math.min(d.buffer.duration,d.offset+seekDelta));
+      d.offset=next;
+      const platterEl=document.getElementById('platter-'+deckId);
+      if(platterEl){
+        const cur=parseFloat(platterEl.dataset.rot||'0')+delta*180/Math.PI;
+        platterEl.dataset.rot=cur;
+        platterEl.style.transform='rotate('+cur+'deg)';
+      }
+    }
+  }
+  function end(){
+    if(!dragging)return;
+    dragging=false;
+    platter.style.cursor='grab';
+    platter.classList.remove('jog-active');
+    const d=decks[deckId];
+    if(bendActive&&d.source){
+      try{d.source.playbackRate.setTargetAtTime(originalRate,audioCtx.currentTime,0.05);}catch(e){}
+      bendActive=false;
+    }
+  }
+  platter.addEventListener('mousedown',(e)=>{e.preventDefault();start(e.clientX,e.clientY);});
+  window.addEventListener('mousemove',(e)=>{if(dragging)move(e.clientX,e.clientY);});
+  window.addEventListener('mouseup',end);
+  platter.addEventListener('touchstart',(e)=>{const t=e.touches[0];if(t){e.preventDefault();start(t.clientX,t.clientY);}},{passive:false});
+  window.addEventListener('touchmove',(e)=>{const t=e.touches[0];if(dragging&&t){e.preventDefault();move(t.clientX,t.clientY);}},{passive:false});
+  window.addEventListener('touchend',end);
+  window.addEventListener('touchcancel',end);
+}
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{['A','B'].forEach(setupJogWheel);},100);});
 
 document.addEventListener('DOMContentLoaded',init);
 </script>
