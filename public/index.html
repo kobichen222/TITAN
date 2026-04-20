@@ -1671,6 +1671,245 @@ body.work-mode .x-pad.active{
 }
 body.work-mode .x-pad-labels{color:#ccc !important;opacity:.85;font-size:11px}
 body.work-mode .knob-label{color:#e8e8ea !important;font-size:10px;text-shadow:0 0 4px rgba(255,255,255,.3)}
+
+/* ============================================================
+   LIGHT THEME v2 — 'Porcelain Studio' premium light mode
+   Bright panels, warm cream background, real-hardware LED displays
+   (kept dark with orange/cyan glow, like a real CDJ-3000 in a lit room)
+   ============================================================ */
+body.theme-light{
+  --deck-bg:#e8e8ec;
+  --deck-panel:#f4f4f7;
+  --deck-border:#c8c8ce;
+  --screen-glow:#0088b4;
+  --orange:#ff7a1a;
+  --orange-glow:#c85a00;
+  --cue-orange:#ff5a00;
+  --play-green:#00a656;
+  --red:#dc2e2e;
+  --yellow:#e8a500;
+  --purple:#8c00c8;
+  --pink:#c82e5a;
+  --text:#1a1a1c;
+  --text-dim:#5a5a60;
+  --bg:#f6f3ee;
+  --panel-edge:rgba(0,0,0,.06);
+  --panel-edge-strong:rgba(0,0,0,.12);
+}
+body.theme-light,body.theme-light html{
+  background:
+    radial-gradient(ellipse at 20% 0%,rgba(255,138,26,.06) 0%,transparent 45%),
+    radial-gradient(ellipse at 80% 100%,rgba(0,180,220,.05) 0%,transparent 45%),
+    radial-gradient(ellipse at center,#fbf8f1 0%,var(--bg) 70%);
+}
+body.theme-light::after{background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.08) 100%)}
+body.theme-light ::-webkit-scrollbar-track{background:#e0ddd6}
+body.theme-light ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--orange),#c85a00)}
+
+/* Top panels */
+body.theme-light .header-bar{color:#1a1a1c}
+body.theme-light .brand{color:#1a1a1c;text-shadow:0 1px 0 rgba(255,255,255,.9),0 0 16px rgba(255,138,26,.12)}
+body.theme-light .brand .max{background:linear-gradient(180deg,#ffa84a 0%,var(--orange) 55%,#c85a00 100%);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 1px 2px rgba(0,0,0,.2),0 0 12px rgba(255,138,26,.4)}
+body.theme-light .header-right{color:#5a5a60}
+
+/* All main panels: porcelain white with soft shadow */
+body.theme-light .cdj,body.theme-light .mixer,body.theme-light .library,
+body.theme-light .sampler-panel,body.theme-light .youtube-panel,body.theme-light .playlists-panel,
+body.theme-light .ai-dj-panel,body.theme-light .analytics-panel,body.theme-light .midi-panel,
+body.theme-light .settings-panel,body.theme-light .beat-fx-panel,body.theme-light .scene-fx-panel,
+body.theme-light .deck-switch-bar{
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.015) 0%,rgba(0,0,0,0) 15%,rgba(0,0,0,.04) 100%),
+    linear-gradient(180deg,#fcfcfe 0%,#ececf0 100%);
+  border:1px solid rgba(0,0,0,.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -1px 0 rgba(0,0,0,.05),
+    0 1px 0 rgba(0,0,0,.02),
+    0 12px 30px -8px rgba(60,60,80,.25),
+    0 2px 6px rgba(0,0,0,.06);
+}
+body.theme-light .main-tabs{background:linear-gradient(180deg,#eaeaef 0%,#dadade 100%);border:1px solid rgba(0,0,0,.08);box-shadow:inset 0 2px 4px rgba(0,0,0,.06)}
+body.theme-light .tab-btn{color:#5a5a60}
+body.theme-light .tab-btn:hover{color:#1a1a1c}
+body.theme-light .tab-btn.active{background:linear-gradient(180deg,#ffa84a 0%,var(--orange) 45%,#c85a00 100%);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 14px rgba(255,138,26,.5);text-shadow:0 1px 0 rgba(0,0,0,.2)}
+
+/* LED-style displays stay dark even in light theme (like real hardware) */
+body.theme-light .screen{
+  background:linear-gradient(180deg,#06121a 0%,#020608 100%);
+  border:1px solid rgba(0,0,0,.4);
+  box-shadow:inset 0 0 32px rgba(0,136,180,.12),inset 0 2px 6px rgba(0,0,0,.9),0 2px 6px rgba(0,0,0,.15);
+}
+body.theme-light .jog-center-screen{
+  background:radial-gradient(circle,#0b1a22 0%,#020608 100%);
+  border:2px solid rgba(0,0,0,.4);
+  box-shadow:inset 0 0 20px rgba(0,136,180,.15),inset 0 2px 6px rgba(0,0,0,.9),0 4px 12px rgba(0,0,0,.3);
+}
+body.theme-light .track-title{color:#7ff0ff;text-shadow:0 0 10px rgba(46,224,255,.6)}
+body.theme-light .screen-bpm{color:#ffb366;text-shadow:0 0 10px rgba(255,138,26,.8)}
+body.theme-light .screen-key{color:#6cff9e}
+body.theme-light .master-bpm{background:#020608;border:1px solid #0a1a20;color:#ffb366}
+body.theme-light .jog-center-screen .bpm-display{color:#ffb366}
+body.theme-light .jog-center-screen .bpm-sub,body.theme-light .jog-center-screen .deck-badge{color:#7fd4ea}
+
+/* Deck number */
+body.theme-light .deck-number{
+  background:linear-gradient(180deg,#ff9040 0%,var(--orange) 55%,#a04a00 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  filter:drop-shadow(0 2px 4px rgba(255,138,26,.25));
+}
+body.theme-light .deck-label{color:#1a1a1c}
+body.theme-light .deck-label .model{color:var(--orange)}
+
+/* Jog wheel — brushed-chrome treatment */
+body.theme-light .jog-outer{
+  background:
+    radial-gradient(circle at 32% 28%,rgba(255,255,255,.85) 0%,transparent 38%),
+    radial-gradient(circle at 30% 30%,#d8d8dc 0%,#9a9aa0 55%,#58585e 100%);
+  box-shadow:0 0 0 2px #888,0 0 0 3px rgba(255,255,255,.4),0 0 0 5px #a8a8ae,inset 0 3px 10px rgba(255,255,255,.5),inset 0 -6px 14px rgba(0,0,0,.35),0 14px 32px rgba(40,40,60,.3);
+}
+body.theme-light .jog-platter{
+  background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.4) 0%,transparent 35%),radial-gradient(circle at 35% 35%,#d4d4d8 0%,#8a8a90 55%,#3a3a40 100%);
+  box-shadow:inset 0 3px 10px rgba(255,255,255,.5),inset 0 -6px 14px rgba(0,0,0,.5),0 2px 4px rgba(0,0,0,.2);
+}
+body.theme-light .jog-platter-disc{background:repeating-radial-gradient(circle,rgba(0,0,0,.04) 0px,rgba(0,0,0,.04) 1px,transparent 1px,transparent 3px),radial-gradient(circle,#c8c8cc 0%,#6a6a70 100%)}
+body.theme-light .jog-indicator{background:linear-gradient(180deg,#fff 0%,var(--orange) 70%,#aa3a00 100%);box-shadow:0 0 4px rgba(0,0,0,.3),0 0 8px rgba(255,138,26,.6)}
+
+/* Knobs — brushed silver */
+body.theme-light .knob{
+  background:
+    radial-gradient(circle at 30% 28%,rgba(255,255,255,.95) 0%,transparent 32%),
+    conic-gradient(from 0deg,#e4e4e8 0deg,#c0c0c6 45deg,#a8a8ae 90deg,#d4d4d8 180deg,#b0b0b6 270deg,#e4e4e8 360deg),
+    radial-gradient(circle at 30% 30%,#e4e4e8 0%,#a0a0a6 60%,#58585e 100%);
+  box-shadow:inset 0 2px 4px rgba(255,255,255,.8),inset 0 -3px 6px rgba(0,0,0,.3),0 2px 6px rgba(0,0,0,.2),0 0 0 1px rgba(0,0,0,.15);
+}
+body.theme-light .knob-indicator{background:linear-gradient(180deg,#3a3a40 0%,var(--orange) 70%,#aa3a00 100%);box-shadow:0 0 4px rgba(0,0,0,.4)}
+body.theme-light .knob-label{color:#6a6a72;font-weight:700}
+
+/* VU meters stay dark (LEDs look right only on dark) */
+body.theme-light .vu-meter{background:#0a0a0e;border:1px solid #2a2a30;box-shadow:inset 0 0 5px rgba(0,0,0,.8)}
+body.theme-light .vu-led{background:#0a1a15}
+
+/* Faders — light track, chrome handle */
+body.theme-light .fader-wrap,body.theme-light .crossfader-track,body.theme-light .tempo-slider{
+  background:linear-gradient(180deg,#c0c0c6 0%,#9a9aa0 100%);
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.25),0 0 0 1px rgba(0,0,0,.15);
+}
+body.theme-light .fader-handle,body.theme-light .tempo-handle,body.theme-light .crossfader-handle{
+  background:linear-gradient(180deg,#fff 0%,#d0d0d6 30%,#8a8a90 70%,#4a4a50 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -2px 3px rgba(0,0,0,.3),0 3px 8px rgba(0,0,0,.3),0 0 0 1px rgba(0,0,0,.15);
+}
+
+/* Buttons: light with crisp edges */
+body.theme-light .big-btn,body.theme-light .loop-btn,body.theme-light .jump-btn,body.theme-light .util-btn,
+body.theme-light .beat-btn,body.theme-light .scene-btn,body.theme-light .pad-mode-btn,
+body.theme-light .tempo-btn,body.theme-light .step-btn,body.theme-light .mic-btn,
+body.theme-light .cue-btn,body.theme-light .compact-btn,body.theme-light .cue-hp-btn,
+body.theme-light .automix-btn,body.theme-light .dsb-btn,body.theme-light .search-src-btn,
+body.theme-light .studio-preset-btn,body.theme-light .tool-btn,body.theme-light .assign-btn,
+body.theme-light .curve-btn,body.theme-light .ai-dj-btn{
+  background:linear-gradient(180deg,#ffffff 0%,#e4e4e8 60%,#d0d0d6 100%);
+  border:1px solid rgba(0,0,0,.12);
+  color:#3a3a42;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -1px 2px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.1);
+  text-shadow:0 1px 0 rgba(255,255,255,.8);
+}
+body.theme-light .big-btn:hover,body.theme-light .loop-btn:hover,body.theme-light .jump-btn:hover,
+body.theme-light .util-btn:hover,body.theme-light .beat-btn:hover,body.theme-light .scene-btn:hover,
+body.theme-light .pad-mode-btn:hover{filter:brightness(1.02);border-color:rgba(255,138,26,.4)}
+
+/* Active states keep their signature color glow */
+body.theme-light .big-btn.cue.active{background:linear-gradient(180deg,#ff9040 0%,var(--cue-orange) 60%,#8a2a00 100%);color:#fff;border-color:#8a2a00;text-shadow:0 1px 0 rgba(0,0,0,.3)}
+body.theme-light .big-btn.play.active{background:linear-gradient(180deg,#4affa0 0%,var(--play-green) 60%,#00653a 100%);color:#fff;border-color:#00653a;text-shadow:0 1px 0 rgba(0,0,0,.3)}
+body.theme-light .loop-btn.active{background:linear-gradient(180deg,#7ff0ff 0%,var(--screen-glow) 60%,#00607a 100%);color:#fff;border-color:#00607a}
+body.theme-light .beat-btn.active{background:linear-gradient(180deg,#7ff0ff 0%,var(--screen-glow) 60%,#00607a 100%);color:#fff}
+body.theme-light .scene-btn.active{background:linear-gradient(180deg,#ff8ab3 0%,var(--pink) 60%,#8a1a40 100%);color:#fff}
+body.theme-light .fx-onoff{background:linear-gradient(180deg,#fff 0%,#dcdce0 100%);border:2px solid #b0b0b6;color:#1a1a1c}
+body.theme-light .fx-onoff.active{background:linear-gradient(180deg,#ff9040 0%,var(--orange) 55%,#aa3a00 100%);color:#fff;border-color:#aa3a00}
+body.theme-light .util-btn.sync.active{background:linear-gradient(180deg,#ffc0a0 0%,var(--orange) 100%);color:#fff}
+body.theme-light .tab-btn{background:transparent}
+body.theme-light .rec-btn{background:linear-gradient(180deg,#ffefef 0%,#ffd0d0 100%);border-color:var(--red);color:var(--red)}
+body.theme-light .rec-btn.recording{background:linear-gradient(180deg,#ff6060 0%,var(--red) 100%);color:#fff}
+
+/* Sample pads */
+body.theme-light .sample-pad{background:linear-gradient(180deg,#ffffff 0%,#dcdce0 100%);border:1px solid rgba(0,0,0,.12);color:#3a3a42;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -2px 3px rgba(0,0,0,.1),0 3px 6px rgba(0,0,0,.15)}
+body.theme-light .sample-pad .pad-num{color:#3a3a42}
+body.theme-light .sample-pad .pad-name{color:#6a6a72}
+
+/* Inputs */
+body.theme-light input,body.theme-light select,body.theme-light textarea{
+  background:#fff;color:#1a1a1c;border:1px solid rgba(0,0,0,.15);
+}
+body.theme-light input:focus,body.theme-light select:focus{border-color:var(--orange);outline:none;box-shadow:0 0 0 3px rgba(255,138,26,.18)}
+body.theme-light .url-input,body.theme-light .search-input,body.theme-light .yt-input{background:#fff;color:#1a1a1c}
+body.theme-light .fx-selector{background:#020608;color:#7ff0ff;border-color:rgba(0,0,0,.3)}
+
+/* Titles + text */
+body.theme-light .library-title,body.theme-light .mixer-brand,body.theme-light .sampler-title,
+body.theme-light .modal-box h3,body.theme-light .settings-section h3,
+body.theme-light .ai-dj-title,body.theme-light .dsb-label{color:#1a1a1c}
+body.theme-light .count{color:var(--orange)}
+body.theme-light .setting-desc{color:#7a7a80}
+body.theme-light .ai-log{background:#020608;color:#7ff0ff}
+
+/* Playlist + session cards */
+body.theme-light .playlist-card,body.theme-light .session-card,body.theme-light .stat-card,body.theme-light .midi-device,body.theme-light .shortcut-item{
+  background:linear-gradient(180deg,#fff 0%,#f0f0f4 100%);border:1px solid rgba(0,0,0,.08);color:#1a1a1c;
+  box-shadow:0 2px 6px rgba(0,0,0,.08);
+}
+body.theme-light .playlist-card h4,body.theme-light .session-name,body.theme-light .stat-card .stat-value{color:#1a1a1c}
+body.theme-light .pl-meta,body.theme-light .session-meta{color:#5a5a60}
+body.theme-light .stat-card .stat-value{background:linear-gradient(180deg,#1a1a1c 0%,var(--orange) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+
+/* Track rows */
+body.theme-light .track-row{background:#fafafc;border:1px solid transparent;color:#3a3a42}
+body.theme-light .track-row:hover{background:#fff;border-color:var(--orange);box-shadow:0 4px 10px rgba(0,0,0,.06)}
+body.theme-light .track-row .t-title{color:#1a1a1c}
+body.theme-light .track-row .t-artist{color:#5a5a60}
+body.theme-light .track-list-header{color:var(--orange);border-bottom:1px solid rgba(255,138,26,.3)}
+
+/* Toast + modal */
+body.theme-light .toast{background:linear-gradient(180deg,#fff 0%,#f0f0f4 100%);color:#1a1a1c;border:1px solid var(--orange);box-shadow:0 12px 30px rgba(0,0,0,.2),0 0 20px rgba(255,138,26,.2)}
+body.theme-light .modal-box{background:linear-gradient(180deg,#fff 0%,#f0f0f4 100%);color:#1a1a1c;box-shadow:0 40px 80px rgba(0,0,0,.4),0 0 40px rgba(255,138,26,.15)}
+body.theme-light .modal-overlay{background:rgba(40,40,60,.65)}
+
+/* Studio panel */
+body.theme-light .studio-eq-canvas,body.theme-light .studio-spectrum{background:linear-gradient(180deg,#06121a 0%,#020608 100%)}
+body.theme-light .studio-block{background:#fff;border-color:rgba(0,0,0,.1)}
+body.theme-light .studio-presets,body.theme-light .studio-eq,body.theme-light .studio-spectrum-wrap{background:#f6f6f8;border-color:rgba(0,0,0,.1)}
+body.theme-light .studio-block-title{color:#1a1a1c;border-bottom-color:rgba(0,0,0,.1)}
+
+/* Mixer extras */
+body.theme-light .channel-label{color:var(--orange)}
+body.theme-light .compact-decks{background:#eaeaef;border-color:rgba(0,0,0,.1)}
+body.theme-light .compact-deck{background:#fff;border-color:rgba(0,0,0,.08)}
+body.theme-light .compact-deck-title{background:#020608;color:#7ff0ff;border-color:rgba(0,0,0,.3)}
+body.theme-light .isolator-panel{background:#fff5f5;border-color:rgba(220,46,46,.3)}
+body.theme-light .master-section,body.theme-light .color-fx-row,body.theme-light .color-fx-grid,
+body.theme-light .crossfader-section,body.theme-light .headphone-section,body.theme-light .mic-section,
+body.theme-light .automix-panel{background:#eef0f4;border:1px solid rgba(0,0,0,.06)}
+
+/* Toggle switches */
+body.theme-light .toggle-switch{background:#d0d0d6;border-color:rgba(0,0,0,.15)}
+body.theme-light .toggle-switch::after{background:#fff}
+body.theme-light .toggle-switch.on{background:var(--orange)}
+
+/* Waveform */
+body.theme-light .waveform{background:#05101c;border:1px solid rgba(0,0,0,.25);box-shadow:inset 0 2px 6px rgba(0,0,0,.3)}
+body.theme-light .playhead{background:#fff;box-shadow:0 0 8px rgba(255,255,255,.9),0 0 2px rgba(0,0,0,.7)}
+
+/* Language + WORK MODE buttons keep their look */
+body.theme-light .lang-btn{color:var(--screen-glow);border-color:var(--screen-glow)}
+body.theme-light .lang-btn:hover{background:var(--screen-glow);color:#fff}
+body.theme-light .dsb-work{color:var(--purple) !important;border-color:rgba(140,0,200,.4) !important}
+body.theme-light .wm-exit-btn{background:linear-gradient(180deg,#ff8080 0%,var(--red) 100%);color:#fff;border:2px solid var(--red)}
+
+/* Shortcut badge */
+body.theme-light .shortcut-item kbd{background:linear-gradient(180deg,#fff 0%,#d0d0d6 100%);color:#1a1a1c;border:1px solid rgba(0,0,0,.15);box-shadow:inset 0 -2px 0 rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.1)}
+
+/* Ambient RGB strip reads softer on light */
+body.theme-light .rgb-ambient{opacity:.9}
 body.work-mode .library{display:block !important}
 body.work-mode .tab-content#tab-deck{display:flex !important;flex-direction:column;align-items:center;gap:12px}
 body.work-mode .rgb-ambient{display:block;height:3px;opacity:.85;max-width:1700px;margin:0 auto}
