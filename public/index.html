@@ -1591,7 +1591,10 @@ body.work-mode .header-bar,
 body.work-mode .main-tabs,
 body.work-mode canvas#spectrumCanvas,
 body.work-mode .tab-content:not(#tab-deck),
-body.work-mode #tab-deck > *:not(.console):not(.library):not(.beat-fx-panel):not(.scene-fx-panel){display:none !important;}
+body.work-mode #tab-deck > *:not(.console):not(.library):not(.beat-fx-panel):not(.scene-fx-panel):not(.deck-switch-bar):not(.mic-strip){display:none !important;}
+body.work-mode .deck-switch-bar{position:fixed;top:8px;right:8px;left:auto;width:auto;max-width:none;z-index:60;background:rgba(10,10,14,.92);backdrop-filter:blur(10px);border:1px solid rgba(255,138,26,.35);box-shadow:0 10px 30px rgba(0,0,0,.7);padding:6px 10px;border-radius:10px;gap:6px;flex-wrap:wrap}
+body.work-mode .deck-switch-bar .dsb-label{color:var(--orange) !important;font-size:10px}
+body.work-mode .mic-strip{position:fixed;bottom:8px;left:8px;width:auto;max-width:none;z-index:60;padding:6px 10px}
 body.work-mode .beat-fx-panel,body.work-mode .scene-fx-panel{
   display:grid !important;
   padding:12px 18px !important;
@@ -2449,6 +2452,52 @@ body.theme-light .editor-timeline{background:#f4f4f8;border-color:rgba(0,0,0,.08
   display:flex !important;flex-direction:column-reverse !important;gap:1px;
 }
 .vu-meter.vu-master .vu-led{flex:1 1 auto;min-height:3px;border-radius:1px;width:100%}
+
+/* Premium master L/R VU — dramatic, animated, bulletproof */
+.master-vu-box{
+  position:relative;display:grid;
+  grid-template-columns:auto auto auto auto;
+  justify-content:center;align-items:flex-end;gap:10px;
+  padding:12px 14px 10px;margin-bottom:6px;
+  background:radial-gradient(ellipse at center,rgba(255,138,26,.08) 0%,transparent 60%),linear-gradient(180deg,#0c0c10 0%,#050507 100%);
+  border:1px solid rgba(255,138,26,.2);border-radius:8px;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.8),0 6px 18px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.04) inset;
+  overflow:hidden;
+}
+.master-vu-halo{
+  position:absolute;inset:-6px;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(28,255,143,.0) 0%,transparent 70%);
+  transition:background .1s linear;z-index:0;
+}
+.master-vu-col{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;z-index:1}
+.master-vu-clip{
+  width:16px;height:8px;border-radius:2px;
+  background:#1a0a0a;border:1px solid rgba(255,46,46,.35);
+  box-shadow:inset 0 0 3px rgba(0,0,0,.8);transition:all .08s linear;
+}
+.master-vu-clip.hot{background:linear-gradient(180deg,#ff4040,#c41010);box-shadow:0 0 14px rgba(255,46,46,.95),inset 0 1px 0 rgba(255,255,255,.4);animation:clipFlash .3s linear}
+@keyframes clipFlash{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+.vu-meter.vu-master{
+  width:18px;height:140px;background:#020305;
+  border:1px solid rgba(255,255,255,.08);border-radius:3px;padding:2px;
+  box-shadow:inset 0 0 6px rgba(0,0,0,.95);
+  display:flex;flex-direction:column-reverse;gap:1px;position:relative;
+}
+.master-vu-lbl{
+  font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;letter-spacing:1.5px;
+  color:var(--orange);text-shadow:0 0 6px rgba(255,138,26,.5);
+  transition:text-shadow .08s linear,color .08s linear,transform .08s linear;
+}
+.master-vu-lbl.hot{color:#fff;text-shadow:0 0 14px var(--play-green),0 0 6px #fff;transform:scale(1.15)}
+.master-vu-scale{
+  display:flex;flex-direction:column;justify-content:space-between;
+  height:140px;padding:2px 0;align-self:flex-end;
+  font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:.5px;
+  color:rgba(255,255,255,.35);text-align:center;min-width:18px;
+}
+.master-vu-scale span{line-height:1;display:block}
+.master-vu-scale span:nth-child(1){color:var(--red)}
+.master-vu-scale span:nth-child(2){color:var(--yellow)}
 body.theme-light .master-meters{background:#fff;border-color:rgba(0,0,0,.08);box-shadow:inset 0 2px 4px rgba(0,0,0,.06)}
 
 /* Deck-header LIBRARY quick-access button */
@@ -3168,36 +3217,6 @@ Click pad to play · Right-click to clear · Drop audio file/track onto pad · C
 <div class="search-status-row" id="searchStatusRow"></div>
 <div class="search-results" id="searchResults"></div>
 
-<div class="library-header" style="border-bottom:none;padding-bottom:0;margin-top:10px;">
-<div class="library-title">▶ YOUTUBE DIRECT PLAYER</div>
-<div class="library-actions">
-<input type="text" class="url-input" id="ytBigInput" placeholder="Paste YouTube URL or video ID..." style="min-width:250px;" />
-<button class="yt-btn" id="ytBigLoad">LOAD TO DECK A</button>
-</div>
-</div>
-<div style="padding:8px 0;color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:10px;">
-⚠ YouTube iframe playback — volume/sync only, no EQ/FX. For full DJ use 30s iTunes previews or upload audio files.
-</div>
-<div class="yt-grid">
-<div class="yt-player-box">
-<div class="yt-player-wrap"><div id="ytPlayerA"></div></div>
-<div class="yt-controls">
-<div class="yt-title" id="ytTitleA">DECK A — No video</div>
-<input type="range" class="yt-vol" id="ytVolA" min="0" max="100" value="70" />
-<button class="tool-btn" data-yt-deck="A" data-yt-action="play">▶</button>
-<button class="tool-btn" data-yt-deck="A" data-yt-action="pause">❚❚</button>
-</div>
-</div>
-<div class="yt-player-box">
-<div class="yt-player-wrap"><div id="ytPlayerB"></div></div>
-<div class="yt-controls">
-<div class="yt-title" id="ytTitleB">DECK B — No video</div>
-<input type="range" class="yt-vol" id="ytVolB" min="0" max="100" value="70" />
-<button class="tool-btn" data-yt-deck="B" data-yt-action="play">▶</button>
-<button class="tool-btn" data-yt-deck="B" data-yt-action="pause">❚❚</button>
-</div>
-</div>
-</div>
 </div>
 </div>
 
@@ -3696,14 +3715,23 @@ function buildDeckHTML(d){
 
 function buildMixerHTML(){
   return `<div class="mixer-header"><div class="mixer-brand"><span class="model">DJM-</span>V10 PRO MAX</div></div>
-  <div style="display:flex;justify-content:center;align-items:flex-end;gap:14px;padding:10px;background:#0a0a0b;border:1px solid rgba(255,255,255,.06);border-radius:6px;box-shadow:inset 0 2px 5px rgba(0,0,0,.6);">
-    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-      <span style="font-family:Orbitron,sans-serif;font-size:9px;color:#ff7a1a;font-weight:800;letter-spacing:1.2px;">L</span>
-      <div class="vu-meter vu-master" id="masterHVuL" style="width:16px;height:120px;background:#020408;border:1px solid rgba(255,255,255,.1);border-radius:2px;padding:2px;box-shadow:inset 0 0 5px rgba(0,0,0,.9);display:flex;flex-direction:column-reverse;gap:1px;"></div>
+  <div class="master-vu-box" id="masterVuBox">
+    <div class="master-vu-halo" id="masterVuHalo"></div>
+    <div class="master-vu-scale">
+      <span>+3</span><span>0</span><span>-6</span><span>-12</span><span>-24</span>
     </div>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-      <span style="font-family:Orbitron,sans-serif;font-size:9px;color:#ff7a1a;font-weight:800;letter-spacing:1.2px;">R</span>
-      <div class="vu-meter vu-master" id="masterHVuR" style="width:16px;height:120px;background:#020408;border:1px solid rgba(255,255,255,.1);border-radius:2px;padding:2px;box-shadow:inset 0 0 5px rgba(0,0,0,.9);display:flex;flex-direction:column-reverse;gap:1px;"></div>
+    <div class="master-vu-col">
+      <div class="master-vu-clip" id="clipLedL" title="Clip indicator"></div>
+      <div class="vu-meter vu-master" id="masterHVuL"></div>
+      <div class="master-vu-lbl" id="lblL">L</div>
+    </div>
+    <div class="master-vu-col">
+      <div class="master-vu-clip" id="clipLedR" title="Clip indicator"></div>
+      <div class="vu-meter vu-master" id="masterHVuR"></div>
+      <div class="master-vu-lbl" id="lblR">R</div>
+    </div>
+    <div class="master-vu-scale" style="order:99">
+      <span>+3</span><span>0</span><span>-6</span><span>-12</span><span>-24</span>
     </div>
   </div>
   <div class="master-section">
@@ -5572,27 +5600,55 @@ function animateVU(){
     leds.forEach((l,i)=>{l.classList.remove('on','green','yellow','red');if(i<level){l.classList.add('on');l.classList.add(l.dataset.color);}});
   });
   if(masterAnalyserL){
-    [['masterHVuL',masterAnalyserL,18],['masterHVuR',masterAnalyserR,18]].forEach(([id,an,segs])=>{
+    let maxLevel=0;
+    [['masterHVuL',masterAnalyserL,18,'clipLedL','lblL'],['masterHVuR',masterAnalyserR,18,'clipLedR','lblR']].forEach(([id,an,segs,clipId,lblId])=>{
       const vu=document.getElementById(id);if(!vu)return;
       const leds=vu.querySelectorAll('.vu-led');
       const arr=new Uint8Array(an.frequencyBinCount);
       an.getByteTimeDomainData(arr);
       let peak=0,rms=0;for(let i=0;i<arr.length;i++){const v=Math.abs(arr[i]-128);if(v>peak)peak=v;rms+=v*v;}
       rms=Math.sqrt(rms/arr.length);
-      const combined=peak*0.6+rms*1.8;
-      const level=Math.min(segs,(combined/128)*(segs*1.4));
+      const combined=peak*0.55+rms*2.0;
+      let level=Math.min(segs,(combined/128)*(segs*1.55));
       if(!vu._hold)vu._hold=0;
-      if(level>vu._hold)vu._hold=level;else vu._hold=Math.max(level,vu._hold-0.8);
+      if(!vu._peak)vu._peak=0;
+      if(level>vu._hold)vu._hold=level;else vu._hold=Math.max(level,vu._hold-0.7);
+      if(vu._hold>vu._peak){vu._peak=vu._hold;vu._peakTime=performance.now();}
+      else if(performance.now()-(vu._peakTime||0)>500)vu._peak=Math.max(vu._hold,vu._peak-0.12);
+      const peakIdx=Math.max(0,Math.floor(vu._peak)-1);
+      maxLevel=Math.max(maxLevel,vu._hold);
       leds.forEach((l,i)=>{
         const on=i<vu._hold;const col=l.dataset.color;
+        const isPeakMark=(i===peakIdx&&vu._peak>vu._hold+0.2);
         if(on){
-          l.style.background=col==='red'?'linear-gradient(90deg,#c41a1a,#ff3c3c)':col==='yellow'?'linear-gradient(90deg,#c8a400,#ffd400)':'linear-gradient(90deg,#0fb05c,#1cff8f)';
-          l.style.boxShadow=col==='red'?'0 0 5px rgba(255,46,46,.9)':col==='yellow'?'0 0 5px rgba(255,212,0,.85)':'0 0 5px rgba(28,255,143,.85)';
+          l.style.background=col==='red'?'linear-gradient(90deg,#ff4040,#ff7070,#ff2020)':col==='yellow'?'linear-gradient(90deg,#ffd400,#fff080,#ffc000)':'linear-gradient(90deg,#1cff8f,#6bffb9,#0aa05a)';
+          l.style.boxShadow=col==='red'?'0 0 7px rgba(255,60,60,1),inset 0 1px 0 rgba(255,255,255,.45)':col==='yellow'?'0 0 6px rgba(255,212,0,.95),inset 0 1px 0 rgba(255,255,255,.4)':'0 0 6px rgba(28,255,143,.95),inset 0 1px 0 rgba(255,255,255,.35)';
+        }else if(isPeakMark){
+          l.style.background=col==='red'?'#ff6060':col==='yellow'?'#ffe040':'#3cff9f';
+          l.style.boxShadow='0 0 10px '+(col==='red'?'#ff2020':col==='yellow'?'#ffd400':'#1cff8f');
         }else{
-          l.style.background='#0a1a15';l.style.boxShadow='none';
+          l.style.background='#060808';l.style.boxShadow='none';
         }
       });
+      // Clip LED — latch red for 180ms when signal peaks near top
+      const clip=document.getElementById(clipId);
+      if(clip){
+        const nowClip=vu._hold>=segs-0.3;
+        if(nowClip)vu._clipUntil=performance.now()+220;
+        clip.classList.toggle('hot',(vu._clipUntil||0)>performance.now());
+      }
+      // L/R label glow with level
+      const lbl=document.getElementById(lblId);
+      if(lbl)lbl.classList.toggle('hot',vu._hold>segs*0.6);
     });
+    // Outer halo glow on the whole master VU box — pulses with aggregate level
+    const halo=document.getElementById('masterVuHalo');
+    if(halo){
+      const n=Math.min(1,maxLevel/18);
+      const hot=n>0.75;
+      const color=hot?`rgba(255,60,60,${.25+n*.55})`:n>0.5?`rgba(255,212,0,${.2+n*.45})`:`rgba(28,255,143,${.18+n*.4})`;
+      halo.style.background=`radial-gradient(ellipse at center,${color} 0%,transparent 70%)`;
+    }
   }
 }
 
