@@ -133,8 +133,9 @@ body{padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:
 .jog-platter.spinning{animation:platterSpin 2s linear infinite}
 @keyframes platterSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 .transport{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
-.big-btn{padding:11px 10px;border:none;border-radius:6px;font-family:'Orbitron',sans-serif;font-weight:800;font-size:11px;letter-spacing:3px;cursor:pointer;background:linear-gradient(180deg,#3a3a3e 0%,#1a1a1c 100%);color:var(--text);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 -3px 4px rgba(0,0,0,.6);display:flex;flex-direction:column;align-items:center;gap:3px}
-.big-btn .icon{font-size:14px}
+.big-btn{padding:11px 10px;border:none;border-radius:6px;font-family:'Orbitron',sans-serif;font-weight:800;font-size:11px;letter-spacing:3px;cursor:pointer;background:linear-gradient(180deg,#3a3a3e 0%,#1a1a1c 100%);color:var(--text);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 -3px 4px rgba(0,0,0,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3px}
+.big-btn .icon{font-size:14px;line-height:1}
+.big-btn .lbl{display:block;line-height:1}
 .big-btn.cue{color:var(--cue-orange);border-top:2px solid rgba(255,90,0,.4)}
 .big-btn.cue.active{background:var(--cue-orange);color:#000;box-shadow:0 0 20px rgba(255,90,0,.8)}
 .big-btn.play{color:var(--play-green);border-top:2px solid rgba(0,255,122,.4)}
@@ -3083,7 +3084,7 @@ function buildDeckHTML(d){
   <div class="hot-cues" data-deck="${d}">${[1,2,3,4,5,6,7,8].map(n=>`<button class="cue-btn" data-color="${n}" data-cue="${n}">${n}</button>`).join('')}</div>
   <div class="jog-wrapper"><div class="jog-wheel" id="jog-${d}"><div class="jog-outer"></div><div class="jog-ring"><div class="jog-ring-light"></div></div><div class="jog-markers"></div><div class="jog-platter" id="platter-${d}"><div class="jog-platter-disc"></div><div class="jog-indicator"></div><div class="jog-center-screen"><div class="bpm-display" id="centerBpm-${d}">---.-</div><div class="bpm-sub">BPM</div><div class="deck-badge">DECK ${d}</div></div></div></div></div>
   <div class="transport">
-    <button class="big-btn cue" data-deck="${d}" data-action="cue"><span class="icon">◄◄</span>CUE</button>
+    <button class="big-btn cue" data-deck="${d}" data-action="cue"><span class="icon">◄◄</span><span class="lbl">CUE</span></button>
     <button class="big-btn play" data-deck="${d}" data-action="play"><span class="icon" id="playIcon-${d}">▶</span><span id="playLabel-${d}">PLAY</span></button>
   </div>
   <div class="tempo-section"><div class="tempo-header"><span>TEMPO</span><select class="tempo-range" data-range="${d}"><option value="6">±6%</option><option value="8" selected>±8%</option><option value="10">±10%</option><option value="16">±16%</option><option value="50">±50%</option></select><span class="tempo-value" id="tempoVal-${d}">+0.00%</span></div>
