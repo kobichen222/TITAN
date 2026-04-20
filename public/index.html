@@ -2390,6 +2390,39 @@ body.theme-light .x-pad{background:linear-gradient(180deg,#f4f4f8 0%,#dcdce2 100
 body.theme-light .x-pad-labels .top,body.theme-light .x-pad-labels .bottom,
 body.theme-light .x-pad-labels .left,body.theme-light .x-pad-labels .right{color:#4a4a52}
 body.theme-light .scene-fx-panel .knob-wrap .knob-label{color:#1a1a1c}
+
+/* ============================================================
+   AUDIO EDITOR styles
+   ============================================================ */
+.editor-panel{display:flex;flex-direction:column;gap:12px}
+.editor-waveform-wrap{
+  position:relative;background:linear-gradient(180deg,#06121a 0%,#020608 100%);
+  border:1px solid rgba(46,224,255,.25);border-radius:8px;padding:4px;
+  box-shadow:inset 0 0 16px rgba(0,0,0,.6);height:170px;
+}
+.editor-waveform{width:100%;height:160px;display:block;cursor:crosshair}
+.editor-marker{position:absolute;top:4px;bottom:4px;width:2px;pointer-events:auto;cursor:ew-resize}
+.editor-marker-in{background:var(--play-green);box-shadow:0 0 6px var(--play-green);left:0}
+.editor-marker-in::before{content:'IN';position:absolute;top:-2px;left:4px;font-family:'Orbitron',sans-serif;font-size:9px;color:var(--play-green);letter-spacing:1.5px}
+.editor-marker-out{background:var(--red);box-shadow:0 0 6px var(--red);left:calc(100% - 2px)}
+.editor-marker-out::before{content:'OUT';position:absolute;top:-2px;right:4px;font-family:'Orbitron',sans-serif;font-size:9px;color:var(--red);letter-spacing:1.5px}
+.editor-playhead{position:absolute;top:4px;bottom:4px;width:2px;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.8);left:0;display:none;pointer-events:none}
+.editor-playhead.playing{display:block}
+.editor-timeline{display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#0a0a0b;border-radius:6px;border:1px solid rgba(255,255,255,.05)}
+.editor-time-label{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--orange);letter-spacing:2px}
+.editor-transport{display:flex;gap:6px}
+.editor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.editor-block{padding:12px;background:#0a0a0b;border-radius:8px;border:1px solid rgba(255,255,255,.06)}
+.editor-block-title{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2.5px;color:var(--screen-glow);font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.05)}
+.editor-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.editor-row label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1.5px;min-width:110px}
+.editor-row input[type=range]{flex:1;accent-color:var(--orange)}
+.editor-row .tool-btn{flex:1}
+.editor-val{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--orange-glow);letter-spacing:1.5px;min-width:60px;text-align:right}
+
+body.theme-light .editor-block{background:#fff;border-color:rgba(0,0,0,.08)}
+body.theme-light .editor-block-title{color:#1a1a1c}
+body.theme-light .editor-timeline{background:#f4f4f8;border-color:rgba(0,0,0,.08)}
 body.work-mode .library{display:block !important}
 body.work-mode .tab-content#tab-deck{display:flex !important;flex-direction:column;align-items:center;gap:12px}
 body.work-mode .rgb-ambient{display:block;height:3px;opacity:.85;max-width:1700px;margin:0 auto}
@@ -2687,6 +2720,7 @@ body.lang-he input[type=text],body.lang-he input[type=password]{direction:ltr;te
 <button class="tab-btn" data-tab="analytics" data-t="tab_analytics">📊 ANALYTICS</button>
 <button class="tab-btn" data-tab="midi" data-t="tab_midi">🎹 MIDI</button>
 <button class="tab-btn" data-tab="studio" data-t="tab_studio">🎚 STUDIO</button>
+<button class="tab-btn" data-tab="editor" data-t="tab_editor">✂ EDITOR</button>
 <button class="tab-btn admin-only" data-tab="admin" id="adminTabBtn" style="display:none">🛡 ADMIN</button>
 <button class="tab-btn" data-tab="settings" data-t="tab_settings">⚙ SETTINGS</button>
 <button class="tab-btn" data-tab="help" data-t="tab_help">? HELP</button>
@@ -3096,6 +3130,90 @@ No MIDI devices. Press CONNECT.
 <div class="studio-spectrum-wrap">
 <div class="studio-sub-label">REAL-TIME SPECTRUM</div>
 <canvas class="studio-spectrum" id="studioSpectrum" width="1200" height="80"></canvas>
+</div>
+</div>
+</div>
+
+<div class="tab-content" id="tab-editor">
+<div class="settings-panel editor-panel" style="max-width:1500px;">
+<div class="library-header" style="padding-bottom:8px;">
+<div class="library-title">✂ AUDIO EDITOR — TRIM · FADE · PITCH · STRETCH · EXPORT</div>
+<div class="library-actions">
+  <select class="fx-selector" id="editorTrackSelect" style="min-width:200px"></select>
+  <button class="tool-btn" id="editorLoadBtn">LOAD</button>
+  <span id="editorStatus" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1.5px;"></span>
+</div>
+</div>
+<div class="editor-waveform-wrap">
+<canvas class="editor-waveform" id="editorWave" width="1400" height="160"></canvas>
+<div class="editor-marker editor-marker-in" id="editorMarkerIn" title="In point"></div>
+<div class="editor-marker editor-marker-out" id="editorMarkerOut" title="Out point"></div>
+<div class="editor-playhead" id="editorPlayhead"></div>
+</div>
+<div class="editor-timeline">
+  <span class="editor-time-label" id="editorTime">00:00.0 / 00:00.0</span>
+  <div class="editor-transport">
+    <button class="tool-btn" id="editorPlayBtn">▶ PLAY</button>
+    <button class="tool-btn" id="editorStopBtn">⏹ STOP</button>
+    <button class="tool-btn" id="editorRestartBtn">⏮ RESTART</button>
+  </div>
+</div>
+<div class="editor-grid">
+  <div class="editor-block">
+    <div class="editor-block-title">✂ TRIM / REGION</div>
+    <div class="editor-row"><label>IN POINT</label><input type="range" id="editorIn" min="0" max="1000" value="0"/><span class="editor-val" id="editorInVal">00:00.0</span></div>
+    <div class="editor-row"><label>OUT POINT</label><input type="range" id="editorOut" min="0" max="1000" value="1000"/><span class="editor-val" id="editorOutVal">—</span></div>
+    <div class="editor-row"><button class="tool-btn" id="editorSetInCur">SET IN AT PLAYHEAD</button><button class="tool-btn" id="editorSetOutCur">SET OUT AT PLAYHEAD</button></div>
+    <div class="editor-row"><button class="tool-btn" id="editorReset">RESET REGION</button></div>
+  </div>
+  <div class="editor-block">
+    <div class="editor-block-title">🌊 FADE</div>
+    <div class="editor-row"><label>FADE IN (s)</label><input type="range" id="editorFadeIn" min="0" max="20" step="0.1" value="0"/><span class="editor-val" id="editorFadeInVal">0.0s</span></div>
+    <div class="editor-row"><label>FADE OUT (s)</label><input type="range" id="editorFadeOut" min="0" max="20" step="0.1" value="0"/><span class="editor-val" id="editorFadeOutVal">0.0s</span></div>
+    <div class="editor-row"><label>GAIN (dB)</label><input type="range" id="editorGain" min="-24" max="12" step="0.5" value="0"/><span class="editor-val" id="editorGainVal">0dB</span></div>
+    <div class="editor-row">
+      <button class="tool-btn" id="editorNormalize">NORMALIZE</button>
+      <button class="tool-btn" id="editorReverse">REVERSE</button>
+    </div>
+  </div>
+  <div class="editor-block">
+    <div class="editor-block-title">🎹 PITCH / STRETCH</div>
+    <div class="editor-row"><label>PITCH (semitones)</label><input type="range" id="editorPitch" min="-12" max="12" step="1" value="0"/><span class="editor-val" id="editorPitchVal">0 st</span></div>
+    <div class="editor-row"><label>STRETCH (%)</label><input type="range" id="editorStretch" min="50" max="200" step="1" value="100"/><span class="editor-val" id="editorStretchVal">100%</span></div>
+    <div class="editor-row">
+      <button class="tool-btn" id="editorHalfSpeed">½× SPEED</button>
+      <button class="tool-btn" id="editorDoubleSpeed">2× SPEED</button>
+    </div>
+    <div class="editor-row">
+      <button class="tool-btn" id="editorOctaveDown">-12 ST</button>
+      <button class="tool-btn" id="editorOctaveUp">+12 ST</button>
+    </div>
+  </div>
+  <div class="editor-block">
+    <div class="editor-block-title">🎛 FILTERS</div>
+    <div class="editor-row"><label>LOW CUT (Hz)</label><input type="range" id="editorLowCut" min="20" max="500" step="5" value="20"/><span class="editor-val" id="editorLowCutVal">20Hz</span></div>
+    <div class="editor-row"><label>HIGH CUT (Hz)</label><input type="range" id="editorHighCut" min="2000" max="22000" step="100" value="22000"/><span class="editor-val" id="editorHighCutVal">22kHz</span></div>
+    <div class="editor-row"><label>BASS (dB)</label><input type="range" id="editorBass" min="-12" max="12" step="0.5" value="0"/><span class="editor-val" id="editorBassVal">0dB</span></div>
+    <div class="editor-row"><label>TREBLE (dB)</label><input type="range" id="editorTreble" min="-12" max="12" step="0.5" value="0"/><span class="editor-val" id="editorTrebleVal">0dB</span></div>
+  </div>
+  <div class="editor-block">
+    <div class="editor-block-title">💾 EXPORT</div>
+    <div class="editor-row" style="flex-direction:column;align-items:stretch;gap:6px">
+      <input type="text" id="editorExportName" class="url-input" placeholder="Edited name" style="padding:8px"/>
+    </div>
+    <div class="editor-row">
+      <button class="tool-btn" id="editorSaveLib">+ SAVE TO LIBRARY</button>
+    </div>
+    <div class="editor-row">
+      <button class="tool-btn" id="editorExportWav" style="border-color:var(--orange);color:var(--orange)">⬇ EXPORT WAV</button>
+    </div>
+    <div class="editor-row">
+      <button class="tool-btn" id="editorExportMp3">⬇ EXPORT WebM (OPUS)</button>
+    </div>
+    <div class="editor-row" style="margin-top:6px;">
+      <span id="editorRenderStatus" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1.5px"></span>
+    </div>
+  </div>
 </div>
 </div>
 </div>
@@ -6206,6 +6324,287 @@ document.addEventListener('DOMContentLoaded',()=>{
     const adminTab=document.getElementById('adminTabBtn');
     if(adminTab)adminTab.addEventListener('click',()=>setTimeout(loadAdminUsers,50));
   },600);
+});
+
+/* ========================================================
+   AUDIO EDITOR — trim, fade, pitch, stretch, filters, export
+   Renders a processed region via OfflineAudioContext and
+   writes a WAV file for download or adds it back to the library.
+   ======================================================== */
+const editorState={
+  buffer:null,trackId:null,title:'',in:0,out:1,fadeIn:0,fadeOut:0,
+  gain:0,pitch:0,stretch:100,lowCut:20,highCut:22000,bass:0,treble:0,
+  source:null,startAt:0,startOffset:0,playing:false
+};
+function drawEditorWave(){
+  const c=document.getElementById('editorWave');if(!c||!editorState.buffer)return;
+  const ctx=c.getContext('2d');const w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);
+  const data=editorState.buffer.getChannelData(0);
+  const bars=Math.floor(w/2),spb=Math.floor(data.length/bars);
+  const cy=h/2;
+  ctx.fillStyle='rgba(46,224,255,0.05)';ctx.fillRect(0,cy-0.5,w,1);
+  const regionL=editorState.in*w,regionR=editorState.out*w;
+  ctx.fillStyle='rgba(255,138,26,0.08)';ctx.fillRect(regionL,0,regionR-regionL,h);
+  for(let i=0;i<bars;i++){
+    let peak=0;for(let j=0;j<spb;j++){const v=Math.abs(data[i*spb+j]||0);if(v>peak)peak=v;}
+    const bh=Math.min(cy*0.92,peak*cy*2);
+    const x=i*2,inRegion=(x>=regionL&&x<=regionR);
+    const grad=ctx.createLinearGradient(0,cy-bh,0,cy+bh);
+    if(inRegion){grad.addColorStop(0,'#ffb366');grad.addColorStop(.5,'#ff8a1a');grad.addColorStop(1,'#c85a00');}
+    else{grad.addColorStop(0,'#3a5a70');grad.addColorStop(1,'#1a3a4a');}
+    ctx.fillStyle=grad;ctx.fillRect(x,cy-bh,1.5,bh*2);
+  }
+  document.getElementById('editorMarkerIn').style.left=(regionL/w*100)+'%';
+  document.getElementById('editorMarkerOut').style.left=(regionR/w*100)+'%';
+}
+function editorLoadTrack(track){
+  if(!track||!track.buffer){toast&&toast('Track not decoded yet','error');return;}
+  editorState.buffer=track.buffer;editorState.trackId=track.id;
+  editorState.title=track.title;
+  editorState.in=0;editorState.out=1;
+  document.getElementById('editorIn').value=0;
+  document.getElementById('editorOut').value=1000;
+  document.getElementById('editorExportName').value=track.title+' (edit)';
+  document.getElementById('editorStatus').textContent=`${track.title} — ${track.buffer.duration.toFixed(1)}s, ${track.buffer.numberOfChannels}ch, ${track.buffer.sampleRate}Hz`;
+  drawEditorWave();
+  refreshEditorLabels();
+}
+function fmtEdTime(sec){if(!isFinite(sec))return '00:00.0';const m=Math.floor(sec/60),s=Math.floor(sec%60),ds=Math.floor((sec-Math.floor(sec))*10);return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${ds}`;}
+function refreshEditorLabels(){
+  const b=editorState.buffer;if(!b)return;
+  const dur=b.duration;
+  document.getElementById('editorInVal').textContent=fmtEdTime(editorState.in*dur);
+  document.getElementById('editorOutVal').textContent=fmtEdTime(editorState.out*dur);
+  document.getElementById('editorFadeInVal').textContent=editorState.fadeIn.toFixed(1)+'s';
+  document.getElementById('editorFadeOutVal').textContent=editorState.fadeOut.toFixed(1)+'s';
+  document.getElementById('editorGainVal').textContent=(editorState.gain>=0?'+':'')+editorState.gain.toFixed(1)+'dB';
+  document.getElementById('editorPitchVal').textContent=(editorState.pitch>=0?'+':'')+editorState.pitch+' st';
+  document.getElementById('editorStretchVal').textContent=editorState.stretch+'%';
+  document.getElementById('editorLowCutVal').textContent=editorState.lowCut+'Hz';
+  document.getElementById('editorHighCutVal').textContent=editorState.highCut>=1000?(editorState.highCut/1000).toFixed(1)+'kHz':editorState.highCut+'Hz';
+  document.getElementById('editorBassVal').textContent=(editorState.bass>=0?'+':'')+editorState.bass.toFixed(1)+'dB';
+  document.getElementById('editorTrebleVal').textContent=(editorState.treble>=0?'+':'')+editorState.treble.toFixed(1)+'dB';
+  document.getElementById('editorTime').textContent=`00:00.0 / ${fmtEdTime(dur)}`;
+}
+async function renderEditorBuffer(){
+  const b=editorState.buffer;if(!b)throw new Error('No buffer');
+  const pitchRatio=Math.pow(2,editorState.pitch/12);
+  const stretchRatio=editorState.stretch/100;
+  const rate=pitchRatio/stretchRatio;
+  const inS=editorState.in*b.duration,outS=editorState.out*b.duration;
+  const regionDur=Math.max(.05,outS-inS);
+  const renderDur=regionDur/rate;
+  const sr=b.sampleRate;
+  const off=new OfflineAudioContext(b.numberOfChannels,Math.ceil(renderDur*sr),sr);
+  const src=off.createBufferSource();src.buffer=b;src.playbackRate.value=rate;
+  const hp=off.createBiquadFilter();hp.type='highpass';hp.frequency.value=editorState.lowCut;
+  const lp=off.createBiquadFilter();lp.type='lowpass';lp.frequency.value=editorState.highCut;
+  const bass=off.createBiquadFilter();bass.type='lowshelf';bass.frequency.value=120;bass.gain.value=editorState.bass;
+  const treble=off.createBiquadFilter();treble.type='highshelf';treble.frequency.value=8000;treble.gain.value=editorState.treble;
+  const g=off.createGain();g.gain.value=Math.pow(10,editorState.gain/20);
+  const fade=off.createGain();
+  const t0=0;
+  fade.gain.setValueAtTime(editorState.fadeIn>0?0.0001:1,t0);
+  if(editorState.fadeIn>0)fade.gain.exponentialRampToValueAtTime(1,t0+editorState.fadeIn/rate);
+  const fadeOutStart=Math.max(0,renderDur-editorState.fadeOut/rate);
+  if(editorState.fadeOut>0){fade.gain.setValueAtTime(1,t0+fadeOutStart);fade.gain.exponentialRampToValueAtTime(0.0001,t0+renderDur);}
+  src.connect(hp);hp.connect(lp);lp.connect(bass);bass.connect(treble);treble.connect(g);g.connect(fade);fade.connect(off.destination);
+  src.start(0,inS,regionDur);
+  const rendered=await off.startRendering();
+  if(editorState._reverse){
+    for(let c=0;c<rendered.numberOfChannels;c++){const d=rendered.getChannelData(c);Array.prototype.reverse.call(d);}
+  }
+  if(editorState._normalize){
+    let peak=0;
+    for(let c=0;c<rendered.numberOfChannels;c++){const d=rendered.getChannelData(c);for(let i=0;i<d.length;i++){const v=Math.abs(d[i]);if(v>peak)peak=v;}}
+    if(peak>0&&peak<1){const gain=0.99/peak;for(let c=0;c<rendered.numberOfChannels;c++){const d=rendered.getChannelData(c);for(let i=0;i<d.length;i++)d[i]*=gain;}}
+  }
+  return rendered;
+}
+function bufferToWav(buf){
+  const numCh=buf.numberOfChannels,sr=buf.sampleRate,len=buf.length;
+  const bytes=44+len*numCh*2;const ab=new ArrayBuffer(bytes);const view=new DataView(ab);
+  const writeStr=(o,s)=>{for(let i=0;i<s.length;i++)view.setUint8(o+i,s.charCodeAt(i));};
+  writeStr(0,'RIFF');view.setUint32(4,bytes-8,true);writeStr(8,'WAVE');
+  writeStr(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);
+  view.setUint16(22,numCh,true);view.setUint32(24,sr,true);view.setUint32(28,sr*numCh*2,true);
+  view.setUint16(32,numCh*2,true);view.setUint16(34,16,true);
+  writeStr(36,'data');view.setUint32(40,len*numCh*2,true);
+  let offset=44;
+  for(let i=0;i<len;i++){
+    for(let c=0;c<numCh;c++){
+      let s=buf.getChannelData(c)[i];s=Math.max(-1,Math.min(1,s));
+      view.setInt16(offset,s<0?s*0x8000:s*0x7FFF,true);offset+=2;
+    }
+  }
+  return new Blob([ab],{type:'audio/wav'});
+}
+async function editorExportWav(){
+  const status=document.getElementById('editorRenderStatus');
+  status.textContent='Rendering…';status.style.color='var(--screen-glow)';
+  try{
+    const buf=await renderEditorBuffer();
+    const blob=bufferToWav(buf);
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const name=(document.getElementById('editorExportName').value||editorState.title||'edit').replace(/[^\w\- ]/g,'');
+    a.href=url;a.download=name+'.wav';document.body.appendChild(a);a.click();
+    setTimeout(()=>{a.remove();URL.revokeObjectURL(url);},200);
+    status.textContent=`Exported ${(blob.size/1024/1024).toFixed(1)} MB WAV`;status.style.color='var(--play-green)';
+  }catch(e){status.textContent='Error: '+e.message;status.style.color='var(--red)';}
+}
+async function editorSaveToLibrary(){
+  const status=document.getElementById('editorRenderStatus');
+  status.textContent='Rendering…';status.style.color='var(--screen-glow)';
+  try{
+    const buf=await renderEditorBuffer();
+    const name=(document.getElementById('editorExportName').value||editorState.title||'edit');
+    const bpm=Math.round((editorState.buffer&&library.find(t=>t.id===editorState.trackId)?.bpm||120)/(editorState.stretch/100));
+    const track={id:'e_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),title:name,artist:'Editor',bpm,key:'--',duration:buf.duration,buffer:buf,source:'file',rating:0,addedAt:Date.now()};
+    library.push(track);
+    const wav=bufferToWav(buf);const ab=await wav.arrayBuffer();
+    try{await idbPutAudio(track.id,ab);}catch(e){}
+    renderLibrary();saveToDB();
+    status.textContent=`Saved "${name}" to library`;status.style.color='var(--play-green)';
+    toast&&toast('Saved to library','success');
+  }catch(e){status.textContent='Error: '+e.message;status.style.color='var(--red)';}
+}
+async function editorExportWebm(){
+  const status=document.getElementById('editorRenderStatus');
+  status.textContent='Rendering…';status.style.color='var(--screen-glow)';
+  try{
+    const buf=await renderEditorBuffer();
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const dest=ctx.createMediaStreamDestination();
+    const src=ctx.createBufferSource();src.buffer=buf;src.connect(dest);
+    const chunks=[];
+    const mime=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':'audio/webm';
+    const rec=new MediaRecorder(dest.stream,{mimeType:mime,audioBitsPerSecond:256000});
+    rec.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
+    rec.onstop=()=>{
+      const blob=new Blob(chunks,{type:mime});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      const name=(document.getElementById('editorExportName').value||editorState.title||'edit').replace(/[^\w\- ]/g,'');
+      a.href=url;a.download=name+'.webm';document.body.appendChild(a);a.click();
+      setTimeout(()=>{a.remove();URL.revokeObjectURL(url);ctx.close();},200);
+      status.textContent=`Exported ${(blob.size/1024).toFixed(0)} KB WebM`;status.style.color='var(--play-green)';
+    };
+    rec.start();src.start();
+    src.onended=()=>{setTimeout(()=>rec.stop(),50);};
+  }catch(e){status.textContent='Error: '+e.message;status.style.color='var(--red)';}
+}
+function editorPlay(){
+  if(editorState.playing||!editorState.buffer)return;
+  ensureAudio();if(!audioCtx)return;
+  const src=audioCtx.createBufferSource();src.buffer=editorState.buffer;
+  const rate=Math.pow(2,editorState.pitch/12)/(editorState.stretch/100);
+  src.playbackRate.value=rate;
+  const g=audioCtx.createGain();g.gain.value=Math.pow(10,editorState.gain/20);
+  src.connect(g);g.connect(audioCtx.destination);
+  const dur=editorState.buffer.duration;
+  const inS=editorState.in*dur,regionDur=(editorState.out-editorState.in)*dur;
+  src.start(0,inS,regionDur);
+  editorState.source=src;editorState.startAt=audioCtx.currentTime;editorState.startOffset=inS;editorState.playing=true;
+  document.getElementById('editorPlayBtn').textContent='❚❚ PAUSE';
+  const ph=document.getElementById('editorPlayhead');ph.classList.add('playing');
+  src.onended=()=>{if(editorState.source===src){editorState.playing=false;document.getElementById('editorPlayBtn').textContent='▶ PLAY';ph.classList.remove('playing');}};
+  requestAnimationFrame(function upd(){
+    if(!editorState.playing)return;
+    const elapsed=(audioCtx.currentTime-editorState.startAt)*rate;
+    const cur=editorState.startOffset+elapsed;
+    const pct=cur/dur;
+    ph.style.left=(pct*100)+'%';
+    document.getElementById('editorTime').textContent=`${fmtEdTime(cur)} / ${fmtEdTime(dur)}`;
+    requestAnimationFrame(upd);
+  });
+}
+function editorStop(){
+  if(editorState.source){try{editorState.source.stop();editorState.source.disconnect();}catch(e){}editorState.source=null;}
+  editorState.playing=false;
+  document.getElementById('editorPlayBtn').textContent='▶ PLAY';
+  document.getElementById('editorPlayhead')?.classList.remove('playing');
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    const sel=document.getElementById('editorTrackSelect');
+    const refreshSel=()=>{
+      if(!sel)return;
+      sel.innerHTML=library.filter(t=>t.source!=='yt'&&t.buffer).map(t=>`<option value="${t.id}">${escapeHtml(t.title)}</option>`).join('');
+    };
+    document.querySelector('.tab-btn[data-tab="editor"]')?.addEventListener('click',()=>setTimeout(refreshSel,30));
+    document.getElementById('editorLoadBtn')?.addEventListener('click',()=>{
+      const id=sel.value;const t=library.find(x=>x.id===id);if(t)editorLoadTrack(t);
+    });
+    const slider=(id,key,fmt)=>{
+      const el=document.getElementById(id);if(!el)return;
+      el.addEventListener('input',()=>{
+        let v=parseFloat(el.value);
+        if(id==='editorIn'||id==='editorOut')v=v/1000;
+        editorState[key]=v;refreshEditorLabels();drawEditorWave();
+      });
+    };
+    slider('editorIn','in');slider('editorOut','out');
+    slider('editorFadeIn','fadeIn');slider('editorFadeOut','fadeOut');
+    slider('editorGain','gain');slider('editorPitch','pitch');slider('editorStretch','stretch');
+    slider('editorLowCut','lowCut');slider('editorHighCut','highCut');
+    slider('editorBass','bass');slider('editorTreble','treble');
+    document.getElementById('editorReset')?.addEventListener('click',()=>{
+      editorState.in=0;editorState.out=1;editorState.fadeIn=0;editorState.fadeOut=0;editorState.gain=0;
+      editorState.pitch=0;editorState.stretch=100;editorState.lowCut=20;editorState.highCut=22000;editorState.bass=0;editorState.treble=0;
+      editorState._reverse=false;editorState._normalize=false;
+      document.getElementById('editorIn').value=0;document.getElementById('editorOut').value=1000;
+      document.getElementById('editorFadeIn').value=0;document.getElementById('editorFadeOut').value=0;
+      document.getElementById('editorGain').value=0;document.getElementById('editorPitch').value=0;
+      document.getElementById('editorStretch').value=100;document.getElementById('editorLowCut').value=20;
+      document.getElementById('editorHighCut').value=22000;document.getElementById('editorBass').value=0;document.getElementById('editorTreble').value=0;
+      refreshEditorLabels();drawEditorWave();
+    });
+    document.getElementById('editorSetInCur')?.addEventListener('click',()=>{
+      if(!editorState.playing||!editorState.buffer)return;
+      const elapsed=(audioCtx.currentTime-editorState.startAt)*(Math.pow(2,editorState.pitch/12)/(editorState.stretch/100));
+      const cur=editorState.startOffset+elapsed;
+      editorState.in=Math.max(0,Math.min(editorState.out-.01,cur/editorState.buffer.duration));
+      document.getElementById('editorIn').value=editorState.in*1000;refreshEditorLabels();drawEditorWave();
+    });
+    document.getElementById('editorSetOutCur')?.addEventListener('click',()=>{
+      if(!editorState.playing||!editorState.buffer)return;
+      const elapsed=(audioCtx.currentTime-editorState.startAt)*(Math.pow(2,editorState.pitch/12)/(editorState.stretch/100));
+      const cur=editorState.startOffset+elapsed;
+      editorState.out=Math.max(editorState.in+.01,Math.min(1,cur/editorState.buffer.duration));
+      document.getElementById('editorOut').value=editorState.out*1000;refreshEditorLabels();drawEditorWave();
+    });
+    document.getElementById('editorHalfSpeed')?.addEventListener('click',()=>{document.getElementById('editorStretch').value=50;editorState.stretch=50;refreshEditorLabels();});
+    document.getElementById('editorDoubleSpeed')?.addEventListener('click',()=>{document.getElementById('editorStretch').value=200;editorState.stretch=200;refreshEditorLabels();});
+    document.getElementById('editorOctaveDown')?.addEventListener('click',()=>{document.getElementById('editorPitch').value=-12;editorState.pitch=-12;refreshEditorLabels();});
+    document.getElementById('editorOctaveUp')?.addEventListener('click',()=>{document.getElementById('editorPitch').value=12;editorState.pitch=12;refreshEditorLabels();});
+    document.getElementById('editorNormalize')?.addEventListener('click',()=>{editorState._normalize=!editorState._normalize;toast(`Normalize: ${editorState._normalize?'ON':'OFF'}`,'success');});
+    document.getElementById('editorReverse')?.addEventListener('click',()=>{editorState._reverse=!editorState._reverse;toast(`Reverse: ${editorState._reverse?'ON':'OFF'}`,'success');});
+    document.getElementById('editorPlayBtn')?.addEventListener('click',()=>{if(editorState.playing)editorStop();else editorPlay();});
+    document.getElementById('editorStopBtn')?.addEventListener('click',editorStop);
+    document.getElementById('editorRestartBtn')?.addEventListener('click',()=>{editorStop();setTimeout(editorPlay,50);});
+    document.getElementById('editorExportWav')?.addEventListener('click',editorExportWav);
+    document.getElementById('editorExportMp3')?.addEventListener('click',editorExportWebm);
+    document.getElementById('editorSaveLib')?.addEventListener('click',editorSaveToLibrary);
+    // click on waveform seeks marker (left-click sets IN, right-click sets OUT)
+    const cvs=document.getElementById('editorWave');
+    if(cvs){
+      cvs.addEventListener('click',e=>{
+        if(!editorState.buffer)return;
+        const r=cvs.getBoundingClientRect();const pct=(e.clientX-r.left)/r.width;
+        editorState.in=Math.max(0,Math.min(editorState.out-.01,pct));
+        document.getElementById('editorIn').value=editorState.in*1000;refreshEditorLabels();drawEditorWave();
+      });
+      cvs.addEventListener('contextmenu',e=>{
+        e.preventDefault();if(!editorState.buffer)return;
+        const r=cvs.getBoundingClientRect();const pct=(e.clientX-r.left)/r.width;
+        editorState.out=Math.max(editorState.in+.01,Math.min(1,pct));
+        document.getElementById('editorOut').value=editorState.out*1000;refreshEditorLabels();drawEditorWave();
+      });
+    }
+  },700);
 });
 
 /* ========================================================
