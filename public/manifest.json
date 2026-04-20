@@ -1,0 +1,23 @@
+{
+  "name": "DJ MAX Ai — Ultimate AI DJ Console",
+  "short_name": "DJ MAX Ai",
+  "description": "Professional AI-powered browser DJ console with 4 decks, Pro Mix engine, Studio mastering, stems, and offline support",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#0a0a0a",
+  "background_color": "#0a0a0a",
+  "lang": "en",
+  "dir": "auto",
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "categories": ["music", "entertainment", "productivity"],
+  "shortcuts": [
+    { "name": "Work Mode", "short_name": "Stage", "description": "Open stage performance view", "url": "./?wm=1" },
+    { "name": "Studio", "short_name": "Studio", "description": "Open mastering studio", "url": "./?tab=studio" }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}
