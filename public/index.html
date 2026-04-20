@@ -5421,12 +5421,14 @@ function setupBeatFxUI(){
 
 /* VU METERS */
 function setupVU(id,segs){
-  const vu=document.getElementById(id);vu.innerHTML='';
+  const vu=document.getElementById(id);if(!vu)return;vu.innerHTML='';
+  const isMaster=vu.classList.contains('vu-master');
   for(let i=0;i<segs;i++){
     const l=document.createElement('div');l.className='vu-led';
     if(i>=segs-3)l.dataset.color='red';
     else if(i>=segs-7)l.dataset.color='yellow';
     else l.dataset.color='green';
+    if(isMaster){l.style.cssText='flex:1 1 auto;min-height:3px;border-radius:1px;width:100%;display:block;background:#0a1a15';}
     vu.appendChild(l);
   }
 }
@@ -5465,7 +5467,15 @@ function animateVU(){
       const level=Math.min(segs,(combined/128)*(segs*1.4));
       if(!vu._hold)vu._hold=0;
       if(level>vu._hold)vu._hold=level;else vu._hold=Math.max(level,vu._hold-0.8);
-      leds.forEach((l,i)=>{l.classList.remove('on','green','yellow','red');if(i<vu._hold){l.classList.add('on');l.classList.add(l.dataset.color);}});
+      leds.forEach((l,i)=>{
+        const on=i<vu._hold;const col=l.dataset.color;
+        if(on){
+          l.style.background=col==='red'?'linear-gradient(90deg,#c41a1a,#ff3c3c)':col==='yellow'?'linear-gradient(90deg,#c8a400,#ffd400)':'linear-gradient(90deg,#0fb05c,#1cff8f)';
+          l.style.boxShadow=col==='red'?'0 0 5px rgba(255,46,46,.9)':col==='yellow'?'0 0 5px rgba(255,212,0,.85)':'0 0 5px rgba(28,255,143,.85)';
+        }else{
+          l.style.background='#0a1a15';l.style.boxShadow='none';
+        }
+      });
     });
   }
 }
