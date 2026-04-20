@@ -1953,6 +1953,21 @@ body.work-mode .beat-fx-panel,body.work-mode .scene-fx-panel{
 }
 body.work-mode .console{grid-template-columns:1fr 420px 1fr}
 body.work-mode .console.show-all{grid-template-columns:1fr 1fr 440px 1fr 1fr}
+/* Hot cues are compact even on huge screens; transport + loop + util
+   grow for finger-friendly stage use */
+body.work-mode .hot-cues{grid-template-columns:repeat(8,1fr);gap:4px;margin-bottom:10px}
+body.work-mode .cue-btn{aspect-ratio:auto;height:42px;font-size:13px;letter-spacing:1px}
+body.work-mode .loop-btn,body.work-mode .jump-btn{padding:11px 4px;font-size:12px;letter-spacing:1.5px}
+body.work-mode .util-btn{padding:11px 4px;font-size:11px;letter-spacing:1.2px}
+body.work-mode .pad-mode-btn{padding:9px 2px;font-size:10px;letter-spacing:1.2px}
+body.work-mode .big-btn{padding:18px 14px;font-size:15px;letter-spacing:3px}
+body.work-mode .big-btn .icon{font-size:18px}
+body.work-mode .tempo-btn{padding:14px 4px;font-size:18px}
+body.work-mode .tempo-btn.reset{font-size:12px}
+body.work-mode .step-btn{padding:7px 12px;font-size:11px}
+body.work-mode .tempo-display-big{font-size:28px;padding:10px}
+body.work-mode .automix-btn{padding:13px 6px;font-size:11px;letter-spacing:1.8px;min-height:46px}
+
 @media(min-width:1900px){
   body.work-mode .console{grid-template-columns:1fr 480px 1fr;gap:20px;padding:22px}
   body.work-mode .jog-wheel{width:340px;height:340px}
@@ -1963,9 +1978,16 @@ body.work-mode .console.show-all{grid-template-columns:1fr 1fr 440px 1fr 1fr}
   body.work-mode .time-value{font-size:22px}
   body.work-mode .cdj{padding:22px}
   body.work-mode .channel .fader-wrap,body.work-mode .channel .vu-meter{height:210px}
-  body.work-mode .hot-cues{gap:7px}
-  body.work-mode .cue-btn{font-size:14px}
-  body.work-mode .big-btn{padding:15px 12px;font-size:13px}
+  body.work-mode .hot-cues{gap:5px}
+  body.work-mode .cue-btn{height:46px;font-size:14px}
+  body.work-mode .big-btn{padding:22px 16px;font-size:17px}
+  body.work-mode .big-btn .icon{font-size:22px}
+  body.work-mode .loop-btn,body.work-mode .jump-btn{padding:14px 4px;font-size:13px}
+  body.work-mode .util-btn{padding:13px 4px;font-size:12px}
+  body.work-mode .pad-mode-btn{padding:11px 2px;font-size:11px}
+  body.work-mode .tempo-btn{padding:17px 4px;font-size:22px}
+  body.work-mode .tempo-display-big{font-size:32px}
+  body.work-mode .automix-btn{padding:16px 6px;font-size:12px;min-height:52px}
 }
 @media(min-width:2400px){
   body.work-mode .console{grid-template-columns:1fr 560px 1fr;gap:26px;padding:30px}
@@ -1976,9 +1998,16 @@ body.work-mode .console.show-all{grid-template-columns:1fr 1fr 440px 1fr 1fr}
   body.work-mode .screen-bpm{font-size:38px}
   body.work-mode .time-value{font-size:28px}
   body.work-mode .channel .fader-wrap,body.work-mode .channel .vu-meter{height:260px}
-  body.work-mode .big-btn{padding:18px 14px;font-size:16px}
+  body.work-mode .cue-btn{height:52px;font-size:15px}
+  body.work-mode .big-btn{padding:26px 18px;font-size:20px}
+  body.work-mode .big-btn .icon{font-size:26px}
+  body.work-mode .loop-btn,body.work-mode .jump-btn{padding:17px 6px;font-size:14px}
+  body.work-mode .util-btn{padding:15px 4px;font-size:13px}
+  body.work-mode .pad-mode-btn{padding:13px 2px;font-size:12px}
+  body.work-mode .tempo-btn{padding:20px 4px;font-size:26px}
+  body.work-mode .tempo-display-big{font-size:38px}
+  body.work-mode .automix-btn{padding:18px 6px;font-size:13px;min-height:58px}
   body.work-mode .waveform{height:70px}
-  body.work-mode .cue-btn{font-size:16px}
 }
 body.work-mode .console{
   padding:14px;border-radius:20px;
