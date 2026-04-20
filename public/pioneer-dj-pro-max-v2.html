@@ -52,7 +52,9 @@ body{padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:
 .rgb-ambient{width:100%;max-width:1700px;height:5px;background:linear-gradient(90deg,var(--orange),var(--pink),var(--purple),var(--screen-glow),var(--play-green),var(--yellow),var(--orange));background-size:200% 100%;border-radius:3px;animation:ambient 8s linear infinite;filter:blur(3px);opacity:.6}
 @keyframes ambient{from{background-position:0% 0%}to{background-position:200% 0%}}
 .console{display:grid;grid-template-columns:1fr 400px 1fr;gap:12px;max-width:1700px;width:100%}
-@media(max-width:1400px){.console{grid-template-columns:1fr}}
+@media(max-width:1200px){.console{grid-template-columns:1fr 340px 1fr;gap:10px}}
+@media(max-width:960px){.console{grid-template-columns:1fr 300px 1fr;gap:8px}}
+/* console 820px collapse handled in responsive layer below */
 .cdj{background:linear-gradient(180deg,#323236 0%,#1e1e22 55%,#131316 100%);border-radius:16px;padding:14px;border:1px solid var(--deck-border);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 40px rgba(255,122,0,.03),inset 0 -1px 0 rgba(0,0,0,.6),0 24px 70px rgba(0,0,0,.75),0 2px 0 rgba(255,255,255,.04);transition:box-shadow .25s,transform .25s;position:relative;overflow:hidden}
 .cdj::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(255,122,0,.25) 30%,rgba(255,122,0,.45) 50%,rgba(255,122,0,.25) 70%,transparent 100%);pointer-events:none;z-index:1}
 .cdj::after{content:'';position:absolute;top:-40%;left:-10%;right:-10%;height:80%;background:radial-gradient(ellipse at center top,rgba(255,122,0,.06) 0%,transparent 60%);pointer-events:none;z-index:0}
@@ -1232,49 +1234,69 @@ body.work-mode .console::before,body.work-mode .console::after{
 .dsb-chip.focus{border-color:var(--orange)}
 
 /* When ALL 4 decks visible, adjust console grid */
-.console.show-all{grid-template-columns:1fr 1fr 380px 1fr 1fr;gap:8px}
-@media(max-width:1700px){.console.show-all{grid-template-columns:1fr 1fr 340px 1fr 1fr;gap:6px}}
-@media(max-width:1550px){
-  .console.show-all{grid-template-columns:1fr 1fr;gap:10px}
-  .console.show-all .mixer{grid-column:1/-1;order:99;max-width:900px;justify-self:center;width:100%}
-}
-@media(max-width:900px){.console.show-all{grid-template-columns:1fr;} .console.show-all .mixer{grid-column:auto}}
+/* ── ALL 4 MODE grid ──────────────────────────────── */
+.console.show-all{grid-template-columns:1fr 1fr 360px 1fr 1fr;gap:10px}
 
-/* Compact monitor in mixer — list style */
+/* Tighten deck internals when 4 are visible side-by-side */
+.console.show-all .cdj{padding:10px 8px}
+.console.show-all .cdj .track-title{font-size:11px}
+.console.show-all .cdj .track-artist{font-size:9px}
+.console.show-all .cdj .screen-bpm{font-size:14px}
+.console.show-all .cdj .time-value{font-size:13px}
+.console.show-all .cdj .hot-cues{gap:3px}
+.console.show-all .cdj .cue-btn{font-size:10px;padding:4px 2px}
+.console.show-all .cdj .big-btn{padding:8px 4px !important;font-size:10px;letter-spacing:2px}
+.console.show-all .cdj .loop-btn,.console.show-all .cdj .jump-btn,.console.show-all .cdj .util-btn{font-size:8px;padding:4px 1px}
+.console.show-all .cdj .jog-wrapper{margin:2px 0}
+.console.show-all .cdj .jog-wheel{width:190px;height:190px}
+.console.show-all .cdj .jog-center-screen{width:60px;height:60px}
+.console.show-all .cdj .jog-center-screen .bpm-display{font-size:16px}
+.console.show-all .cdj .deck-number{font-size:22px}
+.console.show-all .cdj .tempo-btn-row{gap:2px;padding:4px}
+.console.show-all .cdj .tempo-btn{padding:7px 2px;font-size:12px}
+.console.show-all .cdj .tempo-display-big{font-size:18px;padding:4px}
+
+/* ── Compact monitor in mixer ─────────────────────── */
 .compact-decks{min-height:0}
 .compact-decks:empty{display:none}
 
-/* Tighten internal spacing of each deck when all 4 are on screen */
-@media(min-width:1551px){
-  .console.show-all .cdj{padding:10px;gap:6px}
-  .console.show-all .cdj .screen{padding:6px;margin-bottom:6px}
-  .console.show-all .cdj .track-title{font-size:11px}
-  .console.show-all .cdj .track-artist{font-size:9px}
-  .console.show-all .cdj .screen-bpm{font-size:14px}
-  .console.show-all .cdj .time-value{font-size:13px}
-  .console.show-all .cdj .hot-cues{gap:3px}
-  .console.show-all .cdj .cue-btn{font-size:10px;padding:4px}
-  .console.show-all .cdj .big-btn{padding:7px 4px !important;font-size:10px}
-  .console.show-all .cdj .tempo-btn-row{gap:3px}
-  .console.show-all .cdj .loop-btn,.console.show-all .cdj .util-btn{font-size:9px;padding:4px 2px}
-  .console.show-all .cdj .jog-wrapper{margin:2px 0}
-  .console.show-all .cdj .deck-number{font-size:22px}
-}
-
 /* ============================================================
-   RESPONSIVE LAYER — fits every screen size gracefully
+   RESPONSIVE LAYER — full screen-size coverage
    ============================================================ */
 
-/* Wide tablet / small laptop */
-@media(max-width:1400px){
-  .console{grid-template-columns:1fr}
-  .console.show-all{grid-template-columns:1fr 1fr}
-  .console.show-all .mixer{grid-column:1/-1}
-  .beat-fx-panel{grid-template-columns:repeat(2,1fr) 1fr}
-  .scene-fx-panel{grid-template-columns:auto 1fr auto}
+/* Large desktop — 5-col ALL 4 fits, keep it */
+@media(max-width:1700px){
+  .console.show-all{grid-template-columns:1fr 1fr 320px 1fr 1fr;gap:8px}
 }
 
-/* Tablet portrait */
+/* Laptop 1400-1550px — ALL 4 still 5-col but very compact */
+@media(max-width:1550px){
+  .console.show-all{grid-template-columns:1fr 1fr 290px 1fr 1fr;gap:6px}
+  .console.show-all .cdj .jog-wheel{width:160px;height:160px}
+  .console.show-all .cdj .jog-center-screen{width:50px;height:50px}
+  .console.show-all .cdj .jog-center-screen .bpm-display{font-size:14px}
+  .console.show-all .cdj .hot-cues{grid-template-columns:repeat(4,1fr);gap:2px}
+  .console.show-all .cdj .cue-btn{font-size:9px;padding:3px 1px}
+  .console.show-all .cdj .screen{padding:5px;margin-bottom:5px}
+  .console.show-all .cdj .deck-header .deck-label .suffix{display:none}
+}
+
+/* Small laptop — 2-deck default keeps 3-col; ALL 4 → 2x2+mixer */
+@media(max-width:1400px){
+  .beat-fx-panel{grid-template-columns:repeat(2,1fr) 1fr}
+  .scene-fx-panel{grid-template-columns:auto 1fr auto}
+  /* ALL 4: A B on top, mixer full-width, C D on bottom */
+  .console.show-all{grid-template-columns:1fr 1fr;gap:10px}
+  .console.show-all .mixer{grid-column:1/-1;order:2;max-width:860px;justify-self:center;width:100%}
+  .console.show-all .cdj:nth-child(1){order:1}
+  .console.show-all .cdj:nth-child(2){order:1}
+  .console.show-all .cdj:nth-child(3){order:3}
+  .console.show-all .cdj:nth-child(4){order:3}
+  .console.show-all .cdj .jog-wheel{width:200px;height:200px}
+  .console.show-all .cdj .jog-center-screen{width:64px;height:64px}
+}
+
+/* Tablet landscape / small laptop */
 @media(max-width:1100px){
   body{padding:8px 4px;gap:8px}
   .header-bar{padding:0 6px;gap:8px}
@@ -1286,9 +1308,11 @@ body.work-mode .console::before,body.work-mode .console::after{
   .dsb-btn{padding:6px 10px;font-size:10px;letter-spacing:1.8px}
   .dsb-monitor{margin-left:0;width:100%;margin-top:4px;order:99}
   .dsb-chip{padding:3px 7px;font-size:9px}
-  .jog-wheel{width:220px;height:220px}
-  .jog-center-screen{width:68px;height:68px}
-  .jog-center-screen .bpm-display{font-size:18px}
+  /* 2-deck: shrink mixer column */
+  .console{grid-template-columns:1fr 280px 1fr;gap:8px}
+  .jog-wheel{width:200px;height:200px}
+  .jog-center-screen{width:64px;height:64px}
+  .jog-center-screen .bpm-display{font-size:17px}
   .cdj{padding:10px}
   .hot-cues{grid-template-columns:repeat(4,1fr);gap:4px}
   .cue-btn{font-size:10px}
@@ -1297,15 +1321,19 @@ body.work-mode .console::before,body.work-mode .console::after{
   .beat-fx-panel{grid-template-columns:repeat(3,1fr);padding:8px;gap:8px}
   .beat-fx-label,.scene-fx-label{font-size:10px;letter-spacing:2px}
   .automix-panel{padding:8px}
-  .automix-title{font-size:10px}
   .automix-btn{padding:8px 2px;font-size:8px}
   .library{padding:8px}
   .track-row{grid-template-columns:24px 1.5fr 1fr 45px 40px 70px 120px;gap:6px;padding:5px 6px;font-size:10px}
   .stat-card .stat-value{font-size:22px}
   .stats-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+  /* ALL 4 at 1100px */
+  .console.show-all{grid-template-columns:1fr 1fr;gap:8px}
+  .console.show-all .cdj .jog-wheel{width:170px;height:170px}
+  .console.show-all .cdj .jog-center-screen{width:54px;height:54px}
+  .console.show-all .cdj .jog-center-screen .bpm-display{font-size:14px}
 }
 
-/* Small tablet / large phone */
+/* Tablet portrait */
 @media(max-width:820px){
   body{padding:6px 3px;gap:6px}
   .brand{font-size:15px;letter-spacing:1.5px}
@@ -1315,14 +1343,15 @@ body.work-mode .console::before,body.work-mode .console::after{
   .main-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .tab-btn{flex:0 0 auto;min-width:96px}
   .rgb-ambient{height:4px}
-  .console,.console.show-all{grid-template-columns:1fr}
-  .console.show-all .mixer{grid-column:auto}
-  .jog-wheel{width:75vw;height:75vw;max-width:260px;max-height:260px}
+  /* Both modes → single column */
+  .console,.console.show-all{grid-template-columns:1fr;gap:10px}
+  .console.show-all .mixer{grid-column:auto;order:0;max-width:100%;justify-self:stretch}
+  .console.show-all .cdj:nth-child(n){order:0}
+  .jog-wheel{width:72vw;height:72vw;max-width:280px;max-height:280px}
   .jog-center-screen{width:62px;height:62px}
   .jog-indicator{top:26px;height:12px}
   .beat-fx-panel{grid-template-columns:1fr 1fr;padding:6px;gap:6px}
   .beat-fx-panel .beat-fx-label{grid-column:1/-1;text-align:center}
-  .beat-fx-panel .beat-display{grid-column:auto}
   .fx-onoff{padding:10px 14px;font-size:11px;letter-spacing:2px}
   .scene-fx-panel{grid-template-columns:1fr;gap:6px}
   .scene-fx-buttons{justify-content:center}
