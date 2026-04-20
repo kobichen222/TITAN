@@ -1611,10 +1611,9 @@ body.work-mode .header-bar,
 body.work-mode .main-tabs,
 body.work-mode canvas#spectrumCanvas,
 body.work-mode .tab-content:not(#tab-deck),
-body.work-mode #tab-deck > *:not(.console):not(.library):not(.beat-fx-panel):not(.scene-fx-panel):not(.deck-switch-bar):not(.mic-strip){display:none !important;}
+body.work-mode #tab-deck > *:not(.console):not(.library):not(.beat-fx-panel):not(.scene-fx-panel):not(.deck-switch-bar){display:none !important;}
 body.work-mode .deck-switch-bar{position:fixed;top:8px;right:8px;left:auto;width:auto;max-width:none;z-index:60;background:rgba(10,10,14,.92);backdrop-filter:blur(10px);border:1px solid rgba(255,138,26,.35);box-shadow:0 10px 30px rgba(0,0,0,.7);padding:6px 10px;border-radius:10px;gap:6px;flex-wrap:wrap}
 body.work-mode .deck-switch-bar .dsb-label{color:var(--orange) !important;font-size:10px}
-body.work-mode .mic-strip{position:fixed;bottom:8px;left:8px;width:auto;max-width:none;z-index:60;padding:6px 10px}
 body.work-mode .beat-fx-panel,body.work-mode .scene-fx-panel{
   display:grid !important;
   padding:12px 18px !important;
@@ -2599,50 +2598,6 @@ body.theme-light .deck-header .deck-lib-btn:hover{background:#00a656;color:#fff}
 .deck-header .deck-lib-btn:hover::before{transform:translateX(120%)}
 .deck-header .deck-lib-btn:active{transform:translateY(0) scale(.97)}
 
-/* MIC STRIP — sits alongside BEAT FX / DECK FOCUS under the console */
-.mic-strip{
-  width:100%;max-width:1700px;
-  background:linear-gradient(180deg,#2a2a18 0%,#1a1a0c 100%);
-  border-radius:10px;padding:8px 14px;
-  border:1px solid rgba(255,212,0,.35);
-  box-shadow:0 8px 22px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,212,0,.1);
-  display:grid;grid-template-columns:auto auto 1fr auto;gap:14px;
-  align-items:center;
-}
-.mic-strip-hint{
-  font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.5px;
-  color:rgba(255,212,0,.55);text-align:right;
-}
-.mic-strip-label{
-  font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;font-weight:900;
-  color:var(--yellow);text-shadow:0 0 8px rgba(255,212,0,.55);
-  padding-right:8px;border-right:2px solid rgba(255,212,0,.25);
-}
-.mic-strip-btn{
-  padding:8px 16px;font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2.5px;font-weight:900;
-  background:linear-gradient(180deg,#3a3a22 0%,#1a1a0c 100%);
-  border:1px solid rgba(255,212,0,.5);color:var(--yellow);
-  border-radius:4px;cursor:pointer;transition:all .15s ease;
-  text-shadow:0 0 6px rgba(255,212,0,.4);
-}
-.mic-strip-btn:hover{background:linear-gradient(180deg,var(--yellow) 0%,#c8a400 100%);color:#000;box-shadow:0 0 16px rgba(255,212,0,.65)}
-.mic-strip-btn.active{background:linear-gradient(180deg,var(--yellow) 0%,#c8a400 100%);color:#000;box-shadow:0 0 18px rgba(255,212,0,.85);animation:micPulse 1.4s ease-in-out infinite}
-@keyframes micPulse{0%,100%{box-shadow:0 0 14px rgba(255,212,0,.6)}50%{box-shadow:0 0 26px rgba(255,212,0,1)}}
-.mic-strip-vu{
-  width:120px;height:10px;background:#050505;border:1px solid rgba(255,212,0,.25);border-radius:3px;overflow:hidden;
-  box-shadow:inset 0 0 6px rgba(0,0,0,.9);
-}
-.mic-strip-vu > span{
-  display:block;height:100%;width:0%;
-  background:linear-gradient(90deg,#0aa05a 0%,var(--yellow) 60%,var(--red) 100%);
-  transition:width .08s linear;
-}
-@media (max-width:900px){
-  .mic-strip{grid-template-columns:auto auto 1fr;gap:8px;padding:6px 10px}
-  .mic-strip-hint{display:none}
-  .mic-strip-vu{width:100%}
-}
-
 /* Quick library picker modal */
 .quick-lib-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:flex-start;justify-content:center;padding-top:6vh;animation:fadeIn .18s}
 .quick-lib-overlay.open{display:flex}
@@ -3101,13 +3056,6 @@ body.work-mode .dsb-wmexit{display:inline-flex;background:linear-gradient(180deg
 <div class="knob-wrap"><div class="knob small" data-knob="fxLevel"><div class="knob-indicator"></div></div><span class="knob-label">LEVEL</span></div>
 <button class="tap-btn" id="tapBtn">TAP</button>
 <button class="fx-onoff" id="fxOnOff">ON / OFF</button>
-</div>
-
-<div class="mic-strip" id="micStrip">
-  <div class="mic-strip-label">🎤 MIC</div>
-  <button class="mic-strip-btn" id="micStripOnBtn" title="Toggle microphone">ON</button>
-  <div class="mic-strip-vu" id="micStripVu" title="Live mic level"><span></span></div>
-  <div class="mic-strip-hint">Gain / HI / LOW on mixer panel</div>
 </div>
 
 <canvas class="spectrum-canvas" id="spectrumCanvas" width="1700" height="40"></canvas>
@@ -3926,31 +3874,15 @@ function setupDeck(id){
   d.channelGain.connect(masterGain);
 }
 
-let micStream,micSource,micGain,micEqHi,micEqLow,micAnalyser,micVuRaf;
+let micStream,micSource,micGain,micEqHi,micEqLow;
 function setupMic(){
   micGain=audioCtx.createGain();micGain.gain.value=0;
   micEqHi=audioCtx.createBiquadFilter();micEqHi.type='highshelf';micEqHi.frequency.value=4000;
   micEqLow=audioCtx.createBiquadFilter();micEqLow.type='lowshelf';micEqLow.frequency.value=250;
-  micAnalyser=audioCtx.createAnalyser();micAnalyser.fftSize=512;
   micEqLow.connect(micEqHi);micEqHi.connect(micGain);micGain.connect(masterGain);
-  micEqHi.connect(micAnalyser);
 }
 function setMicUi(on){
-  ['micOnBtn','micStripOnBtn'].forEach(id=>{
-    const b=document.getElementById(id);if(b)b.classList.toggle('active',on);
-  });
-  const strip=document.getElementById('micStrip');
-  if(strip)strip.classList.toggle('mic-live',on);
-}
-function paintMicVu(){
-  const bar=document.querySelector('#micStripVu > span');
-  if(!bar||!micAnalyser){micVuRaf=null;return;}
-  const buf=new Uint8Array(micAnalyser.fftSize);
-  micAnalyser.getByteTimeDomainData(buf);
-  let peak=0;for(let i=0;i<buf.length;i++){const v=Math.abs(buf[i]-128);if(v>peak)peak=v;}
-  const pct=mixerState.micOn?Math.min(100,(peak/128)*180):0;
-  bar.style.width=pct.toFixed(1)+'%';
-  micVuRaf=requestAnimationFrame(paintMicVu);
+  const b=document.getElementById('micOnBtn');if(b)b.classList.toggle('active',on);
 }
 
 async function toggleMic(){
@@ -3960,7 +3892,6 @@ async function toggleMic(){
     if(micSource){micSource.disconnect();micSource=null;}
     if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null;}
     setMicUi(false);
-    const bar=document.querySelector('#micStripVu > span');if(bar)bar.style.width='0%';
     return;
   }
   try{
@@ -3969,7 +3900,6 @@ async function toggleMic(){
     micSource.connect(micEqLow);
     mixerState.micOn=true;
     setMicUi(true);
-    if(!micVuRaf)paintMicVu();
     toast('Mic connected','success');
   }catch(e){toast('Mic denied','error');}
 }
@@ -5461,8 +5391,6 @@ function attachEvents(){
     });
   });
   document.getElementById('micOnBtn').addEventListener('click',toggleMic);
-  const micStripBtn=document.getElementById('micStripOnBtn');
-  if(micStripBtn)micStripBtn.addEventListener('click',toggleMic);
   document.querySelectorAll('.cdj').forEach(deck=>{
     deck.addEventListener('dragover',e=>{e.preventDefault();deck.classList.add('drop-target');});
     deck.addEventListener('dragleave',()=>deck.classList.remove('drop-target'));
@@ -5633,57 +5561,75 @@ function animateVU(){
     }else if(dk._vuHold){dk._vuHold=0;}
     leds.forEach((l,i)=>{l.classList.remove('on','green','yellow','red');if(i<level){l.classList.add('on');l.classList.add(l.dataset.color);}});
   });
-  if(masterAnalyserL){
+  // MASTER L/R VU — always paints something, even at idle, so the meter is
+  // visibly alive even before the first track plays.
+  (function paintMaster(){
+    const now=performance.now();
+    const haveAudio=!!masterAnalyserL&&!!masterAnalyserR;
     let maxLevel=0;
-    [['masterHVuL',masterAnalyserL,18,'clipLedL','lblL'],['masterHVuR',masterAnalyserR,18,'clipLedR','lblR']].forEach(([id,an,segs,clipId,lblId])=>{
+    [['masterHVuL',masterAnalyserL,18,'clipLedL','lblL',0],['masterHVuR',masterAnalyserR,18,'clipLedR','lblR',1]].forEach(([id,an,segs,clipId,lblId,chan])=>{
       const vu=document.getElementById(id);if(!vu)return;
-      const leds=vu.querySelectorAll('.vu-led');
-      const arr=new Uint8Array(an.frequencyBinCount);
-      an.getByteTimeDomainData(arr);
-      let peak=0,rms=0;for(let i=0;i<arr.length;i++){const v=Math.abs(arr[i]-128);if(v>peak)peak=v;rms+=v*v;}
-      rms=Math.sqrt(rms/arr.length);
-      const combined=peak*0.55+rms*2.0;
-      let level=Math.min(segs,(combined/128)*(segs*1.55));
-      if(!vu._hold)vu._hold=0;
-      if(!vu._peak)vu._peak=0;
-      if(level>vu._hold)vu._hold=level;else vu._hold=Math.max(level,vu._hold-0.7);
-      if(vu._hold>vu._peak){vu._peak=vu._hold;vu._peakTime=performance.now();}
-      else if(performance.now()-(vu._peakTime||0)>500)vu._peak=Math.max(vu._hold,vu._peak-0.12);
+      const leds=vu.querySelectorAll('.vu-led');if(!leds.length)return;
+      let level=0;
+      if(an){
+        try{
+          const arr=new Uint8Array(an.frequencyBinCount);
+          an.getByteTimeDomainData(arr);
+          let peak=0,rms=0;
+          for(let i=0;i<arr.length;i++){const v=Math.abs(arr[i]-128);if(v>peak)peak=v;rms+=v*v;}
+          rms=Math.sqrt(rms/arr.length);
+          const combined=peak*0.6+rms*2.2;
+          level=Math.min(segs,(combined/128)*(segs*1.7));
+        }catch(e){level=0;}
+      }
+      // Idle breathing — subtle sine wave so the meter visibly pulses even
+      // before audio starts.  Stops as soon as real level > 1.
+      if(level<0.5){
+        const phase=(now/480)+chan*0.6;
+        level=1.6+Math.sin(phase)*1.0;
+      }
+      vu._hold=vu._hold||0;
+      vu._peak=vu._peak||0;
+      if(level>vu._hold)vu._hold=level;else vu._hold=Math.max(level,vu._hold-0.65);
+      if(vu._hold>vu._peak){vu._peak=vu._hold;vu._peakTime=now;}
+      else if(now-(vu._peakTime||0)>500)vu._peak=Math.max(vu._hold,vu._peak-0.12);
       const peakIdx=Math.max(0,Math.floor(vu._peak)-1);
       maxLevel=Math.max(maxLevel,vu._hold);
       leds.forEach((l,i)=>{
-        const on=i<vu._hold;const col=l.dataset.color;
-        const isPeakMark=(i===peakIdx&&vu._peak>vu._hold+0.2);
+        const col=l.dataset.color;
+        const on=i<vu._hold;
+        const isPeakMark=(!on&&i===peakIdx&&vu._peak>vu._hold+0.2);
         if(on){
-          l.style.background=col==='red'?'linear-gradient(90deg,#ff4040,#ff7070,#ff2020)':col==='yellow'?'linear-gradient(90deg,#ffd400,#fff080,#ffc000)':'linear-gradient(90deg,#1cff8f,#6bffb9,#0aa05a)';
-          l.style.boxShadow=col==='red'?'0 0 7px rgba(255,60,60,1),inset 0 1px 0 rgba(255,255,255,.45)':col==='yellow'?'0 0 6px rgba(255,212,0,.95),inset 0 1px 0 rgba(255,255,255,.4)':'0 0 6px rgba(28,255,143,.95),inset 0 1px 0 rgba(255,255,255,.35)';
+          l.style.background=col==='red'?'linear-gradient(90deg,#ff4040,#ff9090,#ff2020)':col==='yellow'?'linear-gradient(90deg,#ffd400,#fff4a0,#ffc000)':'linear-gradient(90deg,#1cff8f,#8cffc0,#0aa05a)';
+          l.style.boxShadow=col==='red'?'0 0 8px rgba(255,60,60,1),inset 0 1px 0 rgba(255,255,255,.5)':col==='yellow'?'0 0 7px rgba(255,212,0,1),inset 0 1px 0 rgba(255,255,255,.45)':'0 0 7px rgba(28,255,143,1),inset 0 1px 0 rgba(255,255,255,.4)';
+          l.style.opacity='1';
         }else if(isPeakMark){
           l.style.background=col==='red'?'#ff6060':col==='yellow'?'#ffe040':'#3cff9f';
           l.style.boxShadow='0 0 10px '+(col==='red'?'#ff2020':col==='yellow'?'#ffd400':'#1cff8f');
+          l.style.opacity='1';
         }else{
-          l.style.background='#060808';l.style.boxShadow='none';
+          // Off state — dim green outline so the meter is visibly "there"
+          l.style.background=col==='red'?'#1a0606':col==='yellow'?'#1a1605':'#08150e';
+          l.style.boxShadow='inset 0 0 2px rgba(28,255,143,.15)';
+          l.style.opacity='.9';
         }
       });
-      // Clip LED — latch red for 180ms when signal peaks near top
       const clip=document.getElementById(clipId);
       if(clip){
-        const nowClip=vu._hold>=segs-0.3;
-        if(nowClip)vu._clipUntil=performance.now()+220;
-        clip.classList.toggle('hot',(vu._clipUntil||0)>performance.now());
+        const nowClip=haveAudio&&vu._hold>=segs-0.3;
+        if(nowClip)vu._clipUntil=now+220;
+        clip.classList.toggle('hot',(vu._clipUntil||0)>now);
       }
-      // L/R label glow with level
       const lbl=document.getElementById(lblId);
-      if(lbl)lbl.classList.toggle('hot',vu._hold>segs*0.6);
+      if(lbl)lbl.classList.toggle('hot',haveAudio&&vu._hold>segs*0.6);
     });
-    // Outer halo glow on the whole master VU box — pulses with aggregate level
     const halo=document.getElementById('masterVuHalo');
     if(halo){
       const n=Math.min(1,maxLevel/18);
-      const hot=n>0.75;
-      const color=hot?`rgba(255,60,60,${.25+n*.55})`:n>0.5?`rgba(255,212,0,${.2+n*.45})`:`rgba(28,255,143,${.18+n*.4})`;
+      const color=haveAudio&&n>0.75?`rgba(255,60,60,${.25+n*.55})`:haveAudio&&n>0.5?`rgba(255,212,0,${.2+n*.45})`:`rgba(28,255,143,${.12+n*.4})`;
       halo.style.background=`radial-gradient(ellipse at center,${color} 0%,transparent 70%)`;
     }
-  }
+  })();
 }
 
 /* RECORDING */
