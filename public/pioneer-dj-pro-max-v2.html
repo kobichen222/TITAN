@@ -2049,6 +2049,9 @@ body.work-mode .library-title::after{
 .dsb-wmlib{color:var(--play-green) !important;border-color:rgba(28,255,143,.4) !important;display:none}
 body.work-mode .dsb-wmlib{display:inline-flex}
 .dsb-wmlib.active{background:linear-gradient(180deg,var(--play-green),#0aa05a) !important;color:#000 !important;box-shadow:0 0 18px rgba(28,255,143,.6) !important}
+.dsb-wmexit{color:var(--red) !important;border:1px solid rgba(255,46,46,.6) !important;display:none;font-weight:800 !important;letter-spacing:2.5px !important}
+body.work-mode .dsb-wmexit{display:inline-flex;background:linear-gradient(180deg,#2a0808,#1a0404) !important;animation:wmExitPulse 2.5s ease-in-out infinite}
+.dsb-wmexit:hover{background:linear-gradient(180deg,var(--red),#8a0000) !important;color:#fff !important;box-shadow:0 0 18px rgba(255,46,46,.7) !important}
 .dsb-work{color:var(--purple) !important;border-color:rgba(200,0,255,.4) !important}
 .dsb-work.active{background:linear-gradient(180deg,var(--purple),#6000aa) !important;color:#fff !important;box-shadow:0 0 20px rgba(200,0,255,.7) !important}
 .dsb-work:hover{color:var(--purple) !important;border-color:var(--purple) !important;box-shadow:0 0 14px rgba(200,0,255,.5)}
@@ -2207,6 +2210,7 @@ body.lang-he input[type=text],body.lang-he input[type=password]{direction:ltr;te
   <button class="dsb-btn dsb-all" data-pair="ALL" data-t="all_4">ALL 4</button>
   <button class="dsb-btn dsb-work" id="workModeBtn" title="Stage-ready performance view" data-t="work_mode">🎆 WORK MODE</button>
   <button class="dsb-btn dsb-wmlib" id="wmLibBtn" title="Show / hide the track library in work mode" data-t="library_btn">📚 LIBRARY</button>
+  <button class="dsb-btn dsb-wmexit" id="wmExitInlineBtn" title="Exit work mode (Esc)">✕ EXIT WORK</button>
   <span class="dsb-monitor" id="dsbMonitor"></span>
 </div>
 
@@ -6132,13 +6136,14 @@ document.addEventListener('DOMContentLoaded',()=>{
         });
       }
       const exitBtn=document.getElementById('wmExitBtn');
-      if(exitBtn){
-        exitBtn.addEventListener('click',()=>{
-          document.body.classList.remove('work-mode');
-          document.getElementById('workModeBtn')?.classList.remove('active');
-          document.getElementById('wmLibBtn')?.classList.remove('active');
-        });
-      }
+      const exitInline=document.getElementById('wmExitInlineBtn');
+      const exitWM=()=>{
+        document.body.classList.remove('work-mode');
+        document.getElementById('workModeBtn')?.classList.remove('active');
+        document.getElementById('wmLibBtn')?.classList.remove('active');
+      };
+      if(exitBtn)exitBtn.addEventListener('click',exitWM);
+      if(exitInline)exitInline.addEventListener('click',exitWM);
       window.addEventListener('keydown',(e)=>{
         if(e.key==='Escape'&&document.body.classList.contains('work-mode')&&!e.shiftKey){
           e.preventDefault();
