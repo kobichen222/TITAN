@@ -1001,6 +1001,62 @@ button:focus-visible{outline:2px solid var(--orange-glow);outline-offset:2px}
   scrollbar-width:thin;
   scrollbar-color:var(--orange) #0a0a0b;
 }
+
+/* AUTO MIX panel in the mixer */
+.automix-panel{
+  padding:10px;background:#0a0a0b;border-radius:8px;
+  border:1px solid rgba(200,0,255,.25);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 0 18px rgba(200,0,255,.08);
+  display:flex;flex-direction:column;gap:8px;
+}
+.automix-title{
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:3px;
+  color:var(--purple);font-weight:800;text-shadow:0 0 8px rgba(200,0,255,.5);
+}
+.automix-title span{
+  font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--orange);
+  padding:2px 8px;background:#050506;border:1px solid #2a2a2e;border-radius:3px;letter-spacing:2px;
+}
+.automix-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}
+.automix-btn{
+  padding:10px 4px;background:linear-gradient(180deg,#3a3a3e 0%,#1a1a1c 100%);
+  border:1px solid #333;color:var(--text);font-family:'Orbitron',sans-serif;
+  font-size:9px;font-weight:800;letter-spacing:1.5px;border-radius:4px;cursor:pointer;
+  transition:all .15s ease;position:relative;overflow:hidden;
+}
+.automix-btn:hover{
+  background:linear-gradient(180deg,#4a4a4e 0%,#2a2a2c 100%);
+  border-color:var(--purple);color:var(--purple);
+  box-shadow:0 0 14px rgba(200,0,255,.4);transform:translateY(-1px);
+}
+.automix-btn:active{transform:translateY(0) scale(.96)}
+.automix-btn.running{
+  background:linear-gradient(180deg,var(--purple) 0%,#6000aa 100%);
+  color:#fff;border-color:var(--purple);
+  box-shadow:0 0 22px rgba(200,0,255,.75),inset 0 1px 0 rgba(255,255,255,.25);
+  animation:automixPulse 1s ease-in-out infinite;
+}
+@keyframes automixPulse{
+  0%,100%{box-shadow:0 0 22px rgba(200,0,255,.7)}
+  50%{box-shadow:0 0 34px rgba(200,0,255,1)}
+}
+.automix-btn.danger:hover{border-color:var(--red);color:var(--red);box-shadow:0 0 14px rgba(255,46,46,.4)}
+.automix-btn.echo:hover{border-color:var(--screen-glow);color:var(--screen-glow);box-shadow:0 0 14px rgba(46,224,255,.4)}
+.automix-btn.pick:hover{border-color:var(--play-green);color:var(--play-green);box-shadow:0 0 14px rgba(28,255,143,.4)}
+.automix-sub{
+  display:grid;grid-template-columns:auto 1fr auto;gap:6px;align-items:center;
+  font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:2px;
+  padding-top:2px;border-top:1px solid rgba(255,255,255,.04);
+}
+.automix-bars{min-width:auto;padding:4px 8px;font-size:10px}
+.automix-sync{
+  padding:5px 10px;background:linear-gradient(180deg,#3a3a3e 0%,#1a1a1c 100%);
+  border:1px solid var(--orange);color:var(--orange);
+  font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1.5px;font-weight:700;
+  border-radius:3px;cursor:pointer;transition:all .15s ease;
+}
+.automix-sync:hover{background:var(--orange);color:#000;box-shadow:0 0 12px rgba(255,138,26,.6)}
 </style>
 </head>
 <body>
@@ -1492,6 +1548,24 @@ function buildMixerHTML(){
       <button class="curve-btn active" data-curve="smooth">SMOOTH</button>
       <button class="curve-btn" data-curve="sharp">SHARP</button>
       <button class="curve-btn" data-curve="cut">CUT</button>
+    </div>
+  </div>
+  <div class="automix-panel">
+    <div class="automix-title">⚡ AUTO MIX<span id="automixDir">A→B</span></div>
+    <div class="automix-grid">
+      <button class="automix-btn" data-mix="smooth" title="Long bass-swap blend (EQ swap + cosine fade)">SMOOTH</button>
+      <button class="automix-btn" data-mix="energy" title="High-pass filter sweep + exponential fade">ENERGY</button>
+      <button class="automix-btn" data-mix="harmonic" title="Key-matched blend with slow EQ swap">HARMONIC</button>
+      <button class="automix-btn danger" data-mix="cut" title="Hard cut on next downbeat">CUT</button>
+      <button class="automix-btn echo" data-mix="echo" title="Echo tail on outgoing + cosine fade">ECHO OUT</button>
+      <button class="automix-btn pick" id="automixPickBtn" title="Load smart next track to idle deck">PICK NEXT</button>
+    </div>
+    <div class="automix-sub"><span>Bars</span>
+      <select class="fx-selector automix-bars" id="automixBars">
+        <option value="4">4</option><option value="8">8</option><option value="16" selected>16</option>
+        <option value="32">32</option><option value="64">64</option>
+      </select>
+      <button class="automix-sync" id="automixSync" title="Sync incoming deck to playing deck (BPM + phase)">SYNC →</button>
     </div>
   </div>
   <div class="headphone-section">
@@ -3618,20 +3692,48 @@ if('serviceWorker' in navigator){
 function setupJogWheel(deckId){
   const platter=document.getElementById('platter-'+deckId);
   if(!platter)return;
-  let dragging=false,lastAngle=0,totalDelta=0,lastMoveTime=0,velocity=0;
+  let dragging=false,lastAngle=0,lastMoveTime=0,velocity=0;
   let originalRate=1,bendActive=false;
+  let scrubSource=null,scrubGain=null,scrubRestartTimer=null,lastScrubOffset=0;
   function getAngle(clientX,clientY){
     const r=platter.getBoundingClientRect();
     return Math.atan2(clientY-(r.top+r.height/2),clientX-(r.left+r.width/2));
   }
+  function stopScrubSource(){
+    if(scrubRestartTimer){clearTimeout(scrubRestartTimer);scrubRestartTimer=null;}
+    if(scrubSource){try{scrubSource.stop();scrubSource.disconnect();}catch(e){}scrubSource=null;}
+    if(scrubGain){try{scrubGain.disconnect();}catch(e){}scrubGain=null;}
+  }
+  function startScrubSource(){
+    const d=decks[deckId];if(!d.buffer||!audioCtx)return;
+    stopScrubSource();
+    scrubGain=audioCtx.createGain();scrubGain.gain.value=0.6;
+    scrubGain.connect(d.trimGain);
+    scrubSource=audioCtx.createBufferSource();
+    scrubSource.buffer=d.buffer;
+    scrubSource.playbackRate.value=1.0;
+    scrubSource.connect(scrubGain);
+    try{scrubSource.start(0,Math.max(0,Math.min(d.buffer.duration-0.01,d.offset)));}catch(e){}
+    lastScrubOffset=d.offset;
+  }
+  function updateScrubSource(){
+    const d=decks[deckId];if(!scrubSource||!d.buffer)return;
+    if(Math.abs(d.offset-lastScrubOffset)>0.12){
+      startScrubSource();
+      if(scrubRestartTimer)clearTimeout(scrubRestartTimer);
+      scrubRestartTimer=setTimeout(()=>{if(scrubGain)scrubGain.gain.setTargetAtTime(0,audioCtx.currentTime,0.08);},180);
+    }
+  }
   function start(clientX,clientY){
     const d=decks[deckId];if(!d.track||!d.buffer)return;
-    dragging=true;totalDelta=0;velocity=0;
+    ensureAudio();
+    dragging=true;velocity=0;
     lastAngle=getAngle(clientX,clientY);
     lastMoveTime=performance.now();
     platter.style.cursor='grabbing';
     platter.classList.add('jog-active');
     if(d.playing){originalRate=d.playbackRate;bendActive=true;}
+    else{startScrubSource();}
   }
   function move(clientX,clientY){
     if(!dragging)return;
@@ -3645,7 +3747,6 @@ function setupJogWheel(deckId){
     const dt=Math.max(1,now-lastMoveTime);
     velocity=delta/dt;
     lastMoveTime=now;
-    totalDelta+=delta;
     if(d.playing&&d.source){
       const bend=1+(velocity*120);
       const clamped=Math.max(0.25,Math.min(2.5,bend));
@@ -3653,14 +3754,12 @@ function setupJogWheel(deckId){
     }else{
       const secsPerRev=4;
       const seekDelta=delta/(2*Math.PI)*secsPerRev;
-      const next=Math.max(0,Math.min(d.buffer.duration,d.offset+seekDelta));
+      const next=Math.max(0,Math.min(d.buffer.duration-0.05,d.offset+seekDelta));
       d.offset=next;
-      const platterEl=document.getElementById('platter-'+deckId);
-      if(platterEl){
-        const cur=parseFloat(platterEl.dataset.rot||'0')+delta*180/Math.PI;
-        platterEl.dataset.rot=cur;
-        platterEl.style.transform='rotate('+cur+'deg)';
-      }
+      updateScrubSource();
+      const cur=parseFloat(platter.dataset.rot||'0')+delta*180/Math.PI;
+      platter.dataset.rot=cur;
+      platter.style.transform='rotate('+cur+'deg)';
     }
   }
   function end(){
@@ -3673,6 +3772,7 @@ function setupJogWheel(deckId){
       try{d.source.playbackRate.setTargetAtTime(originalRate,audioCtx.currentTime,0.05);}catch(e){}
       bendActive=false;
     }
+    stopScrubSource();
   }
   platter.addEventListener('mousedown',(e)=>{e.preventDefault();start(e.clientX,e.clientY);});
   window.addEventListener('mousemove',(e)=>{if(dragging)move(e.clientX,e.clientY);});
@@ -3681,6 +3781,10 @@ function setupJogWheel(deckId){
   window.addEventListener('touchmove',(e)=>{const t=e.touches[0];if(dragging&&t){e.preventDefault();move(t.clientX,t.clientY);}},{passive:false});
   window.addEventListener('touchend',end);
   window.addEventListener('touchcancel',end);
+  platter.addEventListener('dblclick',(e)=>{
+    e.preventDefault();const d=decks[deckId];if(!d.track)return;
+    d.cuePoint=d.offset;toast(`Deck ${deckId}: CUE set at ${fmtTime(d.offset)}`,'success');
+  });
 }
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{['A','B'].forEach(setupJogWheel);},100);});
 
@@ -3875,7 +3979,6 @@ async function proTransition(from,to,style,bars){
 
 if(typeof window!=='undefined'){
   window.pickNextTrack=smartPickNextTrack;
-  const _origPerformAITransition=window.performAITransition;
   window.performAITransition=function(from){
     if(!aiDJ.active)return;
     const to=from==='A'?'B':'A';
@@ -3884,6 +3987,63 @@ if(typeof window!=='undefined'){
     proTransition(from,to,style,Math.max(2,bars));
   };
 }
+
+/* Manual Auto Mix buttons (in mixer panel) */
+let _automixRunning=false;
+function manualAutoMix(style){
+  if(_automixRunning){toast('Auto-mix already running','error');return;}
+  ensureAudio();
+  const from=decks.A.playing?'A':decks.B.playing?'B':null;
+  if(!from){toast('Start playing a deck first','error');return;}
+  const to=from==='A'?'B':'A';
+  const next=smartPickNextTrack();
+  if(!next){toast('Load more tracks to the library','error');return;}
+  const bars=Math.max(1,parseInt(document.getElementById('automixBars')?.value||16)/4);
+  _automixRunning=true;
+  const btn=document.querySelector(`.automix-btn[data-mix="${style}"]`);
+  if(btn)btn.classList.add('running');
+  proTransition(from,to,style,bars);
+  const estMs=bars*4*(60/decks[from].track.bpm)*1000+2000;
+  setTimeout(()=>{
+    _automixRunning=false;
+    document.querySelectorAll('.automix-btn.running').forEach(b=>b.classList.remove('running'));
+    updateAutomixDirection();
+  },estMs);
+}
+function manualSync(){
+  ensureAudio();
+  const from=decks.A.playing?'A':decks.B.playing?'B':null;
+  if(!from){toast('Start playing a deck first','error');return;}
+  const to=from==='A'?'B':'A';
+  if(!decks[to].track){toast(`Load a track to Deck ${to} first`,'error');return;}
+  syncDeckPhase(to,from);
+  toast(`Synced Deck ${to} to ${from}`,'success');
+}
+function manualPickNext(){
+  const idle=decks.A.playing?'B':'A';
+  const next=smartPickNextTrack();
+  if(!next){toast('No suitable track found','error');return;}
+  loadTrackToDeck(idle,next);
+  autoGainMatch(idle);
+  toast(`Deck ${idle}: ${next.title} (${next.bpm} BPM, ${next.key||'--'})`,'success');
+  updateAutomixDirection();
+}
+function updateAutomixDirection(){
+  const el=document.getElementById('automixDir');if(!el)return;
+  const from=decks.A.playing?'A':decks.B.playing?'B':null;
+  if(!from){el.textContent='—';return;}
+  el.textContent=`${from}→${from==='A'?'B':'A'}`;
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    document.querySelectorAll('.automix-btn[data-mix]').forEach(b=>{
+      b.addEventListener('click',()=>manualAutoMix(b.dataset.mix));
+    });
+    const sync=document.getElementById('automixSync');if(sync)sync.addEventListener('click',manualSync);
+    const pick=document.getElementById('automixPickBtn');if(pick)pick.addEventListener('click',manualPickNext);
+    setInterval(updateAutomixDirection,1000);
+  },200);
+});
 
 document.addEventListener('DOMContentLoaded',init);
 </script>
