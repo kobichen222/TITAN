@@ -55,9 +55,7 @@ body{padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:
 @media(max-width:1400px){.console{grid-template-columns:1fr}}
 .cdj{background:linear-gradient(180deg,#2a2a2e 0%,#1a1a1c 100%);border-radius:14px;padding:14px;border:1px solid var(--deck-border);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 20px 60px rgba(0,0,0,.7);transition:box-shadow .2s}
 .cdj.drop-target{border-color:var(--orange);box-shadow:0 0 40px rgba(255,122,0,.8)}
-.deck-header{display:flex;justify-content:space-between;align-items:center;padding:0 6px 8px;border-bottom:1px solid rgba(255,255,255,.05);margin-bottom:10px}
-.deck-label{font-family:'Orbitron',sans-serif;font-weight:800;font-size:11px;letter-spacing:4px;color:#fff}
-.deck-label .model{color:var(--orange);font-size:9px;margin-right:6px}
+.deck-label{font-family:'Orbitron',sans-serif;font-weight:800;font-size:11px;letter-spacing:3px;color:#fff}
 .deck-number{font-family:'Orbitron',sans-serif;font-weight:900;font-size:28px;color:var(--orange);text-shadow:0 0 12px rgba(255,122,0,.5);line-height:1}
 .screen{background:linear-gradient(180deg,#081016 0%,#050a0d 100%);border:1px solid #1a2a30;border-radius:6px;padding:8px;font-family:'Share Tech Mono',monospace;color:var(--screen-glow);box-shadow:inset 0 0 30px rgba(0,212,255,.05),inset 0 2px 6px rgba(0,0,0,.8);position:relative;overflow:hidden;margin-bottom:8px}
 .screen::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,212,255,.02) 0px,rgba(0,212,255,.02) 1px,transparent 1px,transparent 3px);pointer-events:none}
@@ -1217,12 +1215,34 @@ body.work-mode .console::before,body.work-mode .console::after{
 .dsb-chip.focus{border-color:var(--orange)}
 
 /* When ALL 4 decks visible, adjust console grid */
-.console.show-all{grid-template-columns:1fr 1fr 400px 1fr 1fr}
-@media(max-width:1400px){.console.show-all{grid-template-columns:1fr 1fr;} .console.show-all .mixer{grid-column:1/-1}}
+.console.show-all{grid-template-columns:1fr 1fr 380px 1fr 1fr;gap:8px}
+@media(max-width:1700px){.console.show-all{grid-template-columns:1fr 1fr 340px 1fr 1fr;gap:6px}}
+@media(max-width:1550px){
+  .console.show-all{grid-template-columns:1fr 1fr;gap:10px}
+  .console.show-all .mixer{grid-column:1/-1;order:99;max-width:900px;justify-self:center;width:100%}
+}
+@media(max-width:900px){.console.show-all{grid-template-columns:1fr;} .console.show-all .mixer{grid-column:auto}}
 
 /* Compact monitor in mixer — list style */
 .compact-decks{min-height:0}
 .compact-decks:empty{display:none}
+
+/* Tighten internal spacing of each deck when all 4 are on screen */
+@media(min-width:1551px){
+  .console.show-all .cdj{padding:10px;gap:6px}
+  .console.show-all .cdj .screen{padding:6px;margin-bottom:6px}
+  .console.show-all .cdj .track-title{font-size:11px}
+  .console.show-all .cdj .track-artist{font-size:9px}
+  .console.show-all .cdj .screen-bpm{font-size:14px}
+  .console.show-all .cdj .time-value{font-size:13px}
+  .console.show-all .cdj .hot-cues{gap:3px}
+  .console.show-all .cdj .cue-btn{font-size:10px;padding:4px}
+  .console.show-all .cdj .big-btn{padding:7px 4px !important;font-size:10px}
+  .console.show-all .cdj .tempo-btn-row{gap:3px}
+  .console.show-all .cdj .loop-btn,.console.show-all .cdj .util-btn{font-size:9px;padding:4px 2px}
+  .console.show-all .cdj .jog-wrapper{margin:2px 0}
+  .console.show-all .cdj .deck-number{font-size:22px}
+}
 
 /* ============================================================
    RESPONSIVE LAYER — fits every screen size gracefully
@@ -2500,9 +2520,23 @@ body.theme-light .editor-timeline{background:#f4f4f8;border-color:rgba(0,0,0,.08
 .master-vu-scale span:nth-child(2){color:var(--yellow)}
 body.theme-light .master-meters{background:#fff;border-color:rgba(0,0,0,.08);box-shadow:inset 0 2px 4px rgba(0,0,0,.06)}
 
-/* Deck-header LIBRARY quick-access button */
-.deck-header{display:flex;align-items:center;gap:10px}
-.deck-header .deck-label{flex:0 0 auto}
+/* Deck-header — clean, non-overlapping spacing across all widths */
+.deck-header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 4px 8px;border-bottom:1px solid rgba(255,255,255,.05);margin-bottom:10px}
+.deck-header .deck-label{flex:0 0 auto;display:inline-flex;align-items:baseline;gap:6px;white-space:nowrap}
+.deck-header .deck-label .model{color:var(--orange);font-size:9px;margin:0;letter-spacing:2px;font-weight:900}
+.deck-header .deck-label .suffix{color:#fff;font-size:10px;letter-spacing:3px;font-weight:800;opacity:.85}
+.deck-header .deck-number{margin-left:auto;flex:0 0 auto}
+.deck-header .deck-upload-btn,.deck-header .deck-lib-btn{flex:0 0 auto;margin-left:0 !important}
+/* Icon-only UPLOAD + LIBRARY in deck header — always compact */
+.deck-header .deck-upload-btn .btn-text,.deck-header .deck-lib-btn .btn-text{display:none}
+.deck-header .deck-upload-btn .btn-icon,.deck-header .deck-lib-btn .btn-icon{display:inline-block;font-size:15px;line-height:1}
+.deck-header .deck-upload-btn,.deck-header .deck-lib-btn{
+  padding:6px 10px !important;min-width:36px;font-size:14px;letter-spacing:0;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+@media(max-width:1550px){
+  .console.show-all .cdj .deck-header .deck-label .suffix{display:none}
+}
 .deck-header .deck-lib-btn{
   margin-left:4px;padding:6px 12px;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;font-weight:800;
   background:linear-gradient(180deg,#2a2a2e 0%,#151518 100%);
@@ -3655,7 +3689,7 @@ const DEMO_TRACKS=[
 
 /* ============ DECK HTML BUILDER ============ */
 function buildDeckHTML(d){
-  return `<div class="deck-header"><div class="deck-label"><span class="model">CDJ-3000</span>DECK</div><button class="deck-upload-btn" data-deck-upload="${d}" title="Upload audio files and load to deck ${d}">⬆ UPLOAD</button><button class="deck-lib-btn" data-deck-lib="${d}" title="Browse library and load to deck ${d}">📚 LIBRARY</button><div class="deck-number">${d}</div></div>
+  return `<div class="deck-header"><div class="deck-label"><span class="model">CDJ-3000</span><span class="suffix">DECK</span></div><button class="deck-upload-btn" data-deck-upload="${d}" title="Upload audio files and load to deck ${d}"><span class="btn-icon">⬆</span><span class="btn-text">⬆ UPLOAD</span></button><button class="deck-lib-btn" data-deck-lib="${d}" title="Browse library and load to deck ${d}"><span class="btn-icon">📚</span><span class="btn-text">📚 LIBRARY</span></button><div class="deck-number">${d}</div></div>
   <div class="screen"><div class="screen-top"><div><div class="track-title" id="title-${d}">— NO TRACK LOADED —</div><div class="track-artist" id="artist-${d}">LOAD A TRACK</div></div><div class="screen-right"><div class="screen-bpm" id="bpm-${d}">---.--</div><div class="screen-bpm-label">BPM</div><div class="screen-key" id="key-${d}">--</div></div></div>
   <div class="waveform"><canvas class="waveform-canvas" id="wave-${d}" width="600" height="48"></canvas><div class="phrase-markers" id="phrase-${d}"></div><div class="playhead"></div></div>
   <div class="time-row"><div><div class="time-label">ELAPSED</div><div class="time-value" id="elapsed-${d}">00:00.0</div></div><div style="text-align:right;"><div class="time-label">REMAIN</div><div class="time-value remain" id="remain-${d}">-00:00.0</div></div></div></div>
