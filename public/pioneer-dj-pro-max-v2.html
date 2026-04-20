@@ -802,6 +802,126 @@ button:focus-visible{outline:2px solid var(--orange-glow);outline-offset:2px}
 }
 
 /* ============================================================
+   JOG WHEEL v5 — premium CDJ-style rotation and lighting
+   ============================================================ */
+.jog-wheel{
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  will-change:transform;
+  perspective:1200px;
+}
+.jog-platter{
+  will-change:transform;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  transform:translateZ(0);
+  transition:filter .35s cubic-bezier(.4,0,.2,1);
+}
+.jog-platter-disc{
+  will-change:transform;
+  transform:translateZ(0);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+.jog-platter.spinning{
+  animation:platterSpin 3.2s linear infinite;
+  animation-play-state:running;
+}
+.jog-platter.jog-active.spinning,.jog-platter.jog-active{
+  animation-play-state:paused;
+}
+@keyframes platterSpin{
+  from{transform:translateZ(0) rotate(0deg)}
+  to{transform:translateZ(0) rotate(360deg)}
+}
+.jog-ring-light{
+  background:conic-gradient(from 0deg,
+    transparent 0deg,
+    rgba(255,138,26,.12) 10deg,
+    rgba(255,138,26,.35) 25deg,
+    rgba(255,180,100,.55) 38deg,
+    rgba(255,138,26,.35) 52deg,
+    rgba(255,138,26,.12) 70deg,
+    transparent 95deg,
+    transparent 360deg);
+  filter:blur(2.5px);
+  animation:jogSpin 4s linear infinite;
+  animation-play-state:paused;
+  will-change:transform;
+  opacity:.85;
+  transition:opacity .35s ease;
+}
+.jog-wheel.playing .jog-ring-light{animation-play-state:running}
+.jog-wheel:not(.playing) .jog-ring-light{opacity:.35;animation:jogBreathe 3.5s ease-in-out infinite}
+@keyframes jogBreathe{0%,100%{opacity:.22}50%{opacity:.5}}
+@keyframes jogSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+/* Subtle idle glow so paused decks still feel alive */
+.jog-wheel:not(.playing) .jog-outer{box-shadow:
+  0 0 0 2px #050506,
+  0 0 0 3px rgba(255,255,255,.04),
+  0 0 0 5px #1e1e22,
+  inset 0 3px 12px rgba(255,255,255,.08),
+  inset 0 -6px 18px rgba(0,0,0,.92),
+  0 16px 36px rgba(0,0,0,.75);
+}
+/* Inner platter disc has its own counter-rotating shine for added depth */
+.jog-platter.spinning .jog-platter-disc::before{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 0deg,
+    transparent 0deg,
+    rgba(255,255,255,.04) 30deg,
+    rgba(255,255,255,.08) 45deg,
+    rgba(255,255,255,.04) 60deg,
+    transparent 90deg,
+    transparent 360deg);
+  animation:platterSpin 6.4s linear infinite reverse;
+  will-change:transform;
+  pointer-events:none;
+}
+/* The orange indicator tick gets a smooth motion blur only while playing */
+.jog-wheel.playing .jog-indicator{
+  box-shadow:0 0 14px rgba(255,138,26,.95),0 0 3px rgba(255,255,255,.9);
+  filter:drop-shadow(0 0 4px rgba(255,138,26,.6));
+}
+/* On hover while NOT playing, subtle lift */
+.jog-wheel:not(.playing):hover .jog-outer{filter:brightness(1.05)}
+/* Respect user reduced-motion preference */
+@media(prefers-reduced-motion:reduce){
+  .jog-platter.spinning,.jog-ring-light,.jog-platter.spinning .jog-platter-disc::before{animation:none !important}
+}
+
+/* Work-mode jog wheels: slower + smoother since they render larger */
+body.work-mode .jog-platter.spinning{animation-duration:4.4s}
+body.work-mode .jog-platter.spinning .jog-platter-disc::before{animation-duration:8s}
+body.work-mode .jog-ring-light{animation-duration:5.5s;filter:blur(3.5px)}
+body.work-mode .jog-wheel,
+body.work-mode .jog-platter,
+body.work-mode .jog-platter-disc,
+body.work-mode .jog-ring-light,
+body.work-mode .jog-center-screen{
+  transform:translateZ(0);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+/* Isolate the console on its own compositing layer so the neon halo
+   never triggers a relayout/repaint while the platter is rotating. */
+body.work-mode .console{contain:layout paint;will-change:auto}
+body.work-mode .console::before,body.work-mode .console::after{
+  will-change:background-position,opacity;
+  contain:strict;
+}
+@media(min-width:1900px){
+  body.work-mode .jog-platter.spinning{animation-duration:5.2s}
+  body.work-mode .jog-platter.spinning .jog-platter-disc::before{animation-duration:10s}
+  body.work-mode .jog-ring-light{animation-duration:6.5s}
+}
+@media(min-width:2400px){
+  body.work-mode .jog-platter.spinning{animation-duration:6s}
+  body.work-mode .jog-platter.spinning .jog-platter-disc::before{animation-duration:12s}
+  body.work-mode .jog-ring-light{animation-duration:7.5s}
+}
+
+/* ============================================================
    VISUAL POLISH LAYER v4 — per-tab refinements + interactions
    ============================================================ */
 
@@ -1589,8 +1709,8 @@ body.work-mode .console::after{
   50%{background-position:100% 50%}
 }
 @keyframes neonPulse{
-  0%,100%{opacity:.45;transform:scale(1)}
-  50%{opacity:.85;transform:scale(1.01)}
+  0%,100%{opacity:.45}
+  50%{opacity:.85}
 }
 body.work-mode .cdj,body.work-mode .mixer{
   background:linear-gradient(180deg,rgba(42,42,46,.9) 0%,rgba(23,23,26,.95) 100%);
