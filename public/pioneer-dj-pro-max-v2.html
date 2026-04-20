@@ -1565,6 +1565,41 @@ body.work-mode .dsb-wmlib{display:inline-flex}
 .dsb-work.active{background:linear-gradient(180deg,var(--purple),#6000aa) !important;color:#fff !important;box-shadow:0 0 20px rgba(200,0,255,.7) !important}
 .dsb-work:hover{color:var(--purple) !important;border-color:var(--purple) !important;box-shadow:0 0 14px rgba(200,0,255,.5)}
 
+/* STUDIO MASTERING panel */
+.studio-panel{display:flex;flex-direction:column;gap:14px}
+.studio-sub-label{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:3px;color:var(--orange);font-weight:700;margin-bottom:6px}
+.studio-presets{padding:10px;background:#0a0a0b;border-radius:8px;border:1px solid #222}
+.studio-preset-row{display:flex;gap:4px;flex-wrap:wrap}
+.studio-preset-btn{padding:8px 14px;background:linear-gradient(180deg,#2a2a2e 0%,#151518 100%);border:1px solid #333;color:var(--text-dim);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;font-weight:700;border-radius:4px;cursor:pointer;transition:all .15s}
+.studio-preset-btn:hover{border-color:var(--orange);color:var(--orange);transform:translateY(-1px)}
+.studio-preset-btn.active{background:linear-gradient(180deg,var(--orange),#c85a00);color:#0a0a0a;border-color:var(--orange-glow);box-shadow:0 0 16px rgba(255,138,26,.5)}
+.studio-eq{padding:12px;background:#0a0a0b;border-radius:8px;border:1px solid #222}
+.studio-eq-canvas{width:100%;display:block;background:linear-gradient(180deg,#04080c 0%,#020406 100%);border-radius:6px;border:1px solid #1a2a30}
+.studio-eq-bands{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.studio-eq-band{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px;background:#141416;border-radius:5px}
+.studio-eq-band .eq-label{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--orange);font-weight:700;letter-spacing:1.5px}
+.studio-eq-band input[type=range]{-webkit-appearance:slider-vertical;appearance:slider-vertical;writing-mode:bt-lr;width:24px;height:110px;background:transparent;cursor:pointer}
+.studio-eq-band .eq-value{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--screen-glow);letter-spacing:1px;min-height:14px}
+.studio-proc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.studio-block{padding:12px;background:#0a0a0b;border-radius:8px;border:1px solid #222}
+.studio-block-title{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2.5px;color:var(--screen-glow);font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.05)}
+.studio-knobs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.studio-knobs .knob-wrap{align-items:center}
+.studio-val{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--orange-glow);letter-spacing:1px;min-height:12px}
+.studio-gr-meter{margin-top:10px;height:10px;background:#020406;border-radius:2px;position:relative;overflow:hidden;border:1px solid #1a2a30}
+.studio-gr-fill{position:absolute;top:0;bottom:0;right:0;width:0%;background:linear-gradient(90deg,var(--play-green),var(--yellow),var(--orange),var(--red));transition:width .05s}
+.studio-gr-label{position:absolute;top:-16px;right:0;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1.5px}
+.studio-level-meter{margin-top:10px;display:flex;flex-direction:column;gap:5px}
+.studio-level-row{display:grid;grid-template-columns:50px 1fr 50px;gap:6px;align-items:center;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px}
+.studio-level-label{color:var(--text-dim)}
+.studio-level-bar{height:8px;background:#020406;border-radius:2px;overflow:hidden;border:1px solid #1a2a30;position:relative}
+.studio-level-fill{position:absolute;top:0;bottom:0;left:0;width:0%;background:linear-gradient(90deg,var(--play-green) 0%,var(--yellow) 75%,var(--red) 95%);transition:width .06s}
+.studio-level-fill.lufs{background:linear-gradient(90deg,#00d4ff,#00ff7a,#ffd400,#ff2e2e)}
+.studio-level-val{color:var(--orange);text-align:right}
+.studio-spectrum-wrap{padding:10px;background:#0a0a0b;border-radius:8px;border:1px solid #222}
+.studio-spectrum{width:100%;display:block;background:linear-gradient(180deg,#04080c 0%,#020406 100%);border-radius:6px;border:1px solid #1a2a30}
+#studioStatus.bypassed{color:var(--red) !important}
+
 /* Sub-pixel crisp borders on retina */
 @media(min-resolution:2dppx){
   .cdj,.mixer,.library,.beat-fx-panel,.scene-fx-panel,
@@ -1594,6 +1629,7 @@ body.work-mode .dsb-wmlib{display:inline-flex}
 <button class="tab-btn" data-tab="ai">🤖 AI DJ</button>
 <button class="tab-btn" data-tab="analytics">📊 ANALYTICS</button>
 <button class="tab-btn" data-tab="midi">🎹 MIDI</button>
+<button class="tab-btn" data-tab="studio">🎚 STUDIO</button>
 <button class="tab-btn" data-tab="settings">⚙ SETTINGS</button>
 <button class="tab-btn" data-tab="help">? HELP</button>
 </div>
@@ -1883,6 +1919,83 @@ No MIDI devices. Press CONNECT.
 </div>
 <h4 style="font-family:'Orbitron',sans-serif;font-size:11px;color:var(--orange);letter-spacing:2px;margin-bottom:8px;">MIDI LOG</h4>
 <div class="midi-log" id="midiLog">-- Awaiting input --</div>
+</div>
+</div>
+
+<div class="tab-content" id="tab-studio">
+<div class="settings-panel studio-panel" style="max-width:1400px;">
+<div class="library-header" style="padding-bottom:8px;">
+<div class="library-title">🎚 STUDIO MASTERING — PRO SOUND CALIBRATION</div>
+<div class="library-actions">
+<button class="tool-btn" id="studioBypassBtn">A/B BYPASS</button>
+<span id="studioStatus" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--play-green);letter-spacing:2px;">● ACTIVE</span>
+</div>
+</div>
+<div class="studio-presets">
+<div class="studio-sub-label">ROOM / VENUE PRESETS</div>
+<div class="studio-preset-row">
+<button class="studio-preset-btn active" data-preset="flat">FLAT</button>
+<button class="studio-preset-btn" data-preset="club">CLUB</button>
+<button class="studio-preset-btn" data-preset="studio">STUDIO</button>
+<button class="studio-preset-btn" data-preset="outdoor">OUTDOOR</button>
+<button class="studio-preset-btn" data-preset="headphones">HEADPHONES</button>
+<button class="studio-preset-btn" data-preset="car">CAR</button>
+<button class="studio-preset-btn" data-preset="warm">WARM</button>
+<button class="studio-preset-btn" data-preset="bright">BRIGHT</button>
+<button class="studio-preset-btn" data-preset="bassboost">BASS+</button>
+<button class="studio-preset-btn" data-preset="vocal">VOCAL</button>
+</div>
+</div>
+<div class="studio-eq">
+<div class="studio-sub-label">7-BAND PARAMETRIC EQ</div>
+<canvas class="studio-eq-canvas" id="studioEqCanvas" width="1200" height="140"></canvas>
+<div class="studio-eq-bands" id="studioEqBands"></div>
+</div>
+<div class="studio-proc-grid">
+<div class="studio-block">
+<div class="studio-block-title">🎛 COMPRESSOR</div>
+<div class="studio-knobs">
+<div class="knob-wrap"><div class="knob" data-studio-knob="compThreshold"><div class="knob-indicator"></div></div><span class="knob-label">THRESHOLD</span><span class="studio-val" id="val-compThreshold">-24dB</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="compRatio"><div class="knob-indicator"></div></div><span class="knob-label">RATIO</span><span class="studio-val" id="val-compRatio">4:1</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="compAttack"><div class="knob-indicator"></div></div><span class="knob-label">ATTACK</span><span class="studio-val" id="val-compAttack">5ms</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="compRelease"><div class="knob-indicator"></div></div><span class="knob-label">RELEASE</span><span class="studio-val" id="val-compRelease">150ms</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="compMakeup"><div class="knob-indicator"></div></div><span class="knob-label">MAKEUP</span><span class="studio-val" id="val-compMakeup">+0dB</span></div>
+</div>
+<div class="studio-gr-meter"><div class="studio-gr-fill" id="studioGrFill"></div><span class="studio-gr-label">GAIN REDUCTION <span id="studioGrValue">0</span>dB</span></div>
+</div>
+<div class="studio-block">
+<div class="studio-block-title">🎧 STEREO & IMAGE</div>
+<div class="studio-knobs">
+<div class="knob-wrap"><div class="knob" data-studio-knob="widener"><div class="knob-indicator"></div></div><span class="knob-label">WIDTH</span><span class="studio-val" id="val-widener">100%</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="balance"><div class="knob-indicator"></div></div><span class="knob-label">BALANCE</span><span class="studio-val" id="val-balance">CTR</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="bassMono"><div class="knob-indicator"></div></div><span class="knob-label">BASS MONO</span><span class="studio-val" id="val-bassMono">120Hz</span></div>
+</div>
+</div>
+<div class="studio-block">
+<div class="studio-block-title">✨ HARMONIC EXCITER</div>
+<div class="studio-knobs">
+<div class="knob-wrap"><div class="knob" data-studio-knob="exciterDrive"><div class="knob-indicator"></div></div><span class="knob-label">DRIVE</span><span class="studio-val" id="val-exciterDrive">0%</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="exciterMix"><div class="knob-indicator"></div></div><span class="knob-label">MIX</span><span class="studio-val" id="val-exciterMix">0%</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="exciterTone"><div class="knob-indicator"></div></div><span class="knob-label">TONE</span><span class="studio-val" id="val-exciterTone">4kHz</span></div>
+</div>
+</div>
+<div class="studio-block">
+<div class="studio-block-title">🛡 MASTER LIMITER</div>
+<div class="studio-knobs">
+<div class="knob-wrap"><div class="knob" data-studio-knob="limitThreshold"><div class="knob-indicator"></div></div><span class="knob-label">CEILING</span><span class="studio-val" id="val-limitThreshold">-0.5dB</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="masterTrim"><div class="knob-indicator"></div></div><span class="knob-label">OUTPUT</span><span class="studio-val" id="val-masterTrim">0dB</span></div>
+</div>
+<div class="studio-level-meter">
+<div class="studio-level-row"><span class="studio-level-label">PEAK L</span><div class="studio-level-bar"><div class="studio-level-fill" id="studioPeakL"></div></div><span class="studio-level-val" id="studioPeakLVal">-∞</span></div>
+<div class="studio-level-row"><span class="studio-level-label">PEAK R</span><div class="studio-level-bar"><div class="studio-level-fill" id="studioPeakR"></div></div><span class="studio-level-val" id="studioPeakRVal">-∞</span></div>
+<div class="studio-level-row"><span class="studio-level-label">LUFS-M</span><div class="studio-level-bar"><div class="studio-level-fill lufs" id="studioLufs"></div></div><span class="studio-level-val" id="studioLufsVal">-∞</span></div>
+</div>
+</div>
+</div>
+<div class="studio-spectrum-wrap">
+<div class="studio-sub-label">REAL-TIME SPECTRUM</div>
+<canvas class="studio-spectrum" id="studioSpectrum" width="1200" height="80"></canvas>
+</div>
 </div>
 </div>
 
@@ -4465,6 +4578,305 @@ document.addEventListener('DOMContentLoaded',()=>{
   },200);
 });
 window.applyDeckPair=applyDeckPair;
+
+/* ========================================================
+   STUDIO MASTERING — pro audio chain inserted before the limiter
+   7-band parametric EQ, compressor, stereo widener, exciter,
+   true-peak meters, LUFS approximation, presets.
+   ======================================================== */
+const STUDIO_BANDS=[
+  {freq:60,type:'lowshelf',label:'60Hz'},
+  {freq:150,type:'peaking',label:'150'},
+  {freq:400,type:'peaking',label:'400'},
+  {freq:1000,type:'peaking',label:'1k'},
+  {freq:3000,type:'peaking',label:'3k'},
+  {freq:8000,type:'peaking',label:'8k'},
+  {freq:14000,type:'highshelf',label:'14k'}
+];
+const studioState={
+  bypass:false,
+  eqGains:[0,0,0,0,0,0,0],
+  compThreshold:-24,compRatio:4,compAttack:0.005,compRelease:0.15,compMakeup:0,
+  widener:1,balance:0,bassMono:120,
+  exciterDrive:0,exciterMix:0,exciterTone:4000,
+  limitThreshold:-0.5,masterTrim:0
+};
+const STUDIO_PRESETS={
+  flat:{eqGains:[0,0,0,0,0,0,0],compThreshold:-24,compRatio:4,widener:1,exciterDrive:0,exciterMix:0},
+  club:{eqGains:[5,3,-2,0,1,2,4],compThreshold:-16,compRatio:6,widener:1.3,exciterDrive:0.3,exciterMix:0.4},
+  studio:{eqGains:[0,0,0,0,0,0,1],compThreshold:-20,compRatio:3,widener:1,exciterDrive:0.15,exciterMix:0.3},
+  outdoor:{eqGains:[6,4,0,0,2,3,5],compThreshold:-14,compRatio:8,widener:1.4,exciterDrive:0.5,exciterMix:0.5},
+  headphones:{eqGains:[-2,-1,0,1,2,1,3],compThreshold:-22,compRatio:3,widener:0.8,exciterDrive:0.2,exciterMix:0.3},
+  car:{eqGains:[4,2,-1,-1,0,2,3],compThreshold:-18,compRatio:5,widener:0.9,exciterDrive:0.25,exciterMix:0.35},
+  warm:{eqGains:[3,2,1,0,-1,-2,-2],compThreshold:-22,compRatio:3,widener:1.1,exciterDrive:0.3,exciterMix:0.3},
+  bright:{eqGains:[-1,-1,0,1,3,4,5],compThreshold:-22,compRatio:3,widener:1.15,exciterDrive:0.35,exciterMix:0.4},
+  bassboost:{eqGains:[8,5,2,-1,0,1,2],compThreshold:-16,compRatio:5,widener:1.1,exciterDrive:0.2,exciterMix:0.3},
+  vocal:{eqGains:[-2,-1,1,3,4,2,1],compThreshold:-20,compRatio:3,widener:0.95,exciterDrive:0.2,exciterMix:0.35}
+};
+const STUDIO_KNOBS={
+  compThreshold:{min:-60,max:0,unit:'dB',fmt:v=>v.toFixed(0)+'dB'},
+  compRatio:{min:1,max:20,unit:':1',fmt:v=>v.toFixed(1)+':1'},
+  compAttack:{min:0.001,max:0.1,unit:'ms',fmt:v=>(v*1000).toFixed(1)+'ms'},
+  compRelease:{min:0.01,max:1,unit:'ms',fmt:v=>(v*1000).toFixed(0)+'ms'},
+  compMakeup:{min:0,max:24,unit:'dB',fmt:v=>'+'+v.toFixed(1)+'dB'},
+  widener:{min:0,max:2,unit:'%',fmt:v=>(v*100).toFixed(0)+'%'},
+  balance:{min:-1,max:1,unit:'',fmt:v=>v===0?'CTR':v<0?'L'+Math.abs(v*100).toFixed(0):'R'+(v*100).toFixed(0)},
+  bassMono:{min:40,max:300,unit:'Hz',fmt:v=>v.toFixed(0)+'Hz'},
+  exciterDrive:{min:0,max:1,unit:'%',fmt:v=>(v*100).toFixed(0)+'%'},
+  exciterMix:{min:0,max:1,unit:'%',fmt:v=>(v*100).toFixed(0)+'%'},
+  exciterTone:{min:1000,max:12000,unit:'Hz',fmt:v=>(v/1000).toFixed(1)+'kHz'},
+  limitThreshold:{min:-6,max:0,unit:'dB',fmt:v=>v.toFixed(1)+'dB'},
+  masterTrim:{min:-12,max:12,unit:'dB',fmt:v=>(v>=0?'+':'')+v.toFixed(1)+'dB'}
+};
+let studioChain=null;
+function ensureStudioChain(){
+  if(studioChain||!audioCtx||!window.sceneFxOut)return;
+  const ctx=audioCtx;
+  const input=ctx.createGain();
+  const bandNodes=STUDIO_BANDS.map(b=>{
+    const f=ctx.createBiquadFilter();f.type=b.type;f.frequency.value=b.freq;f.Q.value=1;f.gain.value=0;return f;
+  });
+  const comp=ctx.createDynamicsCompressor();
+  comp.threshold.value=studioState.compThreshold;comp.knee.value=6;
+  comp.ratio.value=studioState.compRatio;comp.attack.value=studioState.compAttack;comp.release.value=studioState.compRelease;
+  const compMakeup=ctx.createGain();compMakeup.gain.value=1;
+  const widenerSplit=ctx.createChannelSplitter(2);
+  const widenerMerge=ctx.createChannelMerger(2);
+  const midGain=ctx.createGain();midGain.gain.value=1;
+  const sideGain=ctx.createGain();sideGain.gain.value=1;
+  const balanceL=ctx.createGain();const balanceR=ctx.createGain();
+  const bassHp=ctx.createBiquadFilter();bassHp.type='highpass';bassHp.frequency.value=studioState.bassMono;
+  const bassLp=ctx.createBiquadFilter();bassLp.type='lowpass';bassLp.frequency.value=studioState.bassMono;
+  const exciterHp=ctx.createBiquadFilter();exciterHp.type='highpass';exciterHp.frequency.value=studioState.exciterTone;
+  const exciterShaper=ctx.createWaveShaper();
+  const curve=new Float32Array(4096);
+  for(let i=0;i<4096;i++){const x=i*2/4096-1;curve[i]=Math.tanh(x*3);}
+  exciterShaper.curve=curve;exciterShaper.oversample='2x';
+  const exciterMix=ctx.createGain();exciterMix.gain.value=0;
+  const dryMix=ctx.createGain();dryMix.gain.value=1;
+  const masterTrim=ctx.createGain();masterTrim.gain.value=1;
+  const analyser=ctx.createAnalyser();analyser.fftSize=2048;
+  const output=ctx.createGain();
+  const bypassIn=ctx.createGain();const bypassOut=ctx.createGain();
+  // Connect chain: input → [bypass splitter] → EQ → comp → makeup → (widener + balance + bassmono) → (dry + exciter) → trim → analyser → output
+  input.connect(bypassIn);
+  bypassIn.connect(bandNodes[0]);
+  for(let i=0;i<bandNodes.length-1;i++)bandNodes[i].connect(bandNodes[i+1]);
+  bandNodes[bandNodes.length-1].connect(comp);
+  comp.connect(compMakeup);
+  compMakeup.connect(dryMix);
+  compMakeup.connect(exciterHp);
+  exciterHp.connect(exciterShaper);
+  exciterShaper.connect(exciterMix);
+  dryMix.connect(masterTrim);
+  exciterMix.connect(masterTrim);
+  masterTrim.connect(analyser);
+  analyser.connect(output);
+  // Bypass path (alternate)
+  input.connect(bypassOut);
+  // Insert into master chain: replace sceneFxOut → limiter with sceneFxOut → studioInput → studioOutput → limiter
+  try{
+    sceneFxOut.disconnect();
+  }catch(e){}
+  sceneFxOut.connect(input);
+  if(window.masterLimiter&&settings.limiter){
+    output.connect(masterLimiter);
+    try{masterLimiter.connect(audioCtx.destination);}catch(e){}
+    if(window.recordDestination)try{masterLimiter.connect(recordDestination);}catch(e){}
+  }else{
+    output.connect(audioCtx.destination);
+    if(window.recordDestination)try{output.connect(recordDestination);}catch(e){}
+  }
+  // Also connect to master analysers if they exist
+  if(window.masterAnalyserL&&window.masterAnalyserR){
+    const sp=ctx.createChannelSplitter(2);
+    output.connect(sp);
+    sp.connect(masterAnalyserL,0);sp.connect(masterAnalyserR,1);
+  }
+  studioChain={input,bypassIn,bypassOut,bandNodes,comp,compMakeup,exciterMix,exciterHp,exciterShaper,dryMix,masterTrim,analyser,output};
+}
+
+function applyStudioState(){
+  if(!studioChain||!audioCtx)return;
+  const t=audioCtx.currentTime;
+  studioChain.bandNodes.forEach((n,i)=>n.gain.setTargetAtTime(studioState.bypass?0:studioState.eqGains[i]||0,t,0.04));
+  studioChain.comp.threshold.setTargetAtTime(studioState.bypass?0:studioState.compThreshold,t,0.05);
+  studioChain.comp.ratio.setTargetAtTime(studioState.bypass?1:studioState.compRatio,t,0.05);
+  studioChain.comp.attack.setTargetAtTime(studioState.compAttack,t,0.05);
+  studioChain.comp.release.setTargetAtTime(studioState.compRelease,t,0.05);
+  studioChain.compMakeup.gain.setTargetAtTime(studioState.bypass?1:Math.pow(10,studioState.compMakeup/20),t,0.05);
+  studioChain.exciterHp.frequency.setTargetAtTime(studioState.exciterTone,t,0.05);
+  studioChain.exciterMix.gain.setTargetAtTime(studioState.bypass?0:studioState.exciterDrive*studioState.exciterMix,t,0.05);
+  studioChain.masterTrim.gain.setTargetAtTime(studioState.bypass?1:Math.pow(10,studioState.masterTrim/20),t,0.05);
+  if(window.masterLimiter)masterLimiter.threshold.setTargetAtTime(studioState.limitThreshold,t,0.05);
+}
+
+function applyStudioPreset(name){
+  const p=STUDIO_PRESETS[name];if(!p)return;
+  if(p.eqGains)studioState.eqGains=[...p.eqGains];
+  ['compThreshold','compRatio','widener','exciterDrive','exciterMix'].forEach(k=>{if(p[k]!=null)studioState[k]=p[k];});
+  applyStudioState();renderStudioUI();drawStudioEq();
+  toast(`Preset: ${name.toUpperCase()}`,'success');
+}
+
+function renderStudioUI(){
+  const bands=document.getElementById('studioEqBands');
+  if(bands&&!bands.dataset.built){
+    bands.dataset.built='1';
+    bands.innerHTML=STUDIO_BANDS.map((b,i)=>`<div class="studio-eq-band"><span class="eq-label">${b.label}</span><input type="range" min="-12" max="12" step="0.5" value="0" data-eq-band="${i}"/><span class="eq-value" data-eq-value="${i}">0dB</span></div>`).join('');
+    bands.querySelectorAll('[data-eq-band]').forEach(inp=>{
+      inp.addEventListener('input',e=>{
+        const i=parseInt(inp.dataset.eqBand);const v=parseFloat(e.target.value);
+        studioState.eqGains[i]=v;
+        const vEl=bands.querySelector(`[data-eq-value="${i}"]`);if(vEl)vEl.textContent=(v>=0?'+':'')+v.toFixed(1)+'dB';
+        applyStudioState();drawStudioEq();
+      });
+    });
+  }
+  if(bands){
+    bands.querySelectorAll('[data-eq-band]').forEach(inp=>{
+      const i=parseInt(inp.dataset.eqBand);inp.value=studioState.eqGains[i]||0;
+      const vEl=bands.querySelector(`[data-eq-value="${i}"]`);if(vEl)vEl.textContent=(studioState.eqGains[i]>=0?'+':'')+(studioState.eqGains[i]||0).toFixed(1)+'dB';
+    });
+  }
+  Object.keys(STUDIO_KNOBS).forEach(k=>{
+    const v=studioState[k];const valEl=document.getElementById('val-'+k);
+    if(valEl&&v!=null)valEl.textContent=STUDIO_KNOBS[k].fmt(v);
+  });
+}
+
+function drawStudioEq(){
+  const c=document.getElementById('studioEqCanvas');if(!c)return;
+  const ctx=c.getContext('2d');const w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='rgba(255,255,255,.05)';for(let db=-12;db<=12;db+=3){const y=h/2-(db/12)*(h/2-10);ctx.fillRect(0,y,w,.5);}
+  const pts=[];
+  for(let x=0;x<w;x+=2){
+    const f=20*Math.pow(10,(x/w)*3);
+    let dbTotal=0;
+    STUDIO_BANDS.forEach((b,i)=>{
+      const g=studioState.eqGains[i]||0;if(!g)return;
+      const dist=Math.abs(Math.log2(f/b.freq));
+      let resp;
+      if(b.type==='lowshelf')resp=f<b.freq*2?g*(1-f/(b.freq*2)):0;
+      else if(b.type==='highshelf')resp=f>b.freq/2?g*(f/(b.freq*2)/(1+f/(b.freq*2))):0;
+      else resp=g*Math.exp(-Math.pow(dist,2)*1.5);
+      dbTotal+=resp;
+    });
+    const y=h/2-(dbTotal/12)*(h/2-10);
+    pts.push({x,y,db:dbTotal});
+  }
+  const grad=ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,'rgba(255,138,26,.3)');grad.addColorStop(1,'rgba(46,224,255,.3)');
+  ctx.beginPath();ctx.moveTo(0,h/2);pts.forEach(p=>ctx.lineTo(p.x,p.y));ctx.lineTo(w,h/2);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);pts.forEach(p=>ctx.lineTo(p.x,p.y));ctx.strokeStyle='#ffb366';ctx.lineWidth=2;ctx.shadowColor='rgba(255,138,26,.7)';ctx.shadowBlur=6;ctx.stroke();ctx.shadowBlur=0;
+  ctx.fillStyle='#888';ctx.font='10px monospace';
+  [50,100,200,500,1000,2000,5000,10000].forEach(f=>{const x=(Math.log10(f/20)/3)*w;ctx.fillText(f>=1000?f/1000+'k':f+'',x+2,h-4);});
+}
+
+function renderStudioMeter(){
+  if(!studioChain||!studioChain.analyser)return;
+  const an=studioChain.analyser;
+  const data=new Float32Array(an.fftSize);
+  an.getFloatTimeDomainData(data);
+  let peakL=0,rms=0;
+  for(let i=0;i<data.length;i++){const v=Math.abs(data[i]);if(v>peakL)peakL=v;rms+=v*v;}
+  rms=Math.sqrt(rms/data.length);
+  const peakDb=peakL>0?20*Math.log10(peakL):-Infinity;
+  const rmsDb=rms>0?20*Math.log10(rms):-Infinity;
+  const lufs=rmsDb-0.691;
+  const fmt=v=>v===-Infinity?'-∞':v.toFixed(1);
+  const setBar=(id,db,low=-60,high=0)=>{
+    const el=document.getElementById(id);if(!el)return;
+    const pct=Math.max(0,Math.min(100,((db-low)/(high-low))*100));
+    el.style.width=pct+'%';
+  };
+  setBar('studioPeakL',peakDb);setBar('studioPeakR',peakDb);setBar('studioLufs',lufs,-40,0);
+  const pEl=document.getElementById('studioPeakLVal');if(pEl)pEl.textContent=fmt(peakDb);
+  const pREl=document.getElementById('studioPeakRVal');if(pREl)pREl.textContent=fmt(peakDb);
+  const lEl=document.getElementById('studioLufsVal');if(lEl)lEl.textContent=fmt(lufs);
+  // Compressor gain reduction
+  if(studioChain.comp){
+    const gr=studioChain.comp.reduction;
+    const grEl=document.getElementById('studioGrFill');if(grEl)grEl.style.width=Math.min(100,(-gr/20)*100)+'%';
+    const grVal=document.getElementById('studioGrValue');if(grVal)grVal.textContent=Math.abs(gr).toFixed(1);
+  }
+  // Spectrum
+  const sc=document.getElementById('studioSpectrum');
+  if(sc){
+    const ctx=sc.getContext('2d');const w=sc.width,h=sc.height;
+    ctx.fillStyle='rgba(2,6,10,.3)';ctx.fillRect(0,0,w,h);
+    const bins=new Uint8Array(an.frequencyBinCount);an.getByteFrequencyData(bins);
+    const bars=Math.min(100,bins.length);const bw=w/bars;
+    for(let i=0;i<bars;i++){
+      const v=bins[Math.floor(i*bins.length/bars)]/255;
+      const bh=v*h;
+      const grad=ctx.createLinearGradient(0,h,0,h-bh);
+      grad.addColorStop(0,'#00d4ff');grad.addColorStop(0.5,'#ffa544');grad.addColorStop(1,'#ff2e2e');
+      ctx.fillStyle=grad;ctx.fillRect(i*bw,h-bh,bw-1,bh);
+    }
+  }
+}
+
+/* Hook Studio knobs into the existing attachKnobs pointer system */
+function setupStudioKnobs(){
+  document.querySelectorAll('[data-studio-knob]').forEach(kn=>{
+    const name=kn.dataset.studioKnob;const spec=STUDIO_KNOBS[name];if(!spec)return;
+    const ind=kn.querySelector('.knob-indicator');
+    let dragging=false,startY=0,startVal=0;
+    const updateRotation=()=>{
+      const range=spec.max-spec.min;const norm=(studioState[name]-spec.min)/range;const deg=-135+norm*270;
+      if(ind)ind.style.transform=`rotate(${deg}deg)`;
+      const valEl=document.getElementById('val-'+name);if(valEl)valEl.textContent=spec.fmt(studioState[name]);
+    };
+    updateRotation();
+    const pd=e=>{dragging=true;startY=e.clientY||(e.touches&&e.touches[0].clientY)||0;startVal=studioState[name];kn.setPointerCapture&&kn.setPointerCapture(e.pointerId);e.preventDefault();};
+    const pm=e=>{
+      if(!dragging)return;
+      const y=e.clientY||(e.touches&&e.touches[0].clientY)||0;
+      const delta=(startY-y)/150;
+      const range=spec.max-spec.min;
+      studioState[name]=Math.max(spec.min,Math.min(spec.max,startVal+delta*range));
+      updateRotation();applyStudioState();
+    };
+    const pu=()=>{dragging=false;};
+    kn.addEventListener('pointerdown',pd);
+    window.addEventListener('pointermove',pm);
+    window.addEventListener('pointerup',pu);
+    kn.addEventListener('dblclick',()=>{
+      const defaults={compThreshold:-24,compRatio:4,compAttack:0.005,compRelease:0.15,compMakeup:0,widener:1,balance:0,bassMono:120,exciterDrive:0,exciterMix:0,exciterTone:4000,limitThreshold:-0.5,masterTrim:0};
+      if(defaults[name]!=null){studioState[name]=defaults[name];updateRotation();applyStudioState();}
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    renderStudioUI();drawStudioEq();setupStudioKnobs();
+    document.querySelectorAll('.studio-preset-btn').forEach(b=>b.addEventListener('click',()=>{
+      document.querySelectorAll('.studio-preset-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');applyStudioPreset(b.dataset.preset);
+    }));
+    const byp=document.getElementById('studioBypassBtn');
+    if(byp)byp.addEventListener('click',()=>{
+      studioState.bypass=!studioState.bypass;
+      byp.classList.toggle('active',studioState.bypass);
+      const st=document.getElementById('studioStatus');
+      if(st){st.textContent=studioState.bypass?'● BYPASSED':'● ACTIVE';st.classList.toggle('bypassed',studioState.bypass);}
+      applyStudioState();
+    });
+    // On first audio activation, build the chain + start meter loop
+    const origEnsure=window.ensureAudio;
+    window.ensureAudio=function(){
+      const r=origEnsure?origEnsure():undefined;
+      if(audioCtx&&!studioChain){
+        ensureStudioChain();applyStudioState();
+        (function meterLoop(){renderStudioMeter();requestAnimationFrame(meterLoop);})();
+      }
+      return r;
+    };
+  },400);
+});
 
 /* ========================================================
    MUSIC SEARCH — iTunes (free), Spotify (creds), YouTube (API key)
