@@ -4086,6 +4086,173 @@ document.addEventListener('DOMContentLoaded',()=>{
 window.applyDeckPair=applyDeckPair;
 
 /* ========================================================
+   STABILITY LAYER — stuck-state guards, watchdogs, clean-ups
+   ======================================================== */
+(function(){
+  /* 1) Make ensureAudio actually wait for AudioContext resume so
+        all downstream schedules use a live clock. */
+  const _origEnsure=window.ensureAudio;
+  window.ensureAudio=function(){
+    const r=_origEnsure?_origEnsure():undefined;
+    if(audioCtx&&audioCtx.state==='suspended'){
+      try{audioCtx.resume();}catch(e){}
+    }
+    return r;
+  };
+
+  /* 2) Global error boundary: any uncaught error / rejection
+        clears transient flags so the UI doesn't get stuck. */
+  function clearTransientState(reason){
+    try{
+      if(typeof _automixRunning!=='undefined'&&_automixRunning){
+        _automixRunning=false;
+        document.querySelectorAll('.automix-btn.running').forEach(b=>b.classList.remove('running'));
+      }
+      Object.values(decks||{}).forEach(d=>{
+        if(d._cuePreview){d._cuePreview=false;try{pauseDeck(d===decks.A?'A':d===decks.B?'B':d===decks.C?'C':'D');}catch(_){}}
+      });
+    }catch(e){}
+    if(reason)console.warn('Stability cleanup:',reason);
+  }
+  window.addEventListener('error',(e)=>clearTransientState(e.message||'error'));
+  window.addEventListener('unhandledrejection',(e)=>clearTransientState(e.reason&&(e.reason.message||e.reason)));
+
+  /* 3) Watchdog: _automixRunning can never stay true forever. */
+  setInterval(()=>{
+    if(typeof _automixRunning!=='undefined'&&_automixRunning){
+      const now=performance.now();
+      window._automixStartTs=window._automixStartTs||now;
+      if(now-window._automixStartTs>180000){
+        _automixRunning=false;window._automixStartTs=null;
+        document.querySelectorAll('.automix-btn.running').forEach(b=>b.classList.remove('running'));
+        toast&&toast('Auto-mix watchdog reset','error');
+      }
+    }else{window._automixStartTs=null;}
+  },2000);
+  const _origManualAutoMix=window.manualAutoMix;
+  if(_origManualAutoMix){
+    window.manualAutoMix=function(style){
+      window._automixStartTs=performance.now();
+      try{return _origManualAutoMix.call(this,style);}
+      catch(e){clearTransientState(e.message);throw e;}
+    };
+  }
+
+  /* 4) Suppress click-after-touch on CUE big-btn so mobile taps
+        don't double-fire (touchend + emulated click). */
+  document.addEventListener('DOMContentLoaded',()=>{
+    setTimeout(()=>{
+      document.querySelectorAll('.big-btn.cue').forEach(btn=>{
+        let lastTouch=0;
+        btn.addEventListener('touchend',()=>{lastTouch=Date.now();},true);
+        btn.addEventListener('click',(e)=>{
+          if(Date.now()-lastTouch<450){e.stopImmediatePropagation();e.preventDefault();}
+        },true);
+      });
+    },300);
+  });
+
+  /* 5) Clean up scrub + cue-preview state on focus loss / tab
+        visibility change so decks don't stay in a preview loop
+        when the user switches apps. */
+  function cleanupPreviews(){
+    ['A','B','C','D'].forEach(id=>{
+      const d=decks&&decks[id];if(!d)return;
+      if(d._cuePreview){d._cuePreview=false;try{pauseDeck(id);if(d.cuePoint!=null)seekDeck(id,d.cuePoint);}catch(e){}}
+    });
+  }
+  window.addEventListener('blur',cleanupPreviews);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)cleanupPreviews();});
+
+  /* 6) Single-flight crossfader fade: cancel any in-progress
+        rAF loop before starting a new one so the handle doesn't
+        jitter when two fades overlap (e.g. manual drag during AI
+        transition). */
+  let _xfRaf=null;
+  const _origFade=window.fadeCrossfaderCurve;
+  if(_origFade){
+    window.fadeCrossfaderCurve=function(target,dur,curve){
+      if(_xfRaf){try{cancelAnimationFrame(_xfRaf);}catch(e){}_xfRaf=null;}
+      const start=mixerState.crossfader,t0=performance.now();
+      curve=curve||'cosine';
+      function ease(t){
+        if(curve==='cosine')return (1-Math.cos(Math.PI*t))/2;
+        if(curve==='cut')return t<0.5?0:1;
+        if(curve==='exp')return Math.pow(t,2);
+        return t;
+      }
+      function step(){
+        const el=performance.now()-t0,raw=Math.min(1,el/dur);
+        const t=ease(raw);
+        mixerState.crossfader=start+(target-start)*t;
+        const h=document.getElementById('xfaderHandle');
+        if(h)h.style.left=`${mixerState.crossfader*100}%`;
+        try{applyCrossfader&&applyCrossfader();}catch(e){}
+        if(raw<1)_xfRaf=requestAnimationFrame(step);else _xfRaf=null;
+      }
+      step();
+    };
+  }
+
+  /* 7) Rescue button: long-press the REC button for 2s to clear
+        all transient state, stop every source, reset EQ + xfade. */
+  const recBtn=document.getElementById('recBtn');
+  if(recBtn){
+    let t=null;
+    const arm=()=>{t=setTimeout(()=>{
+      clearTransientState('manual reset');
+      ['A','B','C','D'].forEach(id=>{
+        const d=decks[id];if(!d)return;
+        try{if(d.playing)pauseDeck(id);}catch(e){}
+        if(d.eqLow&&audioCtx){d.eqLow.gain.cancelScheduledValues(audioCtx.currentTime);d.eqLow.gain.setValueAtTime(0,audioCtx.currentTime);}
+        if(d.eqLoMid&&audioCtx){d.eqLoMid.gain.cancelScheduledValues(audioCtx.currentTime);d.eqLoMid.gain.setValueAtTime(0,audioCtx.currentTime);}
+        if(d.eqHiMid&&audioCtx){d.eqHiMid.gain.cancelScheduledValues(audioCtx.currentTime);d.eqHiMid.gain.setValueAtTime(0,audioCtx.currentTime);}
+        if(d.eqHigh&&audioCtx){d.eqHigh.gain.cancelScheduledValues(audioCtx.currentTime);d.eqHigh.gain.setValueAtTime(0,audioCtx.currentTime);}
+        if(d.colorFilter){d.colorFilter.type='allpass';d.colorFilter.frequency.value=1000;}
+        if(d.trimGain&&audioCtx){d.trimGain.gain.cancelScheduledValues(audioCtx.currentTime);d.trimGain.gain.setValueAtTime(1,audioCtx.currentTime);}
+        if(d.volumeGain&&audioCtx){d.volumeGain.gain.cancelScheduledValues(audioCtx.currentTime);d.volumeGain.gain.setValueAtTime(d.volume!=null?d.volume:0.8,audioCtx.currentTime);}
+      });
+      if(window.sceneFxWet&&audioCtx){sceneFxWet.gain.cancelScheduledValues(audioCtx.currentTime);sceneFxWet.gain.setValueAtTime(0,audioCtx.currentTime);}
+      mixerState.crossfader=0.5;const h=document.getElementById('xfaderHandle');if(h)h.style.left='50%';
+      try{applyCrossfader&&applyCrossfader();}catch(e){}
+      toast&&toast('🛟 System reset','success');
+    },2000);};
+    const disarm=()=>{if(t){clearTimeout(t);t=null;}};
+    recBtn.addEventListener('mousedown',arm);
+    recBtn.addEventListener('touchstart',arm,{passive:true});
+    recBtn.addEventListener('mouseup',disarm);
+    recBtn.addEventListener('mouseleave',disarm);
+    recBtn.addEventListener('touchend',disarm);
+    recBtn.addEventListener('touchcancel',disarm);
+  }
+
+  /* 8) Keyboard panic: Esc or Ctrl+Alt+R = same reset. */
+  window.addEventListener('keydown',(e)=>{
+    if((e.ctrlKey&&e.altKey&&(e.key==='r'||e.key==='R'))||(e.key==='Escape'&&e.shiftKey)){
+      e.preventDefault();
+      clearTransientState('keyboard panic');
+      toast&&toast('Panic reset','success');
+    }
+  });
+
+  /* 9) Guard pauseDeck against being called when no source exists
+        (prevents the ghost-pause that left the UI in half-state). */
+  const _origPauseDeck=window.pauseDeck;
+  if(_origPauseDeck){
+    window.pauseDeck=function(id){
+      const d=decks&&decks[id];if(!d)return;
+      if(!d.playing&&!d.source){
+        const btnFull=document.querySelector(`.big-btn.play[data-deck="${id}"]`);
+        if(btnFull)btnFull.classList.remove('active');
+        return;
+      }
+      try{return _origPauseDeck.call(this,id);}
+      catch(e){d.playing=false;d.source=null;clearTransientState(e.message);}
+    };
+  }
+})();
+
+/* ========================================================
    PRO MIX ENGINE — world-class DJ automation
    Camelot harmony, beat-phase sync, gain-matching, multi-stage
    transitions (bass-swap, echo-out, filter-sweep, hard cut).
