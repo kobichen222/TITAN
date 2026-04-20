@@ -1911,6 +1911,80 @@ body.theme-light .shortcut-item kbd{background:linear-gradient(180deg,#fff 0%,#d
 /* Ambient RGB strip reads softer on light */
 body.theme-light .rgb-ambient{opacity:.9}
 
+/* AUTH button + chip in header */
+.auth-btn{
+  padding:6px 12px;background:linear-gradient(180deg,#2a2a2e 0%,#151518 100%);
+  border:1px solid var(--play-green);color:var(--play-green);
+  font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;font-weight:700;
+  border-radius:4px;cursor:pointer;transition:all .15s ease;
+}
+.auth-btn:hover{background:var(--play-green);color:#0a0a0a;box-shadow:0 0 14px rgba(28,255,143,.55)}
+.auth-chip{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 10px;
+  background:linear-gradient(180deg,#2a2a2e 0%,#151518 100%);
+  border:1px solid rgba(28,255,143,.5);color:var(--play-green);
+  font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;
+  border-radius:4px;
+}
+.auth-chip #authName{max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff}
+.auth-logout{background:transparent;border:none;color:var(--red);cursor:pointer;font-size:13px;padding:0 4px;font-weight:900}
+.auth-logout:hover{color:#fff;text-shadow:0 0 6px var(--red)}
+
+/* AUTH modal */
+.auth-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;animation:fadeIn .2s}
+.auth-modal.open{display:flex}
+.auth-box{
+  background:linear-gradient(180deg,#2a2a2e 0%,#14141a 100%);
+  border:1px solid var(--orange);border-radius:14px;padding:28px;
+  width:min(420px,92vw);
+  box-shadow:0 40px 80px rgba(0,0,0,.8),0 0 60px rgba(255,138,26,.3);
+}
+.auth-box h3{font-family:'Orbitron',sans-serif;color:var(--orange);font-size:16px;letter-spacing:3px;text-align:center;margin-bottom:20px}
+.auth-box .auth-tabs{display:flex;gap:4px;background:#0a0a0b;padding:3px;border-radius:6px;margin-bottom:18px}
+.auth-box .auth-tab{flex:1;padding:8px;background:transparent;border:none;color:var(--text-dim);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;border-radius:4px;cursor:pointer;font-weight:700}
+.auth-box .auth-tab.active{background:linear-gradient(180deg,var(--orange),#c85a00);color:#0a0a0a}
+.auth-box .auth-method{display:flex;flex-direction:column;gap:10px}
+.auth-box .auth-method.hidden{display:none}
+.auth-box label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1.5px;display:block;margin-bottom:4px}
+.auth-box input{width:100%;padding:10px 12px;background:#0a0a0b;border:1px solid #333;color:#fff;font-family:'Share Tech Mono',monospace;font-size:13px;border-radius:4px}
+.auth-box input:focus{border-color:var(--orange);outline:none}
+.auth-primary-btn{padding:12px;background:linear-gradient(180deg,var(--orange),#c85a00);border:none;color:#0a0a0a;font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;font-weight:800;border-radius:6px;cursor:pointer;transition:all .15s}
+.auth-primary-btn:hover{filter:brightness(1.1);box-shadow:0 0 20px rgba(255,138,26,.5)}
+.auth-primary-btn:disabled{opacity:.5;cursor:wait}
+.auth-google-btn{padding:12px;background:#fff;color:#202124;border:1px solid #dadce0;font-family:'Share Tech Mono',monospace;font-size:13px;font-weight:700;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}
+.auth-google-btn:hover{background:#f8f9fa;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.auth-divider{display:flex;align-items:center;gap:10px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;margin:14px 0}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1)}
+.auth-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer}
+.auth-close:hover{color:var(--red)}
+.auth-status{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;text-align:center;min-height:16px;padding:6px 0}
+.auth-status.error{color:var(--red)}
+.auth-status.success{color:var(--play-green)}
+
+/* ADMIN panel */
+.admin-table-wrap{max-height:560px;overflow-y:auto;scrollbar-gutter:stable;background:#0a0a0b;border-radius:8px;border:1px solid rgba(255,255,255,.06)}
+.admin-table{width:100%;border-collapse:collapse;font-family:'Share Tech Mono',monospace;font-size:11px}
+.admin-table th{padding:10px 12px;text-align:left;background:#141416;color:var(--orange);letter-spacing:2px;font-weight:700;border-bottom:1px solid rgba(255,138,26,.3);position:sticky;top:0;z-index:1}
+.admin-table td{padding:10px 12px;color:var(--text);border-bottom:1px solid rgba(255,255,255,.04)}
+.admin-table tr:hover td{background:rgba(255,138,26,.04)}
+.admin-role{padding:3px 8px;border-radius:3px;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1.5px;font-weight:700}
+.admin-role.admin{background:rgba(255,138,26,.18);color:var(--orange);border:1px solid rgba(255,138,26,.5)}
+.admin-role.user{background:rgba(46,224,255,.12);color:var(--screen-glow);border:1px solid rgba(46,224,255,.4)}
+.admin-role.banned{background:rgba(255,46,46,.18);color:var(--red);border:1px solid rgba(255,46,46,.5)}
+.admin-actions{display:flex;gap:4px}
+.admin-actions button{padding:5px 9px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid #333;color:var(--text-dim);font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1.3px;border-radius:3px;cursor:pointer}
+.admin-actions button:hover{border-color:var(--orange);color:var(--orange)}
+.admin-actions button.danger:hover{border-color:var(--red);color:var(--red)}
+.admin-actions button.promote:hover{border-color:var(--play-green);color:var(--play-green)}
+
+body.theme-light .auth-box{background:linear-gradient(180deg,#fff 0%,#f0f0f4 100%);color:#1a1a1c}
+body.theme-light .auth-box input{background:#f4f4f8;color:#1a1a1c;border-color:rgba(0,0,0,.15)}
+body.theme-light .auth-box .auth-tab{color:#5a5a60}
+body.theme-light .auth-box .auth-tab.active{color:#fff}
+body.theme-light .admin-table-wrap{background:#fff;border-color:rgba(0,0,0,.08)}
+body.theme-light .admin-table th{background:#f0f0f4;border-bottom-color:rgba(255,138,26,.35)}
+body.theme-light .admin-table td{color:#1a1a1c;border-bottom-color:rgba(0,0,0,.05)}
+
 /* ============================================================
    LIGHT THEME v2.1 — final polish pass for accessibility + clarity
    ============================================================ */
@@ -2379,6 +2453,8 @@ body.lang-he input[type=text],body.lang-he input[type=password]{direction:ltr;te
 <span class="master-bpm" id="masterBpm">---.--</span>
 <button class="rec-btn" id="recBtn" data-t="rec">REC</button>
 <button class="lang-btn" id="langBtn" title="Language / שפה">🌐 EN</button>
+<button class="auth-btn" id="authBtn" title="Sign in / Sign up">👤 SIGN IN</button>
+<span class="auth-chip" id="authChip" style="display:none"><span id="authName"></span> <button class="auth-logout" id="authLogoutBtn" title="Log out">⎋</button></span>
 </div>
 </div>
 
@@ -2392,6 +2468,7 @@ body.lang-he input[type=text],body.lang-he input[type=password]{direction:ltr;te
 <button class="tab-btn" data-tab="analytics" data-t="tab_analytics">📊 ANALYTICS</button>
 <button class="tab-btn" data-tab="midi" data-t="tab_midi">🎹 MIDI</button>
 <button class="tab-btn" data-tab="studio" data-t="tab_studio">🎚 STUDIO</button>
+<button class="tab-btn admin-only" data-tab="admin" id="adminTabBtn" style="display:none">🛡 ADMIN</button>
 <button class="tab-btn" data-tab="settings" data-t="tab_settings">⚙ SETTINGS</button>
 <button class="tab-btn" data-tab="help" data-t="tab_help">? HELP</button>
 </div>
@@ -2452,6 +2529,43 @@ body.lang-he input[type=text],body.lang-he input[type=password]{direction:ltr;te
 </div>
 
 <button class="wm-exit-btn" id="wmExitBtn" title="Exit work mode (Esc)">✕ EXIT</button>
+
+<div class="auth-modal" id="authModal">
+  <div class="auth-box" style="position:relative">
+    <button class="auth-close" id="authCloseBtn">✕</button>
+    <h3 id="authTitle">SIGN IN</h3>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-auth-mode="signin">SIGN IN</button>
+      <button class="auth-tab" data-auth-mode="signup">SIGN UP</button>
+    </div>
+    <button class="auth-google-btn" id="authGoogleBtn">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.185l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.592.102-1.167.282-1.706V4.962H.957A8.997 8.997 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 7.294C4.672 5.167 6.656 3.58 9 3.58z"/></svg>
+      Continue with Google
+    </button>
+    <div class="auth-divider">OR</div>
+    <div class="auth-method" id="authMethodEmail">
+      <div>
+        <label>EMAIL</label>
+        <input type="email" id="authEmail" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+      <div>
+        <label>PASSWORD</label>
+        <input type="password" id="authPassword" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+      <button class="auth-primary-btn" id="authEmailBtn">CONTINUE</button>
+    </div>
+    <div class="auth-divider">OR</div>
+    <div class="auth-method" id="authMethodPhone">
+      <div>
+        <label>PHONE (WhatsApp / SMS)</label>
+        <input type="tel" id="authPhone" placeholder="+972501234567"/>
+      </div>
+      <input type="text" id="authOtp" placeholder="6-digit code" style="display:none;letter-spacing:4px;text-align:center;font-size:16px"/>
+      <button class="auth-primary-btn" id="authPhoneBtn">SEND CODE</button>
+    </div>
+    <div class="auth-status" id="authStatus"></div>
+  </div>
+</div>
 <div class="wm-topbar" id="wmTopbar">
   <button class="wm-exit-bar" id="wmExitBarBtn">← EXIT WORK MODE  <span class="wm-esc-hint">(ESC)</span></button>
 </div>
@@ -2767,6 +2881,24 @@ No MIDI devices. Press CONNECT.
 </div>
 </div>
 
+<div class="tab-content" id="tab-admin">
+<div class="settings-panel" style="max-width:1200px;">
+<div class="library-header" style="padding-bottom:8px;">
+<div class="library-title">🛡 USER MANAGEMENT (ADMIN)</div>
+<div class="library-actions">
+  <button class="tool-btn" id="adminRefreshBtn">🔄 REFRESH</button>
+  <span id="adminStatus" style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:1.5px;"></span>
+</div>
+</div>
+<div class="admin-table-wrap">
+<table class="admin-table" id="adminUsersTable">
+<thead><tr><th>EMAIL / PHONE</th><th>NAME</th><th>ROLE</th><th>STATUS</th><th>CREATED</th><th>ACTIONS</th></tr></thead>
+<tbody id="adminUsersBody"><tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:20px;">Sign in as admin to view users.</td></tr></tbody>
+</table>
+</div>
+</div>
+</div>
+
 <div class="tab-content" id="tab-settings">
 <div class="settings-panel">
 <div class="settings-section"><h3>⚙ APPEARANCE</h3>
@@ -2800,6 +2932,27 @@ No MIDI devices. Press CONNECT.
 <button class="tool-btn" id="clearDataBtn" style="color:var(--red);border-color:var(--red);">CLEAR ALL DATA</button>
 </div>
 </div>
+<div class="settings-section"><h3>🔐 AUTHENTICATION (Supabase)</h3>
+<div class="settings-row" style="flex-direction:column;align-items:stretch;gap:8px;">
+  <div class="setting-label">Supabase Project URL <span class="setting-desc">(Settings → API)</span></div>
+  <input type="text" id="supabaseUrl" class="url-input" placeholder="https://xxxxxxxxxxxx.supabase.co" style="padding:8px 12px;" />
+</div>
+<div class="settings-row" style="flex-direction:column;align-items:stretch;gap:8px;">
+  <div class="setting-label">Supabase anon key</div>
+  <input type="password" id="supabaseAnon" class="url-input" placeholder="eyJhbGciOiJIUzI1NiIs…" style="padding:8px 12px;" />
+</div>
+<div class="settings-row">
+  <button class="tool-btn" id="saveSupabase">SAVE & CONNECT</button>
+  <a href="./auth.sql" download class="setting-desc" style="color:var(--screen-glow);cursor:pointer;">⬇ Download SQL schema</a>
+</div>
+<div class="setting-desc" style="padding-top:4px;line-height:1.6;">
+  1. Create a free project at <strong>supabase.com</strong><br/>
+  2. SQL Editor → paste <code>auth.sql</code> → Run<br/>
+  3. Authentication → Providers → enable <strong>Google</strong> + <strong>Phone (WhatsApp via Twilio)</strong><br/>
+  4. Settings → API → copy URL + anon key here → SAVE & CONNECT
+</div>
+</div>
+
 <div class="settings-section"><h3>🎵 MUSIC SERVICES</h3>
 <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:8px;">
   <div class="setting-label">Spotify Client ID <span class="setting-desc">(create at developer.spotify.com)</span></div>
@@ -5625,6 +5778,193 @@ function toggleLiveRecording(){
   toast&&toast('🔴 Recording live set…','success');
 }
 window.toggleLiveRecording=toggleLiveRecording;
+
+/* ========================================================
+   SUPABASE AUTH + USER MANAGEMENT (RLS)
+   Google OAuth, WhatsApp/SMS OTP, Email+Password.
+   Admin panel uses the profiles table created by auth.sql.
+   ======================================================== */
+const SUPA_CFG_KEY='djmaxai_supa_v1';
+let _supa=null;let _supaUser=null;let _supaProfile=null;
+let supaCfg={url:'',anon:''};
+try{const raw=localStorage.getItem(SUPA_CFG_KEY);if(raw)supaCfg={...supaCfg,...JSON.parse(raw)};}catch(e){}
+
+function loadSupabaseLib(){
+  return new Promise((resolve,reject)=>{
+    if(window.supabase){resolve(window.supabase);return;}
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
+    s.onload=()=>resolve(window.supabase);
+    s.onerror=()=>reject(new Error('Supabase SDK load failed'));
+    document.head.appendChild(s);
+  });
+}
+async function initSupabase(){
+  if(!supaCfg.url||!supaCfg.anon){return null;}
+  try{
+    await loadSupabaseLib();
+    _supa=window.supabase.createClient(supaCfg.url,supaCfg.anon,{auth:{persistSession:true,autoRefreshToken:true}});
+    const{data:{session}}=await _supa.auth.getSession();
+    if(session)await onSupaSession(session);
+    _supa.auth.onAuthStateChange((_e,session)=>{if(session)onSupaSession(session);else onSupaSignOut();});
+    return _supa;
+  }catch(e){console.warn('[auth] init failed',e);toast&&toast('Supabase: '+e.message,'error');return null;}
+}
+async function onSupaSession(session){
+  _supaUser=session.user;
+  document.getElementById('authModal')?.classList.remove('open');
+  try{
+    const{data:profile,error}=await _supa.from('profiles').select('*').eq('id',_supaUser.id).single();
+    _supaProfile=profile||{id:_supaUser.id,email:_supaUser.email,phone:_supaUser.phone,role:'user'};
+    try{await _supa.from('profiles').update({last_login:new Date().toISOString()}).eq('id',_supaUser.id);}catch(_){}
+  }catch(e){_supaProfile={id:_supaUser.id,email:_supaUser.email,role:'user'};}
+  updateAuthUI();
+  if(_supaProfile.role==='admin')loadAdminUsers();
+}
+function onSupaSignOut(){
+  _supaUser=null;_supaProfile=null;
+  updateAuthUI();
+}
+function updateAuthUI(){
+  const btn=document.getElementById('authBtn');
+  const chip=document.getElementById('authChip');
+  const name=document.getElementById('authName');
+  const admin=document.getElementById('adminTabBtn');
+  if(_supaUser){
+    if(btn)btn.style.display='none';
+    if(chip)chip.style.display='inline-flex';
+    if(name)name.textContent=_supaProfile?.name||_supaUser.email||_supaUser.phone||'User';
+    if(admin)admin.style.display=_supaProfile?.role==='admin'?'inline-flex':'none';
+  }else{
+    if(btn)btn.style.display='inline-flex';
+    if(chip)chip.style.display='none';
+    if(admin)admin.style.display='none';
+  }
+}
+function saveSupaCfg(){
+  const u=document.getElementById('supabaseUrl')?.value?.trim()||'';
+  const a=document.getElementById('supabaseAnon')?.value?.trim()||'';
+  supaCfg={url:u,anon:a};
+  try{localStorage.setItem(SUPA_CFG_KEY,JSON.stringify(supaCfg));}catch(e){}
+  toast&&toast('Saved — connecting…','success');
+  initSupabase().then(s=>{if(s)toast&&toast('Supabase connected','success');});
+}
+
+/* ADMIN: list/edit users via profiles table (RLS restricts to admins) */
+async function loadAdminUsers(){
+  const body=document.getElementById('adminUsersBody');
+  const status=document.getElementById('adminStatus');
+  if(!_supa||_supaProfile?.role!=='admin'){
+    body.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:20px;">Admin only. Sign in as admin.</td></tr>';
+    return;
+  }
+  status.textContent='Loading…';
+  const{data,error}=await _supa.from('profiles').select('*').order('created_at',{ascending:false});
+  if(error){status.textContent='Error: '+error.message;return;}
+  status.textContent=`${data.length} users`;
+  body.innerHTML=data.map(u=>{
+    const statusClass=u.banned?'banned':u.role;
+    const statusLabel=u.banned?'BANNED':u.role.toUpperCase();
+    const created=u.created_at?new Date(u.created_at).toLocaleDateString():'—';
+    return `<tr>
+      <td>${escapeHtml(u.email||u.phone||'—')}</td>
+      <td>${escapeHtml(u.name||'—')}</td>
+      <td><span class="admin-role ${u.role}">${u.role.toUpperCase()}</span></td>
+      <td><span class="admin-role ${statusClass}">${statusLabel}</span></td>
+      <td>${created}</td>
+      <td><div class="admin-actions">
+        ${u.id!==_supaUser.id?`<button class="promote" data-admin-promote="${u.id}" data-cur="${u.role}">${u.role==='admin'?'DEMOTE':'PROMOTE'}</button>`:''}
+        ${u.id!==_supaUser.id?`<button data-admin-ban="${u.id}" data-cur="${u.banned}">${u.banned?'UNBAN':'BAN'}</button>`:''}
+        ${u.id!==_supaUser.id?`<button class="danger" data-admin-del="${u.id}">DELETE</button>`:'<span style="color:var(--text-dim);font-size:9px">(you)</span>'}
+      </div></td>
+    </tr>`;
+  }).join('');
+  body.querySelectorAll('[data-admin-promote]').forEach(b=>b.addEventListener('click',async()=>{
+    const id=b.dataset.adminPromote;const cur=b.dataset.cur;const nr=cur==='admin'?'user':'admin';
+    const{error}=await _supa.from('profiles').update({role:nr}).eq('id',id);
+    if(error)toast('Error: '+error.message,'error');else{toast(`Role updated to ${nr}`,'success');loadAdminUsers();}
+  }));
+  body.querySelectorAll('[data-admin-ban]').forEach(b=>b.addEventListener('click',async()=>{
+    const id=b.dataset.adminBan;const ban=b.dataset.cur!=='true';
+    const{error}=await _supa.from('profiles').update({banned:ban}).eq('id',id);
+    if(error)toast('Error: '+error.message,'error');else{toast(ban?'User banned':'User unbanned','success');loadAdminUsers();}
+  }));
+  body.querySelectorAll('[data-admin-del]').forEach(b=>b.addEventListener('click',async()=>{
+    if(!confirm('Delete this user profile? (auth user stays — use Supabase dashboard to fully delete)'))return;
+    const id=b.dataset.adminDel;
+    const{error}=await _supa.from('profiles').delete().eq('id',id);
+    if(error)toast('Error: '+error.message,'error');else{toast('Deleted','success');loadAdminUsers();}
+  }));
+}
+
+/* AUTH modal wiring */
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    document.getElementById('supabaseUrl')&&(document.getElementById('supabaseUrl').value=supaCfg.url||'');
+    document.getElementById('supabaseAnon')&&(document.getElementById('supabaseAnon').value=supaCfg.anon||'');
+    document.getElementById('saveSupabase')?.addEventListener('click',saveSupaCfg);
+    initSupabase();
+    const modal=document.getElementById('authModal');
+    const openAuth=()=>{
+      if(!_supa){toast&&toast('Add Supabase credentials in Settings first','error');
+        document.querySelector('.tab-btn[data-tab="settings"]')?.click();return;}
+      modal?.classList.add('open');
+      document.getElementById('authStatus').textContent='';document.getElementById('authStatus').className='auth-status';
+    };
+    document.getElementById('authBtn')?.addEventListener('click',openAuth);
+    document.getElementById('authCloseBtn')?.addEventListener('click',()=>modal?.classList.remove('open'));
+    document.getElementById('authLogoutBtn')?.addEventListener('click',async()=>{
+      if(_supa){await _supa.auth.signOut();toast('Signed out','success');}
+    });
+    let authMode='signin';
+    document.querySelectorAll('.auth-tab').forEach(t=>t.addEventListener('click',()=>{
+      document.querySelectorAll('.auth-tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');authMode=t.dataset.authMode;
+      document.getElementById('authTitle').textContent=authMode==='signup'?'SIGN UP':'SIGN IN';
+    }));
+    const setStatus=(msg,cls)=>{const el=document.getElementById('authStatus');el.textContent=msg||'';el.className='auth-status '+(cls||'')};
+    document.getElementById('authGoogleBtn')?.addEventListener('click',async()=>{
+      if(!_supa){setStatus('Not connected','error');return;}
+      setStatus('Redirecting to Google…');
+      const{error}=await _supa.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.href}});
+      if(error)setStatus('Error: '+error.message,'error');
+    });
+    document.getElementById('authEmailBtn')?.addEventListener('click',async()=>{
+      const email=document.getElementById('authEmail').value.trim();
+      const pw=document.getElementById('authPassword').value;
+      if(!email||!pw){setStatus('Enter email + password','error');return;}
+      setStatus('Authenticating…');
+      const fn=authMode==='signup'?_supa.auth.signUp({email,password:pw}):_supa.auth.signInWithPassword({email,password:pw});
+      const{error}=await fn;
+      if(error)setStatus('Error: '+error.message,'error');
+      else setStatus(authMode==='signup'?'Check your email to confirm':'Welcome','success');
+    });
+    let otpPhone=null;
+    document.getElementById('authPhoneBtn')?.addEventListener('click',async()=>{
+      const btn=document.getElementById('authPhoneBtn');
+      const phoneInput=document.getElementById('authPhone');
+      const otpInput=document.getElementById('authOtp');
+      if(!otpPhone){
+        const phone=phoneInput.value.trim();
+        if(!phone.startsWith('+')){setStatus('Use international format like +972501234567','error');return;}
+        setStatus('Sending code…');
+        const{error}=await _supa.auth.signInWithOtp({phone});
+        if(error){setStatus('Error: '+error.message,'error');return;}
+        otpPhone=phone;otpInput.style.display='block';btn.textContent='VERIFY CODE';
+        setStatus('Code sent. Check WhatsApp / SMS.','success');
+      }else{
+        const token=otpInput.value.trim();
+        if(!token){setStatus('Enter the code','error');return;}
+        setStatus('Verifying…');
+        const{error}=await _supa.auth.verifyOtp({phone:otpPhone,token,type:'sms'});
+        if(error)setStatus('Error: '+error.message,'error');
+      }
+    });
+    document.getElementById('adminRefreshBtn')?.addEventListener('click',loadAdminUsers);
+    const adminTab=document.getElementById('adminTabBtn');
+    if(adminTab)adminTab.addEventListener('click',()=>setTimeout(loadAdminUsers,50));
+  },600);
+});
 
 /* ========================================================
    STUDIO MASTERING — pro audio chain inserted before the limiter
