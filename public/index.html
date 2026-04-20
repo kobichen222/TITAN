@@ -243,7 +243,15 @@ body{padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:
 .search-input{padding:6px 10px;background:#050506;border:1px solid #333;color:#fff;font-family:'Share Tech Mono',monospace;font-size:11px;border-radius:4px;width:160px}
 .sort-select,.filter-select{padding:6px 10px;background:#050506;border:1px solid #333;color:var(--screen-glow);font-family:'Share Tech Mono',monospace;font-size:11px;border-radius:4px;cursor:pointer}
 .track-list{display:flex;flex-direction:column;gap:3px;max-height:280px;overflow-y:auto}
-.track-row{display:grid;grid-template-columns:30px 1fr 1fr 55px 50px 80px 150px;gap:10px;padding:7px 10px;background:#0a0a0b;border-radius:4px;align-items:center;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);border:1px solid transparent;cursor:grab}
+.track-row{display:grid;grid-template-columns:30px 1.4fr 1fr 55px 50px 80px 280px;gap:10px;padding:7px 10px;background:#0a0a0b;border-radius:4px;align-items:center;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);border:1px solid transparent;cursor:grab}
+.tl-btn{transition:all .12s ease;white-space:nowrap;}
+.tl-btn:hover{filter:brightness(1.3);transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.5);}
+.tl-btn.tl-a:hover{background:linear-gradient(180deg,#2ee0ff,#0088b4) !important;color:#000 !important;box-shadow:0 0 12px rgba(46,224,255,.6);}
+.tl-btn.tl-b:hover{background:linear-gradient(180deg,#ff3c78,#a02050) !important;color:#fff !important;box-shadow:0 0 12px rgba(255,60,120,.6);}
+.tl-btn.tl-c:hover{background:linear-gradient(180deg,#ffd400,#a08800) !important;color:#000 !important;box-shadow:0 0 12px rgba(255,212,0,.6);}
+.tl-btn.tl-d:hover{background:linear-gradient(180deg,#c800ff,#6000a0) !important;color:#fff !important;box-shadow:0 0 12px rgba(200,0,255,.6);}
+.tl-btn.preview:hover{background:linear-gradient(180deg,#ffd400,#a08800) !important;color:#000 !important;}
+.tl-btn.remove:hover{background:linear-gradient(180deg,#ff3c3c,#a02020) !important;color:#fff !important;}
 .track-row:hover{border-color:var(--orange);background:#141416}
 .track-row.dragging{opacity:.5}
 .track-row.yt-track{border-right:3px solid var(--red)}
@@ -3998,13 +4006,13 @@ function renderLibrary(){
       <span class="t-bpm">${tr.bpm.toFixed(1)}</span>
       <span class="t-key">${tr.key}</span>
       <span class="rating" data-track="${tr.id}">${stars}</span>
-      <div class="actions">
-        ${!isYt?`<button class="preview" data-preview="${tr.id}">PREV</button>`:''}
-        <button class="deck-a" data-load="A" data-track="${tr.id}">→ A</button>
-        <button class="deck-b" data-load="B" data-track="${tr.id}">→ B</button>
-        ${!isYt?`<button class="deck-a" data-load="C" data-track="${tr.id}" style="color:#ffd400;">→ C</button>`:''}
-        ${!isYt?`<button class="deck-a" data-load="D" data-track="${tr.id}" style="color:#c800ff;">→ D</button>`:''}
-        <button class="remove" data-remove="${tr.id}">✕</button>
+      <div class="actions" style="display:flex;gap:4px;justify-content:flex-end;flex-wrap:wrap;">
+        ${!isYt?`<button class="preview tl-btn" data-preview="${tr.id}" style="padding:5px 8px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(255,212,0,.35);color:var(--yellow);font-family:Orbitron,sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;border-radius:3px;cursor:pointer;">▶ PREV</button>`:''}
+        <button class="tl-btn tl-a" data-load="A" data-track="${tr.id}" style="padding:5px 10px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(46,224,255,.45);color:#2ee0ff;font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;letter-spacing:1.5px;border-radius:3px;cursor:pointer;min-width:42px;">→ A</button>
+        <button class="tl-btn tl-b" data-load="B" data-track="${tr.id}" style="padding:5px 10px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(255,60,120,.45);color:#ff3c78;font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;letter-spacing:1.5px;border-radius:3px;cursor:pointer;min-width:42px;">→ B</button>
+        ${!isYt?`<button class="tl-btn tl-c" data-load="C" data-track="${tr.id}" style="padding:5px 10px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(255,212,0,.45);color:#ffd400;font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;letter-spacing:1.5px;border-radius:3px;cursor:pointer;min-width:42px;">→ C</button>`:''}
+        ${!isYt?`<button class="tl-btn tl-d" data-load="D" data-track="${tr.id}" style="padding:5px 10px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(200,0,255,.45);color:#c800ff;font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;letter-spacing:1.5px;border-radius:3px;cursor:pointer;min-width:42px;">→ D</button>`:''}
+        <button class="remove tl-btn" data-remove="${tr.id}" style="padding:5px 8px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(255,46,46,.35);color:var(--red);font-family:Orbitron,sans-serif;font-size:12px;font-weight:900;border-radius:3px;cursor:pointer;">✕</button>
       </div>`;
     row.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',tr.id);row.classList.add('dragging');});
     row.addEventListener('dragend',()=>row.classList.remove('dragging'));
