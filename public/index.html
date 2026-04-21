@@ -10,7 +10,7 @@
 :root{--deck-bg:#1a1a1c;--deck-panel:#242428;--deck-border:#3a3a3e;--screen-glow:#00d4ff;--orange:#ff7a00;--orange-glow:#ffa544;--cue-orange:#ff5a00;--play-green:#00ff7a;--red:#ff2e2e;--yellow:#ffd400;--purple:#c800ff;--pink:#ff3c78;--text:#e8e8ea;--text-dim:#9a9a9e;--bg:#0a0a0a}
 body.theme-light{--deck-bg:#e5e5e7;--deck-panel:#f5f5f7;--deck-border:#b0b0b2;--text:#1a1a1c;--text-dim:#5a5a5e;--bg:#f0f0f2}
 body.theme-neon{--orange:#ff00ff;--screen-glow:#00ffff;--play-green:#00ff00}
-body.theme-gold{--orange:#ffd700;--orange-glow:#ffed4e}
+body.theme-gold{--orange:#e8c463;--orange-glow:#fff0a8;--cue-orange:#ffcf40;--play-green:#f5d76e;--screen-glow:#ffd97a;--yellow:#f4c430;--red:#c83c3c;--purple:#c7a856;--pink:#e6b25a;--text:#f3e3b0;--text-dim:#c9a85a;--bg:#0a0806;--deck-bg:#1a1410;--deck-panel:#221a12;--deck-border:#6b4f1e}
 html,body{background:radial-gradient(ellipse at center,#222 0%,var(--bg) 70%);min-height:100vh;font-family:'Barlow Condensed',sans-serif;color:var(--text)}
 body{padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:10px}
 ::-webkit-scrollbar{width:6px;height:6px}
@@ -2978,6 +2978,223 @@ body.theme-light .bank-btn.active{color:#fff}
 body.theme-light .sampler-tool-block{background:#fff;border-color:rgba(0,0,0,.08)}
 body.theme-light .seq-step{background:linear-gradient(180deg,#fff,#e8e8ec);color:rgba(0,0,0,.25)}
 body.theme-light .seq-step.on{color:#fff}
+
+/* ============================================================
+   GOLD THEME — 'Vertex Luxury' premium metallic gold mixer
+   Inspired by high-end boutique mixers (Vestax, Omnitronic Gold,
+   Pioneer DJM-A9 gold edition). Deep obsidian + champagne gold.
+   ============================================================ */
+body.theme-gold,body.theme-gold html{
+  background:
+    radial-gradient(ellipse at 20% 0%,rgba(232,196,99,.14) 0%,transparent 45%),
+    radial-gradient(ellipse at 80% 100%,rgba(184,134,11,.10) 0%,transparent 45%),
+    radial-gradient(ellipse at center,#17120c 0%,#0a0806 70%);
+}
+body.theme-gold::after{background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.6) 100%)}
+body.theme-gold ::-webkit-scrollbar-track{background:#120e08}
+body.theme-gold ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#f5d76e,#8b6914);border:1px solid #6b4f1e}
+
+/* Header */
+body.theme-gold .header-bar{color:#f3e3b0}
+body.theme-gold .brand{color:#f3e3b0;text-shadow:0 1px 0 rgba(0,0,0,.8),0 0 20px rgba(255,215,100,.4)}
+body.theme-gold .brand .max{background:linear-gradient(180deg,#fff0a8 0%,#e8c463 45%,#8b6914 100%);color:#1a1410;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 2px rgba(0,0,0,.4),0 0 16px rgba(232,196,99,.55)}
+body.theme-gold .header-right{color:#c9a85a}
+body.theme-gold .power-led{background:radial-gradient(circle,#fff0a8,#e8c463);box-shadow:0 0 8px rgba(232,196,99,.8)}
+
+/* Panels — brushed gold metal look */
+body.theme-gold .cdj,body.theme-gold .mixer,body.theme-gold .library,
+body.theme-gold .sampler-panel,body.theme-gold .youtube-panel,body.theme-gold .playlists-panel,
+body.theme-gold .ai-dj-panel,body.theme-gold .analytics-panel,body.theme-gold .midi-panel,
+body.theme-gold .settings-panel,body.theme-gold .beat-fx-panel,body.theme-gold .scene-fx-panel,
+body.theme-gold .deck-switch-bar,body.theme-gold .mixer-toolbar{
+  background:
+    linear-gradient(180deg,rgba(255,240,168,.04) 0%,rgba(255,255,255,0) 14%,rgba(0,0,0,.35) 100%),
+    repeating-linear-gradient(135deg,rgba(232,196,99,.025) 0px,rgba(232,196,99,.025) 1px,transparent 1px,transparent 3px),
+    linear-gradient(180deg,#26200f 0%,#120e08 100%);
+  border:1px solid #6b4f1e;
+  box-shadow:
+    inset 0 1px 0 rgba(255,240,168,.25),
+    inset 0 -1px 0 rgba(0,0,0,.5),
+    0 2px 0 rgba(0,0,0,.35),
+    0 18px 40px -10px rgba(0,0,0,.8),
+    0 0 24px rgba(232,196,99,.08);
+}
+
+/* Tabs */
+body.theme-gold .main-tabs{background:linear-gradient(180deg,#1f190e 0%,#0e0b06 100%);border:1px solid #6b4f1e;box-shadow:inset 0 2px 6px rgba(0,0,0,.7)}
+body.theme-gold .tab-btn{color:#c9a85a}
+body.theme-gold .tab-btn:hover{color:#fff0a8}
+body.theme-gold .tab-btn.active{background:linear-gradient(180deg,#fff0a8 0%,#e8c463 45%,#8b6914 100%);color:#1a1410;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 18px rgba(232,196,99,.55);text-shadow:0 1px 0 rgba(255,255,255,.3)}
+
+/* Screens / displays — warm amber instead of cyan */
+body.theme-gold .screen{background:linear-gradient(180deg,#0a0806 0%,#000 100%);border:1px solid #6b4f1e;box-shadow:inset 0 0 12px rgba(0,0,0,.9),0 0 8px rgba(232,196,99,.14)}
+body.theme-gold .jog-center-screen{background:radial-gradient(circle,#120e08 0%,#000 100%);border:1px solid #6b4f1e;box-shadow:inset 0 0 20px rgba(0,0,0,.9)}
+body.theme-gold .track-title{color:#ffd97a;text-shadow:0 0 10px rgba(255,215,100,.7)}
+body.theme-gold .screen-bpm{color:#fff0a8;text-shadow:0 0 12px rgba(255,215,100,.8)}
+body.theme-gold .screen-key{color:#e8c463}
+body.theme-gold .master-bpm{background:#000;border:1px solid #6b4f1e;color:#fff0a8;text-shadow:0 0 10px rgba(255,215,100,.8)}
+body.theme-gold .jog-center-screen .bpm-display{color:#fff0a8;text-shadow:0 0 10px rgba(255,215,100,.8)}
+body.theme-gold .jog-center-screen .bpm-sub,body.theme-gold .jog-center-screen .deck-badge{color:#e8c463}
+
+/* Deck headers */
+body.theme-gold .deck-number{background:linear-gradient(180deg,#fff0a8 0%,#e8c463 45%,#8b6914 100%);color:#1a1410;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 6px rgba(0,0,0,.6),0 0 10px rgba(232,196,99,.4)}
+body.theme-gold .deck-label{color:#f3e3b0}
+body.theme-gold .deck-label .model{color:#e8c463}
+
+/* Jog wheels — polished gold platter */
+body.theme-gold .jog-outer{background:radial-gradient(circle,#2a2112 0%,#0a0806 100%);border:2px solid #6b4f1e;box-shadow:inset 0 2px 8px rgba(0,0,0,.8),0 4px 12px rgba(0,0,0,.6)}
+body.theme-gold .jog-platter{background:radial-gradient(circle,#3a2e1a 0%,#16110a 70%,#0a0806 100%);box-shadow:inset 0 0 30px rgba(0,0,0,.8),inset 0 2px 4px rgba(255,240,168,.12)}
+body.theme-gold .jog-platter-disc{background:repeating-radial-gradient(circle,rgba(255,240,168,.06) 0px,rgba(255,240,168,.06) 1px,transparent 1px,transparent 3px),radial-gradient(circle,#6b4f1e 0%,#2a1f10 100%)}
+body.theme-gold .jog-indicator{background:linear-gradient(180deg,#fff0a8 0%,#e8c463 60%,#8b6914 100%);box-shadow:0 0 6px rgba(0,0,0,.6),0 0 14px rgba(255,215,100,.9)}
+
+/* Knobs — champagne gold */
+body.theme-gold .knob{background:radial-gradient(circle at 40% 30%,#fff0a8 0%,#e8c463 25%,#8b6914 70%,#4a3510 100%);border:1px solid #2a1f10;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2px 4px rgba(0,0,0,.7),0 3px 6px rgba(0,0,0,.7),0 0 10px rgba(232,196,99,.18)}
+body.theme-gold .knob-indicator{background:linear-gradient(180deg,#fff0a8 0%,#fff 60%,#e8c463 100%);box-shadow:0 0 4px rgba(0,0,0,.6),0 0 6px rgba(255,215,100,.6)}
+body.theme-gold .knob-label{color:#c9a85a;font-weight:700;letter-spacing:1.5px}
+
+/* VU meters — gold LEDs */
+body.theme-gold .vu-meter{background:#000;border:1px solid #6b4f1e;box-shadow:inset 0 0 6px rgba(0,0,0,.9),0 0 4px rgba(232,196,99,.12)}
+body.theme-gold .vu-led{background:#08060a}
+body.theme-gold .vu-led.on.green{background:linear-gradient(90deg,#8b6914,#f5d76e);box-shadow:0 0 6px rgba(245,215,110,.9),inset 0 0 2px rgba(255,255,255,.35)}
+body.theme-gold .vu-led.on.yellow{background:linear-gradient(90deg,#c8a400,#ffed4e);box-shadow:0 0 6px rgba(255,237,78,.9),inset 0 0 2px rgba(255,255,255,.35)}
+body.theme-gold .vu-led.on.red{background:linear-gradient(90deg,#c83c3c,#ff6b4a);box-shadow:0 0 7px rgba(255,107,74,.95),inset 0 0 2px rgba(255,255,255,.35)}
+
+/* Faders */
+body.theme-gold .fader-wrap,body.theme-gold .crossfader-track,body.theme-gold .tempo-slider{background:linear-gradient(180deg,#0a0806 0%,#1a1410 100%);border:1px solid #6b4f1e;box-shadow:inset 0 2px 5px rgba(0,0,0,.8)}
+body.theme-gold .fader-handle,body.theme-gold .tempo-handle,body.theme-gold .crossfader-handle{background:linear-gradient(180deg,#fff0a8 0%,#e8c463 45%,#8b6914 100%);border:1px solid #2a1f10;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 3px 6px rgba(0,0,0,.8),0 0 10px rgba(232,196,99,.3)}
+
+/* All buttons — brushed gold */
+body.theme-gold .big-btn,body.theme-gold .loop-btn,body.theme-gold .jump-btn,body.theme-gold .util-btn,
+body.theme-gold .beat-btn,body.theme-gold .scene-btn,body.theme-gold .pad-mode-btn,
+body.theme-gold .tempo-btn,body.theme-gold .step-btn,body.theme-gold .mic-btn,
+body.theme-gold .cue-btn,body.theme-gold .compact-btn,body.theme-gold .cue-hp-btn,
+body.theme-gold .automix-btn,body.theme-gold .dsb-btn,body.theme-gold .search-src-btn,
+body.theme-gold .studio-preset-btn,body.theme-gold .tool-btn,body.theme-gold .assign-btn,
+body.theme-gold .curve-btn,body.theme-gold .ai-dj-btn{
+  background:linear-gradient(180deg,#2a2112 0%,#120e08 100%);
+  border:1px solid #6b4f1e;
+  color:#e8c463;
+  box-shadow:inset 0 1px 0 rgba(255,240,168,.15),inset 0 -2px 3px rgba(0,0,0,.7),0 2px 5px rgba(0,0,0,.6);
+  text-shadow:0 1px 0 rgba(0,0,0,.6)
+}
+body.theme-gold .big-btn:hover,body.theme-gold .loop-btn:hover,body.theme-gold .jump-btn:hover,
+body.theme-gold .util-btn:hover,body.theme-gold .beat-btn:hover,body.theme-gold .scene-btn:hover,
+body.theme-gold .pad-mode-btn:hover{filter:brightness(1.2);border-color:#e8c463}
+
+/* Active/lit buttons all go champagne gold */
+body.theme-gold .big-btn.cue.active{background:linear-gradient(180deg,#fff0a8 0%,#ffcf40 50%,#8b6914 100%);color:#1a1410;border-color:#fff0a8;box-shadow:0 0 24px rgba(255,207,64,.9),inset 0 1px 0 rgba(255,255,255,.5)}
+body.theme-gold .big-btn.play.active{background:linear-gradient(180deg,#fff0a8 0%,#f5d76e 50%,#8b6914 100%);color:#1a1410;border-color:#fff0a8;box-shadow:0 0 24px rgba(245,215,110,.9),inset 0 1px 0 rgba(255,255,255,.5);animation:playPulse 1s ease-in-out infinite}
+body.theme-gold .loop-btn.active{background:linear-gradient(180deg,#fff0a8 0%,#e8c463 55%,#8b6914 100%);color:#1a1410;box-shadow:0 0 16px rgba(232,196,99,.8)}
+body.theme-gold .beat-btn.active{background:linear-gradient(180deg,#fff0a8 0%,#e8c463 55%,#8b6914 100%);color:#1a1410;box-shadow:0 0 16px rgba(232,196,99,.8)}
+body.theme-gold .scene-btn.active{background:linear-gradient(180deg,#fff0a8 0%,#e6b25a 55%,#8b6914 100%);color:#1a1410;box-shadow:0 0 16px rgba(230,178,90,.8)}
+body.theme-gold .util-btn.sync.active{background:linear-gradient(180deg,#fff0a8 0%,#e8c463 100%);color:#1a1410}
+body.theme-gold .util-btn.keylock.active{background:linear-gradient(180deg,#fff0a8 0%,#f5d76e 100%);color:#1a1410}
+body.theme-gold .util-btn.quantize.active{background:linear-gradient(180deg,#fff0a8 0%,#e8c463 100%);color:#1a1410}
+body.theme-gold .util-btn.slip.active{background:linear-gradient(180deg,#ffd97a 0%,#e6b25a 100%);color:#1a1410}
+body.theme-gold .util-btn.reverse.active{background:linear-gradient(180deg,#ff9c6b 0%,#c83c3c 100%);color:#fff}
+body.theme-gold .fx-onoff{background:linear-gradient(180deg,#1a1410 0%,#0a0806 100%);border:2px solid #6b4f1e;color:#e8c463}
+body.theme-gold .fx-onoff.active{background:linear-gradient(180deg,#fff0a8 0%,#e8c463 55%,#8b6914 100%);color:#1a1410;border-color:#fff0a8;box-shadow:0 0 16px rgba(232,196,99,.7)}
+body.theme-gold .cue-btn.active{background:linear-gradient(180deg,#fff0a8 0%,#ffcf40 55%,#8b6914 100%) !important;color:#1a1410 !important;border-color:#fff0a8;box-shadow:0 0 22px rgba(255,207,64,.85),inset 0 1px 0 rgba(255,255,255,.45)}
+
+/* Sample pads */
+body.theme-gold .sample-pad{background:linear-gradient(180deg,#2a2112 0%,#120e08 100%);border:1px solid #6b4f1e;color:#e8c463;box-shadow:inset 0 1px 0 rgba(255,240,168,.15),inset 0 -3px 5px rgba(0,0,0,.7),0 3px 6px rgba(0,0,0,.6)}
+body.theme-gold .sample-pad .pad-num{color:#fff0a8}
+body.theme-gold .sample-pad .pad-name{color:#c9a85a}
+body.theme-gold .sample-pad.playing{box-shadow:inset 0 2px 4px rgba(0,0,0,.5),0 0 32px rgba(232,196,99,.9),0 0 3px rgba(255,240,168,.9)}
+
+/* Inputs */
+body.theme-gold input,body.theme-gold select,body.theme-gold textarea{
+  background:#120e08;color:#f3e3b0;border:1px solid #6b4f1e
+}
+body.theme-gold input:focus,body.theme-gold select:focus{border-color:#fff0a8;outline:none;box-shadow:0 0 0 3px rgba(232,196,99,.25)}
+body.theme-gold .url-input,body.theme-gold .search-input,body.theme-gold .yt-input{background:#120e08;color:#f3e3b0}
+body.theme-gold .fx-selector{background:#000;color:#ffd97a;border-color:#6b4f1e}
+
+/* Titles */
+body.theme-gold .library-title,body.theme-gold .mixer-brand,body.theme-gold .sampler-title,
+body.theme-gold .modal-box h3,body.theme-gold .settings-section h3,
+body.theme-gold .ai-dj-title,body.theme-gold .dsb-label{color:#fff0a8;text-shadow:0 0 8px rgba(232,196,99,.3)}
+body.theme-gold .count{color:#e8c463}
+body.theme-gold .setting-desc{color:#a68845}
+body.theme-gold .ai-log{background:#000;color:#ffd97a;border-color:#6b4f1e}
+
+/* Cards */
+body.theme-gold .playlist-card,body.theme-gold .session-card,body.theme-gold .stat-card,body.theme-gold .midi-device,body.theme-gold .shortcut-item{
+  background:linear-gradient(180deg,#1f190e 0%,#0e0b06 100%);border:1px solid #6b4f1e;color:#f3e3b0
+}
+body.theme-gold .playlist-card h4,body.theme-gold .session-name,body.theme-gold .stat-card .stat-value{color:#fff0a8}
+body.theme-gold .pl-meta,body.theme-gold .session-meta{color:#c9a85a}
+body.theme-gold .stat-card .stat-value{background:linear-gradient(180deg,#fff0a8 0%,#8b6914 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+
+/* Track rows */
+body.theme-gold .track-row{background:#120e08;border:1px solid transparent;color:#f3e3b0}
+body.theme-gold .track-row:hover{background:#1f190e;border-color:#e8c463;box-shadow:0 4px 10px rgba(0,0,0,.5),0 0 14px rgba(232,196,99,.2)}
+body.theme-gold .track-row .t-title{color:#fff0a8}
+body.theme-gold .track-row .t-artist{color:#c9a85a}
+body.theme-gold .track-list-header{color:#e8c463;border-bottom:1px solid rgba(232,196,99,.3)}
+
+/* Modals / toasts */
+body.theme-gold .toast{background:linear-gradient(180deg,#2a2112 0%,#120e08 100%);color:#f3e3b0;border:1px solid #e8c463;box-shadow:0 12px 30px rgba(0,0,0,.7),0 0 22px rgba(232,196,99,.3)}
+body.theme-gold .modal-box{background:linear-gradient(180deg,#2a2112 0%,#120e08 100%);color:#f3e3b0;border:1px solid #6b4f1e;box-shadow:0 40px 80px rgba(0,0,0,.8),0 0 40px rgba(232,196,99,.18)}
+body.theme-gold .modal-overlay{background:rgba(10,8,6,.85)}
+
+/* Studio / analytics */
+body.theme-gold .studio-eq-canvas,body.theme-gold .studio-spectrum{background:linear-gradient(180deg,#0a0806 0%,#000 100%)}
+body.theme-gold .studio-block{background:#1a1410;border-color:#6b4f1e}
+body.theme-gold .studio-presets,body.theme-gold .studio-eq,body.theme-gold .studio-spectrum-wrap{background:#120e08;border-color:#6b4f1e}
+body.theme-gold .studio-block-title{color:#fff0a8;border-bottom-color:#6b4f1e}
+
+/* Mixer subsections */
+body.theme-gold .channel-label{color:#e8c463}
+body.theme-gold .compact-decks{background:#0e0b06;border-color:#6b4f1e}
+body.theme-gold .compact-deck{background:#1a1410;border-color:#6b4f1e}
+body.theme-gold .compact-deck-title{background:#000;color:#ffd97a;border-color:#6b4f1e}
+body.theme-gold .isolator-panel{background:#1f170a;border-color:rgba(232,196,99,.35)}
+body.theme-gold .master-section,body.theme-gold .color-fx-row,body.theme-gold .color-fx-grid,
+body.theme-gold .crossfader-section,body.theme-gold .headphone-section,body.theme-gold .mic-section,
+body.theme-gold .automix-panel{background:#120e08;border:1px solid #6b4f1e}
+
+/* DSB (deck focus header) */
+body.theme-gold .dsb-btn{background:linear-gradient(180deg,#2a2112 0%,#120e08 100%);border:1px solid #6b4f1e;color:#e8c463}
+body.theme-gold .dsb-btn.active{background:linear-gradient(180deg,#fff0a8 0%,#e8c463 55%,#8b6914 100%);color:#1a1410;border-color:#fff0a8;box-shadow:0 0 14px rgba(232,196,99,.7)}
+
+/* Auth */
+body.theme-gold .auth-btn{background:linear-gradient(180deg,#2a2112 0%,#120e08 100%);border:1px solid #e8c463;color:#fff0a8}
+body.theme-gold .rec-btn{background:linear-gradient(180deg,#2a1818 0%,#120808 100%);border-color:#c83c3c;color:#ff8a8a}
+body.theme-gold .rec-btn.recording{background:linear-gradient(180deg,#ff6060 0%,#c83c3c 100%);color:#fff}
+
+/* Toggle switches */
+body.theme-gold .toggle-switch{background:#2a2112;border:1px solid #6b4f1e}
+body.theme-gold .toggle-switch.on{background:linear-gradient(180deg,#fff0a8 0%,#e8c463 100%);border-color:#fff0a8;box-shadow:0 0 10px rgba(232,196,99,.6)}
+
+/* Master VU */
+body.theme-gold .master-meters{background:#000;border-color:#6b4f1e;box-shadow:inset 0 2px 6px rgba(0,0,0,.9)}
+
+/* Deck per-color accents softened to gold-tinted in gold theme */
+body.theme-gold .cdj[data-deck]{--deck-accent:#e8c463;--deck-accent-rgb:232,196,99}
+
+/* Quick library */
+body.theme-gold .quick-lib-box{background:linear-gradient(180deg,#2a2112 0%,#120e08 100%);color:#f3e3b0;border:1px solid #6b4f1e}
+body.theme-gold .quick-lib-head input{background:#120e08;color:#f3e3b0;border-color:#6b4f1e}
+body.theme-gold .quick-lib-row{color:#f3e3b0;border-bottom-color:rgba(232,196,99,.15)}
+body.theme-gold .quick-lib-row .ql-title{color:#fff0a8}
+
+/* Sequencer */
+body.theme-gold .bank-btn{color:#c9a85a}
+body.theme-gold .bank-btn.active{color:#1a1410;background:linear-gradient(180deg,#fff0a8 0%,#e8c463 100%)}
+body.theme-gold .sampler-tool-block{background:#1a1410;border-color:#6b4f1e}
+body.theme-gold .seq-step{background:linear-gradient(180deg,#1a1410,#0a0806);color:rgba(255,240,168,.25);border:1px solid #6b4f1e}
+body.theme-gold .seq-step.on{color:#1a1410;background:linear-gradient(180deg,#fff0a8 0%,#e8c463 100%);box-shadow:0 0 10px rgba(232,196,99,.7)}
+
+/* Deck header buttons */
+body.theme-gold .deck-header .deck-lib-btn{background:linear-gradient(180deg,#2a2112,#120e08);color:#f5d76e;border-color:#6b4f1e}
+body.theme-gold .deck-header .deck-lib-btn:hover{background:linear-gradient(180deg,#fff0a8,#e8c463);color:#1a1410}
+body.theme-gold .deck-header .deck-upload-btn{background:linear-gradient(180deg,#2a2112,#120e08);color:#e8c463;border-color:#6b4f1e}
+body.theme-gold .deck-header .deck-upload-btn:hover{background:linear-gradient(180deg,#fff0a8,#e8c463);color:#1a1410}
+
+/* RGB ambient adapt */
+body.theme-gold .rgb-ambient{background:linear-gradient(90deg,#8b6914 0%,#e8c463 20%,#fff0a8 50%,#e8c463 80%,#8b6914 100%);box-shadow:0 0 20px rgba(232,196,99,.6)}
+
 body.work-mode .library{display:block !important}
 body.work-mode .tab-content#tab-deck{display:flex !important;flex-direction:column;align-items:center;gap:12px}
 body.work-mode .rgb-ambient{display:block;height:3px;opacity:.85;max-width:1700px;margin:0 auto}
