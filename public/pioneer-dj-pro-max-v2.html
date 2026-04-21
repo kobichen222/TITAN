@@ -17,11 +17,19 @@ body{padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:
 ::-webkit-scrollbar-track{background:#0a0a0b}
 ::-webkit-scrollbar-thumb{background:var(--orange);border-radius:3px}
 .header-bar{width:100%;max-width:1700px;display:flex;justify-content:space-between;align-items:center;padding:0 10px;flex-wrap:wrap;gap:10px}
-/* DECK FOCUS inline in the header — tighter styling */
-.header-bar .header-dsb{flex:1 1 auto;min-width:0;background:transparent;border:none;box-shadow:none;padding:0;margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:5px;justify-content:center}
+/* DECK FOCUS inline in the header — tight single-row group next to the logo */
+.header-bar .header-dsb,
+body.show-all .header-bar .header-dsb,
+body.work-mode .header-bar .header-dsb{
+  flex:0 1 auto;width:auto;min-width:0;max-width:none;
+  background:transparent;border:none;box-shadow:none;padding:0;margin:0;
+  display:inline-flex !important;flex-wrap:nowrap !important;align-items:center;gap:4px;
+  justify-content:flex-start !important;
+  position:static;top:auto;left:auto;right:auto
+}
 .header-bar .header-dsb::before{display:none}
-.header-bar .header-dsb .dsb-label{font-size:9px;letter-spacing:2px;padding:4px 8px;border-radius:4px;background:rgba(255,138,26,.08);border:1px solid rgba(255,138,26,.2);color:var(--orange);margin:0}
-.header-bar .header-dsb .dsb-btn{padding:5px 9px;font-size:9px;letter-spacing:1.5px}
+.header-bar .header-dsb .dsb-label{flex:0 0 auto;font-size:9px;letter-spacing:2px;padding:4px 8px;border-radius:4px;background:rgba(255,138,26,.08);border:1px solid rgba(255,138,26,.2);color:var(--orange);margin:0}
+.header-bar .header-dsb .dsb-btn{flex:0 0 auto;padding:4px 8px;font-size:9px;letter-spacing:1.2px;min-height:26px}
 .header-bar .header-dsb .dsb-monitor{gap:4px;margin-left:6px}
 .header-bar .header-dsb .dsb-chip{padding:2px 6px;font-size:9px}
 .brand{font-family:'Orbitron',sans-serif;font-weight:900;font-size:22px;letter-spacing:3px;color:#fff;text-transform:uppercase}
@@ -6805,7 +6813,6 @@ function init(){
 
   setInterval(updateStats,1000);
   requestAnimationFrame(tick);
-  toast('DJ MAX Ai loaded','success');
 }
 
 /* ========================================================
