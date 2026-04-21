@@ -3046,10 +3046,13 @@ body.work-mode{
     radial-gradient(ellipse at 80% 95%,rgba(46,224,255,.08) 0%,transparent 50%),
     radial-gradient(ellipse at center,#0b0b0e 0%,#040405 80%);
 }
-body.work-mode .deck-switch-bar,body.work-mode .console,body.work-mode .library,
-body.work-mode .beat-fx-panel,body.work-mode .scene-fx-panel{
+body.work-mode .console,body.work-mode .library,
+body.work-mode .beat-fx-panel,body.work-mode .scene-fx-panel,
+body.work-mode .mixer-toolbar,body.work-mode .rgb-ambient{
   max-width:none !important;width:calc(100vw - 12px) !important;
 }
+/* Keep the floating deck-switch-bar pinned (the full-width rule above does
+   not apply to it because it's not in the list). */
 body.work-mode .console{grid-template-columns:1fr 420px 1fr}
 body.work-mode .console.show-all{grid-template-columns:1fr 1fr 440px 1fr 1fr}
 /* Hot cues are compact even on huge screens; transport + loop + util
