@@ -12185,6 +12185,246 @@ function spDrumHit(name,time,vel){
   }
 }
 
+/* ====================================================================
+   TITAN LAB — drum presets + transport scheduler
+   ==================================================================== */
+const SP_DRUM_PRESETS={
+  // rows = KICK, SNARE, CHH, OHH, CLAP, CRASH, LOWTOM, HITOM, RIM
+  house:[
+    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+    [0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  techno:[
+    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],
+    [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0],
+  ],
+  trance:[
+    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  'tech-house':[
+    [1,0,0,0,1,0,0,1,1,0,0,0,1,0,1,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+    [0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0],
+    [0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1],
+  ],
+  'deep-house':[
+    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+    [0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  minimal:[
+    [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0],
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0],
+  ],
+};
+function spDrumPresetCopy(key){
+  const src=SP_DRUM_PRESETS[key];
+  if(!src)return SP.drum.voices.map(()=>new Array(16).fill(0));
+  return src.map(r=>r.slice(0,16));
+}
+function spDrumPresetClear(){return SP.drum.voices.map(()=>new Array(16).fill(0))}
+
+function spBuildDrumGrid(){
+  const grid=document.getElementById('spDrumGrid');
+  if(!grid)return;
+  grid.innerHTML='';
+  SP.drum.stepEls=SP.drum.voices.map(()=>new Array(16).fill(null));
+  if(!SP.drum.mutes)SP.drum.mutes=SP.drum.voices.map(()=>false);
+  SP.drum.voices.forEach((name,row)=>{
+    const lbl=document.createElement('div');
+    lbl.className='sp-seq-label';
+    lbl.innerHTML=`<span>${name}</span>`;
+    const m=document.createElement('div');
+    m.className='sp-mute'+(SP.drum.mutes[row]?' muted':'');
+    m.textContent='M';
+    m.addEventListener('click',e=>{e.stopPropagation();SP.drum.mutes[row]=!SP.drum.mutes[row];m.classList.toggle('muted',SP.drum.mutes[row]);});
+    lbl.appendChild(m);
+    grid.appendChild(lbl);
+    for(let step=0;step<16;step++){
+      const cell=document.createElement('div');
+      cell.className='sp-seq-cell'+(step%4===0?' beat1':'');
+      cell.dataset.spRow=row;cell.dataset.spStep=step;
+      const paint=()=>{
+        const v=SP.drum.pattern[row][step];
+        cell.classList.toggle('on',v>0);
+        cell.classList.toggle('accent',v>1);
+      };
+      paint();
+      cell.addEventListener('click',()=>{
+        const cur=SP.drum.pattern[row][step]||0;
+        SP.drum.pattern[row][step]=cur===0?1:(cur===1?1.4:0);
+        paint();
+      });
+      grid.appendChild(cell);
+      SP.drum.stepEls[row][step]=cell;
+    }
+  });
+}
+
+/* --- Transport scheduler --- */
+function spTransportStart(){
+  spInitAudio();
+  if(SP.transport.playing)return;
+  SP.transport.playing=true;
+  SP.transport.step=0;
+  SP.transport.nextTime=audioCtx.currentTime+0.06;
+  const btn=document.getElementById('spPlayBtn');
+  if(btn){btn.classList.add('active');btn.style.background='linear-gradient(180deg,#ff8a1a,#cc6a0a)';btn.style.color='#0a0a0c';}
+  spTransportTick();
+}
+function spTransportStop(){
+  if(!SP.transport.playing)return;
+  SP.transport.playing=false;
+  if(SP.transport.timerId){clearTimeout(SP.transport.timerId);SP.transport.timerId=null;}
+  if(SP.bass.voice)spBassNoteOff(true);
+  const ind=document.getElementById('spStepIndicator');
+  if(ind)ind.textContent='— / 16';
+  document.querySelectorAll('.sp-seq-cell.playing,.sp-bass-step.playing').forEach(el=>el.classList.remove('playing'));
+  const btn=document.getElementById('spPlayBtn');
+  if(btn){btn.classList.remove('active');btn.style.background='';btn.style.color='';}
+}
+function spTransportTick(){
+  if(!SP.transport.playing)return;
+  const look=0.12;
+  while(SP.transport.nextTime<audioCtx.currentTime+look){
+    spScheduleStep(SP.transport.step,SP.transport.nextTime);
+    const sixteenth=60/SP.transport.bpm/4;
+    let dur=sixteenth;
+    if(SP.transport.step%2===0 && SP.transport.swing>0){
+      dur=sixteenth*(1+SP.transport.swing/100*0.5);
+    }else if(SP.transport.step%2===1 && SP.transport.swing>0){
+      dur=sixteenth*(1-SP.transport.swing/100*0.5);
+    }
+    SP.transport.nextTime+=dur;
+    SP.transport.step=(SP.transport.step+1)%16;
+  }
+  SP.transport.timerId=setTimeout(spTransportTick,25);
+}
+function spScheduleStep(step,time){
+  // drums
+  if(SP.drum.pattern){
+    SP.drum.voices.forEach((name,i)=>{
+      if(SP.drum.mutes&&SP.drum.mutes[i])return;
+      const v=SP.drum.pattern[i]?.[step]||0;
+      if(v>0)spDrumHit(name,time,v);
+    });
+  }
+  // bass
+  if(SP.bass.pattern){
+    const s=SP.bass.pattern[step];
+    if(s && s.on){
+      const uiMidi=s.midi+(s.octave||0)*12;
+      const delay=Math.max(0,(time-audioCtx.currentTime)*1000);
+      setTimeout(()=>{
+        spBassNoteOn(uiMidi,!!s.accent,!!s.slide);
+      },delay);
+      // release after 1 step unless next step is a slide continuation
+      const next=SP.bass.pattern[(step+1)%16];
+      const gate=(next&&next.on&&next.slide)?(60/SP.transport.bpm/4*1000*0.95):(60/SP.transport.bpm/4*1000*0.75);
+      setTimeout(()=>{
+        if(SP.bass.currentMidi===uiMidi && !(next&&next.on&&next.slide))spBassNoteOff(false);
+      },delay+gate);
+    }
+  }
+  // UI highlight
+  const uid=Math.max(0,(time-audioCtx.currentTime)*1000);
+  setTimeout(()=>{
+    if(!SP.transport.playing)return;
+    document.querySelectorAll('.sp-seq-cell.playing,.sp-bass-step.playing').forEach(el=>el.classList.remove('playing'));
+    if(SP.drum.stepEls){
+      SP.drum.stepEls.forEach(row=>{const el=row[step];if(el)el.classList.add('playing');});
+    }
+    if(SP.bass.stepEls && SP.bass.stepEls[step])SP.bass.stepEls[step].classList.add('playing');
+    const ind=document.getElementById('spStepIndicator');
+    if(ind)ind.textContent=(step+1)+' / 16';
+  },uid);
+}
+
+/* ====================================================================
+   TITAN LAB — UI wiring
+   ==================================================================== */
+function setupStudioPro(){
+  // default drum pattern
+  if(!SP.drum.pattern)SP.drum.pattern=spDrumPresetCopy('house');
+  spBuildDrumGrid();
+
+  // transport
+  const playBtn=document.getElementById('spPlayBtn');
+  const stopBtn=document.getElementById('spStopBtn');
+  playBtn?.addEventListener('click',()=>{if(SP.transport.playing)spTransportStop();else spTransportStart();});
+  stopBtn?.addEventListener('click',spTransportStop);
+
+  const bpm=document.getElementById('spBpm');
+  if(bpm){
+    const applyBpm=()=>{const v=Math.max(60,Math.min(200,parseInt(bpm.value,10)||128));SP.transport.bpm=v;};
+    applyBpm();
+    bpm.addEventListener('input',applyBpm);
+    bpm.addEventListener('change',applyBpm);
+  }
+  const sw=document.getElementById('spSwing'),swv=document.getElementById('spSwingVal');
+  if(sw){
+    const applySwing=()=>{SP.transport.swing=+sw.value;if(swv)swv.textContent=sw.value+'%';};
+    applySwing();sw.addEventListener('input',applySwing);
+  }
+
+  // drum preset buttons
+  document.querySelectorAll('[data-sp-drum-preset]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const key=btn.dataset.spDrumPreset;
+      SP.drum.pattern=(key==='clear')?spDrumPresetClear():spDrumPresetCopy(key);
+      spBuildDrumGrid();
+      document.querySelectorAll('[data-sp-drum-preset]').forEach(b=>b.classList.toggle('active',b===btn && key!=='clear'));
+    });
+  });
+
+  // pause transport when leaving the TITAN LAB tab
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      if(btn.dataset.tab!=='studiopro' && SP.transport.playing)spTransportStop();
+    });
+  });
+}
+
 /* SUPPORT — contact / purchase form, routes everything to kobi@media-deal.co.il */
 function setupSupport(){
   const SUPPORT_EMAIL='kobi@media-deal.co.il';
@@ -12891,7 +13131,7 @@ function init(){
   const mtb=document.getElementById('mixer-toolbar');if(mtb)mtb.innerHTML=buildMixerToolbarHTML();
   setupVU('vu-A',20);setupVU('vu-B',20);setupVU('vu-C',20);setupVU('vu-D',20);
   setupVU('masterHVuL',20);setupVU('masterHVuR',20);
-  attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();setupOfflineDownload();setupDiscover();setupTitanClock();setupSupport();
+  attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();setupOfflineDownload();setupDiscover();setupTitanClock();setupSupport();setupStudioPro();
   setupWaveformInteraction();setupAdvancedFeatures();renderSessions();
   renderSampler();renderPlaylists();
   // First-run: fill all 4 sampler banks with the factory sounds so every
