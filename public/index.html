@@ -3692,6 +3692,65 @@ body.work-mode .dsb-wmexit{display:inline-flex;background:linear-gradient(180deg
 .sp-bass-step .sp-bass-flag.slide.on{background:#2aeaff;color:#0a0a0c;border-color:#2aeaff;}
 
 /* ====================================================================
+   TITAN LAB — VIBE SOUND CODING panel
+   ==================================================================== */
+.vibe-panel{
+  max-width:1600px;margin:0 0 12px;padding:14px 16px;
+  background:
+    radial-gradient(circle at 0% 0%,rgba(42,234,255,.10),transparent 40%),
+    radial-gradient(circle at 100% 100%,rgba(255,138,26,.12),transparent 40%),
+    linear-gradient(160deg,#0b0b10 0%,#0a0a0c 100%);
+  border:1px solid #2a2a32;border-radius:14px;
+  box-shadow:0 10px 40px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.05);
+  position:relative;overflow:hidden;
+}
+.vibe-panel::before{
+  content:'';position:absolute;inset:-1px;border-radius:14px;padding:1px;
+  background:linear-gradient(90deg,rgba(42,234,255,.4),rgba(255,138,26,.4),rgba(42,234,255,.4));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:.35;
+}
+.vibe-head{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.vibe-badge{
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:13px;letter-spacing:3px;
+  color:#0a0a0c;background:linear-gradient(90deg,#2aeaff,#ff8a1a);
+  padding:6px 14px;border-radius:20px;box-shadow:0 0 18px rgba(42,234,255,.45);
+}
+.vibe-sub{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1.5px;color:#aaa;}
+.vibe-body{display:flex;gap:10px;align-items:stretch;margin-bottom:10px;}
+.vibe-input{
+  flex:1;min-height:60px;resize:vertical;
+  font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:.5px;
+  padding:10px 12px;color:#eee;background:#08080a;
+  border:1px solid #26262e;border-radius:8px;outline:none;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.6);
+}
+.vibe-input:focus{border-color:#2aeaff;box-shadow:inset 0 2px 6px rgba(0,0,0,.6),0 0 10px rgba(42,234,255,.3);}
+.vibe-gen-btn{
+  min-width:160px;font-family:'Orbitron',sans-serif;font-weight:900;font-size:13px;letter-spacing:2px;
+  background:linear-gradient(180deg,#2aeaff 0%,#0a8fa0 100%) !important;
+  color:#0a0a0c !important;border:1px solid #2aeaff !important;
+  box-shadow:0 0 18px rgba(42,234,255,.55) !important;cursor:pointer;
+}
+.vibe-gen-btn:hover{filter:brightness(1.1);}
+.vibe-gen-btn.working{background:linear-gradient(180deg,#ff8a1a 0%,#a0540a 100%) !important;border-color:#ff8a1a !important;box-shadow:0 0 18px rgba(255,138,26,.55) !important;}
+.vibe-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;}
+.vibe-chip{
+  padding:6px 12px;font-family:'Share Tech Mono',monospace;font-size:10.5px;letter-spacing:1.2px;
+  background:#15151a;color:#eaeaea;border:1px solid #2a2a32;border-radius:16px;cursor:pointer;
+}
+.vibe-chip:hover{border-color:#2aeaff;color:#2aeaff;background:#161a1e;}
+.vibe-chip.active{background:linear-gradient(180deg,#2aeaff,#0a8fa0);color:#0a0a0c;border-color:#2aeaff;font-weight:700;}
+.vibe-status{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1.4px;color:#2aeaff;min-height:15px;padding-top:4px;}
+.vibe-status.warn{color:#ffb84d;}
+@media (max-width:720px){
+  .vibe-body{flex-direction:column;}
+  .vibe-gen-btn{min-width:0;width:100%;}
+  .vibe-chips{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
+  .vibe-chip{flex:0 0 auto;}
+}
+
+/* ====================================================================
    TITAN LAB — STUDIO MIXER (full-screen)
    ==================================================================== */
 .spmx-overlay{
@@ -8041,6 +8100,32 @@ No MIDI devices. Press CONNECT.
 </div>
 
 <div class="tab-content" id="tab-studiopro">
+
+<!-- VIBE SOUND CODING — describe the mood, TITAN LAB builds the track -->
+<div class="vibe-panel" id="spVibePanel">
+  <div class="vibe-head">
+    <span class="vibe-badge">✨ VIBE SOUND CODING</span>
+    <span class="vibe-sub">Describe the vibe — house · techno · trance — and TITAN LAB builds it for you.</span>
+  </div>
+  <div class="vibe-body">
+    <textarea id="spVibeInput" class="vibe-input" rows="2"
+      placeholder="e.g. 'dark uplifting trance 138 bpm peak hour' or 'deep house summer night piano pad' or 'psytrance 145 acid'"></textarea>
+    <button class="tool-btn vibe-gen-btn" id="spVibeGen">✨ GENERATE &amp; PLAY</button>
+  </div>
+  <div class="vibe-chips" id="spVibeChips">
+    <button class="vibe-chip" data-vibe="dark techno 128 acid bass driving">🌒 DARK TECHNO</button>
+    <button class="vibe-chip" data-vibe="uplifting trance 138 supersaw big reverb">🚀 UPLIFTING TRANCE</button>
+    <button class="vibe-chip" data-vibe="deep house 122 piano warm pad summer">🌊 DEEP HOUSE</button>
+    <button class="vibe-chip" data-vibe="big room 128 lead heavy drive">🔊 BIG ROOM</button>
+    <button class="vibe-chip" data-vibe="psytrance 145 acid dark rolling bass">🌀 PSYTRANCE</button>
+    <button class="vibe-chip" data-vibe="minimal techno 126 percussion dark">⚫ MINIMAL</button>
+    <button class="vibe-chip" data-vibe="tech house 124 rolling groove">🎛 TECH HOUSE</button>
+    <button class="vibe-chip" data-vibe="hoover trance 140 classic hardstyle">🌪 HOOVER</button>
+    <button class="vibe-chip" data-vibe="dreamy ambient pad 110 vox reverb">☁ DREAMY PAD</button>
+    <button class="vibe-chip" data-vibe="acid 130 303 dark energy">💊 ACID</button>
+  </div>
+  <div class="vibe-status" id="spVibeStatus"></div>
+</div>
 
 <div class="settings-panel sp-panel" style="max-width:1600px;position:relative">
 <div class="library-header" style="padding-bottom:8px;">
@@ -12562,6 +12647,7 @@ function spTransportStop(){
   SP.transport.playing=false;
   if(SP.transport.timerId){clearTimeout(SP.transport.timerId);SP.transport.timerId=null;}
   if(SP.bass.voice)spBassNoteOff(true);
+  if(SP.chords)spChordNoteOff();
   const ind=document.getElementById('spStepIndicator');
   if(ind)ind.textContent='— / 16';
   document.querySelectorAll('.sp-seq-cell.playing,.sp-bass-step.playing').forEach(el=>el.classList.remove('playing'));
@@ -12609,6 +12695,22 @@ function spScheduleStep(step,time){
       setTimeout(()=>{
         if(SP.bass.currentMidi===uiMidi && !(next&&next.on&&next.slide))spBassNoteOff(false);
       },delay+gate);
+    }
+  }
+  // VIBE chord progression — advance one chord per bar (16-step loop), legato with a short gap
+  if(SP.chords && SP.chords.progression && SP.chords.progression.length){
+    const delay=Math.max(0,(time-audioCtx.currentTime)*1000);
+    if(step===0){
+      setTimeout(()=>{
+        if(!SP.transport.playing)return;
+        spChordNoteOff();
+        const chord=SP.chords.progression[SP.chords.index%SP.chords.progression.length];
+        spChordNoteOn(chord);
+        SP.chords.index=(SP.chords.index+1)%SP.chords.progression.length;
+      },delay);
+    }else if(step===15){
+      const barMs=60/SP.transport.bpm/4*1000;
+      setTimeout(()=>{spChordNoteOff();},delay+barMs*0.85);
     }
   }
   // UI highlight
@@ -12964,6 +13066,148 @@ function spApplySynthPreset(key){
 }
 
 /* ====================================================================
+   TITAN LAB — VIBE SOUND CODING engine
+   ==================================================================== */
+const SP_CHORD_PROGRESSIONS={
+  // each entry = 4 chords (1 chord per bar), MIDI triads in listener-friendly ranges
+  'am-trance'   :[[57,60,64,69],[53,57,60,65],[60,64,67,72],[55,59,62,67]], // Am-F-C-G
+  'am-house'    :[[57,60,64,69],[50,53,57,62],[53,57,60,65],[52,56,59,64]], // Am-Dm-F-E
+  'am-techno'   :[[45,48,52,57],[45,48,52,57],[41,45,48,53],[40,44,47,52]], // low Am-Am-F-E
+  'em-deep'     :[[52,55,59,64],[48,52,55,60],[55,59,62,67],[50,54,57,62]], // Em-C-G-D
+  'em-psy'      :[[52,55,59,64],[55,58,62,67],[50,54,57,62],[53,56,60,65]], // Em-G-D-F
+  'cm-minimal'  :[[48,51,55,60],[43,46,50,55],[46,51,53,58],[48,51,55,60]], // Cm-G-Ab-Cm
+  'am-lift'     :[[69,72,76,81],[65,69,72,77],[72,76,79,84],[67,71,74,79]], // Am-F-C-G high
+};
+const SP_VIBE_PRESETS={
+  // core vibe templates — referenced by chip + keyword parser
+  'trance'     :{bpm:138,drum:'trance',bass:'trance-bass',synth:'trance-supersaw',chord:'am-lift',fx:{delaySend:.35,reverbSend:.55,chorusMix:.3,masterDrive:.15}},
+  'uplifting'  :{bpm:140,drum:'trance-2',bass:'trance-bass',synth:'trance-supersaw',chord:'am-lift',fx:{delaySend:.4,reverbSend:.65,chorusMix:.4}},
+  'hoover'     :{bpm:142,drum:'trance-2',bass:'hoover-bass',synth:'hoover',chord:'am-trance',fx:{delaySend:.3,reverbSend:.5,chorusMix:.4,masterDrive:.3}},
+  'psytrance'  :{bpm:145,drum:'psytrance',bass:'psytrance-bass',synth:'acid-303',chord:'em-psy',fx:{delaySend:.2,reverbSend:.35,masterDrive:.35}},
+  'techno'     :{bpm:130,drum:'techno',bass:'tech-riff',synth:'techno-reese',chord:'am-techno',fx:{delaySend:.25,reverbSend:.25,masterDrive:.3}},
+  'dark-techno':{bpm:132,drum:'techno-2',bass:'tech-riff',synth:'dark-bass',chord:'am-techno',fx:{delaySend:.2,reverbSend:.4,masterDrive:.4}},
+  'acid'       :{bpm:130,drum:'techno',bass:'classic-acid',synth:'acid-303',chord:'am-techno',fx:{delaySend:.35,reverbSend:.3,masterDrive:.35}},
+  'house'      :{bpm:124,drum:'house',bass:'deep-bass',synth:'house-piano',chord:'am-house',fx:{delaySend:.25,reverbSend:.4,chorusMix:.25}},
+  'deep-house' :{bpm:122,drum:'deep-house',bass:'deep-bass',synth:'warm-pad',chord:'em-deep',fx:{delaySend:.25,reverbSend:.55,chorusMix:.35}},
+  'tech-house' :{bpm:124,drum:'tech-house',bass:'rolling-bass',synth:'tech-stab',chord:'am-house',fx:{delaySend:.3,reverbSend:.3}},
+  'big-room'   :{bpm:128,drum:'big-room',bass:'reese-bass',synth:'big-room',chord:'am-lift',fx:{delaySend:.25,reverbSend:.5,masterDrive:.35}},
+  'minimal'    :{bpm:126,drum:'minimal',bass:'minimal-bass',synth:'deep-pluck',chord:'cm-minimal',fx:{delaySend:.3,reverbSend:.35}},
+  'dreamy'     :{bpm:110,drum:'deep-house',bass:'sub-bass',synth:'vox-pad',chord:'em-deep',fx:{delaySend:.4,reverbSend:.75,chorusMix:.55}},
+};
+const SP_VIBE_KEYWORDS={
+  // keyword -> key in SP_VIBE_PRESETS (order matters — longest matches first)
+  'dark techno':'dark-techno','tech house':'tech-house','tech-house':'tech-house',
+  'deep house':'deep-house','deep-house':'deep-house',
+  'big room':'big-room','bigroom':'big-room','big-room':'big-room',
+  'psytrance':'psytrance','psy-trance':'psytrance','psy':'psytrance',
+  'uplifting':'uplifting','hardstyle':'hoover','hoover':'hoover',
+  'trance':'trance','techno':'techno','house':'house',
+  'minimal':'minimal','acid':'acid','dreamy':'dreamy','ambient':'dreamy','pad':'dreamy',
+};
+function spVibeParse(text){
+  const src=(text||'').toLowerCase().trim();
+  let vibeKey='trance';
+  // longest keywords first — use array to iterate deterministically
+  for(const k of Object.keys(SP_VIBE_KEYWORDS).sort((a,b)=>b.length-a.length)){
+    if(src.indexOf(k)>=0){vibeKey=SP_VIBE_KEYWORDS[k];break;}
+  }
+  const spec={...SP_VIBE_PRESETS[vibeKey],_name:vibeKey,_fromText:src};
+  // BPM override — look for 3-digit number
+  const bpmM=src.match(/\b(\d{2,3})\s*(bpm)?\b/);
+  if(bpmM){const n=parseInt(bpmM[1],10);if(n>=70&&n<=200)spec.bpm=n;}
+  // Mood tweaks
+  if(/\bdark\b/.test(src)){spec.fx={...spec.fx,reverbSend:(spec.fx?.reverbSend||.3)+.1,masterDrive:(spec.fx?.masterDrive||0)+.15};spec._dark=true;}
+  if(/\bpeak\b|\benergy\b|\bheavy\b|\bdriving?\b/.test(src)){spec.fx={...spec.fx,masterDrive:(spec.fx?.masterDrive||0)+.15};spec._peak=true;}
+  if(/\bslow\b|\bchill\b/.test(src)&&!bpmM){spec.bpm=Math.max(100,spec.bpm-12);}
+  if(/\bfast\b|\bhard\b/.test(src)&&!bpmM){spec.bpm=Math.min(150,spec.bpm+8);}
+  if(/\bbig\b|\breverb\b|\bambient\b/.test(src)){spec.fx={...spec.fx,reverbSend:Math.min(.9,(spec.fx?.reverbSend||.3)+.25)};}
+  if(/\bchorus\b|\bwide\b|\bstereo\b/.test(src)){spec.fx={...spec.fx,chorusMix:Math.min(.8,(spec.fx?.chorusMix||.2)+.25)};}
+  // Instrument hints (override synth)
+  if(/\bhoover\b/.test(src))spec.synth='hoover';
+  else if(/\bsupersaw\b/.test(src))spec.synth='trance-supersaw';
+  else if(/\bpiano\b/.test(src))spec.synth='house-piano';
+  else if(/\bsub\b/.test(src))spec.synth='sub-bass';
+  else if(/\bpluck\b/.test(src))spec.synth='pluck-lead';
+  else if(/\bpad\b/.test(src))spec.synth='warm-pad';
+  else if(/\bvox\b|\bvowel\b/.test(src))spec.synth='vox-pad';
+  else if(/\bbell\b/.test(src))spec.synth='fm-bell';
+  // Bass hints
+  if(/\brolling\b/.test(src))spec.bass='rolling-bass';
+  else if(/\bacid\b/.test(src))spec.bass='classic-acid';
+  else if(/\bsub\b/.test(src))spec.bass='deep-bass';
+  else if(/\bstab\b/.test(src))spec.bass='stab-bass';
+  return spec;
+}
+function spVibeRandomizeDrums(){
+  // light human-feel variation — add ghost shaker/perc hits so it's not identical every time
+  const pat=SP.drum.pattern;if(!pat)return;
+  const voices=SP.drum.voices;
+  const shakerIdx=voices.indexOf('SHAKER');
+  const percIdx=voices.indexOf('PERC');
+  const rand=()=>Math.random()<0.35;
+  if(shakerIdx>=0){for(let s=0;s<16;s++)if(pat[shakerIdx][s]===0 && rand())pat[shakerIdx][s]=1;}
+  if(percIdx>=0){for(let s=1;s<16;s+=2)if(pat[percIdx][s]===0 && Math.random()<0.2)pat[percIdx][s]=1;}
+}
+function spVibeApply(spec){
+  spInitAudio();
+  // BPM
+  SP.transport.bpm=spec.bpm;
+  const bpmEl=document.getElementById('spBpm');if(bpmEl)bpmEl.value=spec.bpm;
+  // DRUMS
+  SP.drum.pattern=spDrumPresetCopy(spec.drum);
+  spVibeRandomizeDrums();
+  spBuildDrumGrid();
+  document.querySelectorAll('[data-sp-drum-preset]').forEach(b=>b.classList.toggle('active',b.dataset.spDrumPreset===spec.drum));
+  // BASS
+  if(SP_BASS_PRESETS[spec.bass]){SP.bass.pattern=SP_BASS_PRESETS[spec.bass].map(s=>({...s}));spBuildBassSeq();}
+  document.querySelectorAll('[data-sp-bass-preset]').forEach(b=>b.classList.toggle('active',b.dataset.spBassPreset===spec.bass));
+  // SYNTH preset
+  if(SP_SYNTH_PRESETS[spec.synth]){spApplySynthPreset(spec.synth);
+    document.querySelectorAll('[data-sp-preset]').forEach(b=>b.classList.toggle('active',b.dataset.spPreset===spec.synth));
+  }
+  // FX defaults on master scope — delaySend / reverbSend / chorusMix / masterDrive
+  if(spec.fx){
+    const fx=spec.fx;
+    Object.keys(fx).forEach(k=>{
+      // Send knobs live on the synth scope; master scope hosts drive/chorusMix aren't on master scope — handle each
+      if(k==='masterDrive'){spSetKnob('masterDrive',Math.min(1,Math.max(0,fx[k])),'.sp-master');}
+      else if(k==='chorusMix'){spSetKnob('chorusMix',Math.min(1,Math.max(0,fx[k])),'#spInstSynth');}
+      else if(k==='delaySend'||k==='reverbSend'){spSetKnob(k,Math.min(1,Math.max(0,fx[k])),'#spInstSynth');}
+    });
+  }
+  // CHORD progression
+  SP.chords={progression:SP_CHORD_PROGRESSIONS[spec.chord]||SP_CHORD_PROGRESSIONS['am-trance'],index:0,held:[]};
+}
+function spChordNoteOn(midis){
+  if(!midis)return;
+  midis.forEach(m=>{try{spSynthNoteOn(m);}catch(_){}});
+  SP.chords.held=midis.slice();
+}
+function spChordNoteOff(){
+  if(!SP.chords||!SP.chords.held)return;
+  SP.chords.held.forEach(m=>{try{spSynthNoteOff(m);}catch(_){}});
+  SP.chords.held=[];
+}
+function spVibeGenerate(){
+  const input=document.getElementById('spVibeInput');
+  const status=document.getElementById('spVibeStatus');
+  const btn=document.getElementById('spVibeGen');
+  const text=(input&&input.value)||'';
+  if(!text.trim()){status&&(status.textContent='Type a vibe, or tap one of the chips below…',status.className='vibe-status warn');return;}
+  const spec=spVibeParse(text);
+  btn&&btn.classList.add('working');
+  spVibeApply(spec);
+  const label=spec._name.replace(/-/g,' ').toUpperCase();
+  if(status){
+    const fxSum=[spec.fx?.reverbSend?'reverb':null,spec.fx?.delaySend?'delay':null,spec.fx?.chorusMix?'chorus':null,spec.fx?.masterDrive?'drive':null].filter(Boolean).join(' · ');
+    status.textContent=`▶ ${label} · ${spec.bpm} BPM · ${spec.drum.toUpperCase()} drums · ${spec.bass.toUpperCase()} bass · ${spec.synth.toUpperCase()} synth${fxSum?' · '+fxSum:''}`;
+    status.className='vibe-status';
+  }
+  if(!SP.transport.playing)spTransportStart();
+  setTimeout(()=>btn&&btn.classList.remove('working'),600);
+}
+
+/* ====================================================================
    TITAN LAB — STUDIO MIXER (full-screen multi-channel)
    ==================================================================== */
 const SP_MIXER_GROUPS=[
@@ -13280,6 +13524,23 @@ function setupStudioPro(){
   // STUDIO MIXER open/close
   document.getElementById('spMixerOpenBtn')?.addEventListener('click',spOpenStudioMixer);
   document.getElementById('spMixerCloseBtn')?.addEventListener('click',spCloseStudioMixer);
+
+  // VIBE SOUND CODING — generate & play
+  const vibeInp=document.getElementById('spVibeInput');
+  const vibeBtn=document.getElementById('spVibeGen');
+  vibeBtn?.addEventListener('click',spVibeGenerate);
+  vibeInp?.addEventListener('keydown',e=>{
+    if((e.key==='Enter')&&(e.ctrlKey||e.metaKey||!e.shiftKey)){
+      e.preventDefault();spVibeGenerate();
+    }
+  });
+  document.querySelectorAll('.vibe-chip').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      document.querySelectorAll('.vibe-chip').forEach(c=>c.classList.toggle('active',c===chip));
+      if(vibeInp)vibeInp.value=chip.dataset.vibe||chip.textContent.trim();
+      spVibeGenerate();
+    });
+  });
   // Esc closes the mixer
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape' && SP.mix.open){e.preventDefault();spCloseStudioMixer();}
