@@ -5045,7 +5045,7 @@ body.work-mode .automix-sync{
 </div>
 </div>
 <div class="url-input-wrap" id="urlInputWrap">
-<input type="text" class="url-input" id="urlInput" placeholder="Paste audio URL (MP3, WAV, OGG, M4A)..." />
+<input type="text" class="url-input" id="urlInput" placeholder="Paste Spotify / YouTube / direct audio URL (MP3, WAV, OGG, M4A)..." />
 <button class="url-load" id="urlLoad">LOAD</button>
 <span class="url-status" id="urlStatus">READY</span>
 </div>
@@ -6137,7 +6137,96 @@ async function loadAudioFile(file){
   return track;
 }
 
+function isSpotifyTrackUrl(url){return /open\.spotify\.com\/(intl-[\w-]+\/)?track\/[a-zA-Z0-9]+/.test(url);}
+function extractSpotifyTrackId(url){const m=url.match(/track\/([a-zA-Z0-9]+)/);return m?m[1]:null;}
+
+async function loadSpotifyUrl(url){
+  ensureAudio();
+  const status=document.getElementById('urlStatus'),btn=document.getElementById('urlLoad');
+  status.className='url-status';status.textContent='SPOTIFY — RESOLVING...';btn.disabled=true;
+  try{
+    let title='Spotify Track',artist='',artwork='',preview=null;
+    /* Step A — oEmbed (no auth) for basic metadata. */
+    try{
+      const om=await fetch(`https://open.spotify.com/oembed?url=${encodeURIComponent(url)}`);
+      if(om.ok){
+        const j=await om.json();
+        if(j.title)title=j.title;
+        if(j.thumbnail_url)artwork=j.thumbnail_url;
+      }
+    }catch(e){}
+    /* Step B — Spotify Web API (needs creds) for preview_url + artist. */
+    if(musicCreds&&musicCreds.spotifyId&&musicCreds.spotifySecret){
+      try{
+        const id=extractSpotifyTrackId(url);
+        if(id){
+          status.textContent='SPOTIFY API LOOKUP...';
+          const tok=await getSpotifyToken();
+          const r=await fetch(`https://api.spotify.com/v1/tracks/${id}`,{headers:{Authorization:'Bearer '+tok}});
+          if(r.ok){
+            const d=await r.json();
+            if(d.name)title=d.name;
+            if(d.artists&&d.artists.length)artist=d.artists.map(a=>a.name).join(', ');
+            if(d.album&&d.album.images&&d.album.images[0])artwork=d.album.images[0].url;
+            if(d.preview_url)preview=d.preview_url;
+          }
+        }
+      }catch(e){console.warn('Spotify API:',e.message);}
+    }
+    /* Step C — iTunes search fallback (always works, 30s m4a preview). */
+    if(!preview){
+      status.textContent='SEARCHING ITUNES FALLBACK...';
+      const q=encodeURIComponent(`${title} ${artist}`.trim());
+      const r=await fetch(`https://itunes.apple.com/search?term=${q}&media=music&limit=5`);
+      if(r.ok){
+        const j=await r.json();
+        const match=(j.results||[]).find(x=>x.previewUrl&&
+            (!artist||(x.artistName||'').toLowerCase().includes(artist.toLowerCase().split(',')[0].trim())))
+          || (j.results||[]).find(x=>x.previewUrl);
+        if(match){
+          preview=match.previewUrl;
+          title=match.trackName||title;
+          artist=match.artistName||artist;
+          artwork=(match.artworkUrl100||'').replace('100x100','600x600')||artwork;
+        }
+      }
+    }
+    if(!preview)throw new Error('No playable preview — add Spotify credentials in Settings or the track is not on iTunes');
+    /* Step D — fetch, decode, add to library. */
+    status.textContent='FETCHING PREVIEW...';
+    const r=await fetch(preview);
+    if(!r.ok)throw new Error('Preview fetch '+r.status);
+    const ab=await r.arrayBuffer();
+    const abCopy=ab.slice(0);
+    status.textContent='DECODING...';
+    const buf=await audioCtx.decodeAudioData(ab);
+    status.textContent='ANALYZING...';
+    const bpm=await detectBPM(buf);
+    const id='sp_'+Date.now();
+    const track={id,title,artist:artist||'Unknown',bpm,key:'--',duration:buf.duration,buffer:buf,url:preview,source:'spotify',sourceKind:'spotify',artwork,link:url,rating:0,addedAt:Date.now()};
+    if(!library.find(x=>x.id===track.id))library.push(track);
+    renderLibrary();saveToDB();
+    idbPutAudio(id,abCopy);
+    enrichTrackAsync&&enrichTrackAsync(track,buf);
+    status.className='url-status success';status.textContent='LOADED ✓';
+    document.getElementById('urlInput').value='';
+    toast(`Spotify → ${title}${artist?' — '+artist:''}`,'success');
+  }catch(err){
+    status.className='url-status error';status.textContent='SPOTIFY ERROR';
+    toast('Spotify failed: '+err.message,'error');
+  }finally{
+    btn.disabled=false;
+    setTimeout(()=>{status.className='url-status';status.textContent='READY';},5000);
+  }
+}
+
 async function loadFromURL(url){
+  if(isSpotifyTrackUrl(url))return loadSpotifyUrl(url);
+  if(typeof extractYouTubeId==='function'&&extractYouTubeId(url)){
+    const t=addYouTubeTrack(url);
+    if(t){toast('Added YouTube track','success');document.getElementById('urlInput').value='';}
+    return;
+  }
   ensureAudio();
   const status=document.getElementById('urlStatus'),btn=document.getElementById('urlLoad');
   status.className='url-status';status.textContent='FETCHING...';btn.disabled=true;
@@ -6161,7 +6250,7 @@ async function loadFromURL(url){
     toast(`Loaded: ${title}`,'success');
   }catch(err){
     status.className='url-status error';
-    if(err.message.includes('Fetch')||err.name==='TypeError'){status.textContent='CORS BLOCKED';toast('CORS blocked — try direct audio link','error');}
+    if(err.message.includes('Fetch')||err.name==='TypeError'){status.textContent='CORS BLOCKED';toast('CORS blocked — try direct audio link or Spotify / YouTube URL','error');}
     else{status.textContent='ERROR';toast('Failed: '+err.message,'error');}
   }finally{btn.disabled=false;setTimeout(()=>{status.className='url-status';status.textContent='READY';},4000);}
 }
@@ -9810,7 +9899,7 @@ async function searchSpotify(q){
     artwork:x.album?.images?.[0]?.url||'',
     previewUrl:x.preview_url,duration:x.duration_ms/1000,
     spotifyUri:x.uri,link:x.external_urls?.spotify
-  })).filter(x=>x.previewUrl||x.link);
+  })).filter(x=>x.title);
 }
 
 async function searchYouTube(q){
@@ -9831,7 +9920,7 @@ function renderSearchResults(items){
   el.innerHTML=items.map(it=>{
     const art=it.artwork?`<img class="sc-art" src="${it.artwork}" alt="" onerror="this.style.display='none'"/>`:'<div class="sc-art"></div>';
     const meta=[it.album,it.genre,it.duration?fmtTime(it.duration):null].filter(Boolean).join(' · ');
-    const canPreview=!!it.previewUrl;
+    const canPreview=!!it.previewUrl||(it.source==='spotify'&&!!it.title);
     const canYt=it.source==='youtube';
     return `<div class="search-card" data-sid="${it.id}">
       <div class="sc-top">${art}<div class="sc-info"><div class="sc-title">${escapeHtml(it.title)}</div><div class="sc-artist">${escapeHtml(it.artist||'')}</div>${meta?`<div class="sc-meta">${escapeHtml(meta)}</div>`:''}</div><span class="sc-source ${it.source}">${it.source.toUpperCase()}</span></div>
@@ -9843,7 +9932,7 @@ function renderSearchResults(items){
   window._searchItems=items;
   el.querySelectorAll('[data-add]').forEach(btn=>{
     btn.addEventListener('click',async()=>{
-      const it=items.find(x=>x.id===btn.dataset.add);if(!it||!it.previewUrl)return;
+      const it=items.find(x=>x.id===btn.dataset.add);if(!it)return;
       const deck=btn.dataset.to||null;
       try{
         btn.disabled=true;btn.textContent='...';
@@ -9864,7 +9953,23 @@ function renderSearchResults(items){
 
 async function addPreviewToLibrary(it,deckId){
   ensureAudio();
-  const r=await fetch(it.previewUrl);if(!r.ok)throw new Error('Preview fetch '+r.status);
+  let previewUrl=it.previewUrl;
+  /* Spotify dropped 30s previews for many tracks; fall back to iTunes. */
+  if(!previewUrl&&(it.source==='spotify'||it.link&&it.link.includes('spotify'))){
+    try{
+      const q=encodeURIComponent(`${it.title} ${it.artist||''}`.trim());
+      const r=await fetch(`https://itunes.apple.com/search?term=${q}&media=music&limit=5`);
+      if(r.ok){
+        const j=await r.json();
+        const match=(j.results||[]).find(x=>x.previewUrl&&
+            (it.artist?(x.artistName||'').toLowerCase().includes(String(it.artist).toLowerCase().split(',')[0].trim()):true))
+          || (j.results||[]).find(x=>x.previewUrl);
+        if(match)previewUrl=match.previewUrl;
+      }
+    }catch(e){}
+  }
+  if(!previewUrl)throw new Error('No preview available (not on Spotify/iTunes)');
+  const r=await fetch(previewUrl);if(!r.ok)throw new Error('Preview fetch '+r.status);
   const ab=await r.arrayBuffer();
   const abCopy=ab.slice(0);
   const buf=await audioCtx.decodeAudioData(ab);
