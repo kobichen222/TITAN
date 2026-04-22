@@ -1,0 +1,88 @@
+name: Build Desktop App
+
+on:
+  # Manual trigger from Actions tab
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag (e.g. v1.0.0). Leave empty to skip release.'
+        required: false
+        default: ''
+  # Automatic on tag push matching v*
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+          - os: windows-latest
+            platform: win
+          - os: macos-latest
+            platform: mac
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Build Electron app (${{ matrix.platform }})
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run electron:${{ matrix.platform }} -- --publish=never
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dj-max-${{ matrix.platform }}
+          path: |
+            dist-electron/*.exe
+            dist-electron/*.dmg
+            dist-electron/*.AppImage
+            dist-electron/*.deb
+          if-no-files-found: warn
+
+  release:
+    name: Publish Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.release_tag != ''
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create / update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.release_tag || github.ref_name }}
+          name: DJ MAX ${{ github.event.inputs.release_tag || github.ref_name }}
+          body: |
+            Desktop installers for DJ MAX — Ultimate AI DJ Console.
+
+            - Windows: `.exe` installer (NSIS) and portable `.exe`
+            - macOS: `.dmg` (Intel + Apple Silicon)
+            - Linux: `.AppImage` and `.deb`
+
+            All builds run the full DJ MAX app offline — no internet required
+            for core DJ / mixer / decks / sampler / studio / vinyl features.
+          files: artifacts/**/*
+          draft: false
+          prerelease: false

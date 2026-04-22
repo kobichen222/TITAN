@@ -6254,28 +6254,51 @@ No MIDI devices. Press CONNECT.
 </div>
 </div>
 
-<div class="settings-section"><h3>💿 OFFLINE VERSION</h3>
+<div class="settings-section"><h3>💿 OFFLINE / DESKTOP APP</h3>
 <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:8px;">
-<div class="setting-label">Download full standalone app to your computer</div>
+<div class="setting-label">Install DJ MAX on your computer</div>
 <div class="setting-desc" style="line-height:1.6">
-Works completely offline once downloaded — open the HTML file in any browser.
-Core DJ, mixer, decks, sampler, studio and vinyl features work without internet.
-(YouTube / Spotify / Supabase are optional and require a connection.)
+Two options — both work completely offline:<br/>
+<b>Desktop App</b> — native installer (Windows .exe / macOS .dmg / Linux .AppImage), opens like any other program, no browser needed.<br/>
+<b>Standalone HTML</b> — a single file you double-click to open in any browser.
 </div>
 </div>
 <div class="settings-row" style="justify-content:flex-start;gap:10px;flex-wrap:wrap">
-  <button class="tool-btn" id="offlineDownloadBtn" style="color:var(--play-green);border-color:var(--play-green);font-weight:800;letter-spacing:2px;">⬇ DOWNLOAD OFFLINE VERSION</button>
+  <button class="tool-btn" id="offlineDownloadBtn" style="color:var(--play-green);border-color:var(--play-green);font-weight:800;letter-spacing:2px;">🔓 UNLOCK DOWNLOADS</button>
   <span id="offlineStatus" class="setting-desc" style="min-width:120px"></span>
 </div>
 <div id="offlineCodeBox" class="settings-row" style="display:none;flex-direction:column;align-items:stretch;gap:6px;padding:10px;border:1px solid rgba(255,138,26,.35);border-radius:8px;background:rgba(255,138,26,.04)">
   <div class="setting-label" style="color:var(--orange)">🔒 Admin code required</div>
-  <div class="setting-desc">Enter the admin code to authorize the offline download.</div>
+  <div class="setting-desc">Enter the admin code to unlock desktop / offline downloads.</div>
   <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
     <input type="password" id="offlineAdminCode" class="url-input" placeholder="Admin code" autocomplete="off" style="padding:8px 12px;letter-spacing:4px;font-family:'Share Tech Mono',monospace;max-width:200px" />
-    <button class="tool-btn" id="offlineCodeConfirm" style="color:var(--play-green);border-color:var(--play-green)">UNLOCK &amp; DOWNLOAD</button>
+    <button class="tool-btn" id="offlineCodeConfirm" style="color:var(--play-green);border-color:var(--play-green)">UNLOCK</button>
     <button class="tool-btn" id="offlineCodeCancel">CANCEL</button>
   </div>
   <div id="offlineCodeErr" class="setting-desc" style="color:var(--red);min-height:14px"></div>
+</div>
+
+<div id="offlineUnlocked" style="display:none;margin-top:10px">
+  <div class="setting-label" style="color:var(--play-green);margin-bottom:8px">🖥 DESKTOP INSTALLERS</div>
+  <div class="setting-desc" style="margin-bottom:8px;line-height:1.6">
+    Native desktop builds from the latest GitHub Release. Pick your platform:
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+    <a class="tool-btn" id="dlWin" href="https://github.com/kobichen222/DJKKKKKKK/releases/latest" target="_blank" rel="noopener" style="color:#9fd8ff;border-color:#9fd8ff;text-decoration:none">⊞ WINDOWS (.exe)</a>
+    <a class="tool-btn" id="dlMac" href="https://github.com/kobichen222/DJKKKKKKK/releases/latest" target="_blank" rel="noopener" style="color:#fff;border-color:#fff;text-decoration:none">🍎 macOS (.dmg)</a>
+    <a class="tool-btn" id="dlLinux" href="https://github.com/kobichen222/DJKKKKKKK/releases/latest" target="_blank" rel="noopener" style="color:#ffaa66;border-color:#ffaa66;text-decoration:none">🐧 LINUX (.AppImage)</a>
+  </div>
+  <div class="setting-desc" style="margin-bottom:8px;font-size:10px;line-height:1.5">
+    If no assets appear on the Release page, an admin must trigger the <b>Build Desktop App</b> workflow in the repo's Actions tab (or push a <code>v*</code> tag).
+  </div>
+
+  <div class="setting-label" style="color:var(--play-green);margin:14px 0 8px">📄 STANDALONE HTML</div>
+  <div class="setting-desc" style="margin-bottom:8px;line-height:1.6">
+    Single-file fallback — no install, just open in any browser.
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="tool-btn" id="offlineHtmlDl" style="color:var(--play-green);border-color:var(--play-green);font-weight:800">⬇ DOWNLOAD HTML</button>
+  </div>
 </div>
 </div>
 <div class="settings-section"><h3>🔐 AUTHENTICATION (Supabase)</h3>
@@ -8799,10 +8822,21 @@ function setupOfflineDownload(){
   const cancel=document.getElementById('offlineCodeCancel');
   const err=document.getElementById('offlineCodeErr');
   const status=document.getElementById('offlineStatus');
+  const panel=document.getElementById('offlineUnlocked');
+  const htmlDl=document.getElementById('offlineHtmlDl');
   if(!btn||!box)return;
   const ADMIN_CODE='2100';
 
+  // Persist unlock during the session
+  const isUnlocked=()=>sessionStorage.getItem('djmax_offline_unlocked')==='1';
+  if(isUnlocked())unlock();
+
   btn.addEventListener('click',()=>{
+    if(isUnlocked()){
+      panel.style.display='block';
+      panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+      return;
+    }
     box.style.display='flex';
     err.textContent='';
     inp.value='';
@@ -8811,23 +8845,26 @@ function setupOfflineDownload(){
   cancel.addEventListener('click',()=>{box.style.display='none';err.textContent=''});
   inp.addEventListener('keydown',e=>{if(e.key==='Enter')ok.click()});
 
-  async function doDownload(){
+  function unlock(){
+    sessionStorage.setItem('djmax_offline_unlocked','1');
+    if(panel)panel.style.display='block';
+    if(btn){btn.textContent='🔓 DOWNLOADS UNLOCKED — SHOW OPTIONS';btn.style.opacity='.9'}
+    status.textContent='';
+  }
+
+  async function doHtmlDownload(){
     try{
       status.textContent='Preparing…';status.style.color='var(--orange)';
-      // Fetch the source HTML so the download reflects the deployed file exactly
       let html='';
       try{
         const res=await fetch('./pioneer-dj-pro-max-v2.html',{cache:'no-cache'});
         if(res.ok)html=await res.text();
       }catch(_){}
-      if(!html){
-        // Fallback: serialize the current document
-        html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
-      }
-      // Inject a banner comment so users know what they got
+      if(!html){html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;}
       const stamp=new Date().toISOString().replace(/[:.]/g,'-');
-      const banner=`<!-- DJ MAX — Offline Standalone Build · exported ${stamp} -->\n`;
-      if(!html.startsWith('<!--'))html=banner+html;
+      if(!html.startsWith('<!--')){
+        html=`<!-- DJ MAX — Offline Standalone Build · exported ${stamp} -->\n`+html;
+      }
       const blob=new Blob([html],{type:'text/html;charset=utf-8'});
       const url=URL.createObjectURL(blob);
       const a=document.createElement('a');
@@ -8835,7 +8872,7 @@ function setupOfflineDownload(){
       document.body.appendChild(a);a.click();
       setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},500);
       status.textContent='✓ Downloaded';status.style.color='var(--play-green)';
-      if(typeof toast==='function')toast('Offline version downloaded','success');
+      if(typeof toast==='function')toast('Offline HTML downloaded','success');
       setTimeout(()=>{status.textContent=''},4000);
     }catch(e){
       status.textContent='Failed';status.style.color='var(--red)';
@@ -8853,8 +8890,11 @@ function setupOfflineDownload(){
     }
     err.textContent='';
     box.style.display='none';
-    doDownload();
+    unlock();
+    if(typeof toast==='function')toast('Downloads unlocked','success');
   });
+
+  htmlDl?.addEventListener('click',()=>{if(isUnlocked())doHtmlDownload()});
 }
 
 /* TABS */

@@ -6,3 +6,9 @@ out
 .env*.local
 .vercel
 next-env.d.ts
+dist-electron
+*.exe
+*.dmg
+*.AppImage
+*.deb
+*.zip
