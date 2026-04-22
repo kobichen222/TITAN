@@ -2,10 +2,18 @@
   "name": "pioneer-dj-pro-max",
   "version": "1.0.0",
   "private": true,
+  "description": "DJ MAX — Ultimate AI DJ Console",
+  "author": "DJ MAX",
+  "main": "electron/main.js",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "electron": "electron .",
+    "electron:build": "electron-builder",
+    "electron:win": "electron-builder --win",
+    "electron:mac": "electron-builder --mac",
+    "electron:linux": "electron-builder --linux"
   },
   "dependencies": {
     "next": "^15.3.0",
@@ -16,6 +24,50 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.0",
     "typescript": "^5.7.0"
+  },
+  "build": {
+    "appId": "com.djmax.ultimate",
+    "productName": "DJ MAX",
+    "directories": {
+      "output": "dist-electron",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "extraMetadata": {
+      "main": "electron/main.js"
+    },
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDir": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "DJ MAX"
+    },
+    "mac": {
+      "target": [
+        { "target": "dmg", "arch": ["x64", "arm64"] }
+      ],
+      "category": "public.app-category.music"
+    },
+    "linux": {
+      "target": [
+        { "target": "AppImage", "arch": ["x64"] },
+        { "target": "deb", "arch": ["x64"] }
+      ],
+      "category": "AudioVideo"
+    }
   }
 }
