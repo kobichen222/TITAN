@@ -5329,6 +5329,66 @@ body.work-mode .automix-sync{
 }
 
 /* ================================================================
+   YOUTUBE — per-deck player cards in the MUSIC tab
+   ================================================================ */
+.yt-players-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;
+}
+.yt-card{
+  display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:10px;
+  background:linear-gradient(180deg,#18181c 0%,#0a0a0c 100%);
+  border:1px solid #26262c;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 8px 18px rgba(0,0,0,.5);
+}
+.yt-card-head{
+  display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:6px;
+  background:rgba(255,122,0,.06);border:1px solid rgba(255,122,0,.2);
+}
+.yt-card-deck{
+  font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;letter-spacing:2px;
+  color:var(--orange);flex:0 0 auto;
+}
+.yt-card-title{
+  flex:1;min-width:0;font-family:'Share Tech Mono',monospace;font-size:11px;
+  color:#bfd8ff;letter-spacing:.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.yt-player-slot{
+  position:relative;aspect-ratio:16/9;background:#000;border-radius:6px;overflow:hidden;
+  border:1px solid #1a1a20;
+  box-shadow:inset 0 0 30px rgba(0,0,0,.9);
+}
+.yt-player-slot::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at top,rgba(255,0,0,.04),transparent 60%);
+}
+.yt-player-slot > div,
+.yt-player-slot iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.yt-player-slot > div:empty::after{
+  content:'Load a YouTube track onto this deck';
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Share Tech Mono',monospace;font-size:11px;color:#3a4a52;letter-spacing:1px;text-align:center;padding:20px;
+}
+.yt-card-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.yt-ctl-btn{
+  padding:7px 12px;border-radius:5px;cursor:pointer;
+  font-family:'Orbitron',sans-serif;font-size:10px;font-weight:800;letter-spacing:1.8px;
+  background:linear-gradient(180deg,#2a2a30,#15151a);
+  border:1px solid #3a3a40;color:#e8e8ea;
+  transition:all .12s;
+}
+.yt-ctl-btn:hover{border-color:var(--orange);color:var(--orange);box-shadow:0 0 10px rgba(255,138,26,.35)}
+.yt-ctl-btn.play{background:linear-gradient(180deg,#1cff8f,#008844);color:#0a0a0c;border-color:#1cff8f}
+.yt-ctl-btn.play:hover{filter:brightness(1.08);box-shadow:0 0 14px rgba(28,255,143,.5)}
+.yt-vol-label{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1.5px;color:var(--text-dim)}
+.yt-vol{flex:1;min-width:80px}
+.yt-quick-row{display:flex;gap:8px;margin:6px 0 12px;align-items:center}
+.yt-quick-row .url-input{flex:1}
+
+@media(max-width:880px){
+  .yt-players-grid{grid-template-columns:1fr}
+}
+
+/* ================================================================
    DISCOVER — world music catalog search (iTunes + Deezer) + genres
    ================================================================ */
 .disc-btn{
@@ -6095,6 +6155,43 @@ Click pad to play · Right-click to clear · Drop audio file/track onto pad · C
 
 <div class="tab-content" id="tab-youtube">
 <div class="youtube-panel">
+
+<!-- Per-deck YouTube players (actually host the iframe the deck loads into) -->
+<div class="yt-players-grid">
+  <div class="yt-card">
+    <div class="yt-card-head">
+      <span class="yt-card-deck">DECK A</span>
+      <span class="yt-card-title" id="ytTitleA">— no track —</span>
+    </div>
+    <div class="yt-player-slot"><div id="ytPlayerA"></div></div>
+    <div class="yt-card-controls">
+      <button class="yt-ctl-btn play" data-yt-deck="A" data-yt-action="play">▶ PLAY</button>
+      <button class="yt-ctl-btn" data-yt-deck="A" data-yt-action="pause">⏸ PAUSE</button>
+      <span class="yt-vol-label">VOL</span>
+      <input type="range" id="ytVolA" min="0" max="100" value="70" class="yt-vol"/>
+    </div>
+  </div>
+  <div class="yt-card">
+    <div class="yt-card-head">
+      <span class="yt-card-deck" style="color:var(--screen-glow)">DECK B</span>
+      <span class="yt-card-title" id="ytTitleB">— no track —</span>
+    </div>
+    <div class="yt-player-slot"><div id="ytPlayerB"></div></div>
+    <div class="yt-card-controls">
+      <button class="yt-ctl-btn play" data-yt-deck="B" data-yt-action="play">▶ PLAY</button>
+      <button class="yt-ctl-btn" data-yt-deck="B" data-yt-action="pause">⏸ PAUSE</button>
+      <span class="yt-vol-label">VOL</span>
+      <input type="range" id="ytVolB" min="0" max="100" value="70" class="yt-vol"/>
+    </div>
+  </div>
+</div>
+
+<!-- Quick load URL → Deck A -->
+<div class="yt-quick-row">
+  <input type="text" class="url-input" id="ytBigInput" placeholder="Paste a YouTube URL and send to Deck A..." />
+  <button class="yt-btn" id="ytBigLoad">LOAD → DECK A</button>
+</div>
+
 <div class="library-header" style="border-bottom:none;padding-bottom:0;">
 <div class="library-title">🔎 MUSIC SEARCH</div>
 <div class="library-actions">
@@ -7474,8 +7571,14 @@ function previewTrack(id){
 async function loadTrackToDeck(deckId,track){
   ensureAudio();
   if(track.source==='yt'&&(deckId==='A'||deckId==='B')){
+    const d=decks[deckId];d.track=track;d.offset=0;d.cuePoint=0;d.hotCues={};
+    const setText=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+    setText(`title-${deckId}`,(track.title||'YouTube').toUpperCase());
+    setText(`artist-${deckId}`,(track.artist||'YouTube').toUpperCase());
+    setText(`centerBpm-${deckId}`,'YT');
     loadYouTubeToDeck(deckId,track);
-    document.querySelector('.tab-btn[data-tab="youtube"]').click();
+    toast(`YouTube → Deck ${deckId}: open 🔎 MUSIC tab to view & play`,'success');
+    logMix(`Loaded YT "${track.title}" → Deck ${deckId}`);
     return;
   }
   const d=decks[deckId];stopDeck(deckId);
@@ -7505,15 +7608,126 @@ async function loadTrackToDeck(deckId,track){
 }
 
 function loadYouTubeToDeck(deckId,track){
-  if(!window.YT||!window.YT.Player){toast('YouTube API loading...','error');return;}
-  document.getElementById(`ytTitle${deckId}`).textContent=`DECK ${deckId}: ${track.title}`;
-  if(ytPlayers[deckId]){try{ytPlayers[deckId].loadVideoById(track.ytId);}catch(e){}return;}
-  ytPlayers[deckId]=new YT.Player(`ytPlayer${deckId}`,{
-    videoId:track.ytId,
-    playerVars:{autoplay:0,controls:1},
-    events:{onReady:()=>ytPlayers[deckId].setVolume(70)}
-  });
+  const titleEl=document.getElementById(`ytTitle${deckId}`);
+  if(titleEl)titleEl.textContent=`${track.title||'YouTube'}`;
+  const slot=document.getElementById(`ytPlayer${deckId}`);
+  if(!slot){
+    console.warn(`ytPlayer${deckId} element missing`);
+    toast('YouTube player area missing — open the MUSIC tab once','error');
+    return;
+  }
+  // If API hasn't loaded yet, retry up to ~5s
+  if(!window.YT||!window.YT.Player){
+    if(!track._ytRetry)track._ytRetry=0;
+    if(track._ytRetry<25){
+      track._ytRetry++;
+      setTimeout(()=>loadYouTubeToDeck(deckId,track),200);
+      return;
+    }
+    toast('YouTube API failed to load','error');return;
+  }
+  if(ytPlayers[deckId]&&typeof ytPlayers[deckId].loadVideoById==='function'){
+    try{ytPlayers[deckId].loadVideoById(track.ytId);}catch(e){console.warn(e);}
+    return;
+  }
+  try{
+    ytPlayers[deckId]=new YT.Player(`ytPlayer${deckId}`,{
+      videoId:track.ytId,
+      width:'100%',height:'100%',
+      playerVars:{autoplay:0,controls:1,playsinline:1,modestbranding:1,rel:0},
+      events:{
+        onReady:e=>{
+          try{e.target.setVolume(parseInt(document.getElementById(`ytVol${deckId}`)?.value||'70',10));}catch(_){}
+        },
+        onStateChange:e=>{
+          // 1=playing, 2=paused, 0=ended
+          const d=decks[deckId];if(!d)return;
+          const playing=e.data===1;
+          d.playing=playing;
+          document.getElementById(`jog-${deckId}`)?.classList.toggle('playing',playing);
+          const pb=document.querySelector(`.big-btn.play[data-deck="${deckId}"]`);
+          if(pb)pb.classList.toggle('active',playing);
+          const icon=document.getElementById(`playIcon-${deckId}`);
+          const lbl=document.getElementById(`playLabel-${deckId}`);
+          if(icon)icon.textContent=playing?'⏸':'▶';
+          if(lbl)lbl.textContent=playing?'PAUSE':'PLAY';
+        },
+        onError:err=>{
+          console.warn('YT player error',err);
+          toast('YouTube playback error (restricted video or network)','error');
+        },
+      }
+    });
+  }catch(e){console.warn('YT.Player ctor failed',e);toast('Failed to create YouTube player','error');}
 }
+
+/* Deck PLAY/PAUSE should control YouTube player when a YT track is loaded.
+   Wrap the existing functions so the normal audio path is skipped for yt. */
+(function wrapYouTubeDeckControl(){
+  if(window.__ytDeckWrapped)return;window.__ytDeckWrapped=true;
+  const origPlay=window.playDeck;
+  const origPause=window.pauseDeck;
+  const origStop=window.stopDeck;
+  const origSeek=window.seekDeck;
+  function updateYtBtnState(deckId,playing){
+    const btn=document.querySelector(`.big-btn.play[data-deck="${deckId}"]`);
+    if(btn)btn.classList.toggle('active',!!playing);
+    const icon=document.getElementById(`playIcon-${deckId}`);
+    const lbl=document.getElementById(`playLabel-${deckId}`);
+    if(icon)icon.textContent=playing?'⏸':'▶';
+    if(lbl)lbl.textContent=playing?'PAUSE':'PLAY';
+    document.getElementById(`jog-${deckId}`)?.classList.toggle('playing',!!playing);
+  }
+  if(typeof origPlay==='function'){
+    window.playDeck=function(deckId){
+      const d=decks[deckId];
+      if(d&&d.track&&d.track.source==='yt'){
+        const p=ytPlayers[deckId];
+        if(p&&typeof p.playVideo==='function'){try{p.playVideo();}catch(_){}}
+        else{loadYouTubeToDeck(deckId,d.track);setTimeout(()=>{try{ytPlayers[deckId]&&ytPlayers[deckId].playVideo()}catch(_){}},600)}
+        d.playing=true;updateYtBtnState(deckId,true);
+        return;
+      }
+      return origPlay.apply(this,arguments);
+    };
+  }
+  if(typeof origPause==='function'){
+    window.pauseDeck=function(deckId){
+      const d=decks[deckId];
+      if(d&&d.track&&d.track.source==='yt'){
+        const p=ytPlayers[deckId];
+        if(p&&typeof p.pauseVideo==='function'){try{p.pauseVideo();}catch(_){}}
+        d.playing=false;updateYtBtnState(deckId,false);
+        return;
+      }
+      return origPause.apply(this,arguments);
+    };
+  }
+  if(typeof origStop==='function'){
+    window.stopDeck=function(deckId){
+      const d=decks[deckId];
+      if(d&&d.track&&d.track.source==='yt'){
+        const p=ytPlayers[deckId];
+        if(p){try{p.pauseVideo();p.seekTo(0,true);}catch(_){}}
+        d.playing=false;
+        document.getElementById(`jog-${deckId}`)?.classList.remove('playing');
+        return;
+      }
+      return origStop.apply(this,arguments);
+    };
+  }
+  if(typeof origSeek==='function'){
+    window.seekDeck=function(deckId,sec){
+      const d=decks[deckId];
+      if(d&&d.track&&d.track.source==='yt'){
+        const p=ytPlayers[deckId];
+        if(p&&typeof p.seekTo==='function'){try{p.seekTo(sec,true);}catch(_){}}
+        return;
+      }
+      return origSeek.apply(this,arguments);
+    };
+  }
+})();
 
 function drawWaveform(deckId,track){
   const c=document.getElementById(`wave-${deckId}`);if(!c)return;
