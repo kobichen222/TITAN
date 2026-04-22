@@ -6073,6 +6073,133 @@ body.theme-light ::-webkit-scrollbar-thumb{
 }
 
 /* ================================================================
+   SUPPORT TAB — contact form + purchase request
+   ================================================================ */
+.support-panel{padding:18px !important}
+.support-panel .sup-direct{
+  font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.5px;
+  color:var(--orange);text-decoration:none;
+  padding:6px 12px;border-radius:6px;
+  background:rgba(255,138,26,.08);border:1px solid rgba(255,138,26,.3);
+}
+.support-panel .sup-direct:hover{background:rgba(255,138,26,.16);color:#ffcf7a}
+.sup-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:18px;margin-top:14px}
+@media(max-width:900px){.sup-grid{grid-template-columns:1fr}}
+
+.sup-mode-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.sup-mode-btn{
+  padding:9px 14px;border-radius:6px;cursor:pointer;
+  background:linear-gradient(180deg,#1e1e24 0%,#0e0e12 100%);
+  border:1px solid #2c2c34;color:var(--text-dim);
+  font-family:'Orbitron',sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;
+  transition:all .15s;
+}
+.sup-mode-btn:hover{color:#fff;border-color:rgba(255,138,26,.55)}
+.sup-mode-btn.active{
+  background:linear-gradient(180deg,var(--orange),#c85a00);
+  color:#0a0a0a;border-color:var(--orange-glow);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 14px rgba(255,138,26,.5);
+}
+.sup-mode-btn[data-sup-mode="purchase"].active{background:linear-gradient(180deg,#1cff8f,#008844);border-color:#baffdc}
+
+.sup-form{
+  padding:16px;border-radius:10px;
+  background:linear-gradient(180deg,#16161a 0%,#0a0a0c 100%);
+  border:1px solid rgba(255,138,26,.18);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 8px 20px rgba(0,0,0,.5);
+}
+.sup-row{margin-bottom:14px}
+.sup-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.sup-row-2{grid-template-columns:1fr}}
+.sup-label{
+  display:block;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1.8px;
+  font-weight:700;color:var(--orange);margin-bottom:6px;
+}
+.sup-form .url-input,.sup-form textarea{
+  width:100%;padding:10px 12px;border-radius:6px;
+  background:#020608;color:#9fd8ff;
+  border:1px solid #1a2a30;
+  font-family:'Share Tech Mono',monospace;font-size:12px;
+}
+.sup-form .url-input:focus,.sup-form textarea:focus{
+  border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,138,26,.15);outline:none;
+}
+.sup-form textarea{resize:vertical;min-height:130px}
+
+.sup-tiers{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:6px}
+@media(max-width:700px){.sup-tiers{grid-template-columns:1fr}}
+.sup-tier{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;cursor:pointer;transition:all .12s;
+  background:linear-gradient(180deg,#1a1a20,#0e0e12);border:1px solid #2a2a32;
+}
+.sup-tier:hover{border-color:rgba(28,255,143,.5)}
+.sup-tier input{margin-top:3px;accent-color:#1cff8f}
+.sup-tier input:checked + span{color:#9aff9f}
+.sup-tier input:checked + span b{color:#1cff8f}
+.sup-tier span{display:flex;flex-direction:column;gap:2px;color:#bfbfc4;flex:1;min-width:0}
+.sup-tier b{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:1.5px;color:#fff}
+.sup-tier em{font-style:normal;font-size:10px;color:#8a8a92;letter-spacing:.2px}
+.sup-tier strong{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--orange-glow);letter-spacing:1px;font-weight:700;margin-top:2px}
+
+.sup-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:0}
+.sup-send{
+  padding:12px 20px;border-radius:6px;cursor:pointer;border:none;
+  background:linear-gradient(180deg,#1cff8f,#008844);color:#021810;
+  font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;letter-spacing:2.5px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 3px 10px rgba(28,255,143,.4);
+  transition:all .12s;
+}
+.sup-send:hover{filter:brightness(1.1);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 4px 16px rgba(28,255,143,.55)}
+.sup-copy{
+  padding:12px 18px;border-radius:6px;cursor:pointer;
+  background:linear-gradient(180deg,#2a2a30,#141418);color:#9fd8ff;
+  border:1px solid rgba(46,224,255,.35);
+  font-family:'Orbitron',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;
+}
+.sup-copy:hover{border-color:#2ee0ff;color:#fff;box-shadow:0 0 12px rgba(46,224,255,.3)}
+.sup-status{
+  font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.8px;
+  padding:0 4px;min-height:14px;color:var(--text-dim);
+}
+.sup-status.ok{color:#9aff9f}
+.sup-status.err{color:var(--red)}
+.sup-note{
+  margin-top:12px;padding:10px;border-radius:6px;
+  background:rgba(46,224,255,.05);border:1px solid rgba(46,224,255,.2);
+  font-family:'Share Tech Mono',monospace;font-size:10.5px;color:#9fd8ff;line-height:1.5;
+}
+.sup-note b{color:var(--orange);letter-spacing:.5px}
+
+.sup-info-col{display:flex;flex-direction:column;gap:12px}
+.sup-card{
+  padding:14px;border-radius:10px;
+  background:linear-gradient(180deg,#14141a 0%,#08080a 100%);
+  border:1px solid #22222a;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 6px 14px rgba(0,0,0,.45);
+}
+.sup-card-title{
+  font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2.5px;font-weight:900;
+  color:var(--orange);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,138,26,.18);
+}
+.sup-card-body{display:flex;flex-direction:column;gap:8px}
+.sup-contact-item{display:flex;justify-content:space-between;gap:10px;font-family:'Share Tech Mono',monospace;font-size:11px}
+.sup-contact-k{color:#8a8a92;letter-spacing:1.2px}
+.sup-contact-item a{color:var(--orange);text-decoration:none}
+.sup-contact-item a:hover{text-decoration:underline}
+.sup-feat{display:flex;gap:8px;align-items:flex-start;font-family:'Share Tech Mono',monospace;font-size:11px;color:#bfd8ff;line-height:1.4}
+.sup-feat-dot{color:var(--orange);flex:0 0 auto}
+.sup-hint{margin-top:6px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#8a8a92;line-height:1.5}
+.sup-hint b{color:#1cff8f}
+
+/* Light theme */
+body.theme-light .sup-form{background:linear-gradient(180deg,#ffffff,#f5f0e3) !important;border:1px solid #c8c0ae !important;box-shadow:0 4px 14px rgba(80,60,30,.1) !important}
+body.theme-light .sup-form .url-input,body.theme-light .sup-form textarea{background:#ffffff !important;color:#1a1814 !important;border:1px solid #c8c0ae !important}
+body.theme-light .sup-mode-btn{background:linear-gradient(180deg,#ffffff,#ebe4d4) !important;color:#5a544a !important;border:1px solid #c4bdab !important}
+body.theme-light .sup-mode-btn.active{background:linear-gradient(180deg,var(--orange),#c85a00) !important;color:#fff !important}
+body.theme-light .sup-tier{background:linear-gradient(180deg,#fefcf6,#f1ebdc) !important;border-color:#c4bdab !important}
+body.theme-light .sup-tier b{color:#1a1814 !important}
+body.theme-light .sup-card{background:linear-gradient(180deg,#fefcf6,#f1ebdc) !important;border-color:#c4bdab !important}
+
+/* ================================================================
    SAMPLER PADS — loaded-by-default look (soft colored LED glow)
    ================================================================ */
 .sample-pad.loaded{
@@ -6470,6 +6597,7 @@ body.theme-light ::-webkit-scrollbar-thumb{
 <button class="tab-btn" data-tab="editor" data-t="tab_editor">✂ EDITOR</button>
 <button class="tab-btn admin-only" data-tab="admin" id="adminTabBtn" style="display:none">🛡 ADMIN</button>
 <button class="tab-btn" data-tab="settings" data-t="tab_settings">⚙ SETTINGS</button>
+<button class="tab-btn" data-tab="support" data-t="tab_support">📧 SUPPORT</button>
 <button class="tab-btn" data-tab="help" data-t="tab_help">? HELP</button>
 </div>
 
@@ -7632,6 +7760,109 @@ Two options — both work completely offline:<br/>
   <span class="setting-desc">iTunes works without credentials. Jamendo gives <b>full tracks</b>.</span>
 </div>
 </div>
+</div>
+</div>
+
+<div class="tab-content" id="tab-support">
+<div class="settings-panel support-panel" style="max-width:1200px;">
+  <div class="library-header" style="padding-bottom:8px;border-bottom:1px solid var(--deck-border)">
+    <div class="library-title">📧 SUPPORT · CONTACT · PURCHASE</div>
+    <div class="library-actions">
+      <a href="mailto:kobi@media-deal.co.il" class="sup-direct">kobi@media-deal.co.il</a>
+    </div>
+  </div>
+
+  <div class="sup-grid">
+    <div class="sup-form-col">
+      <div class="sup-mode-row">
+        <button class="sup-mode-btn active" data-sup-mode="support">🛟 SUPPORT / BUG</button>
+        <button class="sup-mode-btn" data-sup-mode="feature">💡 FEATURE REQUEST</button>
+        <button class="sup-mode-btn" data-sup-mode="purchase">💳 PURCHASE REQUEST</button>
+        <button class="sup-mode-btn" data-sup-mode="general">✉ GENERAL</button>
+      </div>
+
+      <div class="sup-form">
+        <div class="sup-row sup-row-2">
+          <div>
+            <label class="sup-label">Your name</label>
+            <input type="text" id="supName" class="url-input" placeholder="Full name" autocomplete="name"/>
+          </div>
+          <div>
+            <label class="sup-label">Email (for reply)</label>
+            <input type="email" id="supEmail" class="url-input" placeholder="your@email.com" autocomplete="email"/>
+          </div>
+        </div>
+
+        <div class="sup-row sup-row-2">
+          <div>
+            <label class="sup-label">Phone (optional)</label>
+            <input type="tel" id="supPhone" class="url-input" placeholder="+972…" autocomplete="tel"/>
+          </div>
+          <div>
+            <label class="sup-label">Subject</label>
+            <input type="text" id="supSubject" class="url-input" placeholder="Short summary"/>
+          </div>
+        </div>
+
+        <!-- Purchase-only fields -->
+        <div class="sup-row sup-purchase-only" id="supPurchaseFields" style="display:none">
+          <div class="sup-label" style="grid-column:1/-1">License tier</div>
+          <div class="sup-tiers">
+            <label class="sup-tier"><input type="radio" name="supTier" value="HOME" checked/><span><b>HOME</b><em>Personal, 1 computer</em><strong>— contact for price —</strong></span></label>
+            <label class="sup-tier"><input type="radio" name="supTier" value="PRO"/><span><b>PRO DJ</b><em>Club / gig, 2 computers, updates</em><strong>— contact for price —</strong></span></label>
+            <label class="sup-tier"><input type="radio" name="supTier" value="STUDIO"/><span><b>STUDIO</b><em>Commercial use, 5 seats, priority support</em><strong>— contact for price —</strong></span></label>
+            <label class="sup-tier"><input type="radio" name="supTier" value="VENUE"/><span><b>VENUE / LABEL</b><em>Site licence, custom</em><strong>— contact for price —</strong></span></label>
+          </div>
+        </div>
+
+        <div class="sup-row">
+          <label class="sup-label">Message</label>
+          <textarea id="supMessage" rows="7" class="url-input" placeholder="Describe your question, feedback or request in detail. Include steps to reproduce if reporting a bug."></textarea>
+        </div>
+
+        <div class="sup-row sup-actions">
+          <button class="sup-send" id="supSend">📧 SEND via EMAIL</button>
+          <button class="sup-copy" id="supCopy">📋 COPY MESSAGE</button>
+          <span class="sup-status" id="supStatus"></span>
+        </div>
+        <div class="sup-note">
+          Sending opens your system email app pre-filled with the message. The destination is always <b>kobi@media-deal.co.il</b>. Copy to clipboard if you prefer WhatsApp / Telegram / in-app chat.
+        </div>
+      </div>
+    </div>
+
+    <div class="sup-info-col">
+      <div class="sup-card">
+        <div class="sup-card-title">📮 DIRECT CONTACT</div>
+        <div class="sup-card-body">
+          <div class="sup-contact-item"><span class="sup-contact-k">Email</span><a href="mailto:kobi@media-deal.co.il">kobi@media-deal.co.il</a></div>
+          <div class="sup-contact-item"><span class="sup-contact-k">WhatsApp</span><a href="https://wa.me/?text=Hello%20DJ%20TITAN%20support" target="_blank" rel="noopener">Quick chat</a></div>
+          <div class="sup-contact-item"><span class="sup-contact-k">Response</span><span>Within 24 hours (business days)</span></div>
+          <div class="sup-contact-item"><span class="sup-contact-k">Timezone</span><span>IDT / GMT+3</span></div>
+        </div>
+      </div>
+      <div class="sup-card">
+        <div class="sup-card-title">💳 PURCHASE INFO</div>
+        <div class="sup-card-body">
+          <div class="sup-feat"><span class="sup-feat-dot">●</span>One-time perpetual licence</div>
+          <div class="sup-feat"><span class="sup-feat-dot">●</span>Free minor updates (v1.x)</div>
+          <div class="sup-feat"><span class="sup-feat-dot">●</span>Desktop app (Win / Mac / Linux) + web</div>
+          <div class="sup-feat"><span class="sup-feat-dot">●</span>Offline mode + auto-updates</div>
+          <div class="sup-feat"><span class="sup-feat-dot">●</span>30-day satisfaction guarantee</div>
+          <div class="sup-hint">Prices depend on tier. Fill the form with <b>PURCHASE REQUEST</b> selected and get a quote.</div>
+        </div>
+      </div>
+      <div class="sup-card">
+        <div class="sup-card-title">🛟 BEFORE REPORTING A BUG</div>
+        <div class="sup-card-body">
+          <div class="sup-feat"><span class="sup-feat-dot">●</span>Hard-refresh (Ctrl/⌘+Shift+R)</div>
+          <div class="sup-feat"><span class="sup-feat-dot">●</span>Check Settings → clear site data</div>
+          <div class="sup-feat"><span class="sup-feat-dot">●</span>Try another browser (Chrome / Edge / Safari)</div>
+          <div class="sup-feat"><span class="sup-feat-dot">●</span>Include OS + browser + version in the message</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 </div>
 
@@ -11040,6 +11271,90 @@ function spDrumHit(name,time,vel){
   }
 }
 
+/* SUPPORT — contact / purchase form, routes everything to kobi@media-deal.co.il */
+function setupSupport(){
+  const SUPPORT_EMAIL='kobi@media-deal.co.il';
+  const modes={
+    support:{label:'🛟 SUPPORT / BUG',subject:'DJ TITAN — Support request'},
+    feature:{label:'💡 FEATURE REQUEST',subject:'DJ TITAN — Feature request'},
+    purchase:{label:'💳 PURCHASE REQUEST',subject:'DJ TITAN — Purchase request'},
+    general:{label:'✉ GENERAL',subject:'DJ TITAN — General inquiry'},
+  };
+  let mode='support';
+  const subjEl=document.getElementById('supSubject');
+  const purchaseBox=document.getElementById('supPurchaseFields');
+  const statusEl=document.getElementById('supStatus');
+  const sendBtn=document.getElementById('supSend');
+  const copyBtn=document.getElementById('supCopy');
+  if(!subjEl||!sendBtn)return;
+
+  document.querySelectorAll('.sup-mode-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.sup-mode-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      mode=btn.dataset.supMode;
+      if(purchaseBox)purchaseBox.style.display=(mode==='purchase')?'grid':'none';
+      // Only replace subject if user hasn't typed a custom one
+      if(!subjEl.dataset.userTyped)subjEl.value=modes[mode].subject;
+      sendBtn.textContent=mode==='purchase'?'💳 SEND PURCHASE REQUEST':'📧 SEND via EMAIL';
+    });
+  });
+  subjEl.addEventListener('input',()=>{subjEl.dataset.userTyped='1'});
+  // Prime default subject
+  subjEl.value=modes[mode].subject;
+
+  function build(){
+    const name=document.getElementById('supName').value.trim();
+    const email=document.getElementById('supEmail').value.trim();
+    const phone=document.getElementById('supPhone').value.trim();
+    const subject=(subjEl.value.trim()||modes[mode].subject);
+    const message=document.getElementById('supMessage').value.trim();
+    const tier=document.querySelector('input[name="supTier"]:checked')?.value||'';
+    const lines=[];
+    lines.push(`Category: ${modes[mode].label.replace(/^\S+\s/,'')}`);
+    if(name)lines.push(`Name: ${name}`);
+    if(email)lines.push(`Email: ${email}`);
+    if(phone)lines.push(`Phone: ${phone}`);
+    if(mode==='purchase'&&tier)lines.push(`License tier requested: ${tier}`);
+    lines.push('');
+    lines.push(message||'(no message)');
+    lines.push('');
+    lines.push('— Sent from DJ TITAN Professional DJ Studio');
+    lines.push(`App URL: ${location.href}`);
+    lines.push(`User-Agent: ${navigator.userAgent}`);
+    return {subject,body:lines.join('\n'),name,email,message};
+  }
+
+  function setStatus(t,cls){statusEl.textContent=t||'';statusEl.className='sup-status'+(cls?' '+cls:'')}
+
+  sendBtn.addEventListener('click',()=>{
+    const {subject,body,message}=build();
+    if(!message){setStatus('Please write a message first','err');return;}
+    const href=`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    // Open system email client
+    window.location.href=href;
+    setStatus('Email app opening… Click Send there to deliver the message.','ok');
+    setTimeout(()=>setStatus(''),7000);
+  });
+
+  copyBtn.addEventListener('click',async()=>{
+    const {subject,body}=build();
+    const text=`To: ${SUPPORT_EMAIL}\nSubject: ${subject}\n\n${body}`;
+    try{
+      await navigator.clipboard.writeText(text);
+      setStatus('Copied to clipboard — paste into WhatsApp / email / chat','ok');
+      if(typeof toast==='function')toast('Message copied','success');
+    }catch(e){
+      // Fallback: create a textarea, select, copy
+      const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy');setStatus('Copied to clipboard','ok');}
+      catch(_){setStatus('Copy failed — select the text manually','err');}
+      ta.remove();
+    }
+    setTimeout(()=>setStatus(''),5000);
+  });
+}
+
 /* TITAN CLOCK — header wall clock */
 function setupTitanClock(){
   const timeEl=document.getElementById('tcTime');
@@ -11566,7 +11881,7 @@ function init(){
   const mtb=document.getElementById('mixer-toolbar');if(mtb)mtb.innerHTML=buildMixerToolbarHTML();
   setupVU('vu-A',20);setupVU('vu-B',20);setupVU('vu-C',20);setupVU('vu-D',20);
   setupVU('masterHVuL',20);setupVU('masterHVuR',20);
-  attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();setupOfflineDownload();setupDiscover();setupTitanClock();
+  attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();setupOfflineDownload();setupDiscover();setupTitanClock();setupSupport();
   setupWaveformInteraction();setupAdvancedFeatures();renderSessions();
   renderSampler();renderPlaylists();
   // First-run: fill all 4 sampler banks with the factory sounds so every
