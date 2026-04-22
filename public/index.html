@@ -8034,11 +8034,16 @@ No MIDI devices. Press CONNECT.
 <div class="sp-row" style="margin-bottom:8px">
 <span class="sp-sub-label">PATTERN</span>
 <button class="sp-mini-btn" data-sp-drum-preset="house">HOUSE 4/4</button>
+<button class="sp-mini-btn" data-sp-drum-preset="house-2">HOUSE 2</button>
 <button class="sp-mini-btn" data-sp-drum-preset="techno">TECHNO</button>
+<button class="sp-mini-btn" data-sp-drum-preset="techno-2">TECHNO 2</button>
 <button class="sp-mini-btn" data-sp-drum-preset="trance">TRANCE</button>
+<button class="sp-mini-btn" data-sp-drum-preset="trance-2">TRANCE 2</button>
+<button class="sp-mini-btn" data-sp-drum-preset="psytrance">PSYTRANCE</button>
 <button class="sp-mini-btn" data-sp-drum-preset="tech-house">TECH HOUSE</button>
 <button class="sp-mini-btn" data-sp-drum-preset="deep-house">DEEP HOUSE</button>
 <button class="sp-mini-btn" data-sp-drum-preset="minimal">MINIMAL</button>
+<button class="sp-mini-btn" data-sp-drum-preset="big-room">BIG ROOM</button>
 <button class="sp-mini-btn" data-sp-drum-preset="clear">CLEAR</button>
 </div>
 <div class="sp-seq-grid" id="spDrumGrid"></div>
@@ -11729,7 +11734,7 @@ const SP={
   ready:false,nodes:{},
   transport:{playing:false,bpm:128,swing:0,step:0,timerId:null,nextTime:0},
   synth:{osc1Wave:'sawtooth',osc2Wave:'square',filterType:'lowpass',lfoTarget:'none',knobs:{},voices:new Map()},
-  drum:{voices:['KICK','SNARE','CHH','OHH','CLAP','CRASH','LOWTOM','HITOM','RIM'],pattern:null,stepEls:[]},
+  drum:{voices:['KICK','SNARE','CHH','OHH','CLAP','CRASH','LOWTOM','HITOM','RIM','RIDE','SHAKER','PERC','COWBELL'],pattern:null,stepEls:[]},
   bass:{knobs:{},pattern:null,voice:null,currentMidi:null,stepEls:[]},
   organ:{drawbars:[8,0,8,0,0,0,0,0,8],knobs:{},voices:new Map()},
   master:{knobs:{}},
@@ -12180,6 +12185,38 @@ function spDrumHit(name,time,vel){
     const f=ctx.createBiquadFilter();f.type='bandpass';f.frequency.value=2200;f.Q.value=3;
     o.connect(f);f.connect(g);g.gain.setValueAtTime(0.3,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.03);
     o.start(t);o.stop(t+0.04);
+  }else if(name==='RIDE'){
+    // ride cymbal — metallic FM tone + airy noise tail
+    const o1=ctx.createOscillator();o1.type='square';o1.frequency.value=800;
+    const o2=ctx.createOscillator();o2.type='square';o2.frequency.value=540;
+    const bp=ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=5200;bp.Q.value=2;
+    o1.connect(bp);o2.connect(bp);bp.connect(g);
+    g.gain.setValueAtTime(0.25,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.55);
+    o1.start(t);o1.stop(t+0.6);o2.start(t);o2.stop(t+0.6);
+    const nz=noise();const hp=ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=4500;
+    const ng=ctx.createGain();nz.connect(hp);hp.connect(ng);ng.connect(out);
+    ng.gain.setValueAtTime(0.12,t);ng.gain.exponentialRampToValueAtTime(0.001,t+0.5);nz.start(t);nz.stop(t+0.55);
+  }else if(name==='SHAKER'){
+    const nz=noise();const bp=ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=6500;bp.Q.value=3;
+    const ng=ctx.createGain();nz.connect(bp);bp.connect(ng);ng.connect(out);
+    ng.gain.setValueAtTime(0,t);ng.gain.linearRampToValueAtTime(0.22,t+0.012);
+    ng.gain.exponentialRampToValueAtTime(0.001,t+0.09);nz.start(t);nz.stop(t+0.12);
+  }else if(name==='PERC'){
+    // conga-style
+    const o=ctx.createOscillator();o.type='sine';
+    o.frequency.setValueAtTime(280,t);o.frequency.exponentialRampToValueAtTime(170,t+0.07);
+    o.connect(g);g.gain.setValueAtTime(0.65,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.16);
+    o.start(t);o.stop(t+0.2);
+    const nz=noise();const bp=ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=2600;bp.Q.value=5;
+    const ng=ctx.createGain();nz.connect(bp);bp.connect(ng);ng.connect(out);
+    ng.gain.setValueAtTime(0.22,t);ng.gain.exponentialRampToValueAtTime(0.001,t+0.05);nz.start(t);nz.stop(t+0.06);
+  }else if(name==='COWBELL'){
+    const o1=ctx.createOscillator();o1.type='square';o1.frequency.value=560;
+    const o2=ctx.createOscillator();o2.type='square';o2.frequency.value=840;
+    const bp=ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=700;bp.Q.value=6;
+    o1.connect(bp);o2.connect(bp);bp.connect(g);
+    g.gain.setValueAtTime(0.35,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.35);
+    o1.start(t);o1.stop(t+0.4);o2.start(t);o2.stop(t+0.4);
   }
 }
 
@@ -12188,17 +12225,36 @@ function spDrumHit(name,time,vel){
    TITAN LAB — drum presets + transport scheduler
    ==================================================================== */
 const SP_DRUM_PRESETS={
-  // rows = KICK, SNARE, CHH, OHH, CLAP, CRASH, LOWTOM, HITOM, RIM
+  // rows = KICK, SNARE, CHH, OHH, CLAP, CRASH, LOWTOM, HITOM, RIM, RIDE, SHAKER, PERC, COWBELL
   house:[
-    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
-    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
-    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
-    [0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0],
+    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],  // KICK
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],  // SNARE
+    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],  // CHH
+    [0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0],  // OHH
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],  // CLAP
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],  // CRASH
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],  // LOWTOM
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],  // HITOM
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],  // RIM
+    [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],  // RIDE
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],  // SHAKER
+    [0,0,1,0,0,0,0,1,0,0,1,0,0,0,0,1],  // PERC
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],  // COWBELL
+  ],
+  'house-2':[
+    [1,0,0,0,1,0,0,1,1,0,0,0,1,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+    [0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1],
+    [0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0],
   ],
   techno:[
     [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
@@ -12210,6 +12266,25 @@ const SP_DRUM_PRESETS={
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0],
+    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+    [0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],
+    [0,0,1,0,0,0,0,1,0,0,1,0,0,1,0,0],
+    [0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0],
+  ],
+  'techno-2':[
+    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],  // straight 4-on-floor
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],  // driving CHH
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,1,0,1,0,1,0,0,0,1,0,1,0,1,0],
+    [0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0],
   ],
   trance:[
     [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
@@ -12220,6 +12295,40 @@ const SP_DRUM_PRESETS={
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  'trance-2':[
+    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+    [1,0,1,1,1,0,1,0,1,0,1,1,1,0,1,0],  // with ghosts
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,1,0,0,0,0,1,0,0,1,0,0,0,0,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+  ],
+  psytrance:[
+    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],   // 4 on floor (145 BPM feel)
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],   // offbeat CHH (trademark)
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+    [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],   // RIDE offbeat
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,1,0,0,1,0,0,0,0,1,0,0,1,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   'tech-house':[
@@ -12232,6 +12341,10 @@ const SP_DRUM_PRESETS={
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0],
     [0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,1,0,0,1,0,0,0,0,1,0,0,1,0,0],
+    [0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0],
   ],
   'deep-house':[
     [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
@@ -12242,6 +12355,10 @@ const SP_DRUM_PRESETS={
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,1,0,0,0,0,1,0,0,1,0,0,0,1,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
   minimal:[
@@ -12254,12 +12371,36 @@ const SP_DRUM_PRESETS={
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],
+    [0,0,1,0,1,0,0,0,1,0,0,1,0,0,1,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  'big-room':[
+    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
 };
 function spDrumPresetCopy(key){
   const src=SP_DRUM_PRESETS[key];
-  if(!src)return SP.drum.voices.map(()=>new Array(16).fill(0));
-  return src.map(r=>r.slice(0,16));
+  const numRows=SP.drum.voices.length;
+  const out=[];
+  for(let i=0;i<numRows;i++){
+    const srcRow=src&&src[i];
+    out.push(srcRow?srcRow.slice(0,16):new Array(16).fill(0));
+  }
+  return out;
 }
 function spDrumPresetClear(){return SP.drum.voices.map(()=>new Array(16).fill(0))}
 
