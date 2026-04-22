@@ -5657,6 +5657,94 @@ body.work-mode .automix-sync{
 }
 
 /* ================================================================
+   LIBRARY icon — stacked-records glyph replacing the 📚 emoji
+   Inherits currentColor so it takes on each button's theme color.
+   ================================================================ */
+.lib-svg{
+  width:16px;height:16px;display:inline-block;vertical-align:-3px;
+  overflow:visible;stroke-linecap:round;
+  filter:drop-shadow(0 0 2px currentColor);
+}
+.deck-header .deck-lib-btn .btn-icon .lib-svg{width:18px;height:18px;margin:0}
+.tt-load-btn.lib .lib-svg{width:14px;height:14px}
+.deck-header .deck-lib-btn .btn-icon{display:inline-flex;align-items:center;justify-content:center}
+
+/* ================================================================
+   TITAN CLOCK — premium header clock next to SIGN IN
+   ================================================================ */
+.titan-clock{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 12px 5px 10px;border-radius:8px;
+  background:linear-gradient(180deg,rgba(10,10,12,.85) 0%,rgba(4,4,6,.9) 100%);
+  border:1px solid rgba(255,138,26,.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    inset 0 -1px 0 rgba(0,0,0,.6),
+    inset 0 0 14px rgba(255,138,26,.08),
+    0 2px 6px rgba(0,0,0,.55),
+    0 0 14px rgba(255,138,26,.12);
+  position:relative;overflow:hidden;
+}
+.titan-clock::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--orange-glow),var(--orange));
+  box-shadow:0 0 6px rgba(255,138,26,.65);
+}
+.titan-clock::after{
+  content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 3px);
+  mix-blend-mode:overlay;
+}
+.titan-clock .tc-dot{
+  width:7px;height:7px;border-radius:50%;flex:0 0 auto;
+  background:radial-gradient(circle at 30% 30%,#ffe8c0,var(--orange) 55%,#5a1c00 100%);
+  box-shadow:0 0 6px rgba(255,138,26,.9),inset 0 0 2px rgba(255,255,255,.5);
+  animation:tcTick 1s steps(2,start) infinite;
+}
+@keyframes tcTick{0%,49%{opacity:1}50%,100%{opacity:.35}}
+.titan-clock .tc-stack{display:flex;flex-direction:column;align-items:flex-start;line-height:1;gap:2px;min-width:66px}
+.titan-clock .tc-time{
+  font-family:'Orbitron',sans-serif;font-size:13px;font-weight:800;letter-spacing:1.2px;
+  color:var(--orange-glow);
+  text-shadow:0 0 8px rgba(255,138,26,.75),0 0 1px rgba(255,255,255,.4);
+  font-variant-numeric:tabular-nums;
+}
+.titan-clock .tc-date{
+  font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1.4px;
+  color:#7fd4ea;text-transform:uppercase;opacity:.9;
+  text-shadow:0 0 4px rgba(46,224,255,.45);
+}
+.titan-clock:hover{
+  border-color:rgba(255,138,26,.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -1px 0 rgba(0,0,0,.6),
+    inset 0 0 18px rgba(255,138,26,.14),
+    0 2px 8px rgba(0,0,0,.6),
+    0 0 20px rgba(255,138,26,.22);
+}
+
+/* Light-theme clock — dark chip on porcelain so the neon glow still pops */
+body.theme-light .titan-clock{
+  background:linear-gradient(180deg,#1a1814 0%,#0e0c08 100%) !important;
+  border:1px solid rgba(184,64,0,.5) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 2px 4px rgba(80,60,30,.25),
+    0 0 0 1px rgba(255,255,255,.85),
+    0 0 14px rgba(255,138,26,.2) !important;
+}
+body.theme-light .titan-clock .tc-time{color:#ffb060 !important;text-shadow:0 0 10px rgba(255,138,26,.85) !important}
+body.theme-light .titan-clock .tc-date{color:#7fe8ff !important}
+
+@media(max-width:760px){
+  .titan-clock .tc-date{display:none}
+  .titan-clock .tc-stack{min-width:0}
+  .titan-clock{padding:4px 9px}
+  .titan-clock .tc-time{font-size:12px}
+}
+
+/* ================================================================
    THEME LIGHT v2 — premium porcelain look (2026 refresh)
    Warmer off-white backgrounds, subtle shadows, refined accents,
    professional typography. Dominates earlier cascade with
@@ -5998,13 +6086,20 @@ body.theme-light ::-webkit-scrollbar-thumb{
   <button class="dsb-btn dsb-dj-focus" data-pair="DJAB" title="2 big decks (1·2) — internal mixer hidden, use your external DJ mixer">🎛 DJ FOCUS 1·2</button>
   <button class="dsb-btn dsb-dj-focus" data-pair="DJCD" title="2 big decks (3·4) — internal mixer hidden, use your external DJ mixer">🎛 DJ FOCUS 3·4</button>
   <button class="dsb-btn dsb-work" id="workModeBtn" title="Stage-ready performance view">🎆 WORK MODE</button>
-  <button class="dsb-btn dsb-wmlib" id="wmLibBtn" title="Show / hide the track library in work mode" style="display:none">📚 LIBRARY</button>
+  <button class="dsb-btn dsb-wmlib" id="wmLibBtn" title="Show / hide the track library in work mode" style="display:none"><svg class="lib-svg" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><ellipse cx="11" cy="4.5" rx="7" ry="2.2"/><path d="M4 4.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 10.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 15.5v2.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-2.5"/></svg>LIBRARY</button>
   <button class="dsb-btn dsb-wmexit" id="wmExitInlineBtn" title="Exit work mode (Esc)" style="display:none">✕ EXIT WORK</button>
   <span class="dsb-monitor" id="dsbMonitor" style="display:none"></span>
 </div>
 <div class="header-right">
 <div class="power-led"></div><span>BPM</span>
 <span class="master-bpm" id="masterBpm">---.--</span>
+<div class="titan-clock" id="titanClock" title="Local time">
+  <span class="tc-dot" aria-hidden="true"></span>
+  <div class="tc-stack">
+    <span class="tc-time" id="tcTime">--:--:--</span>
+    <span class="tc-date" id="tcDate">— — —</span>
+  </div>
+</div>
 <button class="rec-btn" id="recBtn">REC</button>
 <button class="auth-btn" id="authBtn" title="Sign in / Sign up">👤 SIGN IN</button>
 <span class="auth-chip" id="authChip" style="display:none"><span id="authName"></span> <button class="auth-logout" id="authLogoutBtn" title="Log out">⎋</button></span>
@@ -6035,7 +6130,7 @@ body.theme-light ::-webkit-scrollbar-thumb{
 <div class="quick-lib-overlay" id="quickLibOverlay">
   <div class="quick-lib-box">
     <div class="quick-lib-head">
-      <h3>📚 LIBRARY → DECK <span class="dtarget" id="quickLibDeck">A</span></h3>
+      <h3><svg class="lib-svg" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" style="width:18px;height:18px;vertical-align:-3px;margin-right:6px"><ellipse cx="11" cy="4.5" rx="7" ry="2.2"/><path d="M4 4.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 10.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 15.5v2.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-2.5"/></svg>LIBRARY → DECK <span class="dtarget" id="quickLibDeck">A</span></h3>
       <input type="text" id="quickLibSearch" placeholder="Search title / artist / BPM / key…" autofocus/>
       <button id="quickLibClose" title="Close (Esc)">✕</button>
     </div>
@@ -6234,7 +6329,7 @@ body.theme-light ::-webkit-scrollbar-thumb{
         <span class="tt-scr-bpm" id="ttL-bpm">128.0</span>
       </div>
       <button class="tt-load-btn" data-deck-upload="A" title="Upload audio → Deck A">⬆</button>
-      <button class="tt-load-btn lib" data-deck-lib="A" title="Browse library → Deck A">📚</button>
+      <button class="tt-load-btn lib" data-deck-lib="A" title="Browse library → Deck A" aria-label="Library"><svg class="lib-svg" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><ellipse cx="11" cy="4.5" rx="7" ry="2.2"/><path d="M4 4.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 10.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 15.5v2.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-2.5"/></svg></button>
       <span class="tt-power" title="Power"></span>
     </div>
     <div class="tt-deck">
@@ -6357,7 +6452,7 @@ body.theme-light ::-webkit-scrollbar-thumb{
         <span class="tt-scr-bpm" id="ttR-bpm">128.0</span>
       </div>
       <button class="tt-load-btn" data-deck-upload="B" title="Upload audio → Deck B">⬆</button>
-      <button class="tt-load-btn lib" data-deck-lib="B" title="Browse library → Deck B">📚</button>
+      <button class="tt-load-btn lib" data-deck-lib="B" title="Browse library → Deck B" aria-label="Library"><svg class="lib-svg" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><ellipse cx="11" cy="4.5" rx="7" ry="2.2"/><path d="M4 4.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 10.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 15.5v2.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-2.5"/></svg></button>
       <span class="tt-power" title="Power"></span>
     </div>
     <div class="tt-deck">
@@ -7295,7 +7390,7 @@ const DEMO_TRACKS=[
 
 /* ============ DECK HTML BUILDER ============ */
 function buildDeckHTML(d){
-  return `<div class="deck-header"><div class="deck-label"><span class="model">TITAN-3K</span><span class="suffix">DECK</span></div><button class="deck-upload-btn" data-deck-upload="${d}" title="Upload audio files and load to deck ${d}"><span class="btn-icon">⬆</span><span class="btn-text">⬆ UPLOAD</span></button><button class="deck-lib-btn" data-deck-lib="${d}" title="Browse library and load to deck ${d}"><span class="btn-icon">📚</span><span class="btn-text">📚 LIBRARY</span></button><div class="deck-number">${d}</div></div>
+  return `<div class="deck-header"><div class="deck-label"><span class="model">TITAN-3K</span><span class="suffix">DECK</span></div><button class="deck-upload-btn" data-deck-upload="${d}" title="Upload audio files and load to deck ${d}"><span class="btn-icon">⬆</span><span class="btn-text">⬆ UPLOAD</span></button><button class="deck-lib-btn" data-deck-lib="${d}" title="Browse library and load to deck ${d}"><span class="btn-icon" aria-hidden="true"><svg class="lib-svg" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><ellipse cx="11" cy="4.5" rx="7" ry="2.2"/><path d="M4 4.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 10.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 15.5v2.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-2.5"/></svg></span><span class="btn-text">LIBRARY</span></button><div class="deck-number">${d}</div></div>
   <div class="screen"><div class="screen-top"><div><div class="track-title" id="title-${d}">— NO TRACK LOADED —</div><div class="track-artist" id="artist-${d}">LOAD A TRACK</div></div><div class="screen-right"><div class="screen-bpm" id="bpm-${d}">---.--</div><div class="screen-bpm-label">BPM</div><div class="screen-key" id="key-${d}">--</div></div></div>
   <div class="waveform"><canvas class="waveform-canvas" id="wave-${d}" width="600" height="48"></canvas><div class="phrase-markers" id="phrase-${d}"></div><div class="playhead"></div></div>
   <div class="time-row"><div><div class="time-label">ELAPSED</div><div class="time-value" id="elapsed-${d}">00:00.0</div></div><div style="text-align:right;"><div class="time-label">REMAIN</div><div class="time-value remain" id="remain-${d}">-00:00.0</div></div></div></div>
@@ -10531,6 +10626,35 @@ function spDrumHit(name,time,vel){
   }
 }
 
+/* TITAN CLOCK — header wall clock */
+function setupTitanClock(){
+  const timeEl=document.getElementById('tcTime');
+  const dateEl=document.getElementById('tcDate');
+  const box=document.getElementById('titanClock');
+  if(!timeEl||!dateEl)return;
+  const DAYS=['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const MONTHS=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  let is24=localStorage.getItem('djtitan_clock_24h')!=='0';
+  function tick(){
+    const d=new Date();
+    let h=d.getHours(),m=d.getMinutes(),s=d.getSeconds();
+    let suffix='';
+    if(!is24){
+      suffix=h>=12?' PM':' AM';
+      h=h%12;if(h===0)h=12;
+    }
+    const hh=String(h).padStart(2,'0'),mm=String(m).padStart(2,'0'),ss=String(s).padStart(2,'0');
+    timeEl.textContent=`${hh}:${mm}:${ss}${suffix}`;
+    dateEl.textContent=`${DAYS[d.getDay()]} · ${String(d.getDate()).padStart(2,'0')} ${MONTHS[d.getMonth()]}`;
+  }
+  tick();setInterval(tick,1000);
+  box?.addEventListener('click',()=>{
+    is24=!is24;
+    localStorage.setItem('djtitan_clock_24h',is24?'1':'0');
+    tick();
+  });
+}
+
 /* TABS */
 function setupTabs(){
   document.querySelectorAll('.tab-btn').forEach(btn=>{
@@ -11028,7 +11152,7 @@ function init(){
   const mtb=document.getElementById('mixer-toolbar');if(mtb)mtb.innerHTML=buildMixerToolbarHTML();
   setupVU('vu-A',20);setupVU('vu-B',20);setupVU('vu-C',20);setupVU('vu-D',20);
   setupVU('masterHVuL',20);setupVU('masterHVuR',20);
-  attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();setupOfflineDownload();setupDiscover();
+  attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();setupOfflineDownload();setupDiscover();setupTitanClock();
   setupWaveformInteraction();setupAdvancedFeatures();renderSessions();
   renderSampler();renderPlaylists();
 
