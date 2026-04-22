@@ -6253,6 +6253,31 @@ No MIDI devices. Press CONNECT.
 <button class="tool-btn" id="clearDataBtn" style="color:var(--red);border-color:var(--red);">CLEAR ALL DATA</button>
 </div>
 </div>
+
+<div class="settings-section"><h3>💿 OFFLINE VERSION</h3>
+<div class="settings-row" style="flex-direction:column;align-items:stretch;gap:8px;">
+<div class="setting-label">Download full standalone app to your computer</div>
+<div class="setting-desc" style="line-height:1.6">
+Works completely offline once downloaded — open the HTML file in any browser.
+Core DJ, mixer, decks, sampler, studio and vinyl features work without internet.
+(YouTube / Spotify / Supabase are optional and require a connection.)
+</div>
+</div>
+<div class="settings-row" style="justify-content:flex-start;gap:10px;flex-wrap:wrap">
+  <button class="tool-btn" id="offlineDownloadBtn" style="color:var(--play-green);border-color:var(--play-green);font-weight:800;letter-spacing:2px;">⬇ DOWNLOAD OFFLINE VERSION</button>
+  <span id="offlineStatus" class="setting-desc" style="min-width:120px"></span>
+</div>
+<div id="offlineCodeBox" class="settings-row" style="display:none;flex-direction:column;align-items:stretch;gap:6px;padding:10px;border:1px solid rgba(255,138,26,.35);border-radius:8px;background:rgba(255,138,26,.04)">
+  <div class="setting-label" style="color:var(--orange)">🔒 Admin code required</div>
+  <div class="setting-desc">Enter the admin code to authorize the offline download.</div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <input type="password" id="offlineAdminCode" class="url-input" placeholder="Admin code" autocomplete="off" style="padding:8px 12px;letter-spacing:4px;font-family:'Share Tech Mono',monospace;max-width:200px" />
+    <button class="tool-btn" id="offlineCodeConfirm" style="color:var(--play-green);border-color:var(--play-green)">UNLOCK &amp; DOWNLOAD</button>
+    <button class="tool-btn" id="offlineCodeCancel">CANCEL</button>
+  </div>
+  <div id="offlineCodeErr" class="setting-desc" style="color:var(--red);min-height:14px"></div>
+</div>
+</div>
 <div class="settings-section"><h3>🔐 AUTHENTICATION (Supabase)</h3>
 <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:8px;">
   <div class="setting-label">Supabase Project URL <span class="setting-desc">(Settings → API)</span></div>
@@ -8763,6 +8788,75 @@ function nudgeTempo(d,pct){
   const bigEl=document.getElementById(`tempoBig-${d}`);if(bigEl)bigEl.textContent=(dk.tempo>=0?'+':'')+dk.tempo.toFixed(2)+'%';
 }
 
+/* ====================================================================
+   OFFLINE DOWNLOAD — admin-gated standalone HTML download
+   ==================================================================== */
+function setupOfflineDownload(){
+  const btn=document.getElementById('offlineDownloadBtn');
+  const box=document.getElementById('offlineCodeBox');
+  const inp=document.getElementById('offlineAdminCode');
+  const ok=document.getElementById('offlineCodeConfirm');
+  const cancel=document.getElementById('offlineCodeCancel');
+  const err=document.getElementById('offlineCodeErr');
+  const status=document.getElementById('offlineStatus');
+  if(!btn||!box)return;
+  const ADMIN_CODE='2100';
+
+  btn.addEventListener('click',()=>{
+    box.style.display='flex';
+    err.textContent='';
+    inp.value='';
+    setTimeout(()=>inp.focus(),60);
+  });
+  cancel.addEventListener('click',()=>{box.style.display='none';err.textContent=''});
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')ok.click()});
+
+  async function doDownload(){
+    try{
+      status.textContent='Preparing…';status.style.color='var(--orange)';
+      // Fetch the source HTML so the download reflects the deployed file exactly
+      let html='';
+      try{
+        const res=await fetch('./pioneer-dj-pro-max-v2.html',{cache:'no-cache'});
+        if(res.ok)html=await res.text();
+      }catch(_){}
+      if(!html){
+        // Fallback: serialize the current document
+        html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+      }
+      // Inject a banner comment so users know what they got
+      const stamp=new Date().toISOString().replace(/[:.]/g,'-');
+      const banner=`<!-- DJ MAX — Offline Standalone Build · exported ${stamp} -->\n`;
+      if(!html.startsWith('<!--'))html=banner+html;
+      const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;a.download=`DJ-MAX-Offline-${stamp}.html`;
+      document.body.appendChild(a);a.click();
+      setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},500);
+      status.textContent='✓ Downloaded';status.style.color='var(--play-green)';
+      if(typeof toast==='function')toast('Offline version downloaded','success');
+      setTimeout(()=>{status.textContent=''},4000);
+    }catch(e){
+      status.textContent='Failed';status.style.color='var(--red)';
+      console.warn('offline download failed',e);
+      if(typeof toast==='function')toast('Download failed: '+(e.message||e),'error');
+    }
+  }
+
+  ok.addEventListener('click',()=>{
+    const code=(inp.value||'').trim();
+    if(code!==ADMIN_CODE){
+      err.textContent='✗ Wrong code';
+      inp.value='';inp.focus();
+      return;
+    }
+    err.textContent='';
+    box.style.display='none';
+    doDownload();
+  });
+}
+
 /* TABS */
 function setupTabs(){
   document.querySelectorAll('.tab-btn').forEach(btn=>{
@@ -9260,7 +9354,7 @@ function init(){
   const mtb=document.getElementById('mixer-toolbar');if(mtb)mtb.innerHTML=buildMixerToolbarHTML();
   setupVU('vu-A',20);setupVU('vu-B',20);setupVU('vu-C',20);setupVU('vu-D',20);
   setupVU('masterHVuL',20);setupVU('masterHVuR',20);
-  attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();
+  attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();setupOfflineDownload();
   setupWaveformInteraction();setupAdvancedFeatures();renderSessions();
   renderSampler();renderPlaylists();
 
