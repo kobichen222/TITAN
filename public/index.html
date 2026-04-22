@@ -3691,6 +3691,53 @@ body.work-mode .dsb-wmexit{display:inline-flex;background:linear-gradient(180deg
 .sp-bass-step .sp-bass-flag.on{background:#ff3b3b;color:#fff;border-color:#ff3b3b;}
 .sp-bass-step .sp-bass-flag.slide.on{background:#2aeaff;color:#0a0a0c;border-color:#2aeaff;}
 
+/* ====================================================================
+   TITAN LAB — STUDIO MIXER (full-screen)
+   ==================================================================== */
+.spmx-overlay{
+  position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,#060608 0%,#0d0d10 100%);
+  display:none;flex-direction:column;color:#eee;padding:14px 18px;overflow:hidden;
+}
+.spmx-overlay.open{display:flex;}
+.spmx-head{display:flex;align-items:center;justify-content:space-between;padding:4px 0 10px;border-bottom:1px solid #1e1e24;margin-bottom:10px;}
+.spmx-title{font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:3px;color:#ff8a1a;text-shadow:0 0 14px rgba(255,138,26,.55);font-weight:900;}
+.spmx-head-right{display:flex;align-items:center;gap:10px;}
+.spmx-hint{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.4px;color:#888;}
+.spmx-body{flex:1;display:flex;gap:14px;padding:4px 2px 20px;overflow-x:auto;overflow-y:hidden;align-items:stretch;}
+.spmx-group{display:flex;flex-direction:column;background:linear-gradient(180deg,#0f0f13,#08080a);border:1px solid #1e1e24;border-radius:10px;padding:8px 8px 10px;min-height:100%;}
+.spmx-group-title{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2.4px;color:#ff8a1a;text-align:center;padding-bottom:6px;border-bottom:1px dashed #242428;margin-bottom:8px;text-transform:uppercase;}
+.spmx-row{display:flex;gap:6px;flex:1;}
+.spmx-strip{
+  width:62px;display:flex;flex-direction:column;align-items:stretch;gap:4px;
+  padding:6px 4px 8px;background:linear-gradient(180deg,#121216,#0a0a0c);
+  border:1px solid #22222a;border-radius:7px;position:relative;
+}
+.spmx-strip.master{width:74px;border-color:#ff8a1a;box-shadow:0 0 16px rgba(255,138,26,.25);}
+.spmx-strip .spmx-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.2px;color:#ff8a1a;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;border-bottom:1px solid #1a1a1e;}
+.spmx-btns{display:flex;gap:3px;justify-content:center;}
+.spmx-btn{flex:1;padding:4px 0;font-family:'Share Tech Mono',monospace;font-size:9px;background:#15151a;border:1px solid #28282c;color:#aaa;border-radius:3px;cursor:pointer;font-weight:700;}
+.spmx-btn:hover{border-color:#666;color:#eee;}
+.spmx-btn.mute.on{background:#ff3b3b;color:#fff;border-color:#ff3b3b;}
+.spmx-btn.solo.on{background:#ffc94a;color:#0a0a0c;border-color:#ffc94a;}
+.spmx-pan-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.spmx-sub{font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1px;color:#888;text-align:center;}
+.spmx-pan{width:100%;height:14px;cursor:pointer;-webkit-appearance:none;appearance:none;background:transparent;}
+.spmx-pan::-webkit-slider-runnable-track{height:3px;background:linear-gradient(90deg,#15151a,#2aeaff,#15151a);border-radius:2px;}
+.spmx-pan::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;margin-top:-5px;border-radius:50%;background:#ff8a1a;border:1px solid #0a0a0c;box-shadow:0 0 4px #ff8a1a;}
+.spmx-pan-val{color:#2aeaff;font-size:9px;}
+.spmx-meter{position:relative;height:110px;width:100%;background:#050506;border:1px solid #1a1a1e;border-radius:3px;overflow:hidden;display:flex;align-items:flex-end;}
+.spmx-meter-bar{width:100%;height:0%;background:#2aeaff;transition:height .04s linear,background .04s linear;}
+.spmx-fader{-webkit-appearance:none;appearance:none;width:100%;height:16px;background:transparent;cursor:ns-resize;writing-mode:bt-lr;}
+.spmx-fader[orient="vertical"]{writing-mode:bt-lr;-webkit-appearance:slider-vertical;appearance:slider-vertical;height:150px;width:30px;margin:4px auto 2px;}
+.spmx-fader::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:10px;background:linear-gradient(180deg,#ffcf6a,#ff8a1a);border:1px solid #0a0a0c;border-radius:2px;box-shadow:0 2px 4px rgba(0,0,0,.6);}
+.spmx-vol{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:#ff8a1a;text-align:center;padding-top:2px;}
+@media (max-width:800px){
+  .spmx-overlay{padding:10px 8px;}
+  .spmx-strip{width:54px;}
+  .spmx-fader[orient="vertical"]{height:120px;}
+  .spmx-meter{height:80px;}
+}
+
 /* Piano keyboard */
 .sp-piano-wrap{margin-top:10px;padding:10px;background:linear-gradient(180deg,#18120c,#0a0806);border:1px solid #2e2420;border-radius:8px;}
 .sp-piano{position:relative;height:110px;background:#0a0a0c;border-radius:4px;user-select:none;overflow:hidden;}
@@ -8007,6 +8054,7 @@ No MIDI devices. Press CONNECT.
 <input type="range" id="spSwing" min="0" max="50" value="0" style="width:90px"/>
 <span class="sp-sub-label" id="spSwingVal" style="margin:0 4px;min-width:28px">0%</span>
 <button class="tool-btn" id="spRecBtn" title="Record to library">● REC</button>
+<button class="tool-btn" id="spMixerOpenBtn" title="Open full-screen studio mixer" style="border-color:var(--orange);color:var(--orange);margin-left:6px">🎛 MIXER</button>
 <span id="spStepIndicator" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1.5px;margin-left:6px;">— / 16</span>
 </div>
 </div>
@@ -8231,6 +8279,18 @@ No MIDI devices. Press CONNECT.
 </div>
 <div class="sp-piano" id="spPiano"></div>
 </div>
+</div>
+
+<!-- Full-screen STUDIO MIXER overlay -->
+<div id="spStudioMixer" class="spmx-overlay" aria-hidden="true">
+  <div class="spmx-head">
+    <div class="spmx-title">🎛 TITAN LAB — STUDIO MIXER</div>
+    <div class="spmx-head-right">
+      <span class="spmx-hint">Faders 0–150% · M=mute · S=solo · Pan -50…+50</span>
+      <button class="tool-btn" id="spMixerCloseBtn" style="border-color:var(--orange);color:var(--orange)">✕ CLOSE</button>
+    </div>
+  </div>
+  <div class="spmx-body"></div>
 </div>
 </div>
 
@@ -11739,7 +11799,8 @@ const SP={
   organ:{drawbars:[8,0,8,0,0,0,0,0,8],knobs:{},voices:new Map()},
   master:{knobs:{}},
   octave:4,activeInst:'synth',
-  rec:{recorder:null,chunks:[],streamDest:null,startedAt:0}
+  rec:{recorder:null,chunks:[],streamDest:null,startedAt:0},
+  mix:{strips:{},drumVoiceIns:{},soloActive:false,open:false}
 };
 const SP_P={
   osc2Detune:[-50,50,0.5,'lin',v=>Math.round(v)+'c'],
@@ -11803,7 +11864,30 @@ function spInitAudio(){
   const bassBus=ctx.createGain();bassBus.gain.value=1;
   const organBus=ctx.createGain();organBus.gain.value=1;
   const mixBus=ctx.createGain();mixBus.gain.value=1;
-  synthBus.connect(mixBus);drumBus.connect(mixBus);bassBus.connect(mixBus);organBus.connect(mixBus);
+  // Strip chain factory: source -> gain -> pan -> analyser -> dest
+  SP.mix.strips={};
+  const mkStrip=(id,source,dest)=>{
+    const g=ctx.createGain();g.gain.value=1;
+    let pan=null;try{pan=ctx.createStereoPanner();pan.pan.value=0;}catch(_){pan=null;}
+    const an=ctx.createAnalyser();an.fftSize=256;
+    source.connect(g);
+    if(pan){g.connect(pan);pan.connect(an);}else{g.connect(an);}
+    an.connect(dest);
+    SP.mix.strips[id]={gain:g,pan,meter:an,muted:false,solo:false,vol:1,panV:0};
+    return an;
+  };
+  // Per-voice drum strips — each voice has its own input gain, summed into drumBus
+  SP.mix.drumVoiceIns={};
+  (SP.drum.voices||[]).forEach(name=>{
+    const inG=ctx.createGain();inG.gain.value=1;
+    SP.mix.drumVoiceIns[name]=inG;
+    mkStrip('DR_'+name,inG,drumBus);
+  });
+  // Instrument strips — re-insert in path before mixBus
+  mkStrip('SYNTH',synthBus,mixBus);
+  mkStrip('BASS',bassBus,mixBus);
+  mkStrip('ORGAN',organBus,mixBus);
+  mkStrip('DRUMS',drumBus,mixBus);
   // drive (waveshaper)
   const drive=ctx.createWaveShaper();drive.curve=spMakeDriveCurve(0);drive.oversample='2x';
   mixBus.connect(drive);
@@ -11826,7 +11910,8 @@ function spInitAudio(){
   chorusIn.connect(chorusLDelay);chorusLDelay.connect(chorusLGain);chorusLGain.connect(chorusMerge,0,0);
   chorusIn.connect(chorusRDelay);chorusRDelay.connect(chorusRGain);chorusRGain.connect(chorusMerge,0,1);
   const chorusWet=ctx.createGain();chorusWet.gain.value=0;
-  chorusMerge.connect(chorusWet);chorusWet.connect(master);
+  chorusMerge.connect(chorusWet);
+  mkStrip('CHORUS',chorusWet,master);
   mixBus.connect(chorusIn);
   chorusLFOL.start();chorusLFOR.start();
   // delay (feedback + damp filter)
@@ -11835,15 +11920,19 @@ function spInitAudio(){
   const delayFilter=ctx.createBiquadFilter();delayFilter.type='lowpass';delayFilter.frequency.value=6000;
   const delayWet=ctx.createGain();delayWet.gain.value=0;
   mixBus.connect(delay);delay.connect(delayFilter);delayFilter.connect(delayFb);delayFb.connect(delay);
-  delay.connect(delayWet);delayWet.connect(master);
+  delay.connect(delayWet);
+  mkStrip('DELAY',delayWet,master);
   // reverb (convolver with generated IR — size × damp shape)
   const reverb=ctx.createConvolver();reverb.buffer=spMakeIR(ctx,2.0,3);
   const reverbWet=ctx.createGain();reverbWet.gain.value=0;
-  mixBus.connect(reverb);reverb.connect(reverbWet);reverbWet.connect(master);
-  // limiter
+  mixBus.connect(reverb);reverb.connect(reverbWet);
+  mkStrip('REVERB',reverbWet,master);
+  // limiter + master strip
+  const masterAn=ctx.createAnalyser();masterAn.fftSize=512;
   const lim=ctx.createDynamicsCompressor();
   lim.threshold.value=-3;lim.knee.value=2;lim.ratio.value=12;lim.attack.value=0.003;lim.release.value=0.12;
-  master.connect(lim);lim.connect(out);
+  master.connect(masterAn);masterAn.connect(lim);lim.connect(out);
+  SP.mix.strips['MASTER']={gain:master,pan:null,meter:masterAn,muted:false,solo:false,vol:(spVal('masterVol',SP.master.knobs.masterVol??.85)),panV:0,isMaster:true};
   // record destination
   let streamDest=null;
   try{streamDest=ctx.createMediaStreamDestination();master.connect(streamDest);}catch(_){}
@@ -12138,7 +12227,8 @@ function spBassNoteOff(immediate){
 
 /* ---------- Drum voices ---------- */
 function spDrumHit(name,time,vel){
-  spInitAudio();const ctx=audioCtx,bus=SP.nodes.drumBus,v=vel||1;
+  spInitAudio();const ctx=audioCtx,v=vel||1;
+  const bus=(SP.mix.drumVoiceIns&&SP.mix.drumVoiceIns[name])||SP.nodes.drumBus;
   const out=ctx.createGain();out.gain.value=v;out.connect(bus);
   const g=ctx.createGain();g.gain.value=0;g.connect(out);
   const t=time;
@@ -12790,6 +12880,132 @@ function spApplySynthPreset(key){
 }
 
 /* ====================================================================
+   TITAN LAB — STUDIO MIXER (full-screen multi-channel)
+   ==================================================================== */
+const SP_MIXER_GROUPS=[
+  {title:'DRUMS',ids:['DR_KICK','DR_SNARE','DR_CLAP','DR_RIM','DR_LOWTOM','DR_HITOM','DR_CRASH']},
+  {title:'HATS / CYMBALS',ids:['DR_CHH','DR_OHH','DR_RIDE']},
+  {title:'PERCUSSION',ids:['DR_SHAKER','DR_PERC','DR_COWBELL']},
+  {title:'INSTRUMENTS',ids:['SYNTH','BASS','ORGAN','DRUMS']},
+  {title:'FX RETURNS',ids:['DELAY','REVERB','CHORUS']},
+  {title:'MASTER',ids:['MASTER']},
+];
+const SP_MIXER_LABELS={
+  DR_KICK:'KICK',DR_SNARE:'SNARE',DR_CLAP:'CLAP',DR_RIM:'RIM',
+  DR_LOWTOM:'LO TOM',DR_HITOM:'HI TOM',DR_CRASH:'CRASH',
+  DR_CHH:'CL HAT',DR_OHH:'OP HAT',DR_RIDE:'RIDE',
+  DR_SHAKER:'SHAKER',DR_PERC:'PERC',DR_COWBELL:'COWBELL',
+  SYNTH:'SYNTH',BASS:'TB-303',ORGAN:'ORGAN',DRUMS:'DRUMS',
+  DELAY:'DELAY',REVERB:'REVERB',CHORUS:'CHORUS',MASTER:'MASTER',
+};
+function spApplyMixer(){
+  const strips=SP.mix.strips||{};
+  const ids=Object.keys(strips);
+  const anySolo=ids.some(id=>id!=='MASTER' && strips[id].solo);
+  SP.mix.soloActive=anySolo;
+  ids.forEach(id=>{
+    const s=strips[id];if(!s||!s.gain)return;
+    const isMaster=!!s.isMaster;
+    let audible=!s.muted && (!anySolo || s.solo || isMaster);
+    const target=audible?s.vol:0;
+    try{s.gain.gain.setTargetAtTime(target,audioCtx.currentTime,0.015);}catch(_){}
+    if(s.pan){try{s.pan.pan.setTargetAtTime(s.panV,audioCtx.currentTime,0.015);}catch(_){}}
+  });
+}
+function spBuildStudioMixer(){
+  const ov=document.getElementById('spStudioMixer');
+  if(!ov)return;
+  spInitAudio();
+  const body=ov.querySelector('.spmx-body');
+  if(!body)return;
+  body.innerHTML='';
+  SP_MIXER_GROUPS.forEach(group=>{
+    const col=document.createElement('div');col.className='spmx-group';
+    const hd=document.createElement('div');hd.className='spmx-group-title';hd.textContent=group.title;
+    col.appendChild(hd);
+    const row=document.createElement('div');row.className='spmx-row';
+    col.appendChild(row);
+    group.ids.forEach(id=>{
+      const s=SP.mix.strips[id];
+      if(!s)return;
+      const strip=document.createElement('div');
+      strip.className='spmx-strip'+(id==='MASTER'?' master':'');
+      strip.dataset.stripId=id;
+      // label
+      const lab=document.createElement('div');lab.className='spmx-label';
+      lab.textContent=SP_MIXER_LABELS[id]||id;strip.appendChild(lab);
+      // mute/solo
+      const btns=document.createElement('div');btns.className='spmx-btns';
+      const mute=document.createElement('button');mute.className='spmx-btn mute'+(s.muted?' on':'');mute.textContent='M';
+      const solo=document.createElement('button');solo.className='spmx-btn solo'+(s.solo?' on':'');solo.textContent='S';
+      mute.addEventListener('click',()=>{s.muted=!s.muted;mute.classList.toggle('on',s.muted);spApplyMixer();});
+      solo.addEventListener('click',()=>{s.solo=!s.solo;solo.classList.toggle('on',s.solo);spApplyMixer();});
+      btns.appendChild(mute);btns.appendChild(solo);
+      strip.appendChild(btns);
+      // pan
+      if(s.pan){
+        const panWrap=document.createElement('div');panWrap.className='spmx-pan-wrap';
+        const panLab=document.createElement('div');panLab.className='spmx-sub';panLab.textContent='PAN';
+        const panInp=document.createElement('input');panInp.type='range';panInp.className='spmx-pan';
+        panInp.min='-50';panInp.max='50';panInp.step='1';panInp.value=Math.round(s.panV*50);
+        const panVal=document.createElement('div');panVal.className='spmx-sub spmx-pan-val';
+        panVal.textContent=s.panV===0?'C':(s.panV<0?'L'+Math.abs(Math.round(s.panV*50)):'R'+Math.round(s.panV*50));
+        panInp.addEventListener('input',()=>{s.panV=+panInp.value/50;panVal.textContent=s.panV===0?'C':(s.panV<0?'L'+Math.abs(+panInp.value):'R'+panInp.value);spApplyMixer();});
+        panWrap.appendChild(panLab);panWrap.appendChild(panInp);panWrap.appendChild(panVal);
+        strip.appendChild(panWrap);
+      }
+      // meter (vertical)
+      const meter=document.createElement('div');meter.className='spmx-meter';
+      const mL=document.createElement('div');mL.className='spmx-meter-bar';
+      meter.appendChild(mL);
+      strip.appendChild(meter);
+      // fader
+      const fader=document.createElement('input');fader.type='range';fader.className='spmx-fader';
+      fader.min='0';fader.max='150';fader.step='1';fader.value=Math.round(s.vol*100);
+      fader.setAttribute('orient','vertical');
+      const volLab=document.createElement('div');volLab.className='spmx-vol';volLab.textContent=Math.round(s.vol*100)+'%';
+      fader.addEventListener('input',()=>{
+        s.vol=(+fader.value)/100;volLab.textContent=Math.round(s.vol*100)+'%';spApplyMixer();
+      });
+      strip.appendChild(fader);
+      strip.appendChild(volLab);
+      s._meterEl=mL;
+      row.appendChild(strip);
+    });
+    body.appendChild(col);
+  });
+  spApplyMixer();
+}
+function spMixerMeterTick(){
+  if(!SP.mix.open){SP.mix._meterRAF=null;return;}
+  const ids=Object.keys(SP.mix.strips||{});
+  const buf=new Float32Array(256);
+  ids.forEach(id=>{
+    const s=SP.mix.strips[id];if(!s||!s._meterEl||!s.meter)return;
+    try{s.meter.getFloatTimeDomainData(buf);}catch(_){return;}
+    let peak=0;
+    for(let i=0;i<buf.length;i++){const a=Math.abs(buf[i]);if(a>peak)peak=a;}
+    // smooth fall
+    s._mPeak=Math.max(peak,(s._mPeak||0)*0.82);
+    const pct=Math.min(100,s._mPeak*140);
+    s._meterEl.style.height=pct.toFixed(1)+'%';
+    s._meterEl.style.background=pct>92?'#ff3b3b':(pct>70?'#ffb84d':'#2aeaff');
+  });
+  SP.mix._meterRAF=requestAnimationFrame(spMixerMeterTick);
+}
+function spOpenStudioMixer(){
+  const ov=document.getElementById('spStudioMixer');if(!ov)return;
+  spBuildStudioMixer();
+  ov.classList.add('open');SP.mix.open=true;
+  if(!SP.mix._meterRAF)SP.mix._meterRAF=requestAnimationFrame(spMixerMeterTick);
+}
+function spCloseStudioMixer(){
+  const ov=document.getElementById('spStudioMixer');if(!ov)return;
+  ov.classList.remove('open');SP.mix.open=false;
+  if(SP.mix._meterRAF){cancelAnimationFrame(SP.mix._meterRAF);SP.mix._meterRAF=null;}
+}
+
+/* ====================================================================
    TITAN LAB — UI wiring
    ==================================================================== */
 function setupStudioPro(){
@@ -12971,8 +13187,18 @@ function setupStudioPro(){
   // pause transport when leaving the TITAN LAB tab
   document.querySelectorAll('.tab-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
-      if(btn.dataset.tab!=='studiopro' && SP.transport.playing)spTransportStop();
+      if(btn.dataset.tab!=='studiopro'){
+        if(SP.transport.playing)spTransportStop();
+        spCloseStudioMixer();
+      }
     });
+  });
+  // STUDIO MIXER open/close
+  document.getElementById('spMixerOpenBtn')?.addEventListener('click',spOpenStudioMixer);
+  document.getElementById('spMixerCloseBtn')?.addEventListener('click',spCloseStudioMixer);
+  // Esc closes the mixer
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape' && SP.mix.open){e.preventDefault();spCloseStudioMixer();}
   });
 
   // REC — captures the TITAN LAB master bus straight into the library
