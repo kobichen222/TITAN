@@ -6306,9 +6306,17 @@ body.theme-light .sup-card{background:linear-gradient(180deg,#fefcf6,#f1ebdc) !i
 /* Make room for a larger platter */
 .tt-platter-wrap{min-height:360px}
 
-/* PLATTER — substantially larger (like a real 12" turntable) */
+/* PLATTER — substantially larger (like a real 12" turntable).
+   Uses aspect-ratio so the platter stays perfectly round even when
+   the container narrows (was going oval on mid-size screens). */
+.tt-platter-wrap{
+  display:flex !important;align-items:center !important;justify-content:center !important;
+  min-width:0 !important;aspect-ratio:1/1 !important;
+  width:100% !important;max-width:360px !important;margin:0 auto !important;
+}
 .tt-platter{
-  width:340px !important;height:340px !important;max-width:100% !important;
+  width:min(340px,100%) !important;height:auto !important;
+  aspect-ratio:1/1 !important;flex:0 0 auto !important;
   background:
     radial-gradient(circle at 50% 50%,#3c3c42 0%,#1c1c22 58%,#08080b 100%) !important;
   box-shadow:
@@ -6322,8 +6330,8 @@ body.theme-light .sup-card{background:linear-gradient(180deg,#fefcf6,#f1ebdc) !i
     0 18px 50px rgba(0,0,0,.8),
     0 0 70px rgba(var(--tt-accent-rgb),.08) !important;
 }
-@media(max-width:1280px){.tt-platter{width:300px !important;height:300px !important}}
-@media(max-width:1100px){.vinyl-stage{grid-template-columns:1fr !important;gap:18px !important}.tt-platter{width:320px !important;height:320px !important}}
+@media(max-width:1280px){.tt-platter-wrap{max-width:320px !important}.tt-platter{width:min(300px,100%) !important}}
+@media(max-width:1100px){.vinyl-stage{grid-template-columns:1fr !important;gap:18px !important}.tt-platter-wrap{max-width:340px !important}.tt-platter{width:min(320px,100%) !important}}
 
 .tt-platter::before{
   /* brighter strobe dots */
