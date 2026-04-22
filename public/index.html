@@ -11805,6 +11805,25 @@ function spInitAudio(){
   // master gain
   const master=ctx.createGain();master.gain.value=spVal('masterVol',SP.master.knobs.masterVol??.85);
   drive.connect(master);
+  // chorus (stereo: two modulated delays panned hard L/R)
+  const chorusIn=ctx.createGain();chorusIn.gain.value=1;
+  const chorusLDelay=ctx.createDelay(0.05);chorusLDelay.delayTime.value=0.018;
+  const chorusRDelay=ctx.createDelay(0.05);chorusRDelay.delayTime.value=0.024;
+  const chorusLFOL=ctx.createOscillator();chorusLFOL.frequency.value=0.8;
+  const chorusLFOR=ctx.createOscillator();chorusLFOR.frequency.value=1.1;
+  const chorusLFOLGain=ctx.createGain();chorusLFOLGain.gain.value=0.004;
+  const chorusLFORGain=ctx.createGain();chorusLFORGain.gain.value=0.004;
+  chorusLFOL.connect(chorusLFOLGain);chorusLFOLGain.connect(chorusLDelay.delayTime);
+  chorusLFOR.connect(chorusLFORGain);chorusLFORGain.connect(chorusRDelay.delayTime);
+  const chorusMerge=ctx.createChannelMerger(2);
+  const chorusLGain=ctx.createGain();chorusLGain.gain.value=0.8;
+  const chorusRGain=ctx.createGain();chorusRGain.gain.value=0.8;
+  chorusIn.connect(chorusLDelay);chorusLDelay.connect(chorusLGain);chorusLGain.connect(chorusMerge,0,0);
+  chorusIn.connect(chorusRDelay);chorusRDelay.connect(chorusRGain);chorusRGain.connect(chorusMerge,0,1);
+  const chorusWet=ctx.createGain();chorusWet.gain.value=0;
+  chorusMerge.connect(chorusWet);chorusWet.connect(master);
+  mixBus.connect(chorusIn);
+  chorusLFOL.start();chorusLFOR.start();
   // delay (feedback + damp filter)
   const delay=ctx.createDelay(2.0);
   const delayFb=ctx.createGain();delayFb.gain.value=0;
@@ -11812,7 +11831,7 @@ function spInitAudio(){
   const delayWet=ctx.createGain();delayWet.gain.value=0;
   mixBus.connect(delay);delay.connect(delayFilter);delayFilter.connect(delayFb);delayFb.connect(delay);
   delay.connect(delayWet);delayWet.connect(master);
-  // reverb (convolver with generated IR)
+  // reverb (convolver with generated IR — size × damp shape)
   const reverb=ctx.createConvolver();reverb.buffer=spMakeIR(ctx,2.0,3);
   const reverbWet=ctx.createGain();reverbWet.gain.value=0;
   mixBus.connect(reverb);reverb.connect(reverbWet);reverbWet.connect(master);
@@ -11823,7 +11842,7 @@ function spInitAudio(){
   // record destination
   let streamDest=null;
   try{streamDest=ctx.createMediaStreamDestination();master.connect(streamDest);}catch(_){}
-  SP.nodes={synthBus,drumBus,bassBus,organBus,mixBus,drive,master,delay,delayFb,delayFilter,delayWet,reverb,reverbWet,limiter:lim,streamDest};
+  SP.nodes={synthBus,drumBus,bassBus,organBus,mixBus,drive,master,delay,delayFb,delayFilter,delayWet,reverb,reverbWet,chorusIn,chorusWet,chorusLDelay,chorusRDelay,limiter:lim,streamDest};
   SP.rec.streamDest=streamDest;
   SP.ready=true;
 }
@@ -11833,14 +11852,29 @@ function spMakeDriveCurve(amount){
   for(let i=0;i<n;i++){const x=(i/(n-1))*2-1;curve[i]=Math.tanh(x*k)/Math.tanh(k);}
   return curve;
 }
-function spMakeIR(ctx,dur,decay){
-  const rate=ctx.sampleRate,len=Math.floor(rate*dur);
+function spMakeIR(ctx,dur,decay,damp){
+  // damp 0..1 — 0 = bright, 1 = very dark (smooths HF content)
+  const rate=ctx.sampleRate,len=Math.floor(rate*Math.max(0.05,dur));
   const ir=ctx.createBuffer(2,len,rate);
+  const d01=Math.max(0,Math.min(1,damp||0));
+  const smooth=0.05+d01*0.9; // one-pole coefficient
   for(let ch=0;ch<2;ch++){
     const d=ir.getChannelData(ch);
-    for(let i=0;i<len;i++){const t=i/len;d[i]=(Math.random()*2-1)*Math.pow(1-t,decay);}
+    let prev=0;
+    for(let i=0;i<len;i++){
+      const t=i/len;
+      const raw=(Math.random()*2-1)*Math.pow(1-t,decay);
+      prev=prev+(raw-prev)*(1-smooth);
+      d[i]=prev;
+    }
   }
   return ir;
+}
+function spRebuildReverbIR(){
+  if(!SP.ready||!SP.nodes.reverb)return;
+  const size=spVal('reverbSize',SP.master.knobs.reverbSize??.6)/100; // 0..1
+  const damp=spVal('reverbDamp',SP.master.knobs.reverbDamp??.5)/100;
+  SP.nodes.reverb.buffer=spMakeIR(audioCtx,0.3+size*3.5,2.2+damp*2.5,damp);
 }
 
 /* --- Knob UI --- */
@@ -11879,9 +11913,9 @@ function spApplyKnob(name,v){
   }else if(name==='delayMix'){
     if(n.delayWet)n.delayWet.gain.setTargetAtTime(spVal('delayMix',v)/100,audioCtx.currentTime,0.02);
   }else if(name==='reverbSize'){
-    n.reverb.buffer=spMakeIR(audioCtx,0.3+spVal('reverbSize',v)/100*3.5,3);
+    spRebuildReverbIR();
   }else if(name==='reverbDamp'){
-    // re-create IR with damping characteristic
+    spRebuildReverbIR();
   }else if(name==='reverbMix'){
     if(n.reverbWet)n.reverbWet.gain.setTargetAtTime(spVal('reverbMix',v)/100,audioCtx.currentTime,0.02);
   }else if(name==='masterDrive'){
@@ -11892,6 +11926,8 @@ function spApplyKnob(name,v){
     if(n.synthBus)n.synthBus.gain.setTargetAtTime(spVal('synthVol',v)/100,audioCtx.currentTime,0.02);
   }else if(name==='masterVol'){
     if(n.master)n.master.gain.setTargetAtTime(spVal('masterVol',v)/100,audioCtx.currentTime,0.02);
+  }else if(name==='chorusMix'){
+    if(n.chorusWet)n.chorusWet.gain.setTargetAtTime(spVal('chorusMix',v)/100*0.7,audioCtx.currentTime,0.02);
   }
 }
 
@@ -11960,6 +11996,27 @@ function spSynthNoteOn(midi){
     voice.filter.frequency.linearRampToValueAtTime(peak,t+0.003);
     voice.filter.frequency.setTargetAtTime(cutoff,t+0.003,Math.max(0.05,fDec/3));
   }
+  // LFO — target = filter / pitch / amp (none = bypass)
+  const lfoTarget=SP.synth.lfoTarget||'none';
+  const lfoDepth=spVal('lfoDepth',k.lfoDepth??.3)/100;
+  if(lfoTarget!=='none' && lfoDepth>0.005){
+    const lfo=ctx.createOscillator();lfo.type='sine';
+    lfo.frequency.value=spVal('lfoRate',k.lfoRate??.5);
+    const lg=ctx.createGain();
+    if(lfoTarget==='filter'){
+      lg.gain.value=cutoff*0.8*lfoDepth;
+      lfo.connect(lg);lg.connect(voice.filter.frequency);
+    }else if(lfoTarget==='pitch'){
+      // detune in cents (±50c at full depth)
+      lg.gain.value=50*lfoDepth;
+      lfo.connect(lg);voice.oscs.forEach(o=>{try{lg.connect(o.detune)}catch(_){}});
+    }else if(lfoTarget==='amp'){
+      // tremolo — modulate gain around the ADSR level
+      lg.gain.value=0.35*lfoDepth;
+      lfo.connect(lg);lg.connect(voice.gain.gain);
+    }
+    lfo.start(t);voice.lfo=lfo;voice.lfoGain=lg;
+  }
   SP.synth.voices.set(midi,voice);
 }
 function spSynthNoteOff(midi){
@@ -11970,8 +12027,8 @@ function spSynthNoteOff(midi){
   const g=v.gain.gain;
   g.cancelScheduledValues(t);g.setValueAtTime(g.value,t);
   g.linearRampToValueAtTime(0,t+R);
-  setTimeout(()=>{try{v.oscs.forEach(o=>{try{o.stop()}catch(_){}});if(v.subOsc)try{v.subOsc.stop()}catch(_){}}catch(_){}
-    try{v.gain.disconnect();v.filter.disconnect();if(v.delayTap)v.delayTap.disconnect();if(v.reverbTap)v.reverbTap.disconnect();}catch(_){}
+  setTimeout(()=>{try{v.oscs.forEach(o=>{try{o.stop()}catch(_){}});if(v.subOsc)try{v.subOsc.stop()}catch(_){}if(v.lfo)try{v.lfo.stop()}catch(_){}}catch(_){}
+    try{v.gain.disconnect();v.filter.disconnect();if(v.delayTap)v.delayTap.disconnect();if(v.reverbTap)v.reverbTap.disconnect();if(v.lfoGain)v.lfoGain.disconnect();}catch(_){}
     SP.synth.voices.delete(midi);
   },(R+0.1)*1000);
 }
