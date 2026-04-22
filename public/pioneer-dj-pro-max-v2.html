@@ -12421,6 +12421,98 @@ function spSetKnob(name,v,scope){
   const knob=root?.querySelector(`.sp-knob[data-sp-knob="${name}"]`);
   if(knob&&knob._spSet)knob._spSet(v);
 }
+/* ====================================================================
+   TITAN LAB — TB-303 bass sequencer + patterns
+   ==================================================================== */
+const SP_BASS_NOTE_NAMES=['A1','A#1','B1','C2','C#2','D2','D#2','E2','F2','F#2','G2','G#2','A2','A#2','B2','C3','C#3','D3'];
+const SP_BASS_NOTE_MIDI={
+  'A1':33,'A#1':34,'B1':35,'C2':36,'C#2':37,'D2':38,'D#2':39,'E2':40,'F2':41,
+  'F#2':42,'G2':43,'G#2':44,'A2':45,'A#2':46,'B2':47,'C3':48,'C#3':49,'D3':50
+};
+function spBassEmptyPattern(){return Array.from({length:16},()=>({on:false,midi:33,accent:false,slide:false,octave:0}));}
+function spBassPatternFrom(defs){
+  // defs: array of 16 items — null or {note,accent?,slide?}
+  return defs.map(d=>{
+    if(!d)return{on:false,midi:33,accent:false,slide:false,octave:0};
+    return{on:true,midi:SP_BASS_NOTE_MIDI[d.note]||33,accent:!!d.accent,slide:!!d.slide,octave:0};
+  });
+}
+const SP_BASS_PRESETS={
+  'classic-acid':spBassPatternFrom([
+    {note:'A1',accent:true},null,{note:'A2'},null,
+    {note:'A1'},null,{note:'C2',slide:true},{note:'E2'},
+    {note:'A1',accent:true},null,{note:'A2'},null,
+    {note:'G2'},null,{note:'A1',slide:true},{note:'A2'},
+  ]),
+  'trance-bass':spBassPatternFrom([
+    {note:'A1'},{note:'A1'},null,{note:'A1'},
+    {note:'A1'},{note:'A1'},null,{note:'A1'},
+    {note:'A1'},{note:'A1'},null,{note:'A1'},
+    {note:'A1'},{note:'A1'},null,{note:'A1',accent:true},
+  ]),
+  'tech-riff':spBassPatternFrom([
+    {note:'A1',accent:true},null,{note:'A1'},{note:'E2'},
+    null,{note:'A1'},null,{note:'G2',slide:true},
+    {note:'A2',accent:true},null,{note:'A1'},null,
+    {note:'E2'},null,{note:'A1',slide:true},{note:'C3'},
+  ]),
+  'deep-bass':spBassPatternFrom([
+    {note:'A1'},null,null,null,
+    {note:'A1'},null,null,{note:'C2'},
+    {note:'E2'},null,null,null,
+    {note:'D2'},null,{note:'A1',slide:true},null,
+  ]),
+};
+function spBuildBassSeq(){
+  const row=document.getElementById('spBassSeq');
+  if(!row)return;
+  row.innerHTML='';
+  SP.bass.stepEls=new Array(16).fill(null);
+  const lbl=document.createElement('div');
+  lbl.className='sp-seq-label';
+  lbl.innerHTML='<span>TB-303</span>';
+  row.appendChild(lbl);
+  for(let i=0;i<16;i++){
+    const s=SP.bass.pattern[i];
+    const cell=document.createElement('div');
+    cell.className='sp-bass-step'+(s.on?' on':'');
+    cell.dataset.spStep=i;
+    // note select
+    const sel=document.createElement('select');
+    SP_BASS_NOTE_NAMES.forEach(n=>{
+      const opt=document.createElement('option');opt.value=n;opt.textContent=n;sel.appendChild(opt);
+    });
+    const noteName=Object.keys(SP_BASS_NOTE_MIDI).find(k=>SP_BASS_NOTE_MIDI[k]===s.midi)||'A1';
+    sel.value=noteName;
+    sel.addEventListener('change',e=>{e.stopPropagation();s.midi=SP_BASS_NOTE_MIDI[sel.value]||33;});
+    sel.addEventListener('click',e=>e.stopPropagation());
+    cell.appendChild(sel);
+    // flags
+    const flags=document.createElement('div');flags.className='sp-bass-flags';
+    const mk=(key,label,extra='')=>{
+      const f=document.createElement('div');
+      f.className='sp-bass-flag '+extra+(s[key]?' on':'');
+      f.textContent=label;
+      f.addEventListener('click',e=>{
+        e.stopPropagation();
+        s[key]=!s[key];
+        f.classList.toggle('on',s[key]);
+      });
+      return f;
+    };
+    flags.appendChild(mk('accent','A'));
+    flags.appendChild(mk('slide','S','slide'));
+    cell.appendChild(flags);
+    // toggling step on/off
+    cell.addEventListener('click',()=>{
+      s.on=!s.on;
+      cell.classList.toggle('on',s.on);
+    });
+    row.appendChild(cell);
+    SP.bass.stepEls[i]=cell;
+  }
+}
+
 /* Piano keyboard renderer — 2 octaves, white + black keys, data-sp-midi */
 function spBuildPiano(){
   const piano=document.getElementById('spPiano');
@@ -12510,6 +12602,21 @@ function setupStudioPro(){
   // default drum pattern
   if(!SP.drum.pattern)SP.drum.pattern=spDrumPresetCopy('house');
   spBuildDrumGrid();
+
+  // default bass pattern
+  if(!SP.bass.pattern)SP.bass.pattern=spBassPatternFrom(SP_BASS_PRESETS['classic-acid'].map(s=>s.on?{note:Object.keys(SP_BASS_NOTE_MIDI).find(k=>SP_BASS_NOTE_MIDI[k]===s.midi)||'A1',accent:s.accent,slide:s.slide}:null));
+  spBuildBassSeq();
+
+  // bass preset buttons
+  document.querySelectorAll('[data-sp-bass-preset]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const key=btn.dataset.spBassPreset;
+      if(key==='clear')SP.bass.pattern=spBassEmptyPattern();
+      else if(SP_BASS_PRESETS[key])SP.bass.pattern=SP_BASS_PRESETS[key].map(s=>({...s}));
+      spBuildBassSeq();
+      document.querySelectorAll('[data-sp-bass-preset]').forEach(b=>b.classList.toggle('active',b===btn && key!=='clear'));
+    });
+  });
 
   // init knob stores with defaults
   ['synth','organ','bass','master'].forEach(s=>{if(!SP[s].knobs)SP[s].knobs={};});
