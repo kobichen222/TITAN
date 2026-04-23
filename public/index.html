@@ -11357,6 +11357,7 @@ function attachEvents(){
     });
     deckEl.querySelectorAll(`[data-tempo-step][data-deck="${d}"]`).forEach(btn=>{
       btn.addEventListener('click',()=>{
+        if(btn.classList.contains('active'))return;
         deckEl.querySelectorAll(`[data-tempo-step][data-deck="${d}"]`).forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
         tempoStep[d]=parseFloat(btn.dataset.tempoStep);
@@ -11373,6 +11374,7 @@ function attachEvents(){
   window.addEventListener('blur',()=>{xd=false;});
   document.querySelectorAll('#xfaderCurve .curve-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
+      if(btn.classList.contains('active'))return;
       document.querySelectorAll('#xfaderCurve .curve-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       mixerState.xfaderCurve=btn.dataset.curve;applyCrossfader();
@@ -11391,11 +11393,14 @@ function attachEvents(){
   ['A','B','C','D'].forEach(d=>{
     const w=document.querySelector(`.fader-wrap[data-fader="${d}"]`);
     if(!w)return;
-    const h=document.getElementById(`fader-${d}`);let drag=false;
+    const h=document.getElementById(`fader-${d}`);let drag=false;let pendingCy=null,rafId=null;
     function setY(cy){const r=w.getBoundingClientRect();let y=(cy-r.top)/r.height;y=Math.max(0,Math.min(0.9,y));h.style.bottom=`${(1-y-0.1)*100}%`;const v=1-y/0.9;decks[d].volume=v;if(decks[d].volumeGain)decks[d].volumeGain.gain.value=v;applyCrossfader();}
+    function scheduleSetY(cy){pendingCy=cy;if(rafId!=null)return;rafId=requestAnimationFrame(()=>{rafId=null;if(pendingCy!=null)setY(pendingCy);pendingCy=null;});}
+    const endFader=e=>{try{w.releasePointerCapture(e.pointerId);}catch(_){}drag=false;if(rafId!=null){cancelAnimationFrame(rafId);rafId=null;}};
     w.addEventListener('pointerdown',e=>{w.setPointerCapture(e.pointerId);drag=true;setY(e.clientY);});
-    w.addEventListener('pointermove',e=>{if(drag)setY(e.clientY);});
-    w.addEventListener('pointerup',e=>{w.releasePointerCapture(e.pointerId);drag=false;});
+    w.addEventListener('pointermove',e=>{if(drag)scheduleSetY(e.clientY);});
+    w.addEventListener('pointerup',endFader);
+    w.addEventListener('pointercancel',endFader);
   });
   document.querySelectorAll('.color-fx-select').forEach(btn=>{
     btn.addEventListener('click',()=>{
@@ -11519,6 +11524,7 @@ function setupBeatFxUI(){
   document.getElementById('fxChannel').addEventListener('change',e=>{mixerState.fx.channel=e.target.value;});
   document.querySelectorAll('#beatButtons .beat-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
+      if(btn.classList.contains('active'))return;
       document.querySelectorAll('#beatButtons .beat-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       mixerState.fx.beat=parseFloat(btn.dataset.beat);
@@ -11765,12 +11771,23 @@ function setupSettings(){
 /* MODAL */
 let modalCallback=null;
 function showModal(title,body,onConfirm){
+  // Close any other overlay so two modals never stack with colliding z-index.
+  document.getElementById('quickLibOverlay')?.classList.remove('open');
+  document.getElementById('authModal')?.classList.remove('open');
   document.getElementById('modalTitle').textContent=title;
   document.getElementById('modalBody').innerHTML=body;
   document.getElementById('modal').classList.add('open');
   modalCallback=onConfirm;
 }
 function closeModal(){document.getElementById('modal').classList.remove('open');modalCallback=null;}
+// Global ESC — close whichever overlay is on top.
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Escape')return;
+  const m=document.getElementById('modal');
+  if(m&&m.classList.contains('open')){e.preventDefault();closeModal();return;}
+  const am=document.getElementById('authModal');
+  if(am&&am.classList.contains('open')){e.preventDefault();am.classList.remove('open');return;}
+});
 
 /* TOAST */
 function toast(msg,type){
@@ -16064,8 +16081,12 @@ function setupJogWheel(deckId){
     stopScrubSource();
   }
   platter.addEventListener('mousedown',(e)=>{e.preventDefault();start(e.clientX,e.clientY);});
-  window.addEventListener('mousemove',(e)=>{if(dragging)move(e.clientX,e.clientY);});
+  // Guard against a buttons-up state during move — if the mouse is released
+  // outside the window, mouseup may not fire; on next move we see buttons===0
+  // and can self-release instead of waiting for a possibly-lost mouseup.
+  window.addEventListener('mousemove',(e)=>{if(dragging){if(e.buttons===0){end();return;}move(e.clientX,e.clientY);}});
   window.addEventListener('mouseup',end);
+  window.addEventListener('blur',()=>{if(dragging)end();});
   platter.addEventListener('touchstart',(e)=>{const t=e.touches[0];if(t){e.preventDefault();start(t.clientX,t.clientY);}},{passive:false});
   window.addEventListener('touchmove',(e)=>{const t=e.touches[0];if(dragging&&t){e.preventDefault();move(t.clientX,t.clientY);}},{passive:false});
   window.addEventListener('touchend',end);
