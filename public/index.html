@@ -8152,6 +8152,10 @@ No MIDI devices. Press CONNECT.
 <input type="range" id="spSwing" min="0" max="50" value="0" style="width:90px"/>
 <span class="sp-sub-label" id="spSwingVal" style="margin:0 4px;min-width:28px">0%</span>
 <button class="tool-btn" id="spRecBtn" title="Record to library">● REC</button>
+<button class="tool-btn" id="spRenderBtn" title="Render the loop / song to a WAV file" style="border-color:#2aeaff;color:#2aeaff;margin-left:4px">⬇ RENDER</button>
+<button class="tool-btn" id="spStemsBtn" title="Render each mixer strip to a separate WAV (stems)" style="border-color:#2aeaff;color:#2aeaff;margin-left:4px">🧩 STEMS</button>
+<button class="tool-btn" id="spSaveProjBtn" title="Save current TITAN LAB project locally" style="border-color:#88ff88;color:#88ff88;margin-left:4px">💾 SAVE</button>
+<button class="tool-btn" id="spLoadProjBtn" title="Open a saved project" style="border-color:#88ff88;color:#88ff88;margin-left:4px">📂 LOAD</button>
 <button class="tool-btn" id="spMixerOpenBtn" title="Open full-screen studio mixer" style="border-color:var(--orange);color:var(--orange);margin-left:6px">🎛 MIXER</button>
 <span id="spStepIndicator" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1.5px;margin-left:6px;">— / 16</span>
 </div>
@@ -13919,6 +13923,247 @@ function spCloseStudioMixer(){
 }
 
 /* ====================================================================
+   TITAN LAB — Projects (save / load / list) — localStorage backed
+   ==================================================================== */
+const SP_PROJECTS_KEY='titanlab_projects_v1';
+function spProjectsList(){
+  try{return JSON.parse(localStorage.getItem(SP_PROJECTS_KEY)||'[]')||[];}
+  catch(e){return [];}
+}
+function spProjectsWrite(list){
+  try{localStorage.setItem(SP_PROJECTS_KEY,JSON.stringify(list));return true;}
+  catch(e){console.warn('project save failed',e);return false;}
+}
+function spProjectSerialize(){
+  return {
+    v:1,
+    bpm:SP.transport.bpm,swing:SP.transport.swing,
+    drum:{pattern:SP.drum.pattern,mutes:SP.drum.mutes,voices:SP.drum.voices.slice()},
+    bass:{pattern:SP.bass.pattern,knobs:{...SP.bass.knobs}},
+    synth:{osc1Wave:SP.synth.osc1Wave,osc2Wave:SP.synth.osc2Wave,filterType:SP.synth.filterType,lfoTarget:SP.synth.lfoTarget,knobs:{...SP.synth.knobs}},
+    organ:{drawbars:SP.organ.drawbars.slice(),knobs:{...SP.organ.knobs}},
+    master:{knobs:{...SP.master.knobs}},
+    chords:SP.chords?{progression:SP.chords.progression,name:SP.chords.name||null}:null,
+    song:SP.song?{enabled:SP.song.enabled,sections:SP.song.sections,sectionIdx:SP.song.sectionIdx}:null,
+    octave:SP.octave,activeInst:SP.activeInst,
+    mix:Object.fromEntries(Object.entries(SP.mix?.strips||{}).map(([k,v])=>[k,{vol:v.vol,panV:v.panV,muted:v.muted,solo:v.solo}])),
+    vibe:(document.getElementById('spVibeInput')?.value||'').trim(),
+  };
+}
+function spProjectRestore(state){
+  if(!state||state.v!==1){toast&&toast('Project format not supported','error');return;}
+  spInitAudio();
+  // Transport
+  SP.transport.bpm=state.bpm||128;SP.transport.swing=state.swing||0;
+  const bpmEl=document.getElementById('spBpm');if(bpmEl)bpmEl.value=SP.transport.bpm;
+  const swEl=document.getElementById('spSwing'),swV=document.getElementById('spSwingVal');
+  if(swEl){swEl.value=SP.transport.swing;if(swV)swV.textContent=SP.transport.swing+'%';}
+  // Drum pattern + mutes
+  if(state.drum&&state.drum.pattern){SP.drum.pattern=state.drum.pattern.map(r=>r.slice(0,16));}
+  if(state.drum&&state.drum.mutes){SP.drum.mutes=state.drum.mutes.slice();}
+  spBuildDrumGrid();
+  // Bass
+  if(state.bass&&state.bass.pattern){SP.bass.pattern=state.bass.pattern.map(s=>({...s}));spBuildBassSeq();}
+  // Synth params + knobs
+  if(state.synth){
+    SP.synth.osc1Wave=state.synth.osc1Wave||'sawtooth';
+    SP.synth.osc2Wave=state.synth.osc2Wave||'square';
+    SP.synth.filterType=state.synth.filterType||'lowpass';
+    SP.synth.lfoTarget=state.synth.lfoTarget||'none';
+    document.querySelectorAll('.sp-osc-wave[data-sp-osc="1"] [data-sp-wave]').forEach(b=>b.classList.toggle('active',b.dataset.spWave===SP.synth.osc1Wave));
+    document.querySelectorAll('.sp-osc-wave[data-sp-osc="2"] [data-sp-wave]').forEach(b=>b.classList.toggle('active',b.dataset.spWave===SP.synth.osc2Wave));
+    document.querySelectorAll('[data-sp-filter-type] [data-sp-filter]').forEach(b=>b.classList.toggle('active',b.dataset.spFilter===SP.synth.filterType));
+    document.querySelectorAll('[data-sp-lfo-target] [data-sp-lfo]').forEach(b=>b.classList.toggle('active',b.dataset.spLfo===SP.synth.lfoTarget));
+    Object.keys(state.synth.knobs||{}).forEach(k=>spSetKnob(k,state.synth.knobs[k],'#spInstSynth'));
+  }
+  // Organ
+  if(state.organ){
+    if(state.organ.drawbars)SP.organ.drawbars=state.organ.drawbars.slice();
+    spBuildDrawbars();
+    Object.keys(state.organ.knobs||{}).forEach(k=>spSetKnob(k,state.organ.knobs[k],'#spInstOrgan'));
+  }
+  // Bass knobs
+  if(state.bass&&state.bass.knobs){
+    Object.keys(state.bass.knobs).forEach(k=>spSetKnob(k,state.bass.knobs[k],'#spInstBass'));
+  }
+  // Master knobs
+  if(state.master&&state.master.knobs){
+    Object.keys(state.master.knobs).forEach(k=>spSetKnob(k,state.master.knobs[k],'.sp-master'));
+  }
+  // Chords / song
+  if(state.chords){SP.chords={progression:state.chords.progression,name:state.chords.name||null,index:0,held:[]};}
+  if(state.song){SP.song={...SP.song,...state.song};}
+  // Mixer strip vols
+  if(state.mix){
+    Object.keys(state.mix).forEach(id=>{
+      const s=SP.mix.strips[id];if(!s)return;
+      const m=state.mix[id];
+      s.vol=typeof m.vol==='number'?m.vol:1;
+      s.panV=typeof m.panV==='number'?m.panV:0;
+      s.muted=!!m.muted;s.solo=!!m.solo;
+    });
+    spApplyMixer();
+  }
+  // VIBE prompt restore
+  const vIn=document.getElementById('spVibeInput');
+  if(vIn&&typeof state.vibe==='string')vIn.value=state.vibe;
+  if(typeof state.octave==='number'){SP.octave=state.octave;const ov=document.getElementById('spOctaveVal');if(ov)ov.textContent=SP.octave;spBuildPiano();}
+  if(state.activeInst){SP.activeInst=state.activeInst;document.querySelector(`[data-sp-inst="${state.activeInst}"]`)?.click();}
+}
+function spProjectSave(){
+  const name=(prompt('Project name:','TITAN LAB project')||'').trim();
+  if(!name)return;
+  const list=spProjectsList();
+  const id='proj_'+Date.now();
+  list.push({id,name,createdAt:Date.now(),state:spProjectSerialize()});
+  spProjectsWrite(list);
+  toast&&toast(`Project "${name}" saved`,'success');
+}
+function spProjectLoadDialog(){
+  const list=spProjectsList();
+  if(!list.length){toast&&toast('No saved projects yet — hit SAVE first','warn');return;}
+  const html='<div style="max-height:50vh;overflow:auto"><table style="width:100%;font-family:\'Share Tech Mono\',monospace;font-size:12px;color:#ddd"><thead><tr style="color:#ff8a1a"><th align="left">NAME</th><th align="right">SAVED</th><th></th><th></th></tr></thead><tbody>'+
+    list.slice().reverse().map(p=>{
+      const d=new Date(p.createdAt).toLocaleString();
+      return `<tr><td>${(p.name||'(no name)').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]))}</td><td align="right">${d}</td><td align="right"><button class="tool-btn" data-load="${p.id}">LOAD</button></td><td align="right"><button class="tool-btn" data-del="${p.id}" style="color:var(--red);border-color:var(--red)">DEL</button></td></tr>`;
+    }).join('')+'</tbody></table></div>';
+  if(typeof showModal!=='function'){toast&&toast('Cannot open dialog','error');return;}
+  showModal('TITAN LAB — load project',html,()=>{});
+  setTimeout(()=>{
+    document.querySelectorAll('[data-load]').forEach(b=>b.addEventListener('click',()=>{
+      const id=b.dataset.load;const p=spProjectsList().find(x=>x.id===id);
+      if(p){spProjectRestore(p.state);toast&&toast(`Loaded "${p.name}"`,'success');closeModal&&closeModal();}
+    }));
+    document.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{
+      const id=b.dataset.del;
+      if(!confirm('Delete this project permanently?'))return;
+      spProjectsWrite(spProjectsList().filter(x=>x.id!==id));
+      closeModal&&closeModal();spProjectLoadDialog();
+    }));
+  },50);
+}
+
+/* ====================================================================
+   TITAN LAB — Render to WAV (mixdown + per-strip stems)
+   ==================================================================== */
+function _spFloat32ToWavBlob(samples,sampleRate,channels){
+  // samples: Float32Array of length=channels*frames, interleaved
+  const numFrames=samples.length/channels;
+  const buffer=new ArrayBuffer(44+samples.length*2);
+  const view=new DataView(buffer);
+  const writeStr=(o,s)=>{for(let i=0;i<s.length;i++)view.setUint8(o+i,s.charCodeAt(i));};
+  writeStr(0,'RIFF');view.setUint32(4,36+samples.length*2,true);
+  writeStr(8,'WAVE');writeStr(12,'fmt ');view.setUint32(16,16,true);
+  view.setUint16(20,1,true);view.setUint16(22,channels,true);
+  view.setUint32(24,sampleRate,true);view.setUint32(28,sampleRate*channels*2,true);
+  view.setUint16(32,channels*2,true);view.setUint16(34,16,true);
+  writeStr(36,'data');view.setUint32(40,samples.length*2,true);
+  let o=44;
+  for(let i=0;i<samples.length;i++){
+    const s=Math.max(-1,Math.min(1,samples[i]));
+    view.setInt16(o,s<0?s*0x8000:s*0x7FFF,true);o+=2;
+  }
+  return new Blob([buffer],{type:'audio/wav'});
+}
+async function _spCaptureMs(durationMs){
+  // Capture from the live master via MediaRecorder (webm/opus) for the given duration.
+  spInitAudio();
+  if(!SP.rec.streamDest)throw new Error('MediaRecorder not supported');
+  const mime=(window.MediaRecorder&&MediaRecorder.isTypeSupported('audio/webm;codecs=opus'))?'audio/webm;codecs=opus':'audio/webm';
+  const recorder=new MediaRecorder(SP.rec.streamDest.stream,{mimeType:mime});
+  const chunks=[];
+  recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
+  return await new Promise((resolve,reject)=>{
+    recorder.onstop=()=>resolve(new Blob(chunks,{type:mime}));
+    recorder.onerror=e=>reject(e.error||new Error('recorder error'));
+    recorder.start();
+    setTimeout(()=>{try{recorder.stop()}catch(_){}},durationMs);
+  });
+}
+async function _spBlobToAudioBuffer(blob){
+  spInitAudio();
+  const ab=await blob.arrayBuffer();
+  return await audioCtx.decodeAudioData(ab);
+}
+function _spDownloadBlob(blob,filename){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+function _spBufferToWavBlob(buf){
+  const ch=buf.numberOfChannels;const len=buf.length;
+  const interleaved=new Float32Array(ch*len);
+  const data=[];for(let c=0;c<ch;c++)data.push(buf.getChannelData(c));
+  for(let i=0;i<len;i++)for(let c=0;c<ch;c++)interleaved[i*ch+c]=data[c][i];
+  return _spFloat32ToWavBlob(interleaved,buf.sampleRate,ch);
+}
+async function spRenderTrack(){
+  if(!SP.transport.bpm)return;
+  const status=document.getElementById('spVibeStatus');
+  const bars=8; // render 8 bars by default
+  const seconds=bars*(60/SP.transport.bpm)*4;
+  status&&(status.textContent=`Rendering ${bars} bars (${seconds.toFixed(1)} s)…`,status.className='vibe-status');
+  // Make sure transport is running
+  const wasPlaying=SP.transport.playing;
+  if(!wasPlaying)spTransportStart();
+  try{
+    const blob=await _spCaptureMs(seconds*1000);
+    const buf=await _spBlobToAudioBuffer(blob);
+    const wav=_spBufferToWavBlob(buf);
+    const fname=`titanlab-mix-${Date.now()}.wav`;
+    _spDownloadBlob(wav,fname);
+    status&&(status.textContent=`✓ Mix rendered → ${fname} (${(wav.size/1024/1024).toFixed(1)} MB)`,status.className='vibe-status');
+    toast&&toast('Mix rendered to WAV','success');
+  }catch(e){
+    console.warn(e);
+    toast&&toast('Render failed: '+(e.message||'unknown'),'error');
+    status&&(status.textContent='Render failed — try again',status.className='vibe-status warn');
+  }finally{
+    if(!wasPlaying)spTransportStop();
+  }
+}
+async function spRenderStems(){
+  if(!SP.mix||!SP.mix.strips){toast&&toast('Mixer not initialised — open the Studio first','error');return;}
+  const status=document.getElementById('spVibeStatus');
+  const bars=8;
+  const seconds=bars*(60/SP.transport.bpm)*4;
+  // Pick the strips worth exporting individually — drum voices + instruments + master
+  const stripIds=['DR_KICK','DR_SNARE','DR_CLAP','DR_RIM','DR_CHH','DR_OHH','DR_RIDE','DR_CRASH','DR_LOWTOM','DR_HITOM','DR_SHAKER','DR_PERC','DR_COWBELL','SYNTH','BASS','ORGAN','MASTER'].filter(id=>SP.mix.strips[id]);
+  // Stash existing solo/mute state
+  const snap=stripIds.map(id=>{const s=SP.mix.strips[id];return {id,solo:s.solo,muted:s.muted};});
+  const wasPlaying=SP.transport.playing;
+  if(!wasPlaying)spTransportStart();
+  try{
+    for(let i=0;i<stripIds.length;i++){
+      const id=stripIds[i];
+      // solo this strip only
+      Object.values(SP.mix.strips).forEach(s=>{s.solo=false;});
+      SP.mix.strips[id].solo=true;
+      spApplyMixer();
+      status&&(status.textContent=`Rendering stem ${i+1}/${stripIds.length}: ${id}…`,status.className='vibe-status');
+      // wait one bar so the solo settles
+      await new Promise(r=>setTimeout(r,Math.max(120,60/SP.transport.bpm/4*1000)));
+      const blob=await _spCaptureMs(seconds*1000);
+      const buf=await _spBlobToAudioBuffer(blob);
+      const wav=_spBufferToWavBlob(buf);
+      _spDownloadBlob(wav,`titanlab-stem-${id.toLowerCase()}-${Date.now()}.wav`);
+      // small breath between stems
+      await new Promise(r=>setTimeout(r,150));
+    }
+    status&&(status.textContent=`✓ Exported ${stripIds.length} stems to your downloads`,status.className='vibe-status');
+    toast&&toast('Stems exported','success');
+  }catch(e){
+    console.warn(e);
+    toast&&toast('Stem render failed: '+(e.message||'unknown'),'error');
+  }finally{
+    // restore mixer state
+    snap.forEach(s=>{const x=SP.mix.strips[s.id];x.solo=s.solo;x.muted=s.muted;});
+    spApplyMixer();
+    if(!wasPlaying)spTransportStop();
+  }
+}
+
+/* ====================================================================
    TITAN LAB — UI wiring
    ==================================================================== */
 function setupStudioPro(){
@@ -14118,6 +14363,11 @@ function setupStudioPro(){
   // STUDIO MIXER open/close
   document.getElementById('spMixerOpenBtn')?.addEventListener('click',spOpenStudioMixer);
   document.getElementById('spMixerCloseBtn')?.addEventListener('click',spCloseStudioMixer);
+  // Project save/load + render/stems
+  document.getElementById('spSaveProjBtn')?.addEventListener('click',spProjectSave);
+  document.getElementById('spLoadProjBtn')?.addEventListener('click',spProjectLoadDialog);
+  document.getElementById('spRenderBtn')?.addEventListener('click',spRenderTrack);
+  document.getElementById('spStemsBtn')?.addEventListener('click',spRenderStems);
 
   // VIBE SOUND CODING — generate & play
   const vibeInp=document.getElementById('spVibeInput');
