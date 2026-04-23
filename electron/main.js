@@ -1,4 +1,4 @@
-/* DJ MAX — Electron wrapper with GitHub-backed auto-updates
+/* DJ TITAN — Electron wrapper with GitHub-backed auto-updates
    Loads public/pioneer-dj-pro-max-v2.html in a native BrowserWindow and
    checks the GitHub Releases feed for updates on launch + every 4 hours.
    Updates are downloaded silently and installed on quit. */
@@ -171,7 +171,7 @@ function initAutoUpdates() {
     dialog.showMessageBox(mainWindow, {
       type: 'info',
       title: 'Update ready',
-      message: `DJ MAX ${info && info.version} is ready to install.`,
+      message: `DJ TITAN ${info && info.version} is ready to install.`,
       detail: 'Click "Restart now" to apply the update, or it will install automatically when you quit.',
       buttons: ['Restart now', 'Later'],
       defaultId: 0,
