@@ -44,7 +44,7 @@ body.work-mode .header-bar .header-dsb{
 .rec-btn.recording{background:var(--red);color:#fff;animation:recPulse 1s infinite}
 .rec-btn.recording::before{background:#fff}
 @keyframes recPulse{0%,100%{box-shadow:0 0 10px var(--red)}50%{box-shadow:0 0 25px var(--red)}}
-.power-led{width:8px;height:8px;border-radius:50%;background:var(--play-green);box-shadow:0 0 6px var(--play-green);animation:blink 2s infinite}
+.power-led{padding:2px 7px;border-radius:3px;background:var(--play-green);color:#000;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;letter-spacing:1.5px;box-shadow:0 0 6px var(--play-green);animation:blink 2s infinite}
 @keyframes blink{0%,90%,100%{opacity:1}95%{opacity:.3}}
 .main-tabs{width:100%;max-width:1700px;display:flex;gap:3px;padding:4px;background:#0a0a0b;border-radius:8px;border:1px solid #2a2a2e;overflow-x:auto}
 .tab-btn{flex:1;min-width:100px;padding:9px;background:transparent;border:none;color:var(--text-dim);font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;border-radius:4px;cursor:pointer;white-space:nowrap}
@@ -7685,7 +7685,7 @@ body.theme-light .cdj .cue-btn{
   <span class="dsb-monitor" id="dsbMonitor" style="display:none"></span>
 </div>
 <div class="header-right">
-<div class="power-led"></div><span>BPM</span>
+<span class="power-led">ON</span><span>BPM</span>
 <span class="master-bpm" id="masterBpm">---.--</span>
 <div class="titan-clock" id="titanClock" title="Local time (click to toggle 12/24h)">
   <span class="tc-time" id="tcTime">--:--:--</span>
@@ -7705,7 +7705,6 @@ body.theme-light .cdj .cue-btn{
 <button class="tab-btn" data-tab="midi" data-t="tab_midi">🎹 MIDI</button>
 <button class="tab-btn" data-tab="studio" data-t="tab_studio">🎚 STUDIO</button>
 <button class="tab-btn" data-tab="studiopro" data-t="tab_studiopro">🎹 TITAN LAB</button>
-<button class="tab-btn" data-tab="editor" data-t="tab_editor">✂ EDITOR</button>
 <button class="tab-btn admin-only" data-tab="admin" id="adminTabBtn" style="display:none">🛡 ADMIN</button>
 <button class="tab-btn" data-tab="settings" data-t="tab_settings">⚙ SETTINGS</button>
 <button class="tab-btn" data-tab="support" data-t="tab_support">📧 SUPPORT</button>
