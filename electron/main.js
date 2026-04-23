@@ -10,16 +10,24 @@ try { autoUpdater = require('electron-updater').autoUpdater; } catch (_) { /* op
 
 let mainWindow = null;
 
+function resolveAppPath(...parts) {
+  // In a packaged build __dirname points inside app.asar; use getAppPath so
+  // we also resolve correctly when running `electron .` from a checkout.
+  const base = typeof app.getAppPath === 'function' ? app.getAppPath() : path.join(__dirname, '..');
+  return path.join(base, ...parts);
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1600,
     height: 1000,
     minWidth: 1100,
     minHeight: 720,
+    show: false,            // wait for did-finish-load so users never see a black flash
     backgroundColor: '#0a0a0a',
     title: 'DJ TITAN — Professional DJ Studio',
     autoHideMenuBar: true,
-    icon: path.join(__dirname, '..', 'public', 'icon.svg'),
+    icon: resolveAppPath('public', 'icon.svg'),
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
@@ -78,8 +86,25 @@ function createWindow() {
     return { action: 'allow' };
   });
 
-  const htmlPath = path.join(__dirname, '..', 'public', 'pioneer-dj-pro-max-v2.html');
-  mainWindow.loadFile(htmlPath);
+  const htmlPath = resolveAppPath('public', 'pioneer-dj-pro-max-v2.html');
+
+  // Diagnostics: if the renderer fails to load for any reason (bad path,
+  // missing asset, CSP) the user used to just see a black window forever.
+  // Now we show a real error dialog + drop into DevTools so the next bug
+  // report ships with an actual error message.
+  mainWindow.webContents.on('did-fail-load', (_e, code, desc, url) => {
+    console.error('[DJ TITAN] Failed to load renderer:', code, desc, url);
+    try { mainWindow.webContents.openDevTools({ mode: 'detach' }); } catch (_) {}
+    dialog.showErrorBox('DJ TITAN — load failure',
+      `Could not load the UI.\n\nCode: ${code}\n${desc}\n\nURL: ${url}\n\nIf this keeps happening, report the error text above.`);
+  });
+  mainWindow.once('ready-to-show', () => mainWindow.show());
+
+  mainWindow.loadFile(htmlPath).catch((err) => {
+    console.error('[DJ TITAN] loadFile threw:', err && err.message);
+    dialog.showErrorBox('DJ TITAN — cannot open UI file',
+      `${err && err.message}\n\nTried: ${htmlPath}`);
+  });
 }
 
 /* ------------- Auto-update lifecycle ------------- */
