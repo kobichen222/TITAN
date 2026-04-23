@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>DJ TITAN — Browser Performance Load Test</title>
+<style>
+  :root { --bg:#0b0b0f; --fg:#e8e8ef; --accent:#ff8a1f; --ok:#30d158; --warn:#ffd60a; --err:#ff3b30; --mute:#9aa0ab; }
+  html,body { margin:0; background:var(--bg); color:var(--fg); font:13px/1.4 system-ui,Segoe UI,Roboto,sans-serif; }
+  .wrap { display:grid; grid-template-columns: 360px 1fr; height:100vh; }
+  .panel { padding:14px 16px; border-right:1px solid #222; overflow:auto; }
+  h1 { font-size:14px; letter-spacing:.08em; color:var(--accent); margin:0 0 10px; }
+  h2 { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--mute); margin:16px 0 6px; }
+  label { display:block; font-size:11px; color:var(--mute); margin-top:8px; }
+  input,select,button { background:#14141a; color:var(--fg); border:1px solid #2a2a36; border-radius:4px; padding:6px 8px; font:inherit; width:100%; }
+  button { background:var(--accent); color:#000; font-weight:700; border:0; cursor:pointer; margin-top:10px; }
+  button.ghost { background:#222; color:var(--fg); }
+  .row { display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
+  .kpi { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px dashed #222; }
+  .kpi b { color:var(--fg); font-variant-numeric:tabular-nums; }
+  .dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; background:var(--mute); }
+  .dot.ok{background:var(--ok)} .dot.warn{background:var(--warn)} .dot.err{background:var(--err)}
+  iframe { width:100%; height:100%; border:0; background:#000; }
+  .log { font:11px ui-monospace,Menlo,monospace; background:#0a0a0e; padding:8px; border-radius:4px; max-height:200px; overflow:auto; color:#b6b6c1; }
+  .badge { font-size:10px; padding:2px 6px; border-radius:10px; background:#222; color:var(--mute); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="panel">
+    <h1>▶ BROWSER PERF LOAD TEST</h1>
+    <div style="color:var(--mute); margin-bottom:8px">
+      Drives the DJ app from inside the iframe — decodes multiple tracks into
+      audio decks, starts playback on all of them, and measures frame rate,
+      long-task count, JS heap growth, and audio-context latency.
+    </div>
+
+    <label>Target URL
+      <input id="targetUrl" value="../public/pioneer-dj-pro-max-v2.html"/>
+    </label>
+
+    <div class="row">
+      <label>Duration (s)<input id="duration" type="number" min="5" max="300" value="30"/></label>
+      <label>Active decks<select id="decks"><option>1</option><option>2</option><option selected>4</option></select></label>
+    </div>
+    <div class="row">
+      <label>Test tone length (s)<input id="tone" type="number" min="5" max="600" value="60"/></label>
+      <label>Freq spread<select id="spread"><option value="harmonic">Harmonic</option><option value="random" selected>Random</option></select></label>
+    </div>
+
+    <button id="runBtn">RUN LOAD TEST</button>
+    <button id="stopBtn" class="ghost">STOP</button>
+
+    <h2>Live metrics</h2>
+    <div class="kpi"><span><span id="dStat" class="dot"></span>Status</span><b id="status">idle</b></div>
+    <div class="kpi"><span>Elapsed</span><b id="elapsed">0s</b></div>
+    <div class="kpi"><span>FPS (avg / min)</span><b id="fps">–</b></div>
+    <div class="kpi"><span>Long tasks (&gt;50 ms)</span><b id="longtasks">–</b></div>
+    <div class="kpi"><span>Active audio sources</span><b id="sources">–</b></div>
+    <div class="kpi"><span>JS heap used</span><b id="heap">–</b></div>
+    <div class="kpi"><span>Audio ctx state</span><b id="actx">–</b></div>
+    <div class="kpi"><span>Base latency</span><b id="baseLat">–</b></div>
+    <div class="kpi"><span>Output latency</span><b id="outLat">–</b></div>
+
+    <h2>Log</h2>
+    <div class="log" id="log"></div>
+  </div>
+  <iframe id="app" title="DJ TITAN under test"></iframe>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const log = (msg, kind='') => {
+    const l = $('log');
+    const ts = new Date().toTimeString().slice(0,8);
+    const color = kind==='err'?'var(--err)':kind==='warn'?'var(--warn)':kind==='ok'?'var(--ok)':'#b6b6c1';
+    l.innerHTML += `<div style="color:${color}">[${ts}] ${msg}</div>`;
+    l.scrollTop = l.scrollHeight;
+  };
+  const setStatus = (text, cls) => {
+    $('status').textContent = text;
+    $('dStat').className = 'dot ' + (cls||'');
+  };
+
+  let stopFlag = false;
+  let rafId = 0;
+  let longTaskObs = null;
+
+  // Create a short decoded AudioBuffer with an offline context, encode it as a
+  // WAV blob and hand it to the app as a File so it flows through the real
+  // upload → decode → load-to-deck pipeline.
+  function synthTrackWav(lenSec, freq, sr=44100) {
+    const N = Math.floor(lenSec * sr);
+    const data = new Float32Array(N);
+    for (let i = 0; i < N; i++) {
+      const t = i / sr;
+      data[i] = 0.22 * Math.sin(2 * Math.PI * freq * t)
+              + 0.10 * Math.sin(2 * Math.PI * freq * 2 * t)
+              + 0.05 * (Math.random() * 2 - 1);
+    }
+    // tiny fade-in/out
+    const fade = Math.min(sr * 0.05 | 0, N >> 1);
+    for (let i = 0; i < fade; i++) { const g = i / fade; data[i] *= g; data[N-1-i] *= g; }
+    return encodeWav(data, sr);
+  }
+  function encodeWav(float32, sr) {
+    const N = float32.length;
+    const buf = new ArrayBuffer(44 + N * 2);
+    const v = new DataView(buf);
+    const wStr = (off, s) => { for (let i = 0; i < s.length; i++) v.setUint8(off+i, s.charCodeAt(i)); };
+    wStr(0,'RIFF'); v.setUint32(4, 36 + N*2, true); wStr(8,'WAVE');
+    wStr(12,'fmt '); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+    v.setUint32(24,sr,true); v.setUint32(28,sr*2,true); v.setUint16(32,2,true); v.setUint16(34,16,true);
+    wStr(36,'data'); v.setUint32(40, N*2, true);
+    let off = 44;
+    for (let i = 0; i < N; i++) {
+      const s = Math.max(-1, Math.min(1, float32[i]));
+      v.setInt16(off, s < 0 ? s * 0x8000 : s * 0x7FFF, true); off += 2;
+    }
+    return new Blob([buf], { type: 'audio/wav' });
+  }
+
+  async function run() {
+    stopFlag = false;
+    $('log').innerHTML = '';
+    const url = $('targetUrl').value.trim();
+    const duration = Math.max(5, +$('duration').value || 30);
+    const deckCount = +$('decks').value || 4;
+    const toneLen = Math.max(5, +$('tone').value || 60);
+    const spread = $('spread').value;
+
+    setStatus('loading app…', 'warn');
+    const iframe = $('app');
+    iframe.src = url;
+    await new Promise(res => iframe.addEventListener('load', res, { once: true }));
+    await sleep(1200); // give the app its own init tick
+
+    const win = iframe.contentWindow;
+    const doc = iframe.contentDocument;
+    if (!win.decks) {
+      log('app did not expose `decks` on window — abort', 'err');
+      setStatus('error', 'err'); return;
+    }
+    log('app loaded, decks object present', 'ok');
+
+    // Resume audio context (app creates one on first interaction / ensureAudio)
+    if (typeof win.ensureAudio === 'function') win.ensureAudio();
+    const actx = win.audioCtx;
+    if (!actx) { log('no AudioContext yet', 'err'); setStatus('error','err'); return; }
+    try { await actx.resume(); } catch (_) {}
+    log(`AudioContext: state=${actx.state} sr=${actx.sampleRate}`, 'ok');
+
+    // Build N synthesized tracks & load them
+    const deckIds = ['A','B','C','D'].slice(0, deckCount);
+    const freqs = spread === 'harmonic'
+      ? deckIds.map((_, i) => 110 * Math.pow(2, i/4))
+      : deckIds.map(() => 80 + Math.random() * 300);
+
+    for (let i = 0; i < deckIds.length; i++) {
+      const id = deckIds[i];
+      setStatus(`decoding deck ${id}…`, 'warn');
+      const blob = synthTrackWav(toneLen, freqs[i]);
+      const ab = await blob.arrayBuffer();
+      let buf;
+      try { buf = await actx.decodeAudioData(ab.slice(0)); }
+      catch (e) { log(`decode failed for ${id}: ${e.message}`, 'err'); continue; }
+      const t = { title:`LoadTest-${id}`, artist:'perf', bpm:128, buffer:buf, duration:buf.duration };
+      if (typeof win.loadTrackToDeck === 'function') {
+        try { await win.loadTrackToDeck(id, t); log(`deck ${id} loaded (${buf.duration.toFixed(1)}s)`, 'ok'); }
+        catch (e) { log(`loadTrackToDeck ${id}: ${e.message}`, 'err'); }
+      } else {
+        win.decks[id].buffer = buf;
+        log(`deck ${id} attached via decks[${id}].buffer`, 'ok');
+      }
+    }
+
+    // Start playback on all decks
+    for (const id of deckIds) {
+      try { win.playDeck && win.playDeck(id); } catch (e) { log(`playDeck ${id}: ${e.message}`,'err'); }
+    }
+    log(`playing ${deckIds.length} deck(s) in parallel`, 'ok');
+    setStatus('measuring…', 'ok');
+
+    // FPS + heap sampling
+    const fpsSamples = [];
+    let longTasks = 0;
+    try {
+      longTaskObs = new win.PerformanceObserver(list => {
+        longTasks += list.getEntries().length;
+      });
+      longTaskObs.observe({ entryTypes: ['longtask'] });
+    } catch (_) { log('PerformanceObserver longtask unsupported','warn'); }
+
+    const t0 = performance.now();
+    let lastFrame = t0;
+    const tick = (now) => {
+      if (stopFlag) return;
+      const dt = now - lastFrame;
+      if (dt > 0) fpsSamples.push(1000 / dt);
+      lastFrame = now;
+      const elapsedMs = now - t0;
+      $('elapsed').textContent = (elapsedMs/1000).toFixed(1) + 's';
+      if (fpsSamples.length) {
+        const recent = fpsSamples.slice(-120);
+        const avg = recent.reduce((a,b)=>a+b,0)/recent.length;
+        const min = Math.min(...recent);
+        $('fps').textContent = `${avg.toFixed(0)} / ${min.toFixed(0)}`;
+      }
+      $('longtasks').textContent = longTasks;
+      const playing = deckIds.filter(id => win.decks[id]?.playing).length;
+      $('sources').textContent = `${playing}/${deckIds.length}`;
+      const mem = win.performance && win.performance.memory;
+      if (mem) $('heap').textContent = (mem.usedJSHeapSize/1048576).toFixed(1) + ' MB';
+      $('actx').textContent = actx.state;
+      $('baseLat').textContent = actx.baseLatency != null ? (actx.baseLatency*1000).toFixed(1) + ' ms' : 'n/a';
+      $('outLat').textContent = actx.outputLatency != null ? (actx.outputLatency*1000).toFixed(1) + ' ms' : 'n/a';
+      if (elapsedMs >= duration * 1000) { finish(); return; }
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+
+    function finish() {
+      stopFlag = true;
+      cancelAnimationFrame(rafId);
+      try { longTaskObs && longTaskObs.disconnect(); } catch(_){}
+      for (const id of deckIds) { try { win.pauseDeck && win.pauseDeck(id); } catch(_){} }
+      const avg = fpsSamples.reduce((a,b)=>a+b,0) / (fpsSamples.length||1);
+      const min = fpsSamples.length ? Math.min(...fpsSamples) : 0;
+      const pct = fpsSamples.filter(f => f < 50).length / (fpsSamples.length||1) * 100;
+      const grade = avg >= 55 && longTasks < 20 ? 'ok' : avg >= 40 ? 'warn' : 'err';
+      log(`done — avg FPS ${avg.toFixed(1)}, min ${min.toFixed(1)}, <50fps ${pct.toFixed(0)}%, long tasks ${longTasks}`, grade);
+      setStatus('done', grade);
+    }
+  }
+
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  $('runBtn').addEventListener('click', () => run().catch(e => { log(e.stack||e.message,'err'); setStatus('error','err'); }));
+  $('stopBtn').addEventListener('click', () => { stopFlag = true; setStatus('stopped','warn'); log('stopped by user','warn'); });
+})();
+</script>
+</body>
+</html>
