@@ -3758,6 +3758,22 @@ body.work-mode .dsb-wmexit{display:inline-flex;background:linear-gradient(180deg
 }
 
 /* ====================================================================
+   First-run onboarding tour — 30-second guided tour
+   ==================================================================== */
+.tour-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9998;pointer-events:none;backdrop-filter:blur(1px);}
+.tour-highlight{position:relative !important;z-index:9999 !important;box-shadow:0 0 0 4px #ff8a1a,0 0 36px rgba(255,138,26,0.85) !important;border-radius:8px !important;animation:tourPulse 1.6s ease-in-out infinite;}
+@keyframes tourPulse{0%,100%{box-shadow:0 0 0 4px #ff8a1a,0 0 36px rgba(255,138,26,0.85);}50%{box-shadow:0 0 0 4px #ffcf6a,0 0 60px rgba(255,200,80,1);}}
+.tour-tooltip{position:fixed;z-index:10000;max-width:340px;background:linear-gradient(160deg,#0c0c10,#080809);border:1px solid #ff8a1a;border-radius:10px;padding:14px 16px;font-family:'Share Tech Mono',monospace;color:#eee;box-shadow:0 12px 40px rgba(0,0,0,.65),0 0 30px rgba(255,138,26,0.3);pointer-events:auto;}
+.tour-step{font-size:9.5px;letter-spacing:2px;color:#888;}
+.tour-title{font-family:'Orbitron',sans-serif;font-size:14px;color:#ff8a1a;margin:4px 0 6px;letter-spacing:1.5px;}
+.tour-body{font-size:12px;line-height:1.55;color:#ddd;margin-bottom:12px;}
+.tour-actions{display:flex;gap:8px;justify-content:flex-end;}
+.tour-actions button{padding:7px 14px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1.4px;cursor:pointer;border-radius:5px;border:1px solid;background:#15151a;color:#888;border-color:#2a2a30;}
+.tour-actions .tour-next{background:linear-gradient(180deg,#ff8a1a,#cc6a0a);color:#0a0a0c;border-color:#ff8a1a;font-weight:900;}
+.tour-actions .tour-next:hover{filter:brightness(1.1);}
+.tour-actions .tour-skip:hover{color:#ff5555;border-color:#ff5555;}
+
+/* ====================================================================
    TITAN LAB — STUDIO MIXER (full-screen)
    ==================================================================== */
 .spmx-overlay{
@@ -8564,6 +8580,7 @@ No MIDI devices. Press CONNECT.
 <div class="settings-row" style="justify-content:flex-start;gap:8px;">
 <button class="tool-btn" id="exportAllBtn">EXPORT ALL</button>
 <button class="tool-btn" id="clearDataBtn" style="color:var(--red);border-color:var(--red);">CLEAR ALL DATA</button>
+<button class="tool-btn" id="restartTourBtn" style="border-color:var(--orange);color:var(--orange);">🎓 RESTART GUIDE TOUR</button>
 </div>
 </div>
 
@@ -14310,6 +14327,69 @@ async function spRenderStems(){
 }
 
 /* ====================================================================
+   First-run onboarding tour engine
+   ==================================================================== */
+const TOUR_KEY='titan_tour_done_v1';
+const TOUR_STEPS=[
+  {target:null,tab:null,title:'🎧 Welcome to DJ TITAN',body:'A full DJ studio + production lab in your browser. 30-second tour — you can skip anytime.'},
+  {target:'#deckA-container',tab:'deck',title:'🎚 4 Pioneer-style decks',body:'Drag any track from the LIBRARY here. Press W to play deck A, Q to cue. Decks B/C/D bind to O/P and other keys.'},
+  {target:'#mixer-container',tab:'deck',title:'🎛 Mixer + crossfader',body:'EQ each channel, ride the crossfader, fire BEAT-FX. Comma/period nudge the crossfader, slash centres it.'},
+  {target:'.tab-btn[data-tab="library"]',tab:'deck',title:'📚 Library + Discover',body:'Upload audio, paste URLs, search Spotify / YouTube / Jamendo. Everything is cached offline.'},
+  {target:'.tab-btn[data-tab="studiopro"]',tab:'deck',title:'🎹 TITAN LAB — production studio',body:'A full creation suite — drums, TB-303 bass, synth, organ, full-screen mixer, render to WAV.'},
+  {target:'#spVibePanel',tab:'studiopro',title:'✨ VIBE SOUND CODING',body:'Type a vibe like "dark uplifting trance 138 hoover bass" and TITAN LAB builds the entire track for you.'},
+  {target:'#spProBadge',tab:'studiopro',title:'⚡ PRO unlocks RENDER + STEMS',body:'Free is generous — full studio + 3 saved projects. PRO adds full mixdown to WAV, stems export, unlimited projects, and cloud sync.'},
+];
+function spStartTour(force){
+  if(!force && localStorage.getItem(TOUR_KEY))return;
+  let idx=0,curEl=null;
+  const back=document.createElement('div');back.className='tour-backdrop';document.body.appendChild(back);
+  const tip=document.createElement('div');tip.className='tour-tooltip';document.body.appendChild(tip);
+  const cleanup=()=>{
+    if(curEl)curEl.classList.remove('tour-highlight');
+    back.remove();tip.remove();
+    try{document.body.style.cursor='';}catch(_){}
+  };
+  const finish=()=>{localStorage.setItem(TOUR_KEY,'1');cleanup();};
+  const position=()=>{
+    if(!curEl){tip.style.left='50%';tip.style.top='50%';tip.style.transform='translate(-50%,-50%)';return;}
+    const r=curEl.getBoundingClientRect();
+    const w=tip.offsetWidth||320,h=tip.offsetHeight||180;
+    let x=r.left+r.width/2-w/2;
+    let y=r.bottom+14;
+    if(y+h>window.innerHeight-12)y=Math.max(12,r.top-h-14);
+    x=Math.max(12,Math.min(window.innerWidth-w-12,x));
+    tip.style.left=x+'px';tip.style.top=y+'px';tip.style.transform='none';
+  };
+  const show=(i)=>{
+    const step=TOUR_STEPS[i];if(!step){finish();return;}
+    if(step.tab){
+      const tabBtn=document.querySelector(`.tab-btn[data-tab="${step.tab}"]`);
+      if(tabBtn && !tabBtn.classList.contains('active'))tabBtn.click();
+    }
+    setTimeout(()=>{
+      if(curEl)curEl.classList.remove('tour-highlight');
+      const el=step.target?document.querySelector(step.target):null;
+      curEl=el||null;
+      if(el){el.classList.add('tour-highlight');try{el.scrollIntoView({block:'center',inline:'center',behavior:'smooth'});}catch(_){}}
+      tip.innerHTML=`
+        <div class="tour-step">STEP ${i+1} / ${TOUR_STEPS.length}</div>
+        <div class="tour-title">${step.title}</div>
+        <div class="tour-body">${step.body}</div>
+        <div class="tour-actions">
+          <button class="tour-skip">SKIP TOUR</button>
+          <button class="tour-next">${i+1===TOUR_STEPS.length?'GET STARTED':'NEXT →'}</button>
+        </div>`;
+      position();
+      tip.querySelector('.tour-skip').onclick=finish;
+      tip.querySelector('.tour-next').onclick=()=>{idx++;if(idx>=TOUR_STEPS.length)finish();else show(idx);};
+    },180);
+  };
+  window.addEventListener('resize',position);
+  show(0);
+}
+window.spStartTour=spStartTour; // exposed so users can re-run with spStartTour(true) from console / menu
+
+/* ====================================================================
    TITAN LAB — UI wiring
    ==================================================================== */
 function setupStudioPro(){
@@ -15313,6 +15393,9 @@ function init(){
   setupVU('vu-A',20);setupVU('vu-B',20);setupVU('vu-C',20);setupVU('vu-D',20);
   setupVU('masterHVuL',20);setupVU('masterHVuR',20);
   attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();setupOfflineDownload();setupDiscover();setupTitanClock();setupSupport();setupStudioPro();
+  // Restart-tour button + first-run auto-tour
+  document.getElementById('restartTourBtn')?.addEventListener('click',()=>spStartTour(true));
+  setTimeout(()=>{try{spStartTour(false);}catch(e){console.warn('tour failed',e);}},1100);
   setupWaveformInteraction();setupAdvancedFeatures();renderSessions();
   renderSampler();renderPlaylists();
   // First-run: fill all 4 sampler banks with the factory sounds so every
