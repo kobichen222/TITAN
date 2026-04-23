@@ -12,22 +12,27 @@ try { autoUpdater = require('electron-updater').autoUpdater; } catch (_) { /* op
 let mainWindow = null;
 
 function findAssetPath(relPath) {
-  // Try every layout the public asset could live in — dev checkout, inside
-  // app.asar, asar.unpacked sibling (electron-builder's asarUnpack output),
-  // and an absolute process.resourcesPath fallback — and return the first
-  // path that actually exists on disk.  This is what v1.0.5/1.0.6 was missing
-  // and what caused the black screen on Windows.
+  // Resolve an asset to a real on-disk path that Chromium can load via file://.
+  // Paths inside app.asar are rejected even though fs.existsSync reports them
+  // present — Electron patches fs to read through the asar archive, but the
+  // file:// protocol handler does not, so loadFile() on an asar-internal path
+  // fails with ERR_FAILED (-2).  asarUnpack in package.json copies public/**
+  // to resources/app.asar.unpacked/public/**, and that's the path we need.
   const base = typeof app.getAppPath === 'function' ? app.getAppPath() : path.join(__dirname, '..');
+  const unpackedBase = base.replace(/app\.asar$/i, 'app.asar.unpacked');
+  const resUnpacked = path.join(process.resourcesPath || '', 'app.asar.unpacked');
   const candidates = [
+    path.join(unpackedBase, relPath),
+    path.join(resUnpacked, relPath),
     path.join(__dirname, '..', relPath),
     path.join(base, relPath),
-    path.join(base.replace(/app\.asar$/i, 'app.asar.unpacked'), relPath),
-    path.join(process.resourcesPath || '', 'app.asar.unpacked', relPath),
   ];
+  const insideAsar = /[\\/]app\.asar[\\/]/i;
   for (const p of candidates) {
-    try { if (p && fs.existsSync(p)) return p; } catch (_) {}
+    if (!p || insideAsar.test(p)) continue;
+    try { if (fs.existsSync(p)) return p; } catch (_) {}
   }
-  return candidates[0]; // concrete path for the error dialog if nothing exists
+  return candidates.find((p) => p && !insideAsar.test(p)) || candidates[0];
 }
 
 function createWindow() {
