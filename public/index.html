@@ -76,8 +76,8 @@ body.work-mode .header-bar .header-dsb{
 .mixer-toolbar .mtb-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,122,0,.25),transparent);pointer-events:none}
 
 /* Section header — always top, always same size */
-.mixer-toolbar .mtb-head{display:flex;align-items:center;justify-content:space-between;height:16px;margin-bottom:8px;border-bottom:1px solid rgba(255,138,26,.08);padding-bottom:6px}
-.mixer-toolbar .mtb-label{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2.5px;color:var(--orange);font-weight:800;white-space:nowrap;text-shadow:0 0 8px rgba(255,122,0,.25)}
+.mixer-toolbar .mtb-head{display:flex;align-items:center;justify-content:space-between;height:16px;margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,.06);padding-bottom:6px}
+.mixer-toolbar .mtb-label{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2.5px;color:var(--orange);font-weight:800;white-space:nowrap;text-shadow:0 0 3px rgba(0,0,0,.8)}
 .mixer-toolbar .mtb-dir{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--screen-glow);letter-spacing:1px}
 
 /* Body area — grows to fill the section so all boxes stay equal height */
@@ -231,7 +231,7 @@ body.show-all .console.show-all{max-width:none;width:calc(100vw - 16px)}
 .screen-right{text-align:left;direction:ltr}
 .screen-bpm{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;color:var(--orange-glow);text-shadow:0 0 10px rgba(255,122,0,.6);line-height:1}
 .screen-bpm-label{font-size:9px;color:var(--text-dim);letter-spacing:2px}
-.screen-key{font-size:11px;color:var(--play-green);text-shadow:0 0 6px rgba(0,255,122,.5);margin-top:2px}
+.screen-key{font-size:11px;color:var(--play-green);text-shadow:0 0 2px rgba(0,0,0,.9);margin-top:2px}
 .waveform{height:48px;background:#020608;border-radius:3px;margin:6px 0;position:relative;overflow:hidden;border:1px solid rgba(0,212,255,.1)}
 .waveform-canvas{width:100%;height:100%;display:block}
 .playhead{position:absolute;top:0;left:50%;width:2px;height:100%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.9);z-index:3}
@@ -686,8 +686,8 @@ button:active:not(:disabled),.big-btn:active,.loop-btn:active,.jump-btn:active,
   font-size:22px;
   text-shadow:0 0 14px rgba(255,138,26,.8),0 0 2px rgba(255,180,100,.6);
 }
-.time-value{text-shadow:0 0 8px rgba(255,255,255,.5)}
-.time-value.remain{text-shadow:0 0 10px rgba(255,138,26,.6)}
+.time-value{text-shadow:0 1px 0 rgba(0,0,0,.9),0 0 1px rgba(0,0,0,.6)}
+.time-value.remain{text-shadow:0 1px 0 rgba(0,0,0,.9),0 0 3px rgba(255,138,26,.35)}
 
 /* JOG WHEEL — Pioneer CDJ-3000 inspired, pro studio finish */
 .jog-wheel{
@@ -3565,12 +3565,13 @@ body.theme-blade .tempo-btn,body.theme-blade .step-btn,body.theme-blade .mic-btn
 body.theme-blade .cue-btn,body.theme-blade .compact-btn,body.theme-blade .cue-hp-btn,
 body.theme-blade .automix-btn,body.theme-blade .dsb-btn,body.theme-blade .search-src-btn,
 body.theme-blade .studio-preset-btn,body.theme-blade .tool-btn,body.theme-blade .assign-btn,
-body.theme-blade .curve-btn,body.theme-blade .ai-dj-btn{background:linear-gradient(180deg,#181c24 0%,#0a0d14 100%);border:1px solid #1e2028;color:#e8f5fa;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 2px 4px rgba(0,0,0,.7)}
+body.theme-blade .curve-btn,body.theme-blade .ai-dj-btn{background:linear-gradient(180deg,#1a2028 0%,#0a0e16 100%);border:1px solid rgba(0,240,255,.35);color:#c0ecf5;text-shadow:0 0 4px rgba(0,240,255,.45);box-shadow:inset 0 1px 0 rgba(0,240,255,.12),inset 0 0 10px rgba(0,240,255,.06),0 2px 4px rgba(0,0,0,.75),0 0 8px rgba(0,240,255,.18);transition:box-shadow .2s ease,border-color .2s ease,filter .15s ease,color .18s ease}
 body.theme-blade .big-btn:hover,body.theme-blade .loop-btn:hover,body.theme-blade .jump-btn:hover,
 body.theme-blade .util-btn:hover,body.theme-blade .beat-btn:hover,body.theme-blade .scene-btn:hover,
 body.theme-blade .pad-mode-btn:hover,body.theme-blade .fx-onoff:hover,body.theme-blade .tempo-btn:hover,
-body.theme-blade .dsb-btn:hover,body.theme-blade .mic-btn:hover,body.theme-blade .cue-hp-btn:hover{filter:brightness(1.15);border-color:rgba(0,240,255,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 2px 4px rgba(0,0,0,.7),0 0 10px rgba(0,240,255,.25)}
-/* Every active state glows in the same electric cyan — single-color digital look */
+body.theme-blade .dsb-btn:hover,body.theme-blade .mic-btn:hover,body.theme-blade .cue-hp-btn:hover,
+body.theme-blade .compact-btn:hover,body.theme-blade .cue-btn:hover,body.theme-blade .sample-pad:hover{filter:brightness(1.18);border-color:#00f0ff;color:#e8fbff;text-shadow:0 0 6px rgba(0,240,255,.8);box-shadow:inset 0 1px 0 rgba(0,240,255,.25),inset 0 0 16px rgba(0,240,255,.15),0 2px 4px rgba(0,0,0,.7),0 0 18px rgba(0,240,255,.55)}
+/* Every active state glows in the same electric cyan — single-color digital LED blaze */
 body.theme-blade .big-btn.cue.active,
 body.theme-blade .big-btn.play.active,
 body.theme-blade .loop-btn.active,
@@ -3585,12 +3586,15 @@ body.theme-blade .tab-btn.active,
 body.theme-blade .tempo-btn.active,
 body.theme-blade .mic-btn.active,
 body.theme-blade .cue-hp-btn.active,
-body.theme-blade .seq-step.on{background:linear-gradient(180deg,#7ff7ff 0%,#00f0ff 55%,#0080a0 100%);color:#001014;border-color:#00f0ff;box-shadow:0 0 18px rgba(0,240,255,.85),inset 0 1px 0 rgba(255,255,255,.35);text-shadow:0 1px 0 rgba(255,255,255,.25)}
+body.theme-blade .seq-step.on{background:linear-gradient(180deg,#e8fbff 0%,#00f0ff 55%,#0a8aa8 100%);color:#001418;border-color:#7ff7ff;box-shadow:0 0 32px rgba(0,240,255,1),0 0 60px rgba(0,240,255,.55),inset 0 1px 0 rgba(255,255,255,.55),inset 0 0 14px rgba(255,255,255,.25);text-shadow:0 1px 0 rgba(255,255,255,.4),0 0 6px rgba(255,255,255,.6);filter:brightness(1.05)}
 body.theme-blade .fx-onoff{background:linear-gradient(180deg,#181c24 0%,#0a0d14 100%);border:2px solid #2a303c;color:#e8f5fa}
 body.theme-blade .rec-btn{background:linear-gradient(180deg,#181c24,#0a0d14);border-color:#ff3344;color:#ff8a8a}
 body.theme-blade .rec-btn.recording{background:linear-gradient(180deg,#ff6070,#c81e2e);color:#fff;box-shadow:0 0 16px rgba(255,51,68,.8)}
-body.theme-blade .sample-pad{background:linear-gradient(180deg,#181c24 0%,#0a0d14 100%);border:1px solid #1e2028;color:#e8f5fa;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 2px 4px rgba(0,0,0,.7)}
-body.theme-blade .sample-pad.playing,body.theme-blade .sample-pad.active{background:linear-gradient(180deg,#7ff7ff 0%,#00f0ff 60%,#0080a0 100%);color:#001014;box-shadow:0 0 16px rgba(0,240,255,.8)}
+body.theme-blade .sample-pad,body.theme-blade .cue-btn{background:linear-gradient(180deg,#1a2028 0%,#0a0e16 100%);border:1px solid rgba(0,240,255,.35);color:#c0ecf5;text-shadow:0 0 4px rgba(0,240,255,.45);box-shadow:inset 0 1px 0 rgba(0,240,255,.12),inset 0 0 12px rgba(0,240,255,.06),0 2px 4px rgba(0,0,0,.75),0 0 10px rgba(0,240,255,.2)}
+body.theme-blade .cue-btn[data-color]{filter:none}
+body.theme-blade .cue-btn.active,body.theme-blade .sample-pad.playing,body.theme-blade .sample-pad.active{background:linear-gradient(180deg,#e8fbff 0%,#00f0ff 60%,#0a8aa8 100%);color:#001418;border-color:#7ff7ff;box-shadow:0 0 28px rgba(0,240,255,1),0 0 50px rgba(0,240,255,.5),inset 0 1px 0 rgba(255,255,255,.5)}
+body.theme-blade .knob{box-shadow:inset 0 2px 1px rgba(255,255,255,.22),inset 0 -3px 6px rgba(0,0,0,.88),0 3px 7px rgba(0,0,0,.85),0 0 0 1px rgba(0,240,255,.2),0 0 12px rgba(0,240,255,.18)}
+body.theme-blade .fader-handle,body.theme-blade .tempo-handle,body.theme-blade .crossfader-handle{box-shadow:inset 0 1px 0 rgba(0,240,255,.35),0 2px 4px rgba(0,0,0,.85),0 0 10px rgba(0,240,255,.35)}
 body.theme-blade .sample-pad .pad-num{color:#e8f5fa}
 body.theme-blade .sample-pad .pad-name{color:#6a7a88}
 body.theme-blade input,body.theme-blade select,body.theme-blade textarea{background:#0a0d14;color:#e8f5fa;border:1px solid #1e2028}
@@ -3620,6 +3624,18 @@ body.theme-blade .cdj[data-deck]{--deck-accent:#00f0ff;--deck-accent-rgb:0,240,2
 body.theme-blade .rgb-ambient{background:linear-gradient(90deg,#0080a0 0%,#00f0ff 30%,#c8fbff 50%,#00f0ff 70%,#0080a0 100%);box-shadow:0 0 22px rgba(0,240,255,.7)}
 body.theme-blade .bank-btn{color:#6a7a88}
 body.theme-blade .seq-step{background:linear-gradient(180deg,#14181f,#06080e);color:rgba(232,245,250,.25);border:1px solid #1e2028}
+
+/* ============================================================
+   Per-theme clock (.time-value) halo — keep the crisp base
+   drop-shadow, swap the accent halo so it matches palette.
+   ============================================================ */
+body.theme-neon .time-value.remain{color:#ff00ff;text-shadow:0 1px 0 rgba(0,0,0,.9),0 0 3px rgba(255,0,255,.45)}
+body.theme-pioneer .time-value.remain{color:#ff9020;text-shadow:0 1px 0 rgba(0,0,0,.9),0 0 3px rgba(255,144,32,.45)}
+body.theme-euphonia .time-value.remain{color:#e8a778;text-shadow:0 1px 0 rgba(0,0,0,.9),0 0 3px rgba(199,120,72,.45)}
+body.theme-gold .time-value.remain{color:#ffd97a;text-shadow:0 1px 0 rgba(0,0,0,.9),0 0 3px rgba(255,217,122,.5)}
+body.theme-blade .time-value{color:#e8f5fa;text-shadow:0 1px 0 rgba(0,0,0,.9)}
+body.theme-blade .time-value.remain{color:#00f0ff;text-shadow:0 1px 0 rgba(0,0,0,.9),0 0 3px rgba(0,240,255,.55)}
+body.theme-light .time-value.remain{color:#c85a00;text-shadow:0 1px 0 rgba(255,255,255,.6),0 0 2px rgba(200,90,0,.4)}
 
 body.work-mode .library{display:block !important}
 body.work-mode .tab-content#tab-deck{display:flex !important;flex-direction:column;align-items:center;gap:12px}
