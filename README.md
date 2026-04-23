@@ -21,7 +21,7 @@ Professional DJ studio — four decks, full mixer, turntables, effects, AI-assis
 
 Latest Windows installer: [**github.com/kobichen222/TITAN/releases/latest**](https://github.com/kobichen222/TITAN/releases/latest)
 
-Web version: whichever host is currently serving `public/pioneer-dj-pro-max-v2.html` (GitHub Pages / Vercel).
+Web version: whichever host is currently serving `public/index.html` (GitHub Pages / Vercel).
 
 ## Development
 
@@ -36,7 +36,7 @@ npm run electron:win    # build the Windows installer to dist-electron/
 
 ## Tech
 
-- **Renderer** — single-file vanilla HTML/JS/CSS (`public/pioneer-dj-pro-max-v2.html`)
+- **Renderer** — single-file vanilla HTML/JS/CSS (`public/index.html`)
 - **Desktop wrapper** — Electron 32, `contextIsolation` + sandboxed renderer, preload-only IPC
 - **Admin panel** — Next.js 15 + React 19 (`app/office`)
 - **Auth / storage** — Supabase (client-configured; see `public/auth.sql`)
