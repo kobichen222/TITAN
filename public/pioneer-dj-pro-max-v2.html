@@ -8730,10 +8730,11 @@ Two options — both work completely offline:<br/>
     Native desktop builds from the latest GitHub Release. Pick your platform:
   </div>
   <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
-    <a class="tool-btn" id="dlWin" href="https://github.com/kobichen222/DJKKKKKKK/releases/latest" target="_blank" rel="noopener" style="color:#9fd8ff;border-color:#9fd8ff;text-decoration:none">⊞ WINDOWS (.exe)</a>
-    <a class="tool-btn" id="dlMac" href="https://github.com/kobichen222/DJKKKKKKK/releases/latest" target="_blank" rel="noopener" style="color:#fff;border-color:#fff;text-decoration:none">🍎 macOS (.dmg)</a>
-    <a class="tool-btn" id="dlLinux" href="https://github.com/kobichen222/DJKKKKKKK/releases/latest" target="_blank" rel="noopener" style="color:#ffaa66;border-color:#ffaa66;text-decoration:none">🐧 LINUX (.AppImage)</a>
+    <a class="tool-btn" id="dlWin" href="https://github.com/kobichen222/DJKKKKKKK/releases/latest" target="_blank" rel="noopener" style="color:#9fd8ff;border-color:#9fd8ff;text-decoration:none" title="Resolving latest Windows build…">⊞ WINDOWS (.exe)</a>
+    <a class="tool-btn" id="dlMac" href="https://github.com/kobichen222/DJKKKKKKK/releases/latest" target="_blank" rel="noopener" style="color:#fff;border-color:#fff;text-decoration:none" title="Resolving latest macOS build…">🍎 macOS (.dmg)</a>
+    <a class="tool-btn" id="dlLinux" href="https://github.com/kobichen222/DJKKKKKKK/releases/latest" target="_blank" rel="noopener" style="color:#ffaa66;border-color:#ffaa66;text-decoration:none" title="Resolving latest Linux build…">🐧 LINUX (.AppImage)</a>
   </div>
+  <div class="setting-desc" id="dlReleaseInfo" style="margin-bottom:6px;font-size:10.5px;line-height:1.5;color:var(--text-dim)">Checking latest release…</div>
   <div class="setting-desc" style="margin-bottom:8px;font-size:10px;line-height:1.5">
     If no assets appear on the Release page, an admin must trigger the <b>Build Desktop App</b> workflow in the repo's Actions tab (or push a <code>v*</code> tag).
   </div>
@@ -11796,6 +11797,81 @@ function setupOfflineDownload(){
 }
 
 /* ====================================================================
+   DESKTOP DOWNLOADS — resolve per-platform asset URL from the latest
+   GitHub Release so each button jumps straight to the .exe/.dmg/.AppImage.
+   Falls back to the releases page if the API fails or the asset is
+   missing, and disables a button when its platform has no build yet.
+   ==================================================================== */
+function setupDesktopDownloads(){
+  const REPO='kobichen222/DJKKKKKKK';
+  const dlWin=document.getElementById('dlWin');
+  const dlMac=document.getElementById('dlMac');
+  const dlLinux=document.getElementById('dlLinux');
+  const info=document.getElementById('dlReleaseInfo');
+  if(!dlWin||!dlMac||!dlLinux)return;
+  const fallback=`https://github.com/${REPO}/releases/latest`;
+
+  // Highlight the user's own OS
+  const ua=(navigator.userAgent||'').toLowerCase();
+  const plat=(navigator.platform||'').toLowerCase();
+  let mine=null;
+  if(/win/.test(plat)||/windows/.test(ua))mine=dlWin;
+  else if(/mac/.test(plat)||/iphone|ipad/.test(ua))mine=dlMac;
+  else if(/linux/.test(plat))mine=dlLinux;
+  if(mine)mine.style.boxShadow='0 0 16px rgba(127,247,255,.45)';
+
+  function bytesToMB(n){return (n/1048576).toFixed(1)+' MB'}
+  function disable(btn,reason){
+    btn.removeAttribute('href');
+    btn.title=reason;
+    btn.style.opacity='.5';
+    btn.style.cursor='not-allowed';
+    btn.addEventListener('click',e=>{e.preventDefault();if(typeof toast==='function')toast(reason,'warn');});
+  }
+  function wire(btn,asset,label){
+    if(!asset){
+      disable(btn,`No ${label} build in the latest release yet`);
+      return;
+    }
+    btn.href=asset.browser_download_url;
+    btn.title=`${asset.name} · ${bytesToMB(asset.size)}`;
+    btn.setAttribute('download',asset.name);
+    btn.style.opacity='1';
+    btn.style.cursor='pointer';
+  }
+
+  fetch(`https://api.github.com/repos/${REPO}/releases/latest`,{cache:'no-store'})
+    .then(r=>{
+      if(r.status===404)throw new Error('no-release');
+      if(!r.ok)throw new Error('api-'+r.status);
+      return r.json();
+    })
+    .then(rel=>{
+      const a=rel.assets||[];
+      const pickBy=re=>a.find(x=>re.test(x.name));
+      const win=pickBy(/\.exe$/i);
+      const mac=pickBy(/\.dmg$/i);
+      const lin=pickBy(/\.AppImage$/i);
+      wire(dlWin,win,'Windows');
+      wire(dlMac,mac,'macOS');
+      wire(dlLinux,lin,'Linux');
+      if(info){
+        const when=rel.published_at?new Date(rel.published_at).toLocaleDateString():'';
+        info.textContent=`Latest release: ${rel.tag_name||rel.name||''}${when?' · '+when:''}`;
+      }
+    })
+    .catch(err=>{
+      // Keep fallback links working; annotate the info line.
+      [dlWin,dlMac,dlLinux].forEach(b=>{b.href=fallback;b.removeAttribute('download');});
+      if(info){
+        info.textContent=err.message==='no-release'
+          ?'No release published yet — admin must run the Build Desktop App workflow.'
+          :'Could not contact GitHub API — opens the releases page directly.';
+      }
+    });
+}
+
+/* ====================================================================
    DISCOVER — world music catalog search (iTunes + Deezer)
    ==================================================================== */
 function setupDiscover(){
@@ -13875,7 +13951,7 @@ function init(){
   const mtb=document.getElementById('mixer-toolbar');if(mtb)mtb.innerHTML=buildMixerToolbarHTML();
   setupVU('vu-A',20);setupVU('vu-B',20);setupVU('vu-C',20);setupVU('vu-D',20);
   setupVU('masterHVuL',20);setupVU('masterHVuR',20);
-  attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();setupOfflineDownload();setupDiscover();setupTitanClock();setupSupport();setupStudioPro();
+  attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();setupOfflineDownload();setupDesktopDownloads();setupDiscover();setupTitanClock();setupSupport();setupStudioPro();
   setupWaveformInteraction();setupAdvancedFeatures();renderSessions();
   renderSampler();renderPlaylists();
   // First-run: fill all 4 sampler banks with the factory sounds so every
