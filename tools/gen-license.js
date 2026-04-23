@@ -1,26 +1,24 @@
 #!/usr/bin/env node
-/* TITAN LAB — license key generator
+/* TITAN LAB — license signer (Ed25519)
+ *
+ * Signs a license payload with your Ed25519 private key so the TITAN LAB
+ * client (browser / Electron) can verify authenticity with only the public
+ * key embedded in its source.  The private key NEVER touches the client.
  *
  * Usage:
  *   node tools/gen-license.js \
- *     --secret "YOUR_LONG_RANDOM_SECRET" \
- *     --email  "buyer@example.com" \
- *     --tier   pro \
- *     [--days  365]
+ *     --key   path/to/titan-private.pem \
+ *     --email buyer@example.com \
+ *     --tier  pro \
+ *     [--days 365]
  *
  * Output: a JSON blob that the buyer pastes into TITAN LAB ▸ LICENSE.
  *
- * The --secret value MUST match SP_LICENSE_SECRET inside public/index.html.
- * Anyone who reads the client source could in theory generate fake keys
- * with that secret, so this is "soft DRM" — fine for a paid creative tool.
- *
- * For real DRM, switch to public-key signatures (Ed25519 / RSA-PSS) and
- * keep the private key server-side; the client only verifies. Drop us a
- * line if you want a server-validated upgrade path.
+ * If you don't have a keypair yet, run `node tools/gen-keypair.js` first.
  */
-
 'use strict';
 const crypto = require('crypto');
+const fs = require('fs');
 
 function arg(name, def) {
   const i = process.argv.indexOf('--' + name);
@@ -28,30 +26,45 @@ function arg(name, def) {
   return process.argv[i + 1];
 }
 
-const secret = arg('secret');
-const email  = arg('email');
-const tier   = arg('tier', 'pro');
-const days   = parseInt(arg('days', '0'), 10);
+const keyPath = arg('key');
+const email   = arg('email');
+const tier    = arg('tier', 'pro');
+const days    = parseInt(arg('days', '0'), 10);
 
-if (!secret || !email) {
-  console.error('Usage: node tools/gen-license.js --secret <SECRET> --email <buyer@example.com> [--tier pro] [--days 365]');
+if (!keyPath || !email) {
+  console.error('Usage: node tools/gen-license.js --key <private.pem> --email <buyer@example.com> [--tier pro] [--days 365]');
   process.exit(1);
+}
+
+let privateKey;
+try {
+  privateKey = crypto.createPrivateKey(fs.readFileSync(keyPath));
+} catch (e) {
+  console.error('Could not load private key from ' + keyPath + ': ' + e.message);
+  process.exit(2);
+}
+
+if (privateKey.asymmetricKeyType !== 'ed25519') {
+  console.error('Expected an Ed25519 key, got: ' + privateKey.asymmetricKeyType);
+  console.error('Generate a fresh one with: node tools/gen-keypair.js');
+  process.exit(3);
 }
 
 const payload = {
   tier,
   email,
   expiresAt: days > 0 ? Date.now() + days * 24 * 3600 * 1000 : null,
+  issuedAt: Date.now(),
 };
-
 const text = JSON.stringify(payload);
-const sig = crypto.createHmac('sha256', secret).update(text).digest('hex');
+// Ed25519 determines its hash (SHA-512) from the key itself; algorithm arg is null.
+const sig = crypto.sign(null, Buffer.from(text), privateKey).toString('hex');
 
-const license = { payload, sig };
+const license = { payload, sig, alg: 'ed25519' };
 
-// Pretty print so it's easy to email
 console.log('--- TITAN LAB license ---');
 console.log(JSON.stringify(license, null, 2));
 console.log('--- end ---');
-console.log('\nEmail this JSON to the buyer. They paste it into:');
+console.log('');
+console.log('Email this JSON to the buyer. They paste it into:');
 console.log('  TITAN LAB tab → ⚡/○ tier badge → ACTIVATE');

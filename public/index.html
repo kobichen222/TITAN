@@ -14375,13 +14375,12 @@ function spCloseStudioMixer(){
    and emails the buyer to paste into the LICENSE panel.
 
    Owner config:
-     - Set SP_LICENSE_SECRET to a random server-only secret. It is
-       compiled into the client bundle, so anyone reading the source
-       *could* generate fake keys. This is intentional "soft DRM" —
-       legit buyers pay for the convenience and updates.
+     - SP_LICENSE_PUBKEY_HEX is the 32-byte Ed25519 public key (as hex).
+       Safe to ship publicly — the private signing key lives only on your
+       machine (tools/titan-private.pem). See docs/LICENSE-SETUP.md.
      - Set SP_STRIPE_CHECKOUT_URL to the Stripe Payment Link.
    ==================================================================== */
-const SP_LICENSE_SECRET='titanlab-2026-replace-this-with-a-real-server-side-secret';
+const SP_LICENSE_PUBKEY_HEX='a1263d3bdc8c59791c47c017a4f7e2b34580d61d4a3b97fa12a9fd744e1b60af';
 const SP_STRIPE_CHECKOUT_URL='https://buy.stripe.com/test_REPLACE_WITH_REAL_LINK';
 const SP_LICENSE_KEY='titanlab_license_v1';
 const SP_PRO_FEATURES={
@@ -14390,20 +14389,22 @@ const SP_PRO_FEATURES={
   unlimited_projects:'Unlimited saved projects (free tier saves 3)',
   cloud:'Cloud sync (across devices)',
 };
-async function _spHmacHex(secret,text){
-  const enc=new TextEncoder();
-  const key=await crypto.subtle.importKey('raw',enc.encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign','verify']);
-  const sig=await crypto.subtle.sign('HMAC',key,enc.encode(text));
-  return Array.from(new Uint8Array(sig)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-async function spSignLicense(payload){
-  return await _spHmacHex(SP_LICENSE_SECRET,JSON.stringify(payload));
+let _spPubkeyPromise=null;
+function _spImportPubkey(){
+  if(_spPubkeyPromise)return _spPubkeyPromise;
+  const raw=new Uint8Array(SP_LICENSE_PUBKEY_HEX.match(/.{2}/g).map(h=>parseInt(h,16)));
+  _spPubkeyPromise=crypto.subtle.importKey('raw',raw,{name:'Ed25519'},false,['verify']);
+  return _spPubkeyPromise;
 }
 async function spVerifyLicense(licenseObj){
   try{
     if(!licenseObj||!licenseObj.payload||!licenseObj.sig)return null;
-    const expected=await _spHmacHex(SP_LICENSE_SECRET,JSON.stringify(licenseObj.payload));
-    if(expected!==licenseObj.sig)return null;
+    if(licenseObj.alg && licenseObj.alg!=='ed25519')return null;
+    const pubkey=await _spImportPubkey();
+    const text=new TextEncoder().encode(JSON.stringify(licenseObj.payload));
+    const sig=new Uint8Array(licenseObj.sig.match(/.{2}/g).map(h=>parseInt(h,16)));
+    const ok=await crypto.subtle.verify({name:'Ed25519'},pubkey,sig,text);
+    if(!ok)return null;
     if(licenseObj.payload.expiresAt && licenseObj.payload.expiresAt<Date.now())return null;
     return licenseObj.payload;
   }catch(e){return null;}

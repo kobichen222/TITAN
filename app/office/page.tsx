@@ -7,7 +7,11 @@ import "./office.css";
 const OFFICE_CODE = "KOBI2100";
 const UNLOCK_KEY = "titan_office_unlocked_v1";
 const SUPA_KEY = "djmaxai_supa_v1";
-const LICENSE_SECRET = "titanlab-2026-replace-this-with-a-real-server-side-secret";
+// Ed25519 public key (32 bytes, hex) — must match SP_LICENSE_PUBKEY_HEX in
+// public/index.html.  The matching private key lives only on the operator's
+// machine (tools/titan-private.pem); licenses are signed offline via
+// `node tools/gen-license.js` and pasted into this panel for registration.
+const SP_LICENSE_PUBKEY_HEX = "a1263d3bdc8c59791c47c017a4f7e2b34580d61d4a3b97fa12a9fd744e1b60af";
 const SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js";
 
 /* ---------- types ---------- */
@@ -42,21 +46,42 @@ function readSupaCfg(): { url: string; anon: string } | null {
   return null;
 }
 
-/* ---------- HMAC-SHA256 for license signing (matches main app) ---------- */
-async function hmacSign(payload: unknown): Promise<string> {
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    "raw",
-    enc.encode(LICENSE_SECRET),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"]
+/* ---------- Ed25519 verify (paired with tools/gen-license.js) ---------- */
+type SignedLicense = {
+  payload: { tier: string; email: string; expiresAt: number | null; issuedAt?: number };
+  sig: string;
+  alg?: string;
+};
+
+let _pubkeyPromise: Promise<CryptoKey> | null = null;
+function importPubkey(): Promise<CryptoKey> {
+  if (_pubkeyPromise) return _pubkeyPromise;
+  const raw = new Uint8Array(
+    (SP_LICENSE_PUBKEY_HEX.match(/.{2}/g) || []).map((h) => parseInt(h, 16))
   );
-  const msg = enc.encode(JSON.stringify(payload));
-  const sig = await crypto.subtle.sign("HMAC", key, msg);
-  return Array.from(new Uint8Array(sig))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
+  _pubkeyPromise = crypto.subtle.importKey(
+    "raw",
+    raw,
+    { name: "Ed25519" },
+    false,
+    ["verify"]
+  );
+  return _pubkeyPromise;
+}
+
+async function verifySignedLicense(lic: SignedLicense): Promise<boolean> {
+  try {
+    if (!lic || !lic.payload || !lic.sig) return false;
+    if (lic.alg && lic.alg !== "ed25519") return false;
+    const pubkey = await importPubkey();
+    const text = new TextEncoder().encode(JSON.stringify(lic.payload));
+    const sig = new Uint8Array(
+      (lic.sig.match(/.{2}/g) || []).map((h) => parseInt(h, 16))
+    );
+    return await crypto.subtle.verify({ name: "Ed25519" }, pubkey, sig, text);
+  } catch {
+    return false;
+  }
 }
 
 /* =============================================================
@@ -339,9 +364,7 @@ function UsersPanel({ supa, notify }: { supa: any; notify: (t: string, k?: "ok" 
  * ============================================================= */
 function LicensesPanel({ supa, notify }: { supa: any; notify: (t: string, k?: "ok" | "err") => void }) {
   const [rows, setRows] = useState<License[]>([]);
-  const [email, setEmail] = useState("");
-  const [tier, setTier] = useState<"pro" | "team" | "lifetime" | "trial">("pro");
-  const [days, setDays] = useState(365);
+  const [pastedJson, setPastedJson] = useState("");
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
   const [preview, setPreview] = useState<string>("");
@@ -357,26 +380,45 @@ function LicensesPanel({ supa, notify }: { supa: any; notify: (t: string, k?: "o
   }
   useEffect(() => { load(); /* eslint-disable-next-line */ }, []);
 
-  async function issue() {
-    if (!email.trim()) return notify("Email required", "err");
+  // Licenses are signed offline with the Ed25519 private key via
+  // `node tools/gen-license.js`.  The admin pastes the resulting JSON here;
+  // this panel verifies the signature with the embedded public key and then
+  // records the license in Supabase for audit + revocation.  Signing in the
+  // browser is deliberately impossible — the private key never leaves the
+  // operator's machine.
+  async function registerLicense() {
+    const text = pastedJson.trim();
+    if (!text) return notify("Paste the signed license JSON first", "err");
+
+    let lic: SignedLicense;
+    try {
+      lic = JSON.parse(text) as SignedLicense;
+    } catch {
+      return notify("Not valid JSON — run tools/gen-license.js to produce it", "err");
+    }
+
     setBusy(true);
     try {
-      const now = Date.now();
-      const expiresAt = tier === "lifetime" ? null : now + days * 24 * 3600 * 1000;
-      const payload: Record<string, unknown> = { tier, email: email.trim(), issuedAt: now };
-      if (expiresAt !== null) payload.expiresAt = expiresAt;
-      const sig = await hmacSign(payload);
-      const licenseJson = JSON.stringify({ payload, sig }, null, 2);
+      const ok = await verifySignedLicense(lic);
+      if (!ok) {
+        notify("Signature rejected — wrong key or tampered payload", "err");
+        return;
+      }
+      const p = lic.payload;
+      if (!p.email || !p.tier) {
+        notify("Payload missing email or tier", "err");
+        return;
+      }
 
       const { data: userRes } = await supa.auth.getUser();
       const { data, error } = await supa
         .from("licenses")
         .insert({
-          email: email.trim(),
-          tier,
-          expires_at: expiresAt ? new Date(expiresAt).toISOString() : null,
-          payload,
-          signature: sig,
+          email: p.email,
+          tier: p.tier,
+          expires_at: p.expiresAt ? new Date(p.expiresAt).toISOString() : null,
+          payload: p,
+          signature: lic.sig,
           notes: notes.trim() || null,
           created_by: userRes?.user?.id || null,
         })
@@ -387,19 +429,19 @@ function LicensesPanel({ supa, notify }: { supa: any; notify: (t: string, k?: "o
       await supa.from("admin_audit").insert({
         actor_id: userRes?.user?.id || null,
         actor_email: userRes?.user?.email || null,
-        action: "issue_license",
+        action: "register_license",
         target_type: "license",
         target_id: data?.id || null,
-        details: { tier, email: email.trim(), days },
+        details: { tier: p.tier, email: p.email, expiresAt: p.expiresAt },
       });
 
-      setPreview(licenseJson);
-      setEmail("");
+      setPreview(JSON.stringify(lic, null, 2));
+      setPastedJson("");
       setNotes("");
-      notify("License issued — copy the JSON below");
+      notify(`Registered: ${p.tier} for ${p.email}`);
       load();
     } catch (e: any) {
-      notify(e?.message || "Failed to issue", "err");
+      notify(e?.message || "Failed to register", "err");
     } finally {
       setBusy(false);
     }
@@ -420,32 +462,37 @@ function LicensesPanel({ supa, notify }: { supa: any; notify: (t: string, k?: "o
   return (
     <section className="office-panel">
       <div className="panel-head">
-        <div className="panel-title">🔑 LICENSE ISSUER</div>
-        <div className="panel-count">{rows.length} issued</div>
+        <div className="panel-title">🔑 LICENSE REGISTRY</div>
+        <div className="panel-count">{rows.length} on file</div>
+      </div>
+
+      <div style={{ fontSize: 12, color: "#aaa", lineHeight: 1.6, margin: "4px 0 12px" }}>
+        Licenses are signed offline by the key holder:
+        <br />
+        <code style={{ color: "#ffd089" }}>
+          node tools/gen-license.js --key titan-private.pem --email buyer@example.com --tier pro --days 365
+        </code>
+        <br />
+        Paste the resulting JSON below to verify the signature and log it to Supabase for audit + revocation tracking.
       </div>
 
       <div className="form-grid">
-        <label>EMAIL
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="buyer@example.com" />
-        </label>
-        <label>TIER
-          <select value={tier} onChange={(e) => setTier(e.target.value as any)}>
-            <option value="pro">Pro</option>
-            <option value="team">Team</option>
-            <option value="lifetime">Lifetime</option>
-            <option value="trial">Trial</option>
-          </select>
-        </label>
-        <label>VALID (DAYS)
-          <input type="number" min={1} value={days} onChange={(e) => setDays(Math.max(1, parseInt(e.target.value) || 1))} disabled={tier === "lifetime"} />
+        <label style={{ gridColumn: "1 / -1" }}>SIGNED LICENSE JSON
+          <textarea
+            rows={8}
+            value={pastedJson}
+            onChange={(e) => setPastedJson(e.target.value)}
+            placeholder='{"payload":{"tier":"pro","email":"buyer@example.com","expiresAt":...,"issuedAt":...},"sig":"...","alg":"ed25519"}'
+            style={{ fontFamily: "monospace", fontSize: 12, width: "100%" }}
+          />
         </label>
         <label>NOTES
           <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Optional internal note" />
         </label>
       </div>
       <div style={{ display: "flex", gap: 8 }}>
-        <button className="btn-primary" onClick={issue} disabled={busy}>
-          {busy ? "⟳ ISSUING" : "⚡ ISSUE LICENSE"}
+        <button className="btn-primary" onClick={registerLicense} disabled={busy}>
+          {busy ? "⟳ VERIFYING" : "✓ VERIFY + REGISTER"}
         </button>
         {preview && <button className="btn-secondary" onClick={() => copy(preview)}>📋 COPY JSON</button>}
       </div>

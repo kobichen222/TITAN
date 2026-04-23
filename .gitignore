@@ -12,3 +12,12 @@ dist-electron
 *.AppImage
 *.deb
 *.zip
+
+*.tsbuildinfo
+
+# Ed25519 license signing keys — private keys must NEVER be committed.
+# Only the public key goes in the client (embedded as SP_LICENSE_PUBKEY_HEX).
+*.pem
+*.key
+titan-private.*
+keys/
