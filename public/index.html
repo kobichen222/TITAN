@@ -9199,9 +9199,26 @@ Two options — both work completely offline:<br/>
 <b>Standalone HTML</b> — a single file you double-click to open in any browser.
 </div>
 </div>
-<div class="settings-row" style="justify-content:flex-start;gap:10px;flex-wrap:wrap">
-  <button class="tool-btn" id="offlineDownloadBtn" style="color:var(--play-green);border-color:var(--play-green);font-weight:800;letter-spacing:2px;">🔓 UNLOCK DOWNLOADS</button>
+<div class="settings-row" style="justify-content:flex-start;gap:10px;flex-wrap:wrap;align-items:center">
+  <button class="tool-btn" id="offlineDownloadBtn" style="color:var(--play-green);border-color:var(--play-green);font-weight:800;letter-spacing:2px;">🔐 SIGN IN TO DOWNLOAD</button>
+  <span id="offlineUserChip" style="display:none;align-items:center;gap:8px;padding:6px 10px;background:rgba(28,255,143,.08);border:1px solid rgba(28,255,143,.3);border-radius:6px;font-family:'Share Tech Mono',monospace;font-size:11px;color:#9aff9a">
+    <span>✓</span><span id="offlineUserName">—</span>
+    <button class="tool-btn" id="offlineSignOutBtn" style="padding:3px 8px;font-size:9px;color:var(--text-dim);border-color:#333">SIGN OUT</button>
+  </span>
   <span id="offlineStatus" class="setting-desc" style="min-width:120px"></span>
+</div>
+<div id="offlineLoginPrompt" class="settings-row" style="display:none;flex-direction:column;align-items:stretch;gap:8px;padding:12px;border:1px solid rgba(66,133,244,.35);border-radius:8px;background:rgba(66,133,244,.04)">
+  <div class="setting-label" style="color:#7eb6ff">🔒 Registered customers only</div>
+  <div class="setting-desc" style="line-height:1.5">Sign in with your Google account (or email / phone) to download the desktop installers. Free — registration creates your customer profile automatically.</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <button class="tool-btn" id="offlineGoogleBtn" style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:#fff;color:#202124;border:1px solid #dadce0;font-weight:700">
+      <svg width="16" height="16" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.185l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.592.102-1.167.282-1.706V4.962H.957A8.997 8.997 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 7.294C4.672 5.167 6.656 3.58 9 3.58z"/></svg>
+      Continue with Google
+    </button>
+    <button class="tool-btn" id="offlineEmailBtn" style="padding:8px 14px">📧 EMAIL / PHONE</button>
+    <button class="tool-btn" id="offlineAdminToggleBtn" style="padding:8px 12px;font-size:10px;color:var(--text-dim);border-color:#333" title="Admin override">🔑 Admin</button>
+  </div>
+  <div id="offlineLoginErr" class="setting-desc" style="color:var(--red);min-height:14px"></div>
 </div>
 <div id="offlineCodeBox" class="settings-row" style="display:none;flex-direction:column;align-items:stretch;gap:6px;padding:10px;border:1px solid rgba(255,138,26,.35);border-radius:8px;background:rgba(255,138,26,.04)">
   <div class="setting-label" style="color:var(--orange)">🔒 Admin code required</div>
@@ -12314,46 +12331,124 @@ function nudgeTempo(d,pct){
 }
 
 /* ====================================================================
-   OFFLINE DOWNLOAD — admin-gated standalone HTML download
+   OFFLINE DOWNLOAD — gated by Google / email customer login
+   (legacy admin-code KOBI2100 still works as an override for the owner)
    ==================================================================== */
 function setupOfflineDownload(){
   const btn=document.getElementById('offlineDownloadBtn');
   const box=document.getElementById('offlineCodeBox');
+  const loginPrompt=document.getElementById('offlineLoginPrompt');
   const inp=document.getElementById('offlineAdminCode');
   const ok=document.getElementById('offlineCodeConfirm');
   const cancel=document.getElementById('offlineCodeCancel');
   const err=document.getElementById('offlineCodeErr');
+  const loginErr=document.getElementById('offlineLoginErr');
   const status=document.getElementById('offlineStatus');
   const panel=document.getElementById('offlineUnlocked');
-  if(!btn||!box)return;
+  const userChip=document.getElementById('offlineUserChip');
+  const userName=document.getElementById('offlineUserName');
+  const signOutBtn=document.getElementById('offlineSignOutBtn');
+  const googleBtn=document.getElementById('offlineGoogleBtn');
+  const emailBtn=document.getElementById('offlineEmailBtn');
+  const adminToggleBtn=document.getElementById('offlineAdminToggleBtn');
+  if(!btn||!loginPrompt)return;
   const ADMIN_CODE='KOBI2100';
 
-  // Persist unlock during the session
-  const isUnlocked=()=>sessionStorage.getItem('titan_installer_unlocked_kobi')==='1';
-  if(isUnlocked())unlock();
+  // Unlock can come from EITHER:
+  //  a) signed-in customer (Supabase user, not banned)  — primary path
+  //  b) admin override code KOBI2100                    — fallback
+  const isAdminOverride=()=>sessionStorage.getItem('titan_installer_unlocked_kobi')==='1';
+  const isCustomer=()=>!!_supaUser&&_supaProfile&&!_supaProfile.banned;
+  const isUnlocked=()=>isCustomer()||isAdminOverride();
+
+  // Public hook — auth code calls this when the session changes
+  window.refreshOfflineDownloadGate=refresh;
+
+  function refresh(){
+    if(isUnlocked()){
+      // Hide the login prompt and admin code box, show downloads
+      if(loginPrompt)loginPrompt.style.display='none';
+      if(box)box.style.display='none';
+      if(panel)panel.style.display='block';
+      if(isCustomer()){
+        const nm=_supaProfile?.name||_supaUser?.email||_supaUser?.phone||'Customer';
+        if(userChip){userChip.style.display='inline-flex';}
+        if(userName)userName.textContent=nm;
+        if(btn){btn.textContent='✓ DOWNLOADS OPEN';btn.style.opacity='.85';}
+      }else{
+        // admin override only (no Supabase user)
+        if(userChip)userChip.style.display='none';
+        if(btn){btn.textContent='🔓 ADMIN OVERRIDE — DOWNLOADS OPEN';btn.style.opacity='.85';}
+      }
+      if(status)status.textContent='';
+    }else{
+      // Locked
+      if(panel)panel.style.display='none';
+      if(userChip)userChip.style.display='none';
+      if(btn){btn.textContent='🔐 SIGN IN TO DOWNLOAD';btn.style.opacity='1';}
+    }
+  }
+  refresh();
 
   btn.addEventListener('click',()=>{
     if(isUnlocked()){
-      panel.style.display='block';
-      panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+      // Already unlocked — scroll to the downloads panel
+      panel?.scrollIntoView({behavior:'smooth',block:'nearest'});
       return;
     }
-    box.style.display='flex';
-    err.textContent='';
-    inp.value='';
-    setTimeout(()=>inp.focus(),60);
+    // Not signed in — show the login prompt
+    if(box)box.style.display='none';
+    if(loginPrompt){
+      loginPrompt.style.display='flex';
+      loginPrompt.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+    if(loginErr)loginErr.textContent='';
   });
-  cancel.addEventListener('click',()=>{box.style.display='none';err.textContent=''});
-  inp.addEventListener('keydown',e=>{if(e.key==='Enter')ok.click()});
 
-  function unlock(){
-    sessionStorage.setItem('titan_installer_unlocked_kobi','1');
-    if(panel)panel.style.display='block';
-    if(btn){btn.textContent='🔓 DOWNLOADS UNLOCKED — SHOW OPTIONS';btn.style.opacity='.9'}
-    status.textContent='';
-  }
+  // Google sign-in directly from the download panel
+  googleBtn?.addEventListener('click',async()=>{
+    if(loginErr)loginErr.textContent='';
+    if(!_supa){
+      // Supabase not configured yet — guide owner to settings
+      loginErr.textContent='Sign-in not configured yet. Owner must add Supabase URL + Anon Key in SETTINGS → SUPABASE.';
+      return;
+    }
+    loginErr.textContent='Redirecting to Google…';
+    try{
+      const{error}=await _supa.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.href}});
+      if(error)loginErr.textContent='Error: '+error.message;
+    }catch(e){loginErr.textContent='Error: '+(e.message||e);}
+  });
 
-  ok.addEventListener('click',()=>{
+  // Email / phone — open the existing top-right SIGN IN modal
+  emailBtn?.addEventListener('click',()=>{
+    if(!_supa){
+      loginErr.textContent='Sign-in not configured yet. Owner must add Supabase URL + Anon Key in SETTINGS → SUPABASE.';
+      return;
+    }
+    document.getElementById('authModal')?.classList.add('open');
+  });
+
+  // Sign out from the chip
+  signOutBtn?.addEventListener('click',async()=>{
+    if(_supa){await _supa.auth.signOut();toast&&toast('Signed out','success');}
+    refresh();
+  });
+
+  // Admin override toggle — shows the legacy code box
+  adminToggleBtn?.addEventListener('click',()=>{
+    if(box){
+      box.style.display=box.style.display==='flex'?'none':'flex';
+      if(box.style.display==='flex'){
+        err.textContent='';inp.value='';
+        setTimeout(()=>inp.focus(),60);
+      }
+    }
+  });
+  cancel?.addEventListener('click',()=>{box.style.display='none';err.textContent=''});
+  inp?.addEventListener('keydown',e=>{if(e.key==='Enter')ok.click()});
+
+  ok?.addEventListener('click',()=>{
     const code=(inp.value||'').trim();
     if(code!==ADMIN_CODE){
       err.textContent='✗ Wrong code';
@@ -12361,11 +12456,10 @@ function setupOfflineDownload(){
       return;
     }
     err.textContent='';
-    box.style.display='none';
-    unlock();
-    if(typeof toast==='function')toast('Downloads unlocked','success');
+    sessionStorage.setItem('titan_installer_unlocked_kobi','1');
+    refresh();
+    toast&&toast('Admin override — downloads open','success');
   });
-
 }
 
 /* ====================================================================
@@ -16952,11 +17046,19 @@ async function onSupaSession(session){
     try{await _supa.from('profiles').update({last_login:new Date().toISOString()}).eq('id',_supaUser.id);}catch(_){}
   }catch(e){_supaProfile={id:_supaUser.id,email:_supaUser.email,role:'user'};}
   updateAuthUI();
+  if(_supaProfile.banned){
+    toast&&toast('Account suspended — contact support','error');
+  }else{
+    toast&&toast(`Welcome, ${_supaProfile?.name||_supaUser.email||'customer'}`,'success');
+  }
+  // Refresh download gate so a fresh login auto-unlocks the installers
+  if(typeof window.refreshOfflineDownloadGate==='function')window.refreshOfflineDownloadGate();
   if(_supaProfile.role==='admin')loadAdminUsers();
 }
 function onSupaSignOut(){
   _supaUser=null;_supaProfile=null;
   updateAuthUI();
+  if(typeof window.refreshOfflineDownloadGate==='function')window.refreshOfflineDownloadGate();
 }
 function updateAuthUI(){
   const btn=document.getElementById('authBtn');
