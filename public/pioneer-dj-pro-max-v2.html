@@ -3421,6 +3421,115 @@ body.theme-pioneer .bank-btn.active{color:#1a0800;background:linear-gradient(180
 body.theme-pioneer .seq-step{background:linear-gradient(180deg,#1a1a20,#08080c);color:rgba(230,230,234,.25);border:1px solid #2a2a30}
 body.theme-pioneer .seq-step.on{color:#1a0800;background:linear-gradient(180deg,#ffc080,#ff9020);box-shadow:0 0 10px rgba(255,144,32,.7)}
 
+/* ============================================================
+   REAL theme — Pioneer Euphonia tribute · pure black · rose-gold
+   ============================================================ */
+body.theme-real{
+  --orange:#d99878;--orange-glow:#f0c2a3;--cue-orange:#d99878;--play-green:#7ad492;
+  --screen-glow:#7ed8e6;--yellow:#f6c84a;--red:#e55050;--purple:#b07aff;--pink:#d99878;
+  --text:#f1ece6;--text-dim:#8a847e;--bg:#000;--deck-bg:#0a0a0a;--deck-panel:#0e0e0e;--deck-border:#1c1c1c;
+  --rose-1:#f6d0b0;--rose-2:#d99878;--rose-3:#a8694a;--rose-4:#5a3320;
+}
+body.theme-real,body.theme-real html{background:radial-gradient(ellipse at 50% 0%,#0c0c0c 0%,#000 70%)}
+body.theme-real::after{background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.85) 100%)}
+body.theme-real ::-webkit-scrollbar-track{background:#000}
+body.theme-real ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--rose-2),var(--rose-3));border:1px solid #000}
+body.theme-real .header-bar{color:var(--text);background:linear-gradient(180deg,#0a0a0a 0%,#000 100%);border-bottom:1px solid #1a1a1a}
+body.theme-real .brand{color:var(--text);text-shadow:0 1px 0 #000,0 0 12px rgba(217,152,120,.18);letter-spacing:4px;font-weight:300}
+body.theme-real .brand .max{background:linear-gradient(180deg,var(--rose-1) 0%,var(--rose-2) 50%,var(--rose-3) 100%);color:#1a0800;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 2px rgba(0,0,0,.6),0 0 10px rgba(217,152,120,.45)}
+body.theme-real .header-right{color:var(--text-dim);letter-spacing:2px}
+body.theme-real .power-led{background:radial-gradient(circle,#fff 0%,var(--rose-1) 50%,var(--rose-2) 100%);box-shadow:0 0 8px rgba(217,152,120,.85)}
+
+/* Panels — pure jet-black with very subtle vertical gradient + 1px hairline */
+body.theme-real .cdj,body.theme-real .mixer,body.theme-real .library,
+body.theme-real .sampler-panel,body.theme-real .youtube-panel,body.theme-real .playlists-panel,
+body.theme-real .ai-dj-panel,body.theme-real .analytics-panel,body.theme-real .midi-panel,
+body.theme-real .settings-panel,body.theme-real .beat-fx-panel,body.theme-real .scene-fx-panel,
+body.theme-real .deck-switch-bar,body.theme-real .mixer-toolbar{
+  background:linear-gradient(180deg,#0c0c0c 0%,#050505 100%);
+  border:1px solid #1a1a1a;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 4px 20px rgba(0,0,0,.85);
+}
+
+body.theme-real .main-tabs{background:linear-gradient(180deg,#0a0a0a 0%,#000 100%);border:1px solid #1a1a1a;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+body.theme-real .tab-btn{color:var(--text-dim);letter-spacing:2px;text-transform:uppercase}
+body.theme-real .tab-btn:hover{color:var(--text)}
+body.theme-real .tab-btn.active{background:linear-gradient(180deg,var(--rose-1) 0%,var(--rose-2) 50%,var(--rose-3) 100%);color:#1a0800;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 10px rgba(217,152,120,.35);text-shadow:0 1px 0 rgba(255,255,255,.18)}
+
+/* Screens — clean dark panels with cyan/orange data glow (touch-screen feel) */
+body.theme-real .screen{background:linear-gradient(180deg,#020608 0%,#000 100%);border:1px solid #0c0c10;box-shadow:inset 0 0 14px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.04)}
+body.theme-real .jog-center-screen{background:radial-gradient(circle,#040608 0%,#000 100%);border:1px solid #0c0c10;box-shadow:inset 0 0 22px rgba(0,0,0,.95)}
+body.theme-real .track-title{color:#fff;text-shadow:0 0 6px rgba(255,255,255,.3)}
+body.theme-real .screen-bpm{color:var(--screen-glow);text-shadow:0 0 10px rgba(126,216,230,.85)}
+body.theme-real .screen-key{color:var(--rose-2)}
+body.theme-real .master-bpm{background:#000;border:1px solid #1a1a1a;color:var(--screen-glow);text-shadow:0 0 8px rgba(126,216,230,.75);letter-spacing:2px}
+body.theme-real .jog-center-screen .bpm-display{color:var(--screen-glow);text-shadow:0 0 8px rgba(126,216,230,.75)}
+body.theme-real .jog-center-screen .bpm-sub,body.theme-real .jog-center-screen .deck-badge{color:var(--text)}
+
+/* Deck plate — etched rose-gold model number */
+body.theme-real .deck-number{background:linear-gradient(180deg,#0a0a0a,#000);color:var(--rose-1);text-shadow:0 0 8px rgba(217,152,120,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),inset 0 -1px 0 rgba(0,0,0,.6),0 1px 2px rgba(0,0,0,.5);border:1px solid #1a1a1a}
+body.theme-real .deck-label{color:var(--text);letter-spacing:3px}
+body.theme-real .deck-label .model{color:var(--rose-2);text-shadow:0 0 6px rgba(217,152,120,.4)}
+
+/* Jog wheel — black platter, brushed-metal rim */
+body.theme-real .jog-outer{background:radial-gradient(circle at 50% 5%,rgba(255,255,255,.45) 0%,transparent 22%),radial-gradient(circle at 50% 95%,rgba(0,0,0,.85) 0%,transparent 30%),conic-gradient(from 0deg,#1a1a1a 0deg,#2c2c2c 45deg,#1a1a1a 90deg,#2c2c2c 135deg,#1a1a1a 180deg,#2c2c2c 225deg,#1a1a1a 270deg,#2c2c2c 315deg,#1a1a1a 360deg);border:3px solid #000;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),inset 0 0 0 2px rgba(0,0,0,.85),inset 0 2px 12px rgba(0,0,0,.7),0 4px 18px rgba(0,0,0,.95)}
+body.theme-real .jog-platter{background:radial-gradient(circle at 50% 20%,rgba(255,255,255,.18) 0%,transparent 30%),radial-gradient(circle,#0a0a0a 0%,#000 75%);box-shadow:inset 0 0 50px rgba(0,0,0,.98),inset 0 2px 6px rgba(255,255,255,.06)}
+body.theme-real .jog-platter-disc{background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,255,255,.025) 0deg,transparent 3deg,transparent 6deg),radial-gradient(circle at 50% 35%,rgba(217,152,120,.45) 0%,transparent 14%),radial-gradient(circle,#0a0a0a 0%,#000 80%)}
+body.theme-real .jog-indicator{background:linear-gradient(180deg,#fff 0%,var(--rose-1) 35%,var(--rose-2) 70%,var(--rose-3) 100%);box-shadow:0 0 8px rgba(0,0,0,.85),0 0 20px rgba(217,152,120,.95),0 0 4px rgba(255,255,255,.85)}
+
+/* Knobs — copper/rose-gold turned aluminium with knurled rim */
+body.theme-real .knob,body.theme-real .sp-knob{background:radial-gradient(ellipse 60% 30% at 45% 18%,rgba(255,255,255,.55) 0%,rgba(255,255,255,.18) 30%,transparent 58%),radial-gradient(circle at 50% 110%,rgba(0,0,0,.85) 0%,transparent 48%),radial-gradient(circle at 40% 35%,var(--rose-1) 0%,var(--rose-2) 35%,var(--rose-3) 70%,var(--rose-4) 100%);border:1px solid #000;box-shadow:inset 0 2px 1px rgba(255,255,255,.5),inset 0 -3px 6px rgba(0,0,0,.6),0 3px 7px rgba(0,0,0,.85)}
+body.theme-real .knob-indicator,body.theme-real .sp-knob-indicator{background:linear-gradient(180deg,#fff 0%,var(--rose-1) 50%,var(--rose-2) 100%);box-shadow:0 0 4px rgba(0,0,0,.8),0 0 10px rgba(255,255,255,.5)}
+body.theme-real .knob-label,body.theme-real .sp-knob-label{color:var(--text-dim);font-weight:700;letter-spacing:2px;text-shadow:0 1px 0 rgba(0,0,0,.85)}
+
+/* VU meters — amber/red ladder on jet black */
+body.theme-real .vu-meter{background:#000;border:1px solid #1a1a1a;box-shadow:inset 0 0 6px rgba(0,0,0,.95)}
+body.theme-real .vu-led{background:#080808}
+body.theme-real .vu-led.on.green{background:linear-gradient(90deg,#15a030,#3de55f);box-shadow:0 0 6px rgba(61,229,95,.85),inset 0 0 2px rgba(255,255,255,.3)}
+body.theme-real .vu-led.on.yellow{background:linear-gradient(90deg,#a08010,var(--yellow));box-shadow:0 0 6px rgba(246,200,74,.85),inset 0 0 2px rgba(255,255,255,.3)}
+body.theme-real .vu-led.on.red{background:linear-gradient(90deg,#a02020,var(--red));box-shadow:0 0 8px rgba(229,80,80,.95),inset 0 0 2px rgba(255,255,255,.3)}
+
+/* Faders — black tracks with rose-gold caps to match the photo */
+body.theme-real .fader-wrap,body.theme-real .crossfader-track,body.theme-real .tempo-slider{background:linear-gradient(180deg,#080808 0%,#000 100%);box-shadow:inset 0 0 10px rgba(0,0,0,.95);border:1px solid #1a1a1a}
+body.theme-real .fader-handle,body.theme-real .tempo-handle,body.theme-real .crossfader-handle{
+  background:linear-gradient(180deg,rgba(255,255,255,.55) 0%,transparent 18%,transparent 82%,rgba(0,0,0,.55) 100%),
+             linear-gradient(180deg,var(--rose-1) 0%,var(--rose-2) 45%,var(--rose-3) 75%,var(--rose-4) 100%);
+  border:1px solid #000;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -1px 0 rgba(0,0,0,.5),0 3px 8px rgba(0,0,0,.9),0 0 8px rgba(217,152,120,.18);
+}
+body.theme-real .fader-handle::before{background:linear-gradient(90deg,transparent,#fff 20%,var(--rose-1) 50%,#fff 80%,transparent);box-shadow:0 0 6px rgba(255,255,255,.4)}
+
+/* Buttons & utility chrome */
+body.theme-real .util-btn,body.theme-real .pad-mode-btn{background:linear-gradient(180deg,#0a0a0a,#000);color:var(--text-dim);border:1px solid #1a1a1a;letter-spacing:2px}
+body.theme-real .util-btn:hover{color:var(--text);border-color:#2a2a2a}
+body.theme-real .util-btn.active{background:linear-gradient(180deg,var(--rose-1) 0%,var(--rose-2) 50%,var(--rose-3) 100%);color:#1a0800;border-color:#000;box-shadow:0 0 8px rgba(217,152,120,.45)}
+body.theme-real .rec-btn{background:#0a0000;border-color:var(--red);color:var(--red)}
+body.theme-real .rec-btn::before{background:var(--red);box-shadow:0 0 8px var(--red)}
+body.theme-real .auth-btn{background:linear-gradient(180deg,#0a0a0a,#000);border:1px solid #1a1a1a;color:var(--text)}
+
+/* Library / track rows */
+body.theme-real .library{background:linear-gradient(180deg,#0a0a0a 0%,#050505 100%);border:1px solid #1a1a1a}
+body.theme-real .library-title{color:var(--text);letter-spacing:3px}
+body.theme-real .track-row{background:linear-gradient(180deg,#0a0a0a,#050505);border:1px solid #1a1a1a;color:var(--text)}
+body.theme-real .track-row:hover{background:linear-gradient(180deg,#121212,#0a0a0a);border-color:var(--rose-3)}
+body.theme-real .track-row.active{background:linear-gradient(180deg,#1a1208,#0a0805);border-color:var(--rose-2);box-shadow:inset 0 0 12px rgba(217,152,120,.18)}
+
+/* Sampler — rose-gold accents */
+body.theme-real .sample-pad{background:linear-gradient(180deg,#0a0a0a,#000);border:1px solid #1a1a1a;color:var(--text-dim)}
+body.theme-real .sample-pad.loaded{color:var(--text);border-color:#2a2a2a;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+body.theme-real .sample-pad.playing{box-shadow:inset 0 0 18px rgba(217,152,120,.6),0 0 12px rgba(217,152,120,.45);border-color:var(--rose-2)}
+body.theme-real .sample-pad.selected{outline:2px solid var(--rose-2);outline-offset:2px}
+body.theme-real .bank-btn{color:var(--text-dim)}
+body.theme-real .bank-btn.active{color:#1a0800;background:linear-gradient(180deg,var(--rose-1) 0%,var(--rose-2) 50%,var(--rose-3) 100%);box-shadow:0 0 10px rgba(217,152,120,.4)}
+body.theme-real .seq-step{background:linear-gradient(180deg,#0a0a0a,#000);color:rgba(241,236,230,.25);border:1px solid #1a1a1a}
+body.theme-real .seq-step.on{color:#1a0800;background:linear-gradient(180deg,var(--rose-1) 0%,var(--rose-2) 50%,var(--rose-3) 100%);box-shadow:0 0 10px rgba(217,152,120,.7)}
+body.theme-real .sampler-tool-block{background:#000;border-color:#1a1a1a}
+body.theme-real .sampler-tool-title{color:var(--rose-2)}
+body.theme-real .sampler-tool-title span{color:var(--screen-glow)}
+
+/* RGB ambient strip → rose-gold */
+body.theme-real .rgb-ambient{background:linear-gradient(90deg,var(--rose-4) 0%,var(--rose-3) 25%,var(--rose-2) 50%,var(--rose-1) 75%,#fff 100%);box-shadow:0 0 24px rgba(217,152,120,.6)}
+
 body.work-mode .library{display:block !important}
 body.work-mode .tab-content#tab-deck{display:flex !important;flex-direction:column;align-items:center;gap:12px}
 body.work-mode .rgb-ambient{display:block;height:3px;opacity:.85;max-width:1700px;margin:0 auto}
@@ -7339,7 +7448,7 @@ body.theme-light .cdj .cue-btn{
 <button class="tab-btn" data-tab="ai" data-t="tab_ai">🤖 AI DJ</button>
 <button class="tab-btn" data-tab="analytics" data-t="tab_analytics">📊 ANALYTICS</button>
 <button class="tab-btn" data-tab="midi" data-t="tab_midi">🎹 MIDI</button>
-<button class="tab-btn" data-tab="studio" data-t="tab_studio">🎚 STUDIO</button>
+<button class="tab-btn" data-tab="studio" data-t="tab_studio">🎚 SOUND</button>
 <button class="tab-btn" data-tab="studiopro" data-t="tab_studiopro">🎹 TITAN LAB</button>
 <button class="tab-btn" data-tab="editor" data-t="tab_editor">✂ EDITOR</button>
 <button class="tab-btn admin-only" data-tab="admin" id="adminTabBtn" style="display:none">🛡 ADMIN</button>
@@ -7747,14 +7856,9 @@ body.theme-light .cdj .cue-btn{
 <div class="tab-content" id="tab-sampler">
 <div class="sampler-panel">
 <div class="sampler-header">
-<div class="sampler-title">▣ PRO SAMPLER · 4 BANKS · 64 PADS · STEP SEQ · FX</div>
+<div class="sampler-title">▣ PRO SAMPLER · 13 BANKS · 208 PADS · STEP SEQ · FX</div>
 <div style="display:flex;gap:6px;flex-wrap:wrap;">
-<div class="bank-switcher" id="bankSwitcher">
-  <button class="bank-btn active" data-bank="0">A</button>
-  <button class="bank-btn" data-bank="1">B</button>
-  <button class="bank-btn" data-bank="2">C</button>
-  <button class="bank-btn" data-bank="3">D</button>
-</div>
+<div class="bank-switcher" id="bankSwitcher" style="flex-wrap:wrap"></div>
 <button class="tool-btn" id="sampleRecordBtn" title="Record next 4 seconds from master to selected pad">🔴 REC TO PAD</button>
 <button class="tool-btn" id="sampleClearAll">CLEAR BANK</button>
 <button class="tool-btn" id="sampleLoadDefault">LOAD DEFAULTS</button>
@@ -8394,6 +8498,7 @@ No MIDI devices. Press CONNECT.
 <select class="fx-selector" id="settingTheme">
 <option value="dark">Dark</option><option value="neon">Neon</option>
 <option value="pioneer">Pioneer (CDJ-3000)</option>
+<option value="real">REAL (Euphonia · black + rose-gold)</option>
 <option value="gold">Gold</option><option value="light">Light</option>
 </select></div>
 <div class="settings-row">
@@ -10055,16 +10160,32 @@ function setPadMode(deckId,mode){
 /* SAMPLER */
 /* PRO SAMPLER ENGINE — banks, per-pad params, FX chain, choke, step seq */
 let samplerBank=0;let samplerSelected=null;
-const samplerBanks=[new Array(16).fill(null),new Array(16).fill(null),new Array(16).fill(null),new Array(16).fill(null)];
-const samplerSeq=[new Array(16).fill(null),new Array(16).fill(null),new Array(16).fill(null),new Array(16).fill(null)]; // each pad has steps[16]
+const SAMPLER_BANK_COUNT=13; // A..M  (13 × 16 = 208 factory pads)
+const SAMPLER_BANK_LABELS=['A','B','C','D','E','F','G','H','I','J','K','L','M'];
+const SAMPLER_BANK_NAMES=['DRUMS','BASS','SYNTH FX','LOOPS · VOX','BRASS · TRUMPETS','GUITARS','PARTY FX','PIANO · KEYS','808 · TRAP','LATIN · WORLD','EDM RISERS · IMPACTS','ETHNIC · TRIBAL','VOICE · CROWD'];
+const samplerBanks=Array.from({length:SAMPLER_BANK_COUNT},()=>new Array(16).fill(null));
+const samplerSeq=Array.from({length:SAMPLER_BANK_COUNT},()=>new Array(16).fill(null)); // each pad has steps[16]
 const samplerActive=new Map(); // map padIdx → active source for choke
 const SE_DEFAULTS={gain:0.8,pitch:0,pan:0,fadeIn:0,fadeOut:50,filterType:'off',filterFreq:5000,delay:0,feedback:0.35,choke:0,loop:false,reverse:false,sync:false};
 function getCurBank(){return samplerBanks[samplerBank];}
 function getCurSeq(){return samplerSeq[samplerBank];}
 function _ensurePadDefaults(p){if(!p.params)p.params={...SE_DEFAULTS};return p;}
 
+function renderBankSwitcher(){
+  const sw=document.getElementById('bankSwitcher');if(!sw)return;
+  sw.innerHTML='';
+  for(let i=0;i<SAMPLER_BANK_COUNT;i++){
+    const b=document.createElement('button');
+    b.className='bank-btn'+(i===samplerBank?' active':'');
+    b.dataset.bank=i;
+    b.textContent=SAMPLER_BANK_LABELS[i];
+    b.title=SAMPLER_BANK_NAMES[i]||'';
+    sw.appendChild(b);
+  }
+}
 function renderSampler(){
   const g=document.getElementById('samplerGrid');if(!g)return;g.innerHTML='';
+  renderBankSwitcher();
   if(typeof samples!=='undefined'&&samples&&samples.some(Boolean)&&!samplerBanks[0].some(Boolean)){
     samples.forEach((s,i)=>{if(s)samplerBanks[0][i]=_ensurePadDefaults({...s});});
   }
@@ -10394,10 +10515,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     bind('seLoop','loop');
     bind('seReverse','reverse');
     bind('seSync','sync');
-    document.querySelectorAll('.bank-btn').forEach(b=>b.addEventListener('click',()=>{
-      document.querySelectorAll('.bank-btn').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');samplerBank=parseInt(b.dataset.bank);samplerSelected=null;renderSampler();
-    }));
+    document.getElementById('bankSwitcher')?.addEventListener('click',e=>{
+      const b=e.target.closest('.bank-btn');if(!b)return;
+      samplerBank=parseInt(b.dataset.bank);samplerSelected=null;renderSampler();
+    });
+    renderBankSwitcher();
     document.getElementById('seqPlayBtn')?.addEventListener('click',()=>{if(_seqRunning)seqStop();else seqStart();});
     document.getElementById('seqClearBtn')?.addEventListener('click',()=>{
       const seq=getCurSeq();const i=samplerSelected;if(i==null)return;
@@ -10935,14 +11057,36 @@ function attachEvents(){
       });
     });
   });
+  /* CHANNEL FADERS — smooth, accurate, click-free
+     · pointer events throttled via rAF (one update per frame, not per move)
+     · audio-param updates use setTargetAtTime so the gain ramp avoids zipper
+       noise / clicks on fast moves
+     · 5% deadzone at the bottom snaps to absolute zero (true mute)
+     · effective travel widened from 90% to 95% so the top is reachable */
   ['A','B','C','D'].forEach(d=>{
     const w=document.querySelector(`.fader-wrap[data-fader="${d}"]`);
     if(!w)return;
-    const h=document.getElementById(`fader-${d}`);let drag=false;
-    function setY(cy){const r=w.getBoundingClientRect();let y=(cy-r.top)/r.height;y=Math.max(0,Math.min(0.9,y));h.style.bottom=`${(1-y-0.1)*100}%`;const v=1-y/0.9;decks[d].volume=v;if(decks[d].volumeGain)decks[d].volumeGain.gain.value=v;applyCrossfader();}
-    w.addEventListener('pointerdown',e=>{w.setPointerCapture(e.pointerId);drag=true;setY(e.clientY);});
-    w.addEventListener('pointermove',e=>{if(drag)setY(e.clientY);});
-    w.addEventListener('pointerup',e=>{w.releasePointerCapture(e.pointerId);drag=false;});
+    const h=document.getElementById(`fader-${d}`);
+    let drag=false,pendingY=null,rafId=0;
+    const apply=()=>{
+      rafId=0;if(pendingY==null)return;
+      const r=w.getBoundingClientRect();
+      let y=(pendingY-r.top)/r.height;y=Math.max(0,Math.min(0.95,y));pendingY=null;
+      let v=1-y/0.95;if(v<0.005)v=0;
+      h.style.bottom=`${(1-y-0.05)*100}%`;
+      decks[d].volume=v;
+      const g=decks[d].volumeGain;
+      if(g){
+        try{g.gain.setTargetAtTime(v,audioCtx.currentTime,0.012);}
+        catch(_){g.gain.value=v;}
+      }
+      applyCrossfader();
+    };
+    const queue=cy=>{pendingY=cy;if(!rafId)rafId=requestAnimationFrame(apply);};
+    w.addEventListener('pointerdown',e=>{e.preventDefault();try{w.setPointerCapture(e.pointerId);}catch(_){}drag=true;queue(e.clientY);});
+    w.addEventListener('pointermove',e=>{if(drag)queue(e.clientY);});
+    w.addEventListener('pointerup',e=>{try{w.releasePointerCapture(e.pointerId);}catch(_){}drag=false;});
+    w.addEventListener('pointercancel',()=>{drag=false;});
   });
   document.querySelectorAll('.color-fx-select').forEach(btn=>{
     btn.addEventListener('click',()=>{
@@ -11260,7 +11404,7 @@ function loadFromDB(){
 
 /* SETTINGS */
 function applyTheme(name){
-  document.body.classList.remove('theme-light','theme-neon','theme-gold','theme-pioneer');
+  document.body.classList.remove('theme-light','theme-neon','theme-gold','theme-pioneer','theme-real');
   if(name!=='dark')document.body.classList.add(`theme-${name}`);
   settings.theme=name;saveToDB();
 }
