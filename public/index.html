@@ -8157,6 +8157,7 @@ No MIDI devices. Press CONNECT.
 <button class="tool-btn" id="spSaveProjBtn" title="Save current TITAN LAB project locally" style="border-color:#88ff88;color:#88ff88;margin-left:4px">💾 SAVE</button>
 <button class="tool-btn" id="spLoadProjBtn" title="Open a saved project" style="border-color:#88ff88;color:#88ff88;margin-left:4px">📂 LOAD</button>
 <button class="tool-btn" id="spMixerOpenBtn" title="Open full-screen studio mixer" style="border-color:var(--orange);color:var(--orange);margin-left:6px">🎛 MIXER</button>
+<button class="tool-btn" id="spProBadge" title="TITAN LAB tier" style="margin-left:8px;font-weight:900;letter-spacing:1.4px;background:#15151a;color:#888;border:1px solid #2a2a30;padding:6px 10px">○ FREE</button>
 <span id="spStepIndicator" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1.5px;margin-left:6px;">— / 16</span>
 </div>
 </div>
@@ -13923,6 +13924,149 @@ function spCloseStudioMixer(){
 }
 
 /* ====================================================================
+   TITAN LAB — License + Pro feature gating
+   --------------------------------------------------------------------
+   Free tier:  TITAN LAB UI + drums + bass + synth + organ + REC
+               (limited to short capture), 3 saved projects max.
+   Pro tier :  unlimited projects, RENDER full mix, STEMS export,
+               cloud-sync hooks, all current + future Pro features.
+   --------------------------------------------------------------------
+   License is an HMAC-SHA256-signed payload {tier,email,expiresAt}
+   that the owner generates via tools/gen-license.js (see /docs)
+   and emails the buyer to paste into the LICENSE panel.
+
+   Owner config:
+     - Set SP_LICENSE_SECRET to a random server-only secret. It is
+       compiled into the client bundle, so anyone reading the source
+       *could* generate fake keys. This is intentional "soft DRM" —
+       legit buyers pay for the convenience and updates.
+     - Set SP_STRIPE_CHECKOUT_URL to the Stripe Payment Link.
+   ==================================================================== */
+const SP_LICENSE_SECRET='titanlab-2026-replace-this-with-a-real-server-side-secret';
+const SP_STRIPE_CHECKOUT_URL='https://buy.stripe.com/test_REPLACE_WITH_REAL_LINK';
+const SP_LICENSE_KEY='titanlab_license_v1';
+const SP_PRO_FEATURES={
+  render:'Render full mix to WAV',
+  stems :'Export stems (one WAV per channel)',
+  unlimited_projects:'Unlimited saved projects (free tier saves 3)',
+  cloud:'Cloud sync (across devices)',
+};
+async function _spHmacHex(secret,text){
+  const enc=new TextEncoder();
+  const key=await crypto.subtle.importKey('raw',enc.encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign','verify']);
+  const sig=await crypto.subtle.sign('HMAC',key,enc.encode(text));
+  return Array.from(new Uint8Array(sig)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function spSignLicense(payload){
+  return await _spHmacHex(SP_LICENSE_SECRET,JSON.stringify(payload));
+}
+async function spVerifyLicense(licenseObj){
+  try{
+    if(!licenseObj||!licenseObj.payload||!licenseObj.sig)return null;
+    const expected=await _spHmacHex(SP_LICENSE_SECRET,JSON.stringify(licenseObj.payload));
+    if(expected!==licenseObj.sig)return null;
+    if(licenseObj.payload.expiresAt && licenseObj.payload.expiresAt<Date.now())return null;
+    return licenseObj.payload;
+  }catch(e){return null;}
+}
+let SP_LICENSE_CACHE={tier:'free',email:null,expiresAt:null,verified:false};
+async function spLoadLicense(){
+  const raw=localStorage.getItem(SP_LICENSE_KEY);
+  if(!raw){SP_LICENSE_CACHE={tier:'free',email:null,expiresAt:null,verified:false};return SP_LICENSE_CACHE;}
+  try{
+    const lic=JSON.parse(raw);
+    const payload=await spVerifyLicense(lic);
+    if(payload){SP_LICENSE_CACHE={tier:payload.tier||'pro',email:payload.email||null,expiresAt:payload.expiresAt||null,verified:true};}
+    else{SP_LICENSE_CACHE={tier:'free',email:null,expiresAt:null,verified:false};}
+  }catch(e){SP_LICENSE_CACHE={tier:'free',email:null,expiresAt:null,verified:false};}
+  return SP_LICENSE_CACHE;
+}
+function spIsPro(){return SP_LICENSE_CACHE && SP_LICENSE_CACHE.tier==='pro' && SP_LICENSE_CACHE.verified;}
+function spShowPaywall(featureKey){
+  const featLabel=SP_PRO_FEATURES[featureKey]||featureKey||'this feature';
+  const html=`
+    <div style="font-family:'Share Tech Mono',monospace;font-size:13px;line-height:1.55;color:#ddd">
+      <div style="font-family:'Orbitron',sans-serif;font-size:18px;color:#ff8a1a;letter-spacing:2px;margin-bottom:10px;">🔒 TITAN LAB PRO</div>
+      <p style="margin:0 0 10px"><b style="color:#2aeaff">${featLabel}</b> is part of <b>TITAN LAB PRO</b>.</p>
+      <p style="margin:0 0 10px">Pro unlocks:</p>
+      <ul style="margin:0 0 12px 18px;padding:0">
+        ${Object.entries(SP_PRO_FEATURES).map(([k,v])=>`<li>${v}</li>`).join('')}
+      </ul>
+      <p style="margin:0 0 10px;color:#aaa;font-size:11.5px">After paying, you'll receive a license JSON by email — paste it in TITAN LAB ▸ LICENSE.</p>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <a href="${SP_STRIPE_CHECKOUT_URL}" target="_blank" rel="noopener noreferrer" class="tool-btn"
+         style="background:linear-gradient(180deg,#2aeaff,#0a8fa0);color:#0a0a0c;border:1px solid #2aeaff;padding:9px 14px;font-weight:900;letter-spacing:1.4px;text-decoration:none;display:inline-block;">
+         💳 BUY PRO
+      </a>
+      <button class="tool-btn" id="spPaywallEnter" style="border-color:var(--orange);color:var(--orange)">🔑 I HAVE A LICENSE</button>
+    </div>`;
+  if(typeof showModal==='function'){
+    showModal('TITAN LAB PRO',html,()=>{});
+    setTimeout(()=>{
+      document.getElementById('spPaywallEnter')?.addEventListener('click',()=>{
+        closeModal&&closeModal();
+        spShowLicenseDialog();
+      });
+    },50);
+  }else{
+    alert(`${featLabel} requires TITAN LAB PRO.`);
+  }
+}
+async function spRequirePro(feature,fn){
+  if(!SP_LICENSE_CACHE.verified)await spLoadLicense();
+  if(spIsPro())return fn();
+  spShowPaywall(feature);
+}
+function spShowLicenseDialog(){
+  const cur=SP_LICENSE_CACHE;
+  const html=`
+    <div style="font-family:'Share Tech Mono',monospace;font-size:13px;color:#ddd;line-height:1.55">
+      <div style="font-family:'Orbitron',sans-serif;font-size:16px;color:#ff8a1a;letter-spacing:2px;margin-bottom:10px;">🔑 TITAN LAB LICENSE</div>
+      <div style="margin-bottom:10px">
+        <div>Current tier: <b style="color:${cur.tier==='pro'?'#88ff88':'#ffb84d'}">${cur.tier.toUpperCase()}</b>${cur.email?' · '+cur.email:''}</div>
+        ${cur.expiresAt?`<div style="font-size:11px;color:#888">Expires ${new Date(cur.expiresAt).toLocaleString()}</div>`:''}
+      </div>
+      <div style="font-size:11.5px;color:#aaa;margin-bottom:6px">Paste your license JSON (you got it by email after paying):</div>
+      <textarea id="spLicenseText" rows="6" style="width:100%;font-family:'Share Tech Mono',monospace;font-size:11.5px;background:#08080a;color:#eee;border:1px solid #2a2a30;border-radius:6px;padding:8px;outline:none" placeholder='{ "payload": { "tier":"pro","email":"you@example.com","expiresAt":1893456000000 }, "sig":"..." }'></textarea>
+      <div id="spLicenseStatus" style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#888;margin-top:6px;min-height:14px"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <button class="tool-btn" id="spLicenseSave" style="border-color:#88ff88;color:#88ff88">💾 ACTIVATE</button>
+      ${cur.tier==='pro'?'<button class="tool-btn" id="spLicenseRemove" style="border-color:var(--red);color:var(--red)">REMOVE LICENSE</button>':''}
+      <a class="tool-btn" href="${SP_STRIPE_CHECKOUT_URL}" target="_blank" rel="noopener noreferrer" style="border-color:#2aeaff;color:#2aeaff;text-decoration:none">💳 BUY PRO</a>
+    </div>`;
+  if(typeof showModal!=='function'){alert('Open Settings ▸ License');return;}
+  showModal('TITAN LAB — license',html,()=>{});
+  setTimeout(()=>{
+    document.getElementById('spLicenseSave')?.addEventListener('click',async()=>{
+      const ta=document.getElementById('spLicenseText');
+      const st=document.getElementById('spLicenseStatus');
+      const txt=(ta?.value||'').trim();
+      if(!txt){st&&(st.textContent='Paste a license first',st.style.color='#ffb84d');return;}
+      let lic=null;try{lic=JSON.parse(txt);}catch(e){st&&(st.textContent='Not valid JSON',st.style.color='#ff5555');return;}
+      const payload=await spVerifyLicense(lic);
+      if(!payload){st&&(st.textContent='Invalid or expired license',st.style.color='#ff5555');return;}
+      localStorage.setItem(SP_LICENSE_KEY,JSON.stringify(lic));
+      await spLoadLicense();
+      toast&&toast('TITAN LAB PRO activated · '+(payload.email||'unknown'),'success');
+      closeModal&&closeModal();
+      spUpdateProBadge();
+    });
+    document.getElementById('spLicenseRemove')?.addEventListener('click',()=>{
+      if(!confirm('Remove this license?'))return;
+      localStorage.removeItem(SP_LICENSE_KEY);
+      spLoadLicense().then(()=>{spUpdateProBadge();toast&&toast('License removed','success');closeModal&&closeModal();});
+    });
+  },50);
+}
+function spUpdateProBadge(){
+  const b=document.getElementById('spProBadge');if(!b)return;
+  if(spIsPro()){b.textContent='⚡ PRO';b.style.background='linear-gradient(180deg,#88ff88,#1a9a1a)';b.style.color='#001a00';b.title='TITAN LAB PRO'+(SP_LICENSE_CACHE.email?' · '+SP_LICENSE_CACHE.email:'');}
+  else{b.textContent='○ FREE';b.style.background='#15151a';b.style.color='#888';b.title='Free tier — click to upgrade';}
+}
+
+/* ====================================================================
    TITAN LAB — Projects (save / load / list) — localStorage backed
    ==================================================================== */
 const SP_PROJECTS_KEY='titanlab_projects_v1';
@@ -14011,9 +14155,11 @@ function spProjectRestore(state){
   if(state.activeInst){SP.activeInst=state.activeInst;document.querySelector(`[data-sp-inst="${state.activeInst}"]`)?.click();}
 }
 function spProjectSave(){
+  const list=spProjectsList();
+  // Free tier — cap to 3 projects, gate further saves behind PRO
+  if(!spIsPro() && list.length>=3){spShowPaywall('unlimited_projects');return;}
   const name=(prompt('Project name:','TITAN LAB project')||'').trim();
   if(!name)return;
-  const list=spProjectsList();
   const id='proj_'+Date.now();
   list.push({id,name,createdAt:Date.now(),state:spProjectSerialize()});
   spProjectsWrite(list);
@@ -14366,8 +14512,12 @@ function setupStudioPro(){
   // Project save/load + render/stems
   document.getElementById('spSaveProjBtn')?.addEventListener('click',spProjectSave);
   document.getElementById('spLoadProjBtn')?.addEventListener('click',spProjectLoadDialog);
-  document.getElementById('spRenderBtn')?.addEventListener('click',spRenderTrack);
-  document.getElementById('spStemsBtn')?.addEventListener('click',spRenderStems);
+  document.getElementById('spRenderBtn')?.addEventListener('click',()=>spRequirePro('render',spRenderTrack));
+  document.getElementById('spStemsBtn')?.addEventListener('click',()=>spRequirePro('stems',spRenderStems));
+  // PRO badge — open license dialog when clicked
+  document.getElementById('spProBadge')?.addEventListener('click',spShowLicenseDialog);
+  // Initial license load + badge
+  spLoadLicense().then(spUpdateProBadge);
 
   // VIBE SOUND CODING — generate & play
   const vibeInp=document.getElementById('spVibeInput');
