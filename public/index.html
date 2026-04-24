@@ -11093,15 +11093,15 @@ function syncDeck(deckId){
   const d=decks[deckId];
   if(!d.track){toast('No track loaded','error');return false;}
   // Find best source: any playing deck other than this one, or first loaded
-  let o=null;
+  let o=null,oId=null;
   for(const id of ['A','B','C','D']){
     if(id===deckId)continue;
-    if(decks[id].track&&decks[id].playing){o=decks[id];break;}
+    if(decks[id].track&&decks[id].playing){o=decks[id];oId=id;break;}
   }
   if(!o){
     for(const id of ['A','B','C','D']){
       if(id===deckId)continue;
-      if(decks[id].track){o=decks[id];break;}
+      if(decks[id].track){o=decks[id];oId=id;break;}
     }
   }
   if(!o){toast('No other deck with track','error');return false;}
@@ -11109,7 +11109,31 @@ function syncDeck(deckId){
   const pct=((tb/d.track.bpm)-1)*100;
   if(Math.abs(pct)>(d.tempoRange||8)){toast(`Out of range (${pct.toFixed(1)}%)`,'error');return false;}
   setTempo(deckId,pct);
-  toast(`Synced ${deckId} → ${tb.toFixed(2)} BPM`,'success');
+  // ─── Phase-aware alignment ───
+  // Port of beat-math.ts phaseOffsetSeconds — snap self's downbeat to other's.
+  // Only applied if the source deck is actually playing AND we have an anchor
+  // (cuePoint is used as the grid-1 anchor; if beatgrid is present, prefer it).
+  let phaseAligned=false;
+  if(o.playing&&d.buffer){
+    const anchor=(x)=>(x.beatgrid&&x.beatgrid.origin!=null)?x.beatgrid.origin:(x.cuePoint||0);
+    const bpm=d.track.bpm*(1+pct/100);
+    const oBpm=o.track.bpm*(1+o.tempo/100);
+    const beatsPerBar=4;
+    const selfBar=60/bpm*beatsPerBar;
+    const othBar=60/oBpm*beatsPerBar;
+    const selfPhase=(((getCurrentTime(deckId)-anchor(d))%selfBar)+selfBar)%selfBar/selfBar;
+    const othPhase=(((getCurrentTime(oId)-anchor(o))%othBar)+othBar)%othBar/othBar;
+    let diff=selfPhase-othPhase;
+    if(diff>0.5)diff-=1;
+    if(diff<-0.5)diff+=1;
+    const offsetSec=diff*selfBar;
+    // Only nudge when the drift is audible (>10ms) but not huge (<1 bar)
+    if(Math.abs(offsetSec)>0.010&&Math.abs(offsetSec)<selfBar*0.75){
+      seekDeck(deckId,Math.max(0,getCurrentTime(deckId)-offsetSec));
+      phaseAligned=true;
+    }
+  }
+  toast(`Synced ${deckId} → ${tb.toFixed(2)} BPM${phaseAligned?' · phase-locked':''}`,'success');
   return true;
 }
 
@@ -15448,6 +15472,13 @@ function _spImportPubkey(){
   return _spPubkeyPromise;
 }
 async function spVerifyLicense(licenseObj){
+  // Two-stage verification:
+  //   1. Client-side Ed25519 check — fast, works offline, good enough for the
+  //      renderer to decide whether to enable a feature *optimistically*.
+  //   2. Server-side call to the verify-license Edge Function (if Supabase is
+  //      configured) — authoritative, tamper-proof, returns a short-lived JWT
+  //      the app can attach to premium API calls. The server token is cached
+  //      in localStorage so we only hit the edge once a day per license.
   try{
     if(!licenseObj||!licenseObj.payload||!licenseObj.sig)return null;
     if(licenseObj.alg && licenseObj.alg!=='ed25519')return null;
@@ -15457,7 +15488,48 @@ async function spVerifyLicense(licenseObj){
     const ok=await crypto.subtle.verify({name:'Ed25519'},pubkey,sig,text);
     if(!ok)return null;
     if(licenseObj.payload.expiresAt && licenseObj.payload.expiresAt<Date.now())return null;
+    // Kick off (but don't block on) a server-side re-verification.
+    // The server issues an entitlement JWT that premium API calls can require,
+    // closing the "just patch the renderer to skip verify" attack.
+    spVerifyLicenseServer(licenseObj).catch(()=>{});
     return licenseObj.payload;
+  }catch(e){return null;}
+}
+
+const SP_ENTITLEMENT_KEY='titan_entitlement_v1';
+async function spVerifyLicenseServer(licenseObj){
+  try{
+    const supaUrl=(typeof supaCfg!=='undefined'&&supaCfg.url)||'';
+    if(!supaUrl)return null;
+    const cachedRaw=localStorage.getItem(SP_ENTITLEMENT_KEY);
+    if(cachedRaw){
+      const cached=JSON.parse(cachedRaw);
+      if(cached.tokenExpiresAt&&cached.tokenExpiresAt>Date.now()+5*60_000){
+        // Valid cached token — skip the round trip
+        return cached;
+      }
+    }
+    const r=await fetch(`${supaUrl}/functions/v1/verify-license`,{
+      method:'POST',
+      headers:{'content-type':'application/json'},
+      body:JSON.stringify({license:licenseObj})
+    });
+    const j=await r.json();
+    if(!j.ok)throw new Error(j.error||'verify failed');
+    localStorage.setItem(SP_ENTITLEMENT_KEY,JSON.stringify(j));
+    return j;
+  }catch(e){
+    console.warn('[license] server verify failed — falling back to client check',e);
+    return null;
+  }
+}
+function spGetEntitlementToken(){
+  try{
+    const raw=localStorage.getItem(SP_ENTITLEMENT_KEY);
+    if(!raw)return null;
+    const cached=JSON.parse(raw);
+    if(cached.tokenExpiresAt&&cached.tokenExpiresAt>Date.now())return cached.token||null;
+    return null;
   }catch(e){return null;}
 }
 let SP_LICENSE_CACHE={tier:'free',email:null,expiresAt:null,verified:false};

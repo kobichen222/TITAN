@@ -34,7 +34,7 @@ export function isHarmonic(k1: string, k2: string): boolean {
   if (k1 === k2) return true;
   const m1 = /^(\d{1,2})([AB])$/.exec(k1);
   const m2 = /^(\d{1,2})([AB])$/.exec(k2);
-  if (!m1 || !m2) return false;
+  if (!m1 || !m2 || !m1[1] || !m1[2] || !m2[1] || !m2[2]) return false;
   const n1 = parseInt(m1[1], 10), l1 = m1[2];
   const n2 = parseInt(m2[1], 10), l2 = m2[2];
   if (n1 < 1 || n1 > 12 || n2 < 1 || n2 > 12) return false;

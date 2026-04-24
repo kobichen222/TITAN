@@ -15,7 +15,9 @@
     "electron:mac": "electron-builder --mac",
     "electron:linux": "electron-builder --linux",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit --project tsconfig.src.json",
+    "ci": "npm run typecheck && npm test"
   },
   "dependencies": {
     "electron-updater": "^6.3.0",
