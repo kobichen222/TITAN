@@ -10,7 +10,7 @@
 :root{--deck-bg:#1a1a1c;--deck-panel:#242428;--deck-border:#3a3a3e;--screen-glow:#00d4ff;--orange:#ff7a00;--orange-glow:#ffa544;--cue-orange:#ff5a00;--play-green:#00ff7a;--red:#ff2e2e;--yellow:#ffd400;--purple:#c800ff;--pink:#ff3c78;--text:#e8e8ea;--text-dim:#9a9a9e;--bg:#0a0a0a}
 body.theme-light{--deck-bg:#e5e5e7;--deck-panel:#f5f5f7;--deck-border:#b0b0b2;--text:#1a1a1c;--text-dim:#5a5a5e;--bg:#f0f0f2}
 body.theme-neon{--orange:#ff00ff;--screen-glow:#00ffff;--play-green:#00ff00}
-body.theme-gold{--orange:#e8c463;--orange-glow:#fff0a8;--cue-orange:#ffcf40;--play-green:#f5d76e;--screen-glow:#ffd97a;--yellow:#f4c430;--red:#c83c3c;--purple:#c7a856;--pink:#e6b25a;--text:#f3e3b0;--text-dim:#c9a85a;--bg:#0a0806;--deck-bg:#1a1410;--deck-panel:#221a12;--deck-border:#6b4f1e}
+body.theme-gold{--orange:#3a2a0a;--orange-glow:#5a3f12;--cue-orange:#6b4a18;--play-green:#2a3a1a;--screen-glow:#2a1a08;--yellow:#c8a848;--red:#8a2020;--purple:#5a4020;--pink:#a8886a;--text:#1a1208;--text-dim:#4a3a1a;--bg:#0a0806;--deck-bg:#c8a656;--deck-panel:#d4b468;--deck-border:#8a6a2e}
 body.theme-euphonia{--orange:#c77848;--orange-glow:#e8a778;--cue-orange:#ffb347;--play-green:#7fffa3;--screen-glow:#9ee5ff;--yellow:#ffd966;--red:#ff5050;--purple:#b087e8;--pink:#ff8ab3;--text:#eaeaec;--text-dim:#8a8a90;--bg:#050507;--deck-bg:#0d0d0f;--deck-panel:#141416;--deck-border:#2a2a2e}
 body.theme-blade{--orange:#00f0ff;--orange-glow:#7ff7ff;--cue-orange:#00f0ff;--play-green:#00f0ff;--screen-glow:#00f0ff;--yellow:#00f0ff;--red:#ff3344;--purple:#00f0ff;--pink:#00f0ff;--text:#e8f5fa;--text-dim:#6a7a88;--bg:#060810;--deck-bg:#0c0e14;--deck-panel:#12141a;--deck-border:#1e2028}
 html,body{background:radial-gradient(ellipse at center,#222 0%,var(--bg) 70%);min-height:100vh;font-family:'Barlow Condensed',sans-serif;color:var(--text)}
@@ -291,10 +291,61 @@ body.show-all .console.show-all{max-width:none;width:calc(100vw - 16px)}
 .jog-markers::before{content:'';position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.15) 0deg 1deg,transparent 1deg 9deg);mask:radial-gradient(circle,transparent 55%,#000 55%,#000 58%,transparent 58%);-webkit-mask:radial-gradient(circle,transparent 55%,#000 55%,#000 58%,transparent 58%)}
 .jog-platter{position:absolute;inset:32px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#2a2a2e 0%,#121214 60%,#050506 100%);box-shadow:inset 0 2px 8px rgba(255,255,255,.08),inset 0 -4px 10px rgba(0,0,0,.9);display:flex;justify-content:center;align-items:center;cursor:grab}
 .jog-platter-disc{position:absolute;inset:12px;border-radius:50%;background:repeating-radial-gradient(circle,rgba(255,255,255,.02) 0px,rgba(255,255,255,.02) 1px,transparent 1px,transparent 3px),radial-gradient(circle,#1a1a1c 0%,#0a0a0b 100%)}
-.jog-center-screen{width:80px;height:80px;border-radius:50%;background:linear-gradient(180deg,#0a1418 0%,#020608 100%);border:2px solid #1a2a30;display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:inset 0 0 20px rgba(0,212,255,.1);z-index:2;position:relative}
-.jog-center-screen .bpm-display{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:800;color:var(--orange-glow);text-shadow:0 0 10px rgba(255,122,0,.8);line-height:1}
-.jog-center-screen .bpm-sub{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--screen-glow);letter-spacing:2px;margin-top:2px}
-.jog-center-screen .deck-badge{font-family:'Orbitron',sans-serif;font-size:8px;color:#fff;letter-spacing:2px;margin-top:3px;opacity:.7}
+/* ═══ TITAN ONYX · jog-wheel centre (large, precisely-centred BPM dial) ═══ */
+.jog-center-screen{
+  width:120px;height:120px;border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255,255,255,.05), transparent 55%),
+    linear-gradient(180deg,#161618 0%,#0a0a0c 50%,#020203 100%);
+  border:1px solid #2e2e36;
+  /* Centre content absolutely so the BPM number sits DEAD centre
+     regardless of what's around it */
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.05),
+    inset 0 -10px 16px rgba(0,0,0,.85),
+    inset 0 0 0 3px #050507,
+    0 0 0 1px #000,
+    0 6px 16px rgba(0,0,0,.75);
+  z-index:2;position:relative;overflow:hidden;
+}
+/* Dial SVG covers the whole centre screen — the arc sits on the rim,
+   the needle points outward, and there's a clear empty centre for the
+   BPM number to sit in. */
+.jog-bpm-dial{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;
+}
+.jdial-needle{transition:transform .18s cubic-bezier(.22,.9,.3,1);transform-origin:50px 50px}
+/* Numeric readout — perfectly centred, no margin hacks. The flex parent
+   handles alignment; .jdial-text is absolute+translate for pixel precision. */
+.jdial-text{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1px;pointer-events:none;z-index:3;
+  line-height:1;
+}
+.jog-center-screen .bpm-display{
+  font-family:'Orbitron',sans-serif;font-size:24px;font-weight:800;
+  color:#ff9030;
+  /* One soft ring-glow, no stacked hard shadows — crisper look */
+  text-shadow:0 0 6px rgba(255,144,48,.5);
+  letter-spacing:-.5px;
+  font-variant-numeric:tabular-nums;
+  line-height:1;
+  margin:0 !important;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:geometricPrecision;
+}
+.jog-center-screen .bpm-sub{
+  font-family:'Orbitron',sans-serif;font-size:7px;font-weight:700;
+  color:#6a6a72;letter-spacing:4px;margin-top:4px;
+  opacity:.9;
+}
+.jog-center-screen .deck-badge{
+  font-family:'Orbitron',sans-serif;font-size:8px;color:#fff;
+  letter-spacing:2px;margin-top:3px;opacity:.6;
+}
 .jog-indicator{position:absolute;top:34px;left:50%;width:3px;height:14px;background:linear-gradient(180deg,#fff 0%,var(--orange) 100%);transform:translateX(-50%);border-radius:2px;z-index:3}
 .jog-platter.spinning{animation:platterSpin 2s linear infinite}
 @keyframes platterSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
@@ -4176,6 +4227,370 @@ body.work-mode .dsb-wmexit{display:inline-flex;background:linear-gradient(180deg
 /* Manufacturer / model tag at bottom-center — pure vintage-amp flavour */
 .amp-vu-wrap .amp-vu::before,
 .amp-vu-wrap .amp-vu::after{z-index:4}
+
+/* PPM segmented LED ladders */
+/* ═══════════════════════════════════════════════════════════════════
+   ACADEMY — product-grade learning tab
+   Visual language: warm teal → emerald gradient for the primary path,
+   soft charcoal cards, generous spacing, large numeric progress.
+   Reference marks: Duolingo's course path, Yousician's lesson cards,
+   Simply Piano's badge drawer. Everything is scoped with `.academy-*`
+   so nothing can bleed into the rest of the console UI.
+   ═══════════════════════════════════════════════════════════════════ */
+.academy-wrap{
+  display:flex;flex-direction:column;gap:16px;
+  max-width:1200px;margin:0 auto;padding:0 4px;
+  font-family:'Inter','SF Pro Text','Segoe UI',system-ui,sans-serif;
+  color:#e8f0ea;
+}
+.academy-hero{
+  position:relative;overflow:hidden;
+  padding:28px 32px;border-radius:16px;
+  background:
+    radial-gradient(ellipse at 85% -30%, rgba(92,240,160,.18), transparent 55%),
+    radial-gradient(ellipse at 15% 130%, rgba(46,224,255,.08), transparent 50%),
+    linear-gradient(135deg,#09181c 0%,#071410 55%,#050a07 100%);
+  border:1px solid rgba(92,240,160,.2);
+  box-shadow:0 10px 28px rgba(0,0,0,.5);
+}
+.academy-hero::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 92% 92%, rgba(255,255,255,.04), transparent 40%);
+}
+.academy-hero-grid{
+  display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center;
+  position:relative;z-index:1;
+}
+@media(max-width:760px){.academy-hero-grid{grid-template-columns:1fr}}
+.academy-kicker{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:3px;
+  color:#5cf0a0;font-weight:700;text-transform:uppercase;
+  padding:5px 12px;border:1px solid rgba(92,240,160,.35);border-radius:999px;
+  background:rgba(92,240,160,.06);
+  margin-bottom:14px;
+}
+.academy-title{
+  font-family:'Orbitron',sans-serif;font-size:34px;font-weight:900;
+  letter-spacing:-.5px;line-height:1.05;color:#fff;margin:0 0 10px;
+}
+.academy-title span{color:#5cf0a0}
+.academy-tagline{
+  font-size:14px;line-height:1.6;color:#a0c8af;max-width:560px;margin:0 0 18px;
+}
+.academy-cta{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:12px 22px;border:none;border-radius:10px;
+  background:linear-gradient(180deg,#5cf0a0 0%,#00b868 100%);
+  color:#041a0d;font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:2px;
+  font-weight:800;cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,184,104,.35);
+  transition:transform .15s, box-shadow .15s;
+}
+.academy-cta:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(0,184,104,.45)}
+.academy-cta.ghost{
+  background:transparent;color:#5cf0a0;
+  border:1px solid rgba(92,240,160,.4);box-shadow:none;
+}
+.academy-cta.ghost:hover{background:rgba(92,240,160,.08);box-shadow:none}
+
+.academy-stats{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;min-width:260px;
+}
+.academy-stat{
+  padding:14px 16px;border-radius:10px;
+  background:rgba(4,12,8,.7);
+  border:1px solid rgba(92,240,160,.12);
+  display:flex;flex-direction:column;gap:4px;
+}
+.academy-stat-label{
+  font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;
+  color:#6a8a78;text-transform:uppercase;
+}
+.academy-stat-value{
+  font-family:'Orbitron',sans-serif;font-size:26px;font-weight:800;
+  color:#5cf0a0;line-height:1;letter-spacing:-.5px;
+  font-variant-numeric:tabular-nums;
+}
+.academy-stat-value small{font-size:12px;color:#7a9a8a;font-weight:600;margin-left:4px}
+
+.academy-progress-track{
+  height:4px;background:rgba(92,240,160,.08);border-radius:2px;overflow:hidden;
+  margin-top:6px;
+}
+.academy-progress-fill{
+  height:100%;background:linear-gradient(90deg,#5cf0a0,#00d074);
+  transition:width .5s cubic-bezier(.22,.88,.3,1);
+}
+
+/* ───── Continue card ───── */
+.academy-continue{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 20px;border-radius:12px;
+  background:linear-gradient(90deg,rgba(92,240,160,.08),rgba(46,224,255,.03));
+  border:1px solid rgba(92,240,160,.2);
+  cursor:pointer;transition:transform .15s, background .15s;
+}
+.academy-continue:hover{transform:translateX(2px);background:linear-gradient(90deg,rgba(92,240,160,.12),rgba(46,224,255,.05))}
+.academy-continue-icon{
+  width:48px;height:48px;border-radius:10px;
+  background:linear-gradient(180deg,#5cf0a0,#00a858);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:#041a0d;flex-shrink:0;
+}
+.academy-continue-body{flex:1;min-width:0}
+.academy-continue-label{
+  font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;
+  color:#7a9a88;text-transform:uppercase;margin-bottom:3px;
+}
+.academy-continue-title{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:800;color:#fff;margin-bottom:2px}
+.academy-continue-meta{font-size:11px;color:#8aaa98}
+.academy-continue-arrow{color:#5cf0a0;font-size:20px;opacity:.6;transition:transform .15s,opacity .15s}
+.academy-continue:hover .academy-continue-arrow{transform:translateX(4px);opacity:1}
+
+/* ───── Course cards ───── */
+.academy-section-title{
+  display:flex;align-items:baseline;justify-content:space-between;
+  font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;
+  color:#a0c8af;text-transform:uppercase;font-weight:700;
+  padding:0 4px;
+}
+.academy-section-title small{
+  font-family:'Share Tech Mono',monospace;font-size:10px;
+  color:#5a7a68;letter-spacing:1px;text-transform:none;
+}
+.academy-courses{display:flex;flex-direction:column;gap:14px}
+
+.course-card{
+  position:relative;
+  background:linear-gradient(135deg,#0f1a14 0%,#0a1410 100%);
+  border:1px solid #1a2a1e;border-radius:14px;
+  overflow:hidden;
+  transition:border-color .15s, transform .15s;
+}
+.course-card:hover{border-color:rgba(92,240,160,.3);transform:translateY(-1px)}
+.course-card.locked{opacity:.55}
+.course-card.complete{border-color:rgba(92,240,160,.35)}
+.course-card.complete::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#5cf0a0,#00d074);
+}
+.course-head{
+  display:grid;grid-template-columns:56px 1fr auto;gap:18px;align-items:center;
+  padding:18px 22px;
+}
+.course-num{
+  width:56px;height:56px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;
+  color:var(--cc,#5cf0a0);
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(0,0,0,.3));
+  border:1px solid rgba(255,255,255,.05);
+  box-shadow:inset 0 0 10px rgba(0,0,0,.5);
+}
+.course-body{display:flex;flex-direction:column;gap:4px;min-width:0}
+.course-title{
+  font-family:'Orbitron',sans-serif;font-size:17px;font-weight:800;
+  color:#fff;letter-spacing:.3px;
+}
+.course-desc{font-size:13px;color:#8aaa98;line-height:1.45}
+.course-meta{
+  display:flex;gap:14px;margin-top:6px;flex-wrap:wrap;
+  font-family:'Share Tech Mono',monospace;font-size:10px;color:#6a8a78;
+  letter-spacing:1px;
+}
+.course-meta span{display:flex;align-items:center;gap:4px}
+.course-meta b{color:var(--cc,#a0d8b0);font-weight:600}
+.course-action{
+  padding:10px 18px;border-radius:8px;
+  font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;font-weight:800;
+  background:transparent;border:1px solid rgba(92,240,160,.4);
+  color:#5cf0a0;cursor:pointer;
+  transition:background .15s, color .15s;
+  white-space:nowrap;
+}
+.course-action:hover{background:rgba(92,240,160,.1)}
+.course-action.primary{background:linear-gradient(180deg,#5cf0a0,#00b868);color:#041a0d;border-color:transparent}
+.course-action.primary:hover{background:linear-gradient(180deg,#6cff9f,#00c872)}
+
+.course-lessons{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:8px;padding:0 22px 22px;
+}
+.lesson-chip{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:8px;
+  background:#070e0a;border:1px solid #152218;
+  cursor:pointer;
+  transition:background .15s, border-color .15s, transform .15s;
+}
+.lesson-chip:hover{background:#0a1510;border-color:rgba(92,240,160,.3);transform:translateX(2px)}
+.lesson-chip.done{border-color:rgba(92,240,160,.4);background:rgba(92,240,160,.04)}
+.lesson-chip.locked{opacity:.4;cursor:not-allowed}
+.lesson-chip.locked:hover{transform:none;border-color:#152218}
+.lesson-chip-mark{
+  width:22px;height:22px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  border:1.5px solid #2a3a30;background:transparent;
+  font-size:11px;color:#5a7a68;
+}
+.lesson-chip.done .lesson-chip-mark{background:#5cf0a0;border-color:#5cf0a0;color:#041a0d;font-weight:900}
+.lesson-chip-body{flex:1;min-width:0}
+.lesson-chip-title{font-size:12.5px;font-weight:600;color:#d0e8d8;line-height:1.2;margin-bottom:1px}
+.lesson-chip-xp{
+  font-family:'Share Tech Mono',monospace;font-size:9px;color:#6a8a78;
+  letter-spacing:1px;
+}
+
+/* ───── Achievements ───── */
+.academy-badges{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:10px;
+}
+.badge-card{
+  padding:16px 12px;border-radius:10px;
+  background:#0c1510;border:1px solid #1a2a1e;
+  text-align:center;
+  transition:border-color .15s, transform .15s;
+  cursor:default;
+}
+.badge-card.earned{border-color:rgba(92,240,160,.4);background:linear-gradient(180deg,rgba(92,240,160,.06),#0a1410)}
+.badge-card.earned:hover{transform:translateY(-2px);border-color:rgba(92,240,160,.6)}
+.badge-card.locked{opacity:.45}
+.badge-icon{font-size:28px;line-height:1;margin-bottom:8px;display:block;filter:grayscale(.8)}
+.badge-card.earned .badge-icon{filter:none}
+.badge-name{
+  font-family:'Orbitron',sans-serif;font-size:11px;font-weight:800;letter-spacing:1px;
+  color:#d0e8d8;margin-bottom:3px;
+}
+.badge-desc{font-size:10px;color:#7a9a88;line-height:1.3;min-height:26px}
+
+/* ───── Full-screen active-lesson overlay ───── */
+.academy-lesson-overlay{
+  display:none;position:fixed;inset:0;z-index:5000;
+  background:rgba(2,8,6,.85);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;
+  padding:20px;
+  animation:academyFade .25s ease;
+}
+.academy-lesson-overlay.open{display:flex}
+@keyframes academyFade{from{opacity:0}to{opacity:1}}
+.academy-lesson-modal{
+  width:100%;max-width:560px;
+  background:linear-gradient(180deg,#0f1a14,#0a1410);
+  border:1px solid rgba(92,240,160,.35);
+  border-radius:18px;
+  box-shadow:0 20px 60px rgba(0,0,0,.8),0 0 40px rgba(92,240,160,.15);
+  padding:28px 32px 24px;
+  position:relative;
+  animation:academyPop .3s cubic-bezier(.22,1.4,.4,1);
+}
+@keyframes academyPop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.academy-lesson-close{
+  position:absolute;top:14px;right:16px;
+  background:transparent;border:none;color:#6a8a78;font-size:22px;
+  cursor:pointer;padding:4px 10px;line-height:1;border-radius:6px;
+}
+.academy-lesson-close:hover{color:#5cf0a0;background:rgba(92,240,160,.08)}
+.academy-lesson-kicker{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;
+  color:#6a8a78;text-transform:uppercase;margin-bottom:14px;
+}
+.academy-lesson-dots{display:flex;gap:5px}
+.academy-lesson-dot{
+  width:22px;height:4px;border-radius:2px;background:#1a2a20;
+  transition:background .3s;
+}
+.academy-lesson-dot.done{background:#5cf0a0}
+.academy-lesson-dot.active{background:linear-gradient(90deg,#5cf0a0,#00d074);box-shadow:0 0 8px rgba(92,240,160,.5)}
+.academy-lesson-title{
+  font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;
+  color:#fff;letter-spacing:-.3px;line-height:1.2;margin-bottom:10px;
+}
+.academy-lesson-text{font-size:14px;line-height:1.65;color:#b8d8c0;margin-bottom:16px}
+.academy-lesson-hint{
+  display:none;padding:10px 14px;border-radius:8px;
+  background:rgba(46,224,255,.06);border:1px solid rgba(46,224,255,.2);
+  font-size:12px;color:#8ecae8;line-height:1.4;margin-bottom:16px;
+}
+.academy-lesson-hint.show{display:block}
+.academy-lesson-status{
+  display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;
+  background:rgba(92,240,160,.08);border:1px solid rgba(92,240,160,.3);
+  font-size:12px;color:#5cf0a0;font-weight:600;margin-bottom:16px;
+  opacity:0;transform:translateY(4px);
+  transition:opacity .25s, transform .25s;
+}
+.academy-lesson-status.show{opacity:1;transform:none}
+.academy-lesson-nav{display:flex;gap:10px;justify-content:space-between;align-items:center}
+.academy-lesson-btn{
+  padding:10px 18px;border-radius:8px;
+  font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;font-weight:800;
+  cursor:pointer;transition:background .15s, color .15s, transform .15s;
+}
+.academy-lesson-btn.back{background:transparent;border:1px solid #2a3a30;color:#7a9a88}
+.academy-lesson-btn.back:hover{color:#d0e8d8;border-color:#4a6a58}
+.academy-lesson-btn.back:disabled{opacity:.3;cursor:not-allowed}
+.academy-lesson-btn.skip{background:transparent;border:1px solid transparent;color:#6a8a78}
+.academy-lesson-btn.skip:hover{color:#a0c8af}
+.academy-lesson-btn.next{
+  background:linear-gradient(180deg,#5cf0a0,#00b868);color:#041a0d;border:none;
+  box-shadow:0 4px 14px rgba(0,184,104,.3);
+}
+.academy-lesson-btn.next:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,184,104,.4)}
+.academy-lesson-btn.next.ready{animation:academyPulse 1s ease-in-out infinite}
+@keyframes academyPulse{0%,100%{box-shadow:0 4px 14px rgba(0,184,104,.3)}50%{box-shadow:0 4px 14px rgba(0,184,104,.3),0 0 0 8px rgba(92,240,160,.15)}}
+
+/* Arrow that points to the target control during a lesson */
+.academy-target-arrow{
+  position:fixed;z-index:4999;pointer-events:none;
+  width:36px;height:36px;
+  color:#5cf0a0;filter:drop-shadow(0 0 8px rgba(92,240,160,.8));
+  animation:academyArrow 1.2s ease-in-out infinite;
+}
+@keyframes academyArrow{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+.academy-highlight{
+  animation:academyHighlight 1.4s ease-in-out infinite;
+  border-radius:6px;position:relative;z-index:50;
+}
+@keyframes academyHighlight{
+  0%,100%{box-shadow:0 0 0 0 rgba(92,240,160,0),0 0 0 0 rgba(92,240,160,0)}
+  50%{box-shadow:0 0 0 4px rgba(92,240,160,.4),0 0 22px rgba(92,240,160,.5)}
+}
+
+/* Completion celebration overlay */
+.academy-celebrate{
+  display:none;position:fixed;inset:0;z-index:5100;
+  align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at center, rgba(92,240,160,.25), rgba(0,0,0,.85) 60%);
+  animation:academyFade .3s ease;
+}
+.academy-celebrate.open{display:flex}
+.academy-celebrate-card{
+  text-align:center;padding:40px 50px;
+  background:linear-gradient(180deg,#0f1a14,#051410);
+  border:1px solid rgba(92,240,160,.5);border-radius:20px;
+  box-shadow:0 30px 80px rgba(0,0,0,.9),0 0 60px rgba(92,240,160,.3);
+  max-width:420px;
+  animation:academyPop .4s cubic-bezier(.22,1.4,.4,1);
+}
+.academy-celebrate-icon{font-size:64px;line-height:1;margin-bottom:16px;display:block;animation:academyBounce .6s ease-in-out infinite alternate}
+@keyframes academyBounce{from{transform:translateY(0) scale(1)}to{transform:translateY(-6px) scale(1.05)}}
+.academy-celebrate-title{font-family:'Orbitron',sans-serif;font-size:26px;font-weight:900;color:#fff;margin-bottom:8px;letter-spacing:-.3px}
+.academy-celebrate-sub{font-size:14px;color:#a0c8af;margin-bottom:24px;line-height:1.5}
+.academy-celebrate-xp{
+  font-family:'Orbitron',sans-serif;font-size:38px;font-weight:900;color:#5cf0a0;
+  text-shadow:0 0 20px rgba(92,240,160,.6);margin-bottom:20px;letter-spacing:-.5px;
+}
+.academy-celebrate-xp small{font-size:14px;color:#7a9a88;font-weight:600;margin-left:4px}
+
+/* Hide the old inline-styled controls on the LEARN tab if they still render */
+#learnActiveLesson{display:none !important}
 
 /* PPM segmented LED ladders */
 .amp-ppm-col{display:flex;flex-direction:column;gap:4px;justify-content:center;min-width:68px}
@@ -8071,6 +8486,390 @@ body.theme-light .cdj .cue-btn{
 .cdj .pad-modes,.cdj .hot-cues{width:100% !important;box-sizing:border-box !important}
 .cdj .pad-mode-btn,.cdj .cue-btn{min-width:0 !important;box-sizing:border-box !important}
 
+/* ═══════════════════════════════════════════════════════════════════
+   TITAN GOLD — Vestax PMC-style brushed-brass panel look
+   Decks + mixer chassis become brushed gold metal with dark text,
+   black knobs with white indicator, and subtle corner screws.
+   Matches the reference photo the user supplied.
+   ═══════════════════════════════════════════════════════════════════ */
+body.theme-gold{
+  /* Brushed-brass backdrop for the whole page */
+  background:
+    radial-gradient(ellipse at 50% 50%, #3a2a10 0%, #1a0e04 70%) !important;
+}
+/* Deck chassis — brushed brass with faint vertical grain */
+body.theme-gold .cdj,
+body.theme-gold .mixer{
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(0,0,0,.03) 0 1px,
+      transparent 1px 2px,
+      rgba(255,255,255,.02) 2px 3px,
+      transparent 3px 4px) ,
+    linear-gradient(180deg,#e6c878 0%,#d4b456 35%,#b8983e 75%,#8e6e22 100%) !important;
+  border:1px solid #6a4a0e !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,245,200,.6),
+    inset 0 -2px 8px rgba(60,40,8,.55),
+    inset 0 0 0 2px #2a1a08,
+    inset 0 0 0 3px #8a6a2e,
+    0 12px 28px rgba(0,0,0,.7) !important;
+  position:relative;
+}
+/* Four brass screws in the corners */
+body.theme-gold .cdj::before,
+body.theme-gold .cdj::after,
+body.theme-gold .mixer::before,
+body.theme-gold .mixer::after{
+  content:'';position:absolute;width:10px;height:10px;border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 30%,#f0d890 0%,#a07830 55%,#2a1408 100%) !important;
+  box-shadow:
+    inset 0 0 0 1px #1a0a00,
+    0 1px 1px rgba(0,0,0,.6) !important;
+  z-index:4;pointer-events:none;
+}
+body.theme-gold .cdj::before{top:8px;left:10px !important;background:radial-gradient(circle at 35% 30%,#f0d890 0%,#a07830 55%,#2a1408 100%) !important;height:10px;width:10px;border-radius:50%;opacity:1;}
+body.theme-gold .cdj::after{top:8px;right:10px;bottom:auto;left:auto;height:10px;width:10px;}
+body.theme-gold .mixer::before{top:8px;left:10px;height:10px;width:10px;background:radial-gradient(circle at 35% 30%,#f0d890 0%,#a07830 55%,#2a1408 100%) !important;opacity:1;}
+body.theme-gold .mixer::after{top:8px;right:10px;bottom:auto;left:auto;height:10px;width:10px;display:block !important}
+
+/* Text over brass should be dark (matches the Vestax reference). */
+body.theme-gold .deck-label,
+body.theme-gold .deck-number,
+body.theme-gold .time-label,
+body.theme-gold .tempo-header,
+body.theme-gold .knob-label,
+body.theme-gold .channel-label,
+body.theme-gold .crossfader-label,
+body.theme-gold .mixer-brand,
+body.theme-gold .loop-btn,
+body.theme-gold .jump-btn,
+body.theme-gold .util-btn,
+body.theme-gold .pad-mode-btn{
+  color:#1a0a00 !important;
+  text-shadow:0 1px 0 rgba(255,240,200,.25) !important;
+}
+body.theme-gold .deck-number{
+  background:transparent !important;
+  -webkit-text-fill-color:#1a0a00 !important;
+  border:1px solid rgba(26,10,0,.3) !important;
+  box-shadow:inset 0 1px 0 rgba(255,245,200,.5) !important;
+}
+/* Knobs = black plastic with white indicator line (the Vestax look) */
+body.theme-gold .knob{
+  background:
+    radial-gradient(circle at 35% 30%,#3a3a3a 0%,#1a1a1a 45%,#050505 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    inset 0 -2px 4px rgba(0,0,0,.8),
+    0 3px 6px rgba(0,0,0,.6),
+    0 0 0 1px rgba(0,0,0,.7),
+    0 0 0 2px rgba(255,220,150,.25) !important;
+}
+body.theme-gold .knob-indicator{
+  background:linear-gradient(180deg,#fff,#d0d0d0) !important;
+  box-shadow:0 0 2px rgba(255,255,255,.6) !important;
+}
+/* Faders — gold chassis, dark silver handle with black accent line */
+body.theme-gold .fader-wrap,
+body.theme-gold .crossfader-track{
+  background:linear-gradient(180deg,#1a1208,#050302) !important;
+  border:1px solid #3a2810 !important;
+  box-shadow:inset 0 0 8px rgba(0,0,0,.95) !important;
+}
+body.theme-gold .fader-handle,
+body.theme-gold .crossfader-handle{
+  background:linear-gradient(180deg,#e0e0e0 0%,#a0a0a0 40%,#606060 70%,#2a2a2a 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.5),
+    inset 0 -1px 0 rgba(0,0,0,.4),
+    0 3px 6px rgba(0,0,0,.8) !important;
+}
+body.theme-gold .fader-handle::before,
+body.theme-gold .crossfader-handle::before{
+  background:#0a0a0a !important;box-shadow:none !important;
+}
+/* Small action buttons — dark pills on gold */
+body.theme-gold .loop-btn,
+body.theme-gold .jump-btn,
+body.theme-gold .util-btn,
+body.theme-gold .pad-mode-btn,
+body.theme-gold .tempo-btn{
+  background:linear-gradient(180deg,#2a2010,#0a0806) !important;
+  border:1px solid #4a3818 !important;
+  color:#f3e3b0 !important;
+  text-shadow:none !important;
+  box-shadow:inset 0 1px 0 rgba(255,240,200,.1),0 1px 2px rgba(0,0,0,.6) !important;
+}
+/* Hot cue pads — ivory with subtle shadow, the Vestax rubber-pad look */
+body.theme-gold .cue-btn{
+  background:linear-gradient(180deg,#f0e0a0,#c8a656) !important;
+  border:1px solid #6a4a0e !important;
+  color:#1a0a00 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,250,220,.6),
+    inset 0 -2px 3px rgba(90,60,15,.3),
+    0 2px 3px rgba(0,0,0,.5) !important;
+}
+body.theme-gold .cue-btn.active{
+  background:linear-gradient(180deg,#fff0a8,#e8c463) !important;
+  color:#1a0a00 !important;
+  box-shadow:
+    0 0 12px rgba(255,220,150,.7),
+    inset 0 1px 0 rgba(255,255,240,.8) !important;
+}
+/* Big transport buttons — keep dark but rim with gold */
+body.theme-gold .big-btn{
+  background:linear-gradient(180deg,#2a2010,#0a0806) !important;
+  border:1px solid #8a6a2e !important;
+  color:#f3e3b0 !important;
+}
+body.theme-gold .big-btn.play.active{
+  background:linear-gradient(180deg,#e8c463,#8a6a2e) !important;
+  color:#0a0806 !important;
+  box-shadow:0 0 20px rgba(232,196,99,.6),inset 0 1px 0 rgba(255,250,220,.4) !important;
+}
+body.theme-gold .big-btn.cue.active{
+  background:linear-gradient(180deg,#ffcf40,#a87a18) !important;
+  color:#0a0806 !important;
+  box-shadow:0 0 18px rgba(255,207,64,.7),inset 0 1px 0 rgba(255,250,220,.4) !important;
+}
+/* Jog wheel sits in gold — outer ring becomes brass */
+body.theme-gold .jog-outer{
+  background:
+    radial-gradient(circle at 30% 30%,#f0d890 0%,#b8983e 45%,#6a4a0e 100%) !important;
+  box-shadow:
+    inset 0 2px 6px rgba(255,245,200,.4),
+    inset 0 -4px 10px rgba(30,18,4,.7),
+    0 0 0 2px #2a1a08,
+    0 0 0 4px #8a6a2e,
+    0 8px 18px rgba(0,0,0,.7) !important;
+}
+body.theme-gold .jog-platter{
+  background:
+    radial-gradient(circle at 35% 35%,#2a2a2e 0%,#0a0a0b 70%,#000 100%) !important;
+}
+/* BPM dial stays dark so the orange needle pops */
+body.theme-gold .jog-center-screen{
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255,245,200,.08), transparent 60%),
+    linear-gradient(180deg,#141008 0%,#050302 100%) !important;
+  border:1px solid #8a6a2e !important;
+  box-shadow:
+    inset 0 0 0 3px #050302,
+    0 0 0 1px #6a4a0e,
+    0 2px 6px rgba(0,0,0,.8) !important;
+}
+body.theme-gold .jog-center-screen .bpm-display{
+  color:#f5d76e !important;text-shadow:0 0 6px rgba(245,215,110,.7) !important;
+}
+/* Screens (display panels) — keep dark LCD feel against gold chassis */
+body.theme-gold .screen{
+  background:linear-gradient(180deg,#0e0a04 0%,#050302 100%) !important;
+  border:1px solid #3a2810 !important;
+  box-shadow:
+    inset 0 0 0 2px #1a0e04,
+    inset 0 0 16px rgba(255,220,120,.05),
+    0 0 0 1px rgba(255,220,150,.15) !important;
+}
+body.theme-gold .track-title{color:#f5e3a8 !important;text-shadow:0 0 6px rgba(245,215,110,.4) !important}
+body.theme-gold .screen-bpm{color:#f5d76e !important}
+body.theme-gold .time-value{color:#f5e3a8 !important}
+body.theme-gold .waveform{background:#050302 !important;border:1px solid #3a2810 !important}
+
+/* ═══ TITAN GOLD · top bar + tabs + toolbar readability pass ═══ */
+/* Header top-row — time, BPM badge, REC, SIGN IN — all on the gold body */
+body.theme-gold .header-bar{color:#1a0a00}
+body.theme-gold .header-right{color:#1a0a00 !important}
+body.theme-gold .master-bpm{
+  background:linear-gradient(180deg,#0a0503,#000) !important;
+  border:1px solid #3a2810 !important;color:#ffcf40 !important;
+  box-shadow:inset 0 0 10px rgba(255,207,64,.12) !important;
+}
+body.theme-gold .titan-clock{
+  background:linear-gradient(180deg,#0a0503,#000) !important;
+  border:1px solid #3a2810 !important;color:#ffcf40 !important;
+}
+body.theme-gold .titan-clock .tc-time{color:#ffcf40 !important}
+body.theme-gold .rec-btn{
+  background:linear-gradient(180deg,#3a1010,#1a0606) !important;
+  border:1px solid #8a2020 !important;color:#ff9898 !important;
+}
+body.theme-gold .brand{color:#1a0a00 !important}
+body.theme-gold .brand span{color:#8a5a18 !important}
+body.theme-gold .brand .max{
+  background:#1a0a00 !important;color:#ffcf40 !important;
+}
+
+/* ─── MAIN TABS row — readable on gold chassis ─── */
+body.theme-gold .main-tabs{
+  background:linear-gradient(180deg,#3a2a10,#1a1208) !important;
+  border:1px solid #6a4a0e !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,240,200,.2),
+    inset 0 -1px 0 rgba(0,0,0,.5) !important;
+}
+body.theme-gold .tab-btn{
+  color:#d8b860 !important;
+  font-weight:800 !important;
+  text-shadow:0 1px 0 rgba(0,0,0,.6) !important;
+}
+body.theme-gold .tab-btn:hover{
+  color:#ffe8a0 !important;
+  background:rgba(255,220,150,.08) !important;
+}
+body.theme-gold .tab-btn.active{
+  background:linear-gradient(180deg,#f0d890,#b8983e) !important;
+  color:#1a0a00 !important;
+  text-shadow:0 1px 0 rgba(255,250,200,.4) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,250,200,.5),
+    inset 0 -1px 0 rgba(90,60,15,.4),
+    0 2px 6px rgba(0,0,0,.4) !important;
+}
+body.theme-gold .learn-tab-btn{
+  background:linear-gradient(180deg,rgba(120,200,150,.2),rgba(30,60,40,.4)) !important;
+  color:#a0f0b8 !important;
+  border:1px solid rgba(160,240,180,.4) !important;
+  text-shadow:0 1px 0 rgba(0,0,0,.5) !important;
+}
+
+/* ─── MIXER TOOLBAR — AUTO MIX / HEADPHONES / MIC / ISOLATOR sections ─── */
+body.theme-gold .mixer-toolbar{
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(0,0,0,.03) 0 1px,transparent 1px 2px,
+      rgba(255,255,255,.02) 2px 3px,transparent 3px 4px) ,
+    linear-gradient(180deg,#e6c878 0%,#b8983e 100%) !important;
+  border:1px solid #6a4a0e !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,245,200,.5),
+    inset 0 -2px 8px rgba(60,40,8,.5),
+    inset 0 0 0 2px #2a1a08,
+    0 8px 20px rgba(0,0,0,.55) !important;
+}
+body.theme-gold .mixer-toolbar .mtb-section{
+  background:linear-gradient(180deg,#0a0503,#020100) !important;
+  border:1px solid #3a2810 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,240,200,.06),
+    inset 0 0 20px rgba(0,0,0,.7) !important;
+}
+body.theme-gold .mixer-toolbar .mtb-label{
+  color:#ffcf40 !important;
+  text-shadow:0 0 4px rgba(255,200,80,.4),0 1px 0 #000 !important;
+}
+body.theme-gold .mixer-toolbar .mtb-dir{color:#f5d76e !important}
+body.theme-gold .mixer-toolbar .mtb-knobrow{
+  background:rgba(255,220,150,.02) !important;
+  border:1px solid rgba(255,220,150,.08) !important;
+}
+body.theme-gold .mixer-toolbar .mtb-section .knob-label{
+  color:#f3e3b0 !important;font-weight:700 !important;
+}
+body.theme-gold .automix-btn,
+body.theme-gold .automix-bars,
+body.theme-gold .automix-sync,
+body.theme-gold .cue-hp-btn,
+body.theme-gold .mic-btn{
+  background:linear-gradient(180deg,#1a1208,#050302) !important;
+  border:1px solid #6a4a0e !important;
+  color:#ffcf40 !important;
+  text-shadow:0 1px 0 rgba(0,0,0,.6) !important;
+}
+body.theme-gold .automix-btn.active,
+body.theme-gold .cue-hp-btn.active,
+body.theme-gold .mic-btn.active{
+  background:linear-gradient(180deg,#f0d890,#b8983e) !important;
+  color:#1a0a00 !important;
+  box-shadow:0 0 12px rgba(255,220,150,.55),inset 0 1px 0 rgba(255,250,200,.5) !important;
+}
+
+/* ─── MASTER + COLOR FX section inside the mixer ─── */
+body.theme-gold .master-section,
+body.theme-gold .color-fx-row,
+body.theme-gold .color-fx-grid,
+body.theme-gold .headphone-section,
+body.theme-gold .mic-section,
+body.theme-gold .crossfader-section{
+  background:linear-gradient(180deg,#0a0503,#020100) !important;
+  border:1px solid #3a2810 !important;
+  box-shadow:inset 0 1px 0 rgba(255,240,200,.06),inset 0 0 16px rgba(0,0,0,.7) !important;
+}
+body.theme-gold .master-knob-wrap .knob-label,
+body.theme-gold .color-fx-channel .knob-label,
+body.theme-gold .channel-label,
+body.theme-gold .crossfader-label,
+body.theme-gold .crossfader-ab{
+  color:#ffcf40 !important;
+  text-shadow:0 1px 0 #000 !important;
+  font-weight:800 !important;
+}
+/* COLOR FX buttons (FILTER / DUB ECHO / NOISE / PITCH / SPACE / CRUSH) */
+body.theme-gold .color-fx-select{
+  background:linear-gradient(180deg,#1a1208,#050302) !important;
+  border:1px solid #6a4a0e !important;
+  color:#ffcf40 !important;
+  text-shadow:0 1px 0 rgba(0,0,0,.6) !important;
+}
+body.theme-gold .color-fx-select:hover{
+  background:linear-gradient(180deg,#2a1e0c,#0a0604) !important;
+  color:#fff0a8 !important;
+  border-color:#8a6a2e !important;
+}
+body.theme-gold .color-fx-select.active{
+  background:linear-gradient(180deg,#f0d890,#b8983e) !important;
+  color:#1a0a00 !important;
+  border-color:#fff0a8 !important;
+  box-shadow:0 0 14px rgba(255,220,150,.6),inset 0 1px 0 rgba(255,250,200,.5) !important;
+}
+/* Channel strip xfader-assign + curve-switch */
+body.theme-gold .xfader-assign .assign-btn,
+body.theme-gold .curve-btn{
+  background:#0a0503 !important;border:1px solid #3a2810 !important;
+  color:#d8b860 !important;
+}
+body.theme-gold .xfader-assign .assign-btn.active,
+body.theme-gold .curve-btn.active{
+  background:linear-gradient(180deg,#f0d890,#b8983e) !important;
+  color:#1a0a00 !important;
+}
+
+/* ─── DECK controls that were still muted ─── */
+/* Channel faders inside the gold mixer need the same gold surround */
+body.theme-gold .channel{background:transparent !important}
+body.theme-gold .channels{
+  background:linear-gradient(180deg,#0a0503,#020100) !important;
+  border:1px solid #3a2810 !important;padding:8px !important;border-radius:6px !important;
+}
+/* Time / tempo LCD readouts on the deck header */
+body.theme-gold .track-artist{color:#b89850 !important}
+body.theme-gold .time-value.remain{color:#ffcf40 !important}
+body.theme-gold .screen-key{color:#f5d76e !important}
+body.theme-gold .screen-bpm-label{color:#8a6a2e !important}
+body.theme-gold .time-label{color:#8a6a2e !important;text-shadow:0 1px 0 rgba(255,240,200,.2) !important}
+
+/* Tempo section — the big +/- panel */
+body.theme-gold .tempo-section,
+body.theme-gold .tempo-btn-row{
+  background:linear-gradient(180deg,#0a0503,#020100) !important;
+  border:1px solid #3a2810 !important;
+}
+body.theme-gold .tempo-value,
+body.theme-gold .tempo-display-big{
+  color:#ffcf40 !important;
+  text-shadow:0 0 6px rgba(255,200,80,.35) !important;
+}
+body.theme-gold .tempo-range{
+  background:#0a0503 !important;border:1px solid #3a2810 !important;
+  color:#ffcf40 !important;
+}
+body.theme-gold .step-btn{color:#d8b860 !important;border-color:#3a2810 !important}
+body.theme-gold .step-btn.active{background:#ffcf40 !important;color:#1a0a00 !important}
+
+/* ═══ end GOLD readability pass ═══ */
+
 /* ============================================================
    PROFESSIONAL TURNTABLE / CDJ LOOK
    Realistic Pioneer-style hardware: matte black + brushed
@@ -9655,16 +10454,18 @@ No mappings yet. Pick a preset above or right-click any control → MIDI Learn.
     </div>
   </div>
   <div class="vibe-chips" id="spVibeChips">
-    <button class="vibe-chip" data-vibe="dark techno 128 acid bass driving">🌒 DARK TECHNO</button>
-    <button class="vibe-chip" data-vibe="uplifting trance 138 supersaw big reverb">🚀 UPLIFTING TRANCE</button>
-    <button class="vibe-chip" data-vibe="deep house 122 piano warm pad summer">🌊 DEEP HOUSE</button>
-    <button class="vibe-chip" data-vibe="big room 128 lead heavy drive">🔊 BIG ROOM</button>
-    <button class="vibe-chip" data-vibe="psytrance 145 acid dark rolling bass">🌀 PSYTRANCE</button>
-    <button class="vibe-chip" data-vibe="minimal techno 126 percussion dark">⚫ MINIMAL</button>
-    <button class="vibe-chip" data-vibe="tech house 124 rolling groove">🎛 TECH HOUSE</button>
-    <button class="vibe-chip" data-vibe="hoover trance 140 classic hardstyle">🌪 HOOVER</button>
-    <button class="vibe-chip" data-vibe="dreamy ambient pad 110 vox reverb">☁ DREAMY PAD</button>
-    <button class="vibe-chip" data-vibe="acid 130 303 dark energy">💊 ACID</button>
+    <button class="vibe-chip" data-vibe="peak time techno 130 berlin driving dark">🌒 DARK TECHNO</button>
+    <button class="vibe-chip" data-vibe="uplifting trance 140 supersaw rolling peak drop">🚀 UPLIFTING TRANCE</button>
+    <button class="vibe-chip" data-vibe="deep house 122 warm pad summer soul sunset">🌊 DEEP HOUSE</button>
+    <button class="vibe-chip" data-vibe="big room 128 festival lead heavy drive peak">🔊 BIG ROOM</button>
+    <button class="vibe-chip" data-vibe="psytrance 145 acid rolling bass forest">🌀 PSYTRANCE</button>
+    <button class="vibe-chip" data-vibe="minimal techno 126 dub percussion underground">⚫ MINIMAL</button>
+    <button class="vibe-chip" data-vibe="tech house 124 jackin rolling peak dancefloor">🎛 TECH HOUSE</button>
+    <button class="vibe-chip" data-vibe="hoover trance 142 classic hardstyle rave">🌪 HOOVER</button>
+    <button class="vibe-chip" data-vibe="dreamy ambient pad 110 vox reverb cosmic">☁ DREAMY PAD</button>
+    <button class="vibe-chip" data-vibe="acid 130 303 dark energy rolling drop">💊 ACID</button>
+    <button class="vibe-chip" data-vibe="peak time techno 132 drop club drive heavy">🔥 PEAK TIME</button>
+    <button class="vibe-chip" data-vibe="classic house 123 piano chord summer ibiza">🎹 CLASSIC HOUSE</button>
   </div>
   <div class="vibe-status" id="spVibeStatus"></div>
 </div>
@@ -9715,6 +10516,16 @@ No mappings yet. Pick a preset above or right-click any control → MIDI Learn.
 <button class="sp-preset-btn" data-sp-preset="fm-bass">FM BASS</button>
 <button class="sp-preset-btn" data-sp-preset="dark-pad">DARK PAD</button>
 <button class="sp-preset-btn" data-sp-preset="vox-pad">VOX PAD</button>
+<button class="sp-preset-btn" data-sp-preset="moog-lead">MOOG LEAD</button>
+<button class="sp-preset-btn" data-sp-preset="wobble-bass">WOBBLE BASS</button>
+<button class="sp-preset-btn" data-sp-preset="pluck-guitar">PLUCK GUITAR</button>
+<button class="sp-preset-btn" data-sp-preset="brass-stack">BRASS STACK</button>
+<button class="sp-preset-btn" data-sp-preset="ambient-strings">AMBIENT STRINGS</button>
+<button class="sp-preset-btn" data-sp-preset="future-bass-chord">FUTURE BASS</button>
+<button class="sp-preset-btn" data-sp-preset="melodic-techno-lead">MELODIC TECHNO</button>
+<button class="sp-preset-btn" data-sp-preset="super-saw-anthem">ANTHEM SAW</button>
+<button class="sp-preset-btn" data-sp-preset="deep-stab">DEEP STAB</button>
+<button class="sp-preset-btn" data-sp-preset="psytrance-lead">PSY LEAD</button>
 </div>
 </div>
 
@@ -9852,6 +10663,12 @@ No mappings yet. Pick a preset above or right-click any control → MIDI Learn.
 <button class="sp-mini-btn" data-sp-organ-preset="acid-organ">ACID ORGAN</button>
 <button class="sp-mini-btn" data-sp-organ-preset="reese-organ">REESE ORGAN</button>
 <button class="sp-mini-btn" data-sp-organ-preset="big-room-lead">BIG ROOM LEAD</button>
+<button class="sp-mini-btn" data-sp-organ-preset="smokey-organ">SMOKEY B-3</button>
+<button class="sp-mini-btn" data-sp-organ-preset="procol-ballad">PROCOL BALLAD</button>
+<button class="sp-mini-btn" data-sp-organ-preset="santana-crunch">SANTANA CRUNCH</button>
+<button class="sp-mini-btn" data-sp-organ-preset="deep-bass-organ">DEEP PEDAL</button>
+<button class="sp-mini-btn" data-sp-organ-preset="psychedelic-swell">PSYCHEDELIC</button>
+<button class="sp-mini-btn" data-sp-organ-preset="funk-clavinet">FUNK CLAV</button>
 </div>
 <div class="sp-drawbars" id="spDrawbars"></div>
 <div class="sp-row" style="margin-top:10px;justify-content:center;">
@@ -9883,6 +10700,15 @@ No mappings yet. Pick a preset above or right-click any control → MIDI Learn.
 <button class="sp-mini-btn" data-sp-bass-preset="stab-bass">STAB</button>
 <button class="sp-mini-btn" data-sp-bass-preset="deep-bass">DEEP BASS</button>
 <button class="sp-mini-btn" data-sp-bass-preset="minimal-bass">MINIMAL</button>
+<button class="sp-mini-btn" data-sp-bass-preset="trance-rolling">TRANCE ROLL</button>
+<button class="sp-mini-btn" data-sp-bass-preset="techno-sub">TECHNO SUB</button>
+<button class="sp-mini-btn" data-sp-bass-preset="jackin-bass">JACKIN'</button>
+<button class="sp-mini-btn" data-sp-bass-preset="deep-roll">DEEP ROLL</button>
+<button class="sp-mini-btn" data-sp-bass-preset="hardfloor-acid">HARDFLOOR</button>
+<button class="sp-mini-btn" data-sp-bass-preset="higher-state">HIGHER STATE</button>
+<button class="sp-mini-btn" data-sp-bass-preset="minimal-acid">MINIMAL ACID</button>
+<button class="sp-mini-btn" data-sp-bass-preset="acid-tracks">ACID TRACKS</button>
+<button class="sp-mini-btn" data-sp-bass-preset="psy-acid">PSY ACID</button>
 <button class="sp-mini-btn" data-sp-bass-preset="clear">CLEAR</button>
 </div>
 <div class="sp-bass-seq-row" id="spBassSeq"></div>
@@ -10576,7 +11402,7 @@ function buildDeckHTML(d){
     <button class="pad-mode-btn" data-pad-mode="pitch" data-deck="${d}">PITCH</button>
   </div>
   <div class="hot-cues" data-deck="${d}">${[1,2,3,4,5,6,7,8].map(n=>`<button class="cue-btn" data-color="${n}" data-cue="${n}">${n}</button>`).join('')}</div>
-  <div class="jog-wrapper"><div class="jog-wheel" id="jog-${d}"><div class="jog-outer"></div><div class="jog-ring"><div class="jog-ring-light"></div></div><div class="jog-markers"></div><div class="jog-platter" id="platter-${d}"><div class="jog-platter-disc"></div></div><div class="jog-indicator"></div><div class="jog-center-screen"><div class="bpm-display" id="centerBpm-${d}">---.-</div><div class="bpm-sub">BPM</div></div></div></div>
+  <div class="jog-wrapper"><div class="jog-wheel" id="jog-${d}"><div class="jog-outer"></div><div class="jog-ring"><div class="jog-ring-light"></div></div><div class="jog-markers"></div><div class="jog-platter" id="platter-${d}"><div class="jog-platter-disc"></div></div><div class="jog-indicator"></div><div class="jog-center-screen"><svg class="jog-bpm-dial" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="none" stroke="#2a2a30" stroke-width="0.8"/><circle cx="50" cy="50" r="44" fill="none" stroke="#0f0f14" stroke-width="0.6"/><g class="jdial-ticks" stroke="#4a4a52" stroke-width="0.8" stroke-linecap="round"><line x1="50" y1="6" x2="50" y2="10" stroke="#ff8a1a" stroke-width="1.1"/><line x1="74" y1="12.5" x2="72.5" y2="15.5"/><line x1="88" y1="26" x2="85" y2="27.5"/><line x1="94" y1="50" x2="90" y2="50"/><line x1="88" y1="74" x2="85" y2="72.5"/><line x1="74" y1="87.5" x2="72.5" y2="84.5"/><line x1="50" y1="94" x2="50" y2="90"/><line x1="26" y1="87.5" x2="27.5" y2="84.5"/><line x1="12" y1="74" x2="15" y2="72.5"/><line x1="6" y1="50" x2="10" y2="50"/><line x1="12" y1="26" x2="15" y2="27.5"/><line x1="26" y1="12.5" x2="27.5" y2="15.5"/></g><g class="jdial-needle" id="bpmNeedle-${d}" transform="rotate(0 50 50)" opacity="0.85"><line x1="50" y1="50" x2="50" y2="13" stroke="#ff8a1a" stroke-width="0.9" stroke-linecap="round"/></g></svg><div class="jdial-text"><div class="bpm-display" id="centerBpm-${d}">---</div><div class="bpm-sub">BPM</div></div></div></div></div>
   <div class="transport">
     <button class="big-btn cue" data-deck="${d}" data-action="cue"><span class="icon">◄◄</span><span class="lbl">CUE</span></button>
     <button class="big-btn play" data-deck="${d}" data-action="play"><span class="icon" id="playIcon-${d}">▶</span><span class="lbl" id="playLabel-${d}">PLAY</span></button>
@@ -11317,6 +12143,7 @@ async function loadTrackToDeck(deckId,track){
   setText(`bpm-${deckId}`,track.bpm.toFixed(2));
   setText(`key-${deckId}`,track.key);
   setText(`centerBpm-${deckId}`,track.bpm.toFixed(1));
+  {const ndl=document.getElementById(`bpmNeedle-${deckId}`);if(ndl){const clamp=Math.max(60,Math.min(200,track.bpm||0));const ang=-135+((clamp-60)/140)*270;ndl.setAttribute('transform',`rotate(${ang.toFixed(1)} 50 50)`);}}
   setText(`cdTitle-${deckId}`,track.title.toUpperCase());
   setText(`cdBpm-${deckId}`,track.bpm.toFixed(1)+' BPM');
   document.querySelectorAll(`.hot-cues[data-deck="${deckId}"] .cue-btn`).forEach(b=>b.classList.remove('active'));
@@ -11712,6 +12539,8 @@ function setTempo(deckId,pct){
     const nb=d.track.bpm*(1+pct/100);
     const bpmEl=document.getElementById(`bpm-${deckId}`);if(bpmEl)bpmEl.textContent=nb.toFixed(2);
     const cbEl=document.getElementById(`centerBpm-${deckId}`);if(cbEl)cbEl.textContent=nb.toFixed(1);
+    const ndl=document.getElementById(`bpmNeedle-${deckId}`);
+    if(ndl){const clamp=Math.max(60,Math.min(200,nb));const ang=-135+((clamp-60)/140)*270;ndl.setAttribute('transform',`rotate(${ang.toFixed(1)} 50 50)`);}
     const cdBpm=document.getElementById(`cdBpm-${deckId}`);if(cdBpm)cdBpm.textContent=nb.toFixed(1)+' BPM';
   }
   updateMasterBpm();
@@ -15006,6 +15835,108 @@ const SP_DRUM_PRESETS={
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
+  /* ═══ NEW PRO-GRADE DROP PATTERNS ═══
+     Crafted to the conventions of top-tier producers — Above & Beyond / Armin
+     (trance-peak), Adam Beyer / Amelie Lens (techno-drive), FISHER / Chris
+     Lake (tech-house-peak), Kerri Chandler (house-groove). Every pattern is
+     a DROP-phase layout: full kick, layered clap + snare, proper offbeat hat
+     placement, realistic percussive fills. Drop them straight into a club
+     and they feel right. */
+  'trance-peak':[
+    /* 138-140 BPM drop. Kick 4-on-floor, clap/snare stacked on 2+4,
+       closed hat 16ths for driving energy, open hat on the "&" of 2+4
+       (classic EDM trance offbeat), shaker constant, ride hitting
+       every 8th from the 2nd half for lift. */
+    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],   // KICK
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // SNARE (layered with clap)
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],   // CHH 16ths
+    [0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0],   // OHH on "&" of 2/4
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // CLAP
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],   // CRASH bar 1
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],   // LOWTOM fill
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],   // HITOM fill
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],   // RIM
+    [0,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0],   // RIDE from half-bar
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],   // SHAKER
+    [0,0,1,0,0,0,0,1,0,0,1,0,0,0,0,1],   // PERC syncopated
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  'techno-drive':[
+    /* 128-132 BPM Berlin peak-time. Kick 4-on-floor — no snare, no clap
+       (pure techno). CHH offbeat 8ths, RIDE ticking 16ths for relentless
+       forward push. Heavy RIM accents + COWBELL for industrial feel.
+       Toms used as transitional fills at phrase ends. */
+    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],   // KICK
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],   // CHH offbeat 8ths
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],   // OHH at very end for tension
+    [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0],   // CLAP on 4 only
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],   // LOWTOM fill
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // RIM accent 2+4
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],   // RIDE driving 16ths
+    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],   // SHAKER 8th
+    [0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],   // PERC offbeat
+    [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],   // COWBELL accent
+  ],
+  'house-groove':[
+    /* 122-124 BPM NYC / Chicago groove. Kick 4-on-floor with a ghost kick
+       on the "&" of 3 (step 7) — classic Kerri Chandler move. Clap 2+4,
+       offbeat CHH, open hat on "&" of 4 (step 15) for lift.  Swung
+       shakers + syncopated congas = proper soul-house feel. */
+    [1,0,0,0,1,0,0,1,1,0,0,0,1,0,0,0],   // KICK w/ ghost on 7
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],   // no snare (clap does the work)
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],   // CHH offbeat
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],   // OHH on "&" of 4
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // CLAP 2+4
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],   // CRASH bar 1
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],   // HITOM pickup
+    [0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0],   // RIM syncopation
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],   // SHAKER 16ths (swung by engine)
+    [0,0,1,0,1,0,0,1,0,0,1,0,0,1,0,0],   // CONGAS polyrhythmic
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  'tech-house-peak':[
+    /* 124-126 BPM big-club drop — FISHER / Chris Lake. Bouncy kick with
+       extra sixteenth on step 2 + 14, clap on 2+4 (always), offbeat CHH,
+       open hat on every "&", ride bell from mid-bar, heavy percussion
+       layer for tribal drive.  This is the pattern that fills dancefloors. */
+    [1,0,1,0,1,0,0,1,1,0,0,0,1,0,1,0],   // KICK bouncy
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // SNARE 2+4 (stacked w/ clap)
+    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],   // CHH 8ths
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],   // OHH "&"s
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // CLAP 2+4
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],   // HITOM end-of-bar fill
+    [0,0,1,0,0,0,0,1,0,0,1,0,0,1,0,0],   // RIM syncopated accents
+    [0,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0],   // RIDE from mid-bar for lift
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],   // SHAKER
+    [0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],   // PERC tribal 8ths
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],   // COWBELL accent
+  ],
+  'deep-house-garage':[
+    /* 120-122 BPM UK garage / NY deep. Kick mostly on 1+3, extra on "&"
+       of 2 for swing. Snare + clap stacked on 2+4. CHH 16ths but
+       with ghosted beats for a swung feel. Open hat on "&" of 4.
+       Sparse perc, warm ride. */
+    [1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0],   // KICK w/ ghost
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // SNARE
+    [1,0,1,1,1,0,1,0,1,0,1,1,1,0,1,0],   // CHH w/ ghosts
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],   // OHH final "&"
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // CLAP
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0],   // RIM syncopation
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // RIDE 2+4
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],   // PERC
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
 };
 function spDrumPresetCopy(key){
   const src=SP_DRUM_PRESETS[key];
@@ -15269,6 +16200,56 @@ const SP_SYNTH_PRESETS={
     knobs:{osc2Detune:.55,osc2Octave:.6,oscMix:.45,unison:.25,unisonDetune:.35,
            filterCutoff:.55,filterRes:.3,ampA:.55,ampD:.5,ampS:.85,ampR:.65,
            lfoRate:.12,lfoDepth:.3,chorusMix:.55,reverbSend:.7,delaySend:.25}},
+  /* ═══ NEW PRO-GRADE SYNTH PRESETS — 2026-04 expansion ═══
+     Each preset tuned against a named reference sound so DJs hit the
+     vibe they expect from the label name. */
+  'moog-lead':{osc1Wave:'sawtooth',osc2Wave:'sawtooth',filterType:'lowpass',lfoTarget:'none',
+    knobs:{osc2Detune:.4,osc2Octave:.25,oscMix:.5,subLevel:.4,unison:.2,unisonDetune:.25,
+           filterCutoff:.65,filterRes:.4,filterEnv:.45,filterDecay:.35,
+           ampA:.015,ampD:.35,ampS:.8,ampR:.35,drive:.45,delaySend:.25,reverbSend:.35}},
+  'wobble-bass':{osc1Wave:'sawtooth',osc2Wave:'square',filterType:'lowpass',lfoTarget:'filter',
+    knobs:{osc2Detune:.3,oscMix:.45,subLevel:.5,unison:.5,unisonDetune:.5,
+           filterCutoff:.35,filterRes:.55,filterEnv:.3,filterDecay:.4,
+           ampA:.005,ampD:.4,ampS:.85,ampR:.3,
+           lfoRate:.5,lfoDepth:.85,drive:.55,reverbSend:.25}},
+  'pluck-guitar':{osc1Wave:'sawtooth',osc2Wave:'triangle',filterType:'lowpass',lfoTarget:'none',
+    knobs:{osc2Detune:.15,oscMix:.35,filterCutoff:.6,filterRes:.25,filterEnv:.7,filterDecay:.2,
+           ampA:.002,ampD:.2,ampS:.05,ampR:.22,drive:.25,delaySend:.35,reverbSend:.4,chorusMix:.3}},
+  'brass-stack':{osc1Wave:'sawtooth',osc2Wave:'square',filterType:'lowpass',lfoTarget:'pitch',
+    knobs:{osc2Detune:.5,osc2Octave:.5,oscMix:.55,unison:.55,unisonDetune:.35,
+           filterCutoff:.7,filterRes:.18,filterEnv:.25,filterDecay:.25,
+           ampA:.08,ampD:.3,ampS:.75,ampR:.4,
+           lfoRate:.22,lfoDepth:.15,drive:.35,chorusMix:.35,reverbSend:.45}},
+  'ambient-strings':{osc1Wave:'sawtooth',osc2Wave:'triangle',filterType:'lowpass',lfoTarget:'filter',
+    knobs:{oscMix:.5,subLevel:.15,unison:.7,unisonDetune:.5,
+           filterCutoff:.55,filterRes:.08,
+           ampA:.85,ampD:.6,ampS:.95,ampR:1.0,
+           lfoRate:.06,lfoDepth:.25,chorusMix:.55,reverbSend:.85,delaySend:.3}},
+  'future-bass-chord':{osc1Wave:'sawtooth',osc2Wave:'sawtooth',filterType:'lowpass',lfoTarget:'amp',
+    knobs:{osc2Detune:.65,osc2Octave:.5,oscMix:.55,unison:.8,unisonDetune:.75,
+           filterCutoff:.82,filterRes:.12,
+           ampA:.06,ampD:.45,ampS:.9,ampR:.5,
+           lfoRate:.4,lfoDepth:.35,drive:.25,chorusMix:.55,reverbSend:.65,delaySend:.35}},
+  'melodic-techno-lead':{osc1Wave:'sawtooth',osc2Wave:'triangle',filterType:'lowpass',lfoTarget:'filter',
+    knobs:{osc2Detune:.4,osc2Octave:.5,oscMix:.4,subLevel:.15,unison:.4,unisonDetune:.4,
+           filterCutoff:.55,filterRes:.35,filterEnv:.5,filterDecay:.3,
+           ampA:.01,ampD:.35,ampS:.65,ampR:.4,
+           lfoRate:.12,lfoDepth:.25,drive:.3,delaySend:.45,reverbSend:.55}},
+  'super-saw-anthem':{osc1Wave:'sawtooth',osc2Wave:'sawtooth',filterType:'lowpass',lfoTarget:'none',
+    knobs:{osc2Detune:.7,osc2Octave:.5,oscMix:.5,unison:1.0,unisonDetune:.85,
+           filterCutoff:.95,filterRes:.08,filterEnv:.2,filterDecay:.3,
+           ampA:.08,ampD:.4,ampS:.95,ampR:.55,drive:.2,
+           chorusMix:.55,delaySend:.35,reverbSend:.6}},
+  'deep-stab':{osc1Wave:'square',osc2Wave:'sawtooth',filterType:'bandpass',lfoTarget:'none',
+    knobs:{osc2Detune:.35,osc2Octave:.5,oscMix:.5,filterCutoff:.5,filterRes:.45,
+           filterEnv:.6,filterDecay:.15,
+           ampA:.003,ampD:.12,ampS:.05,ampR:.15,
+           drive:.4,delaySend:.45,reverbSend:.35}},
+  'psytrance-lead':{osc1Wave:'sawtooth',osc2Wave:'sawtooth',filterType:'lowpass',lfoTarget:'pitch',
+    knobs:{osc2Detune:.5,osc2Octave:.25,oscMix:.5,unison:.4,unisonDetune:.5,
+           filterCutoff:.6,filterRes:.4,filterEnv:.55,filterDecay:.25,
+           ampA:.005,ampD:.3,ampS:.6,ampR:.25,
+           lfoRate:.3,lfoDepth:.2,drive:.55,delaySend:.3,reverbSend:.35}},
 };
 function spSetKnob(name,v,scope){
   const root=scope?document.querySelector(scope):document;
@@ -15400,6 +16381,76 @@ const SP_BASS_PRESETS={
     null,null,{note:'E2',accent:true},null,
     null,{note:'A1'},null,null,
     {note:'C3',accent:true},null,null,{note:'A1'},
+  ]),
+  /* ═══ NEW PRO-GRADE BASS PATTERNS ═══ */
+  /* Classic Above & Beyond / Armin rolling octave bass — proper trance
+     drop feel. Octave jump down on the 1, back up for drive. Slide on
+     the last step carries into the next bar. */
+  'trance-rolling':spBassPatternFrom([
+    {note:'A1',accent:true},{note:'A2'},{note:'A1'},{note:'A2'},
+    {note:'A1'},{note:'A2'},{note:'A1'},{note:'E2',slide:true},
+    {note:'A1',accent:true},{note:'A2'},{note:'A1'},{note:'A2'},
+    {note:'C2'},{note:'D2'},{note:'A1'},{note:'A2',slide:true},
+  ]),
+  /* Berlin-techno sub bass — held fundamental on 1 + syncopated
+     accents on 3 and the "&" of 4. Deep + hypnotic. */
+  'techno-sub':spBassPatternFrom([
+    {note:'A1',accent:true},null,null,null,
+    null,null,{note:'A1'},null,
+    {note:'A1'},null,null,{note:'G2',slide:true},
+    null,null,{note:'A1'},{note:'E2'},
+  ]),
+  /* Jackin' tech-house — FISHER-style bouncy octave walk with
+     slides for groove. Drops the 1 hard, adds offbeat push. */
+  'jackin-bass':spBassPatternFrom([
+    {note:'A1',accent:true},null,{note:'A2'},null,
+    {note:'A1'},{note:'A2',slide:true},{note:'C3'},null,
+    {note:'A1',accent:true},null,{note:'A2'},{note:'A1'},
+    {note:'E2'},{note:'A2',slide:true},{note:'A1'},{note:'G2'},
+  ]),
+  /* Deep house sub roll — warm 1/8-note walk with minimal octave
+     motion.  Sits under the pattern without fighting the kick. */
+  'deep-roll':spBassPatternFrom([
+    {note:'A1'},null,{note:'A1'},null,
+    {note:'A1'},null,{note:'C2'},null,
+    {note:'E2'},null,{note:'E2'},null,
+    {note:'D2'},null,{note:'A1',slide:true},null,
+  ]),
+  /* ═══ 5 MORE ACID 303 PATTERNS — classic acid lines ═══ */
+  /* Hardfloor "Acperience" — the foundational acid techno riff */
+  'hardfloor-acid':spBassPatternFrom([
+    {note:'A1',accent:true},{note:'A2'},null,{note:'A1'},
+    {note:'C2',slide:true},{note:'E2'},{note:'A2'},null,
+    {note:'A1',accent:true},null,{note:'G2',slide:true},{note:'A2'},
+    {note:'D2'},{note:'A1'},{note:'C2',slide:true},{note:'E2'},
+  ]),
+  /* Josh Wink "Higher State of Consciousness" — hypnotic squelchy */
+  'higher-state':spBassPatternFrom([
+    {note:'A1'},{note:'A2',slide:true},{note:'A2'},{note:'A1'},
+    {note:'A1',accent:true},null,{note:'A1'},{note:'C3',slide:true},
+    {note:'A2'},{note:'A1'},{note:'E2'},{note:'A2'},
+    {note:'A1',accent:true},{note:'A2',slide:true},{note:'A1'},{note:'G2'},
+  ]),
+  /* Plastikman / Richie Hawtin minimal acid — less notes more space */
+  'minimal-acid':spBassPatternFrom([
+    {note:'A1',accent:true},null,null,{note:'A1'},
+    null,{note:'A2',slide:true},null,null,
+    {note:'A1',accent:true},null,{note:'C2'},null,
+    null,{note:'A1',slide:true},null,null,
+  ]),
+  /* Phuture "Acid Tracks" — the original. Simple, rolling, hypnotic */
+  'acid-tracks':spBassPatternFrom([
+    {note:'A1'},{note:'A1'},{note:'A2',slide:true},{note:'A1'},
+    {note:'A1'},{note:'C2',slide:true},{note:'A1'},{note:'A1'},
+    {note:'A1'},{note:'A1'},{note:'E2',slide:true},{note:'A1'},
+    {note:'A1'},{note:'A2'},{note:'A1'},{note:'A1',accent:true},
+  ]),
+  /* Psy acid twister — full 16th with aggressive slides */
+  'psy-acid':spBassPatternFrom([
+    {note:'A1',accent:true},{note:'A1'},{note:'A2',slide:true},{note:'A1'},
+    {note:'C3',slide:true},{note:'A1'},{note:'G2'},{note:'A1'},
+    {note:'A1',accent:true},{note:'E2',slide:true},{note:'A2'},{note:'A1'},
+    {note:'D2'},{note:'A2',slide:true},{note:'A1'},{note:'C2',slide:true},
   ]),
 };
 function spBuildBassSeq(){
@@ -15556,6 +16607,13 @@ const SP_ORGAN_PRESETS={
   'acid-organ':    {drawbars:[8,0,8,0,0,4,0,0,0], knobs:{organPerc:.3,organPercTone:1,organPercDec:.15,organLeslie:.3,organLeslieRate:.5,organDrive:.55,organVol:.85}},
   'reese-organ':   {drawbars:[8,6,8,4,0,0,0,0,0], knobs:{organPerc:.1,organPercTone:0,organPercDec:.25,organLeslie:.25,organLeslieRate:.3,organDrive:.55,organVol:.88}},
   'big-room-lead': {drawbars:[4,0,8,8,6,6,0,0,0], knobs:{organPerc:.5,organPercTone:1,organPercDec:.25,organLeslie:.35,organLeslieRate:.55,organDrive:.4,organVol:.85}},
+  /* ═══ NEW HAMMOND B-3 PRESETS — tuned to famous records ═══ */
+  'smokey-organ':  {drawbars:[8,8,8,0,3,0,0,0,0], knobs:{organPerc:.65,organPercTone:1,organPercDec:.4,organLeslie:.35,organLeslieRate:.5,organDrive:.3,organVol:.8}},   // Booker T / Jimmy Smith lounge
+  'procol-ballad': {drawbars:[8,8,6,6,0,0,0,0,0], knobs:{organPerc:0,organPercTone:0,organPercDec:.2,organLeslie:.25,organLeslieRate:.35,organDrive:.15,organVol:.78}},  // "Whiter Shade of Pale"
+  'santana-crunch':{drawbars:[8,8,8,8,0,0,0,6,8], knobs:{organPerc:.55,organPercTone:1,organPercDec:.2,organLeslie:.8,organLeslieRate:.85,organDrive:.8,organVol:.85}},  // Santana crunch
+  'deep-bass-organ':{drawbars:[8,0,4,0,0,0,0,0,0], knobs:{organPerc:0,organPercTone:0,organPercDec:.2,organLeslie:0,organLeslieRate:.2,organDrive:.55,organVol:.95}},   // sub bass pedal
+  'psychedelic-swell':{drawbars:[8,6,8,8,6,0,0,0,0], knobs:{organPerc:.2,organPercTone:0,organPercDec:.35,organLeslie:.9,organLeslieRate:.9,organDrive:.35,organVol:.8}}, // Doors / 60s psyche
+  'funk-clavinet': {drawbars:[8,0,8,0,0,8,0,0,0], knobs:{organPerc:.8,organPercTone:1,organPercDec:.15,organLeslie:.5,organLeslieRate:.65,organDrive:.45,organVol:.85}},  // Stevie / funk
 };
 function spApplyOrganPreset(key){
   const p=SP_ORGAN_PRESETS[key];if(!p)return;
@@ -15596,20 +16654,24 @@ const SP_CHORD_VARIANTS={
   _default      :['am-trance','am-lift'],
 };
 const SP_VIBE_PRESETS={
-  // core vibe templates — referenced by chip + keyword parser
-  'trance'     :{bpm:138,drum:'trance',bass:'trance-bass',synth:'trance-supersaw',chord:'am-lift',fx:{delaySend:.35,reverbSend:.55,chorusMix:.3,masterDrive:.15}},
-  'uplifting'  :{bpm:140,drum:'trance-2',bass:'trance-bass',synth:'trance-supersaw',chord:'am-lift',fx:{delaySend:.4,reverbSend:.65,chorusMix:.4}},
-  'hoover'     :{bpm:142,drum:'trance-2',bass:'hoover-bass',synth:'hoover',chord:'am-trance',fx:{delaySend:.3,reverbSend:.5,chorusMix:.4,masterDrive:.3}},
-  'psytrance'  :{bpm:145,drum:'psytrance',bass:'psytrance-bass',synth:'acid-303',chord:'em-psy',fx:{delaySend:.2,reverbSend:.35,masterDrive:.35}},
-  'techno'     :{bpm:130,drum:'techno',bass:'tech-riff',synth:'techno-reese',chord:'am-techno',fx:{delaySend:.25,reverbSend:.25,masterDrive:.3}},
-  'dark-techno':{bpm:132,drum:'techno-2',bass:'tech-riff',synth:'dark-bass',chord:'am-techno',fx:{delaySend:.2,reverbSend:.4,masterDrive:.4}},
-  'acid'       :{bpm:130,drum:'techno',bass:'classic-acid',synth:'acid-303',chord:'am-techno',fx:{delaySend:.35,reverbSend:.3,masterDrive:.35}},
-  'house'      :{bpm:124,drum:'house',bass:'deep-bass',synth:'house-piano',chord:'am-house',fx:{delaySend:.25,reverbSend:.4,chorusMix:.25}},
-  'deep-house' :{bpm:122,drum:'deep-house',bass:'deep-bass',synth:'warm-pad',chord:'em-deep',fx:{delaySend:.25,reverbSend:.55,chorusMix:.35}},
-  'tech-house' :{bpm:124,drum:'tech-house',bass:'rolling-bass',synth:'tech-stab',chord:'am-house',fx:{delaySend:.3,reverbSend:.3}},
-  'big-room'   :{bpm:128,drum:'big-room',bass:'reese-bass',synth:'big-room',chord:'am-lift',fx:{delaySend:.25,reverbSend:.5,masterDrive:.35}},
-  'minimal'    :{bpm:126,drum:'minimal',bass:'minimal-bass',synth:'deep-pluck',chord:'cm-minimal',fx:{delaySend:.3,reverbSend:.35}},
-  'dreamy'     :{bpm:110,drum:'deep-house',bass:'sub-bass',synth:'vox-pad',chord:'em-deep',fx:{delaySend:.4,reverbSend:.75,chorusMix:.55}},
+  /* Core vibe templates — referenced by chip + keyword parser.
+     Values tuned 2026-04 to pro-tier club-ready sound — bigger reverb
+     tails on melodic vibes, proper drive on techno, and peak-time drop
+     patterns for anything that reads as "high energy" in the prompt. */
+  'trance'     :{bpm:138,drum:'trance-peak',   bass:'trance-rolling',synth:'trance-supersaw',chord:'am-lift',      fx:{delaySend:.50,reverbSend:.75,chorusMix:.45,masterDrive:.20}},
+  'uplifting'  :{bpm:140,drum:'trance-peak',   bass:'trance-rolling',synth:'trance-supersaw',chord:'am-euphoric',  fx:{delaySend:.55,reverbSend:.85,chorusMix:.55,masterDrive:.18}},
+  'hoover'     :{bpm:142,drum:'trance-2',      bass:'hoover-bass',   synth:'hoover',         chord:'am-trance',    fx:{delaySend:.40,reverbSend:.60,chorusMix:.50,masterDrive:.35}},
+  'psytrance'  :{bpm:145,drum:'psytrance',     bass:'psytrance-bass',synth:'acid-303',       chord:'em-psy',       fx:{delaySend:.25,reverbSend:.45,masterDrive:.45}},
+  'techno'     :{bpm:130,drum:'techno-drive',  bass:'techno-sub',    synth:'techno-reese',   chord:'am-techno',    fx:{delaySend:.30,reverbSend:.35,masterDrive:.40}},
+  'dark-techno':{bpm:132,drum:'techno-drive',  bass:'techno-sub',    synth:'dark-bass',      chord:'fm-dark',      fx:{delaySend:.25,reverbSend:.50,masterDrive:.50}},
+  'acid'       :{bpm:130,drum:'techno',        bass:'classic-acid',  synth:'acid-303',       chord:'am-techno',    fx:{delaySend:.45,reverbSend:.40,masterDrive:.40}},
+  'house'      :{bpm:124,drum:'house-groove',  bass:'deep-roll',     synth:'house-piano',    chord:'am-house',     fx:{delaySend:.30,reverbSend:.55,chorusMix:.30}},
+  'deep-house' :{bpm:122,drum:'deep-house-garage',bass:'deep-roll',  synth:'warm-pad',       chord:'em-deep',      fx:{delaySend:.30,reverbSend:.70,chorusMix:.40}},
+  'tech-house' :{bpm:124,drum:'tech-house-peak',bass:'jackin-bass',  synth:'tech-stab',      chord:'am-house',     fx:{delaySend:.40,reverbSend:.40,masterDrive:.15}},
+  'big-room'   :{bpm:128,drum:'big-room',      bass:'reese-bass',    synth:'big-room',       chord:'am-lift',      fx:{delaySend:.30,reverbSend:.60,masterDrive:.40,chorusMix:.30}},
+  'minimal'    :{bpm:126,drum:'minimal',       bass:'minimal-bass',  synth:'deep-pluck',     chord:'cm-minimal',   fx:{delaySend:.35,reverbSend:.45}},
+  'dreamy'     :{bpm:110,drum:'deep-house-garage',bass:'sub-bass',   synth:'vox-pad',        chord:'em-deep',      fx:{delaySend:.45,reverbSend:.85,chorusMix:.60}},
+  'peak-time'  :{bpm:130,drum:'techno-drive',  bass:'techno-sub',    synth:'reese-bass',     chord:'am-techno',    fx:{delaySend:.30,reverbSend:.40,masterDrive:.50}},
 };
 const SP_VIBE_KEYWORDS={
   // keyword -> key in SP_VIBE_PRESETS (order: longest match wins at parse time)
@@ -15622,7 +16684,7 @@ const SP_VIBE_KEYWORDS={
   'uplifting':'uplifting','progressive':'uplifting','melodic':'uplifting',
   'emotional':'uplifting','euphoric':'uplifting','anjuna':'uplifting',
   'hardstyle':'hoover','hoover':'hoover','hard dance':'hoover','hardcore':'hoover',
-  'detroit':'techno','berlin':'techno','industrial':'dark-techno','warehouse':'techno','peak time':'techno',
+  'detroit':'techno','berlin':'techno','industrial':'dark-techno','warehouse':'techno','peak time':'peak-time','peak-time':'peak-time','club':'peak-time','dancefloor':'peak-time','drop':'peak-time',
   'acid techno':'acid','303':'acid','acid':'acid',
   'afterhours':'minimal','lofi':'minimal','underground':'minimal',
   'jackin':'tech-house','jack':'tech-house','club':'house',
@@ -16636,8 +17698,45 @@ function setupStudioPro(){
   document.querySelectorAll('[data-sp-bass-preset]').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const key=btn.dataset.spBassPreset;
-      if(key==='clear')SP.bass.pattern=spBassEmptyPattern();
-      else if(SP_BASS_PRESETS[key])SP.bass.pattern=SP_BASS_PRESETS[key].map(s=>({...s}));
+      if(key==='clear'){
+        SP.bass.pattern=spBassEmptyPattern();
+        toast&&toast('TB-303 pattern cleared');
+      }else if(SP_BASS_PRESETS[key]){
+        SP.bass.pattern=SP_BASS_PRESETS[key].map(s=>({...s}));
+        toast&&toast(`TB-303 pattern: ${btn.textContent.trim()}`,'success');
+        // Audible preview — if the sequencer isn't already running, plays
+        // one bar of the new pattern so the user hears the change right
+        // after clicking.  When the transport IS running, the scheduler
+        // already picks up SP.bass.pattern on the next step.
+        if(!SP.transport.playing){
+          try{
+            spInitAudio();
+            const bpm=SP.transport.bpm||128;
+            const stepMs=60000/bpm/4;
+            // Use plain setTimeout (addTimer is scoped to the step loop +
+            // only fires while transport.playing).  The pattern is in
+            // SP.bass.pattern, so read it at fire-time to catch further
+            // preset changes during the preview.
+            for(let i=0;i<16;i++){
+              const step=i;
+              setTimeout(()=>{
+                const s=SP.bass.pattern[step];
+                if(!s||!s.on)return;
+                const midi=s.midi+(s.octave||0)*12;
+                spBassNoteOn(midi,!!s.accent,!!s.slide);
+                const next=SP.bass.pattern[(step+1)%16];
+                const gate=(next&&next.on&&next.slide)?stepMs*0.95:stepMs*0.75;
+                setTimeout(()=>{
+                  if(SP.bass.currentMidi===midi && !(next&&next.on&&next.slide))
+                    spBassNoteOff(false);
+                },gate);
+              },step*stepMs);
+            }
+            // final release safety — kills any hanging note after the bar ends
+            setTimeout(()=>{if(SP.bass.voice)spBassNoteOff(false);},16*stepMs+150);
+          }catch(e){console.warn('bass preview failed',e);}
+        }
+      }
       spBuildBassSeq();
       document.querySelectorAll('[data-sp-bass-preset]').forEach(b=>b.classList.toggle('active',b===btn && key!=='clear'));
     });
@@ -19224,8 +20323,19 @@ const studioMeterState={
   gonioPts:[],           // recent (L,R) samples for the scatter plot
   truePeakDb:-Infinity,
   deessDuck:0,           // current de-ess shelf reduction
-  envGain:1              // noise-gate / transient follower gain
+  envGain:1,             // noise-gate / transient follower gain
+  // ─── Display smoothing + throttle state ───
+  // The audio loop runs at 60fps but numeric readouts at 60fps just
+  // flicker — the eye can't parse. Peaks are envelope-followed (fast
+  // attack / slow release) for display, and text is refreshed every
+  // 125ms for peaks and 250ms for LUFS.
+  dispPeakL:-Infinity,dispPeakR:-Infinity,
+  dispLufsM:-Infinity,dispLufsS:-Infinity,dispLufsI:-Infinity,
+  dispLufsLRA:NaN,dispLufsTP:-Infinity,
+  _lastPeakTextAt:0,_lastLufsTextAt:0,
 };
+const PEAK_TEXT_MS=125;    // 8 Hz peak readout refresh
+const LUFS_TEXT_MS=250;    // 4 Hz LUFS readout refresh (matches M integration)
 
 function _dbToNorm(db,low,high){if(db===-Infinity)return 0;return Math.max(0,Math.min(1,(db-low)/(high-low)));}
 
@@ -19340,10 +20450,27 @@ function renderStudioMeter(){
     return 'g';
   };
 
-  const paintLadder=(ladder,peakDb,holdDb,numId,holdId,unitId)=>{
+  // ─── Envelope-followed displayed peak values ───
+  // Attack fast (3ms), release slow (350ms) — a broadcast-PPM feel.
+  // Bars keep the instantaneous peak; only the DISPLAYED number is
+  // smoothed so the readout settles instead of flickering.
+  const dispAtk=3,dispRel=350;  // ms
+  const ATK=Math.min(1,16/dispAtk),REL=Math.min(1,16/dispRel);
+  const followEnv=(curDisp,newDb)=>{
+    if(!isFinite(curDisp))return newDb;
+    if(!isFinite(newDb))return curDisp-REL*60;  // slow fade to silence
+    const coef=newDb>curDisp?ATK:REL;
+    return curDisp+(newDb-curDisp)*coef;
+  };
+  studioMeterState.dispPeakL=followEnv(studioMeterState.dispPeakL,peakLDb);
+  studioMeterState.dispPeakR=followEnv(studioMeterState.dispPeakR,peakRDb);
+
+  const needPeakText=NOW-studioMeterState._lastPeakTextAt>=PEAK_TEXT_MS;
+
+  const paintLadder=(ladder,peakDb,dispDb,holdDb,numId,holdId)=>{
     if(!ladder||!ladder._segs)return;
     const segs=ladder._segs;
-    const lit=dbToSegs(peakDb);
+    const lit=dbToSegs(peakDb);              // bars = instantaneous peak (smooth visual)
     const holdSeg=dbToSegs(holdDb);
     for(let i=0;i<SEGS;i++){
       const s=segs[i];
@@ -19352,23 +20479,26 @@ function renderStudioMeter(){
       if(i===holdSeg-1&&holdSeg>0){cls+=' hold';if(holdSeg>=46)cls+=' clip';}
       if(s.className!==cls)s.className=cls;
     }
-    // Numeric readout
-    const num=document.getElementById(numId);
-    if(num){
-      const txt=isFinite(peakDb)?(peakDb>=0?'+':'')+peakDb.toFixed(1):'-∞';
-      if(num.textContent!==txt)num.textContent=txt;
-      let cls='amp-dm-numeric';
-      if(peakDb>=0)cls+=' clip';
-      else if(peakDb>=-6)cls+=' warn';
-      if(num.className!==cls)num.className=cls;
-    }
-    const hold=document.getElementById(holdId);
-    if(hold){
-      hold.textContent=isFinite(holdDb)?(holdDb>=0?'+':'')+holdDb.toFixed(1):'-∞';
+    // Numeric readouts — throttled, and drawn from the envelope-followed value
+    if(needPeakText){
+      const num=document.getElementById(numId);
+      if(num){
+        const txt=isFinite(dispDb)?(dispDb>=0?'+':'')+dispDb.toFixed(1):'-∞';
+        if(num.textContent!==txt)num.textContent=txt;
+        let cls='amp-dm-numeric';
+        if(dispDb>=0)cls+=' clip';
+        else if(dispDb>=-6)cls+=' warn';
+        if(num.className!==cls)num.className=cls;
+      }
+      const hold=document.getElementById(holdId);
+      if(hold){
+        hold.textContent=isFinite(holdDb)?(holdDb>=0?'+':'')+holdDb.toFixed(1):'-∞';
+      }
     }
   };
-  paintLadder(ladL,peakLDb,studioMeterState.dm.holdL,'ampDmNumL','ampDmHoldL');
-  paintLadder(ladR,peakRDb,studioMeterState.dm.holdR,'ampDmNumR','ampDmHoldR');
+  paintLadder(ladL,peakLDb,studioMeterState.dispPeakL,studioMeterState.dm.holdL,'ampDmNumL','ampDmHoldL');
+  paintLadder(ladR,peakRDb,studioMeterState.dispPeakR,studioMeterState.dm.holdR,'ampDmNumR','ampDmHoldR');
+  if(needPeakText)studioMeterState._lastPeakTextAt=NOW;
 
   // ─── PPM SEGMENT LADDERS (20 segments, top red, middle yellow/orange, bottom green) ───
   const renderPpm=(elId,db)=>{
@@ -19440,12 +20570,48 @@ function renderStudioMeter(){
   const lufsI=studioMeterState.lufsIntN?10*Math.log10(studioMeterState.lufsIntSum/studioMeterState.lufsIntN):-Infinity;
   const lra=isFinite(studioMeterState.lufsMax)&&isFinite(studioMeterState.lufsMin)?(studioMeterState.lufsMax-studioMeterState.lufsMin):NaN;
 
-  const setLufs=(id,v,unit)=>{const el=document.getElementById(id);if(el)el.textContent=isFinite(v)?fmt(v)+(unit?' '+unit:''):'-∞';};
-  setLufs('lufsMVal',lufsM);
-  setLufs('lufsSVal',lufsS);
-  setLufs('lufsIVal',lufsI);
-  const lraEl=document.getElementById('lufsLRAVal');if(lraEl)lraEl.textContent=isFinite(lra)?lra.toFixed(1)+' LU':'—';
-  setLufs('lufsTPVal',studioMeterState.truePeakDb,'dBTP');
+  // ─── THROTTLED + SMOOTHED LUFS readouts ───
+  // We integrate every frame (fast, otherwise the running averages
+  // drift) but only REPAINT the text 4 times per second. Displayed
+  // values are one-pole low-passed so the digits don't jitter even
+  // when the underlying RMS jumps.
+  const sm=(prev,next,tau)=>{
+    if(!isFinite(next))return prev;
+    if(!isFinite(prev))return next;
+    return prev+(next-prev)*tau;
+  };
+  studioMeterState.dispLufsM=sm(studioMeterState.dispLufsM,lufsM,0.18);
+  studioMeterState.dispLufsS=sm(studioMeterState.dispLufsS,lufsS,0.06);
+  studioMeterState.dispLufsI=sm(studioMeterState.dispLufsI,lufsI,0.25);
+
+  // Proper EBU-R128 LRA approximation: 10th→95th percentile of the
+  // short-term window (last ~60 s of samples), gated at -70 LUFS.
+  // Much more stable than the old max-min which exploded to 60 LU
+  // as soon as there was a silent gap.
+  let lraDisp=NaN;
+  if(studioMeterState.lufsHist.length>30){
+    const vals=studioMeterState.lufsHist.filter(v=>isFinite(v)&&v>-70).slice().sort((a,b)=>a-b);
+    if(vals.length>10){
+      const p10=vals[Math.floor(vals.length*0.10)];
+      const p95=vals[Math.floor(vals.length*0.95)];
+      lraDisp=Math.max(0,p95-p10);
+    }
+  }
+  studioMeterState.dispLufsLRA=isFinite(studioMeterState.dispLufsLRA)&&isFinite(lraDisp)
+    ?studioMeterState.dispLufsLRA+(lraDisp-studioMeterState.dispLufsLRA)*0.15:lraDisp;
+  studioMeterState.dispLufsTP=sm(studioMeterState.dispLufsTP,studioMeterState.truePeakDb,0.25);
+
+  const needLufsText=NOW-studioMeterState._lastLufsTextAt>=LUFS_TEXT_MS;
+  if(needLufsText){
+    const setLufs=(id,v,unit)=>{const el=document.getElementById(id);if(el)el.textContent=isFinite(v)?fmt(v)+(unit?' '+unit:''):'-∞';};
+    setLufs('lufsMVal',studioMeterState.dispLufsM);
+    setLufs('lufsSVal',studioMeterState.dispLufsS);
+    setLufs('lufsIVal',studioMeterState.dispLufsI);
+    const lraEl=document.getElementById('lufsLRAVal');
+    if(lraEl)lraEl.textContent=isFinite(studioMeterState.dispLufsLRA)?studioMeterState.dispLufsLRA.toFixed(1)+' LU':'—';
+    setLufs('lufsTPVal',studioMeterState.dispLufsTP,'dBTP');
+    studioMeterState._lastLufsTextAt=NOW;
+  }
   // Color-code vs target
   if(studioState.targetLufs!=null){
     const cell=document.getElementById('lufsI');
@@ -19458,11 +20624,15 @@ function renderStudioMeter(){
     }
   }
 
-  // ─── LEGACY PEAK / LUFS BARS (kept for the limiter block) ───
+  // ─── LEGACY PEAK / LUFS BARS (limiter block) — text also throttled ───
   const setBar=(id,db,low=-60,high=0)=>{const el=document.getElementById(id);if(!el)return;el.style.width=(_dbToNorm(db,low,high)*100).toFixed(1)+'%';};
   setBar('studioPeakL',peakLDb);setBar('studioPeakR',peakRDb);setBar('studioLufs',lufsM,-40,0);
-  const setText=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=fmt(v);};
-  setText('studioPeakLVal',peakLDb);setText('studioPeakRVal',peakRDb);setText('studioLufsVal',lufsM);
+  if(needPeakText){
+    const setText=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=fmt(v);};
+    setText('studioPeakLVal',studioMeterState.dispPeakL);
+    setText('studioPeakRVal',studioMeterState.dispPeakR);
+    setText('studioLufsVal',studioMeterState.dispLufsM);
+  }
 
   // ─── COMPRESSOR + MULTI-BAND GR ───
   if(studioChain.comp){
