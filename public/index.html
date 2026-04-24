@@ -14683,7 +14683,13 @@ function logMix(action){
 }
 
 /* PERSISTENCE */
-function saveToDB(){
+/* Serializing the whole library on every call is expensive, and the
+   app fires saveToDB from dozens of hot paths (beat-step toggles,
+   rating clicks, per-pad edits). Coalesce into one write ~400 ms after
+   the last change so a 16-step pattern edit produces one localStorage
+   hit, not sixteen. saveToDBNow stays available for explicit flushes
+   (unload, logout). */
+function _saveToDBNow(){
   if(!settings.autoSave)return;
   const data={
     library:library.map(t=>({...t,buffer:undefined,source:t.source})),
@@ -14693,6 +14699,13 @@ function saveToDB(){
   };
   try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){console.warn(e);}
 }
+let _saveDbTimer=null;
+function saveToDB(){
+  if(_saveDbTimer)clearTimeout(_saveDbTimer);
+  _saveDbTimer=setTimeout(()=>{_saveDbTimer=null;_saveToDBNow();},400);
+}
+window.addEventListener('beforeunload',()=>{if(_saveDbTimer){clearTimeout(_saveDbTimer);_saveToDBNow();}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&_saveDbTimer){clearTimeout(_saveDbTimer);_saveDbTimer=null;_saveToDBNow();}});
 
 function loadFromDB(){
   try{
@@ -19282,7 +19295,15 @@ function init(){
   document.getElementById('ytBtnToggle')?.addEventListener('click',()=>document.getElementById('ytInputWrap')?.classList.toggle('open'));
   document.getElementById('ytLoad')?.addEventListener('click',()=>{const u=document.getElementById('ytInput')?.value.trim();if(u)addYouTubeTrack(u);});
   document.getElementById('ytInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('ytLoad')?.click();});
-  document.getElementById('searchInput').addEventListener('input',renderLibrary);
+  // Perf: debounce the search-on-input. Typing "techno" used to call
+  // renderLibrary six times (once per keystroke); now it fires once
+  // 150 ms after the user stops typing. Sort + filter stay immediate
+  // since they're discrete changes, not a stream of keystrokes.
+  let _searchDb=null;
+  document.getElementById('searchInput').addEventListener('input',()=>{
+    if(_searchDb)clearTimeout(_searchDb);
+    _searchDb=setTimeout(()=>{_searchDb=null;renderLibrary();},150);
+  });
   document.getElementById('sortSelect').addEventListener('change',renderLibrary);
   document.getElementById('filterSource').addEventListener('change',renderLibrary);
   document.getElementById('recBtn').addEventListener('click',toggleRecording);
