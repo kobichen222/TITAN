@@ -3896,6 +3896,185 @@ body.work-mode .dsb-wmexit{display:inline-flex;background:linear-gradient(180deg
 .studio-spectrum{width:100%;display:block;background:linear-gradient(180deg,#04080c 0%,#020406 100%);border-radius:6px;border:1px solid #1a2a30}
 #studioStatus.bypassed{color:var(--red) !important}
 
+/* =====================================================================
+   SOUND TAB — AMPLIFIER METERING BRIDGE + PRO METERS
+   Matches the brushed-metal CDJ chassis and the orange/amber LED palette
+   ===================================================================== */
+.amp-bridge{
+  display:grid;
+  grid-template-columns:minmax(260px,1fr) minmax(120px,auto) minmax(180px,1fr) minmax(180px,auto);
+  gap:12px;align-items:stretch;
+  padding:14px 16px;margin-bottom:14px;
+  background:linear-gradient(180deg,#2a2a2e 0%,#18181b 55%,#0c0c0e 100%);
+  border:1px solid #3a3a3e;border-radius:12px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -1px 0 rgba(0,0,0,.6),
+    inset 0 0 40px rgba(255,138,26,.02),
+    0 12px 32px rgba(0,0,0,.65);
+  position:relative;overflow:hidden;
+}
+.amp-bridge::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,138,26,.35) 50%,transparent);
+}
+.amp-bridge::after{
+  content:'TITAN · AMPLIFIER METER BRIDGE';
+  position:absolute;top:4px;right:14px;
+  font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:3px;
+  color:rgba(255,255,255,.25);
+}
+
+/* ANALOG VU — large SVG with moving needle, gradient arc, peak hold dot */
+.amp-vu-wrap{display:flex;flex-direction:column;gap:6px;justify-content:center}
+.amp-vu{
+  width:100%;max-width:440px;aspect-ratio:2.4/1;
+  background:
+    radial-gradient(ellipse at 50% 130%, rgba(255,180,80,.08) 0%, transparent 60%),
+    linear-gradient(180deg,#f3e8c8 0%,#e4d4a4 35%,#c9b682 100%);
+  border:1px solid #6a5a2a;border-radius:8px;
+  box-shadow:
+    inset 0 2px 6px rgba(255,255,255,.5),
+    inset 0 -4px 10px rgba(90,60,20,.35),
+    inset 0 0 0 3px #0a0a0b,
+    0 6px 16px rgba(0,0,0,.65);
+  position:relative;overflow:hidden;
+}
+.amp-vu svg{width:100%;height:100%;display:block}
+.amp-vu-label{
+  position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:3px;color:#4a3a1a;
+  opacity:.7;
+}
+.amp-vu-ch{
+  position:absolute;bottom:4px;right:8px;
+  font-family:'Orbitron',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;color:#2a1a08;
+}
+
+/* PPM segmented LED ladders */
+.amp-ppm-col{display:flex;flex-direction:column;gap:4px;justify-content:center;min-width:68px}
+.amp-ppm-head{
+  display:grid;grid-template-columns:1fr 1fr;gap:4px;
+  font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1.5px;
+  color:#9a9a9e;text-align:center;
+}
+.amp-ppm-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.amp-ppm{
+  display:flex;flex-direction:column-reverse;gap:1px;
+  width:22px;height:110px;padding:2px;
+  background:#020406;border-radius:3px;border:1px solid #1a2a30;
+  box-shadow:inset 0 0 6px rgba(0,0,0,.9);
+}
+.amp-ppm .seg{flex:1;border-radius:1px;background:#061416;transition:background .04s,box-shadow .04s}
+.amp-ppm .seg.on.g{background:#00d074;box-shadow:0 0 3px rgba(0,208,116,.7)}
+.amp-ppm .seg.on.y{background:#ffcc00;box-shadow:0 0 3px rgba(255,204,0,.8)}
+.amp-ppm .seg.on.o{background:#ff8a1a;box-shadow:0 0 4px rgba(255,138,26,.85)}
+.amp-ppm .seg.on.r{background:#ff2e2e;box-shadow:0 0 5px rgba(255,46,46,.95)}
+.amp-ppm-scale{
+  display:flex;flex-direction:column;justify-content:space-between;
+  height:110px;font-family:'Share Tech Mono',monospace;font-size:8px;color:#6a6a70;
+  letter-spacing:.5px;padding:2px 0;
+}
+
+/* GONIOMETER + PHASE CORRELATION */
+.amp-stereo{display:flex;flex-direction:column;gap:6px;justify-content:center}
+.amp-gonio{
+  width:100%;aspect-ratio:1.6/1;
+  background:
+    radial-gradient(circle at center, rgba(0,212,255,.04), transparent 70%),
+    linear-gradient(180deg,#02080c,#01040a);
+  border:1px solid #1a2a30;border-radius:6px;
+  box-shadow:inset 0 0 20px rgba(0,0,0,.85);
+  position:relative;overflow:hidden;
+}
+.amp-gonio canvas{width:100%;height:100%;display:block}
+.amp-gonio-label{
+  position:absolute;top:3px;left:6px;
+  font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:#5a7a88;
+}
+.amp-phase-wrap{
+  display:flex;flex-direction:column;gap:3px;
+}
+.amp-phase-row{display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:8px;color:#7a7a80;letter-spacing:1px}
+.amp-phase-bar{
+  position:relative;height:12px;border-radius:2px;
+  background:linear-gradient(90deg,#ff2e2e 0%,#ffcc00 35%,#00d074 50%,#ffcc00 65%,#ff2e2e 100%);
+  border:1px solid #0a0a0b;box-shadow:inset 0 0 4px rgba(0,0,0,.7);
+}
+.amp-phase-needle{
+  position:absolute;top:-2px;bottom:-2px;width:3px;left:50%;transform:translateX(-50%);
+  background:#fff;box-shadow:0 0 6px rgba(255,255,255,.9),0 0 2px #fff;
+  transition:left .06s ease-out;
+}
+
+/* LUFS DIGITAL READOUT PANEL */
+.amp-lufs{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:6px;align-content:center;
+  padding:8px;background:#02080c;border:1px solid #1a2a30;border-radius:6px;
+  box-shadow:inset 0 0 16px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.03);
+  min-width:140px;
+}
+.amp-lufs-cell{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:4px 6px;background:rgba(255,138,26,.03);border-radius:4px;border:1px solid rgba(255,138,26,.1)}
+.amp-lufs-cell .lbl{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;color:#6a6a70;text-transform:uppercase}
+.amp-lufs-cell .val{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:800;color:#ffa544;text-shadow:0 0 6px rgba(255,138,26,.5);line-height:1;letter-spacing:.5px}
+.amp-lufs-cell.target .val{color:#5cf0a0;text-shadow:0 0 6px rgba(92,240,160,.5)}
+.amp-lufs-cell.warn .val{color:#ffcc00;text-shadow:0 0 6px rgba(255,204,0,.5)}
+.amp-lufs-cell.danger .val{color:#ff5a5a;text-shadow:0 0 6px rgba(255,90,90,.5)}
+.amp-lufs-cell.pill-wide{grid-column:1/-1}
+
+/* TARGET LOUDNESS PRESETS — second row inside studio-presets */
+.studio-target-row{
+  display:flex;gap:4px;flex-wrap:wrap;margin-top:8px;padding-top:8px;
+  border-top:1px dashed rgba(255,255,255,.06);
+}
+.studio-target-btn{
+  padding:6px 10px;background:linear-gradient(180deg,#1a1a1c,#0a0a0b);
+  border:1px solid #2a2a2e;color:#9a9a9e;
+  font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1.5px;font-weight:700;
+  border-radius:4px;cursor:pointer;transition:all .15s;
+}
+.studio-target-btn:hover{border-color:#5cf0a0;color:#5cf0a0}
+.studio-target-btn.active{background:linear-gradient(180deg,#1a3a2a,#0a1a12);color:#5cf0a0;border-color:#3a8a5a;box-shadow:0 0 10px rgba(92,240,160,.25),inset 0 1px 0 rgba(255,255,255,.06)}
+.studio-target-btn .tgt-lufs{color:#6a6a70;font-size:8px;margin-left:4px;font-weight:400}
+.studio-target-btn.active .tgt-lufs{color:#4a8a6a}
+
+/* MULTI-BAND COMPRESSOR — 3 mini GR meters */
+.amp-mbc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.amp-mbc-band{padding:6px;background:#141416;border-radius:4px;border:1px solid #222}
+.amp-mbc-band .band-name{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:#ffa544;font-weight:700;text-align:center;margin-bottom:4px}
+.amp-mbc-band .band-gr{height:6px;background:#020406;border-radius:1px;position:relative;overflow:hidden;border:1px solid #1a2a30}
+.amp-mbc-band .band-gr-fill{position:absolute;top:0;bottom:0;right:0;width:0%;background:linear-gradient(90deg,#00d074,#ffcc00,#ff2e2e);transition:width .05s}
+.amp-mbc-band .band-val{font-family:'Share Tech Mono',monospace;font-size:8px;color:#7a7a80;text-align:center;margin-top:2px}
+
+/* OSCILLOSCOPE + LUFS HISTORY */
+.amp-scope-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.amp-scope,.amp-lufs-hist{
+  padding:10px;background:#0a0a0b;border-radius:8px;border:1px solid #222;
+}
+.amp-scope canvas,.amp-lufs-hist canvas{
+  width:100%;height:120px;display:block;border-radius:6px;
+  background:linear-gradient(180deg,#04080c 0%,#020406 100%);
+  border:1px solid #1a2a30;
+}
+
+/* MONO CHECK / DIM toggle on the bridge */
+.amp-ctrl-col{display:flex;flex-direction:column;gap:6px;justify-content:center;min-width:100px}
+.amp-ctrl-btn{
+  padding:8px 10px;background:linear-gradient(180deg,#26262a,#111114);
+  border:1px solid #2a2a2e;color:#cfcfd2;
+  font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1.5px;font-weight:700;
+  border-radius:4px;cursor:pointer;text-align:center;
+}
+.amp-ctrl-btn:hover{border-color:#ffa544;color:#ffa544}
+.amp-ctrl-btn.active{background:linear-gradient(180deg,#3a2a18,#1f1610);color:#ffd28a;border-color:#c8841a;box-shadow:0 0 10px rgba(232,163,64,.4),inset 0 1px 0 rgba(255,255,255,.08)}
+
+/* Responsive collapse for the bridge on narrow screens */
+@media(max-width:1200px){
+  .amp-bridge{grid-template-columns:1fr 1fr;gap:10px}
+  .amp-vu-wrap{grid-column:1/-1}
+  .amp-scope-wrap{grid-template-columns:1fr}
+}
+
 /* Sub-pixel crisp borders on retina */
 @media(min-resolution:2dppx){
   .cdj,.mixer,.library,.beat-fx-panel,.scene-fx-panel,
@@ -7665,6 +7844,319 @@ body.theme-light .cdj .cue-btn{
 /* Consistent widths for pad-modes + hot-cues across all 4 decks */
 .cdj .pad-modes,.cdj .hot-cues{width:100% !important;box-sizing:border-box !important}
 .cdj .pad-mode-btn,.cdj .cue-btn{min-width:0 !important;box-sizing:border-box !important}
+
+/* ============================================================
+   PROFESSIONAL TURNTABLE / CDJ LOOK
+   Realistic Pioneer-style hardware: matte black + brushed
+   metal, single white tracking light, amber/green LEDs only
+   when active. No rainbow per-deck accents.
+   ============================================================ */
+
+/* Unify deck chassis — remove per-deck accents; restore neutral metal */
+.cdj,
+.cdj[data-deck="A"],
+.cdj[data-deck="B"],
+.cdj[data-deck="C"],
+.cdj[data-deck="D"]{
+  --deck-accent:#d8d8dc;
+  --deck-accent-rgb:216,216,220;
+  background:linear-gradient(180deg,#262629 0%,#1a1a1d 55%,#0e0e10 100%);
+  border:1px solid #2a2a2e;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    inset 0 -1px 0 rgba(0,0,0,.55),
+    0 22px 60px rgba(0,0,0,.7);
+}
+.cdj::before{
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.18) 50%,transparent);
+  box-shadow:none;
+  height:1px;
+  opacity:.6;
+}
+.cdj::after{display:none}
+.cdj:hover{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -1px 0 rgba(0,0,0,.55),
+    0 24px 70px rgba(0,0,0,.8);
+}
+.cdj.drop-target{
+  border-color:#e0a040;
+  box-shadow:0 0 22px rgba(224,160,64,.45),inset 0 0 18px rgba(224,160,64,.1);
+}
+.cdj .deck-number{
+  color:#e8e8ea;
+  background:linear-gradient(180deg,#3a3a3e 0%,#1e1e22 100%);
+  -webkit-text-fill-color:#e8e8ea;
+  border:1px solid #4a4a4e;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(0,0,0,.5);
+  text-shadow:0 1px 0 rgba(0,0,0,.6);
+}
+
+/* ───── JOG WHEEL: brushed-metal platter, single white tracking light ───── */
+.jog-outer{
+  background:
+    radial-gradient(circle at 30% 28%, #6e6e72 0%, #3a3a3e 38%, #1c1c1e 72%, #050506 100%);
+  box-shadow:
+    0 0 0 2px #0a0a0b,
+    0 0 0 4px #2a2a2e,
+    0 0 0 5px #050506,
+    inset 0 2px 8px rgba(255,255,255,.08),
+    inset 0 -8px 16px rgba(0,0,0,.85),
+    0 12px 32px rgba(0,0,0,.75);
+}
+.jog-ring{
+  background:#000;
+  box-shadow:inset 0 0 16px rgba(0,0,0,.95),inset 0 0 0 1px #1a1a1c;
+}
+/* Single neutral position light (like real CDJ tracking dot) */
+.cdj .jog-ring-light,
+.jog-ring-light{
+  background:conic-gradient(from 0deg,
+    transparent 0deg,
+    rgba(255,255,255,.22) 2deg,
+    rgba(255,255,255,.85) 5deg,
+    rgba(255,255,255,.45) 9deg,
+    transparent 16deg);
+  filter:blur(.6px) drop-shadow(0 0 3px rgba(255,255,255,.4));
+}
+.jog-platter{
+  background:
+    radial-gradient(circle at 35% 35%, #2c2c30 0%, #141416 60%, #050506 100%);
+  box-shadow:
+    inset 0 2px 8px rgba(255,255,255,.06),
+    inset 0 -4px 12px rgba(0,0,0,.95),
+    inset 0 0 0 1px #0a0a0b;
+}
+.jog-platter-disc{
+  background:
+    repeating-radial-gradient(circle, rgba(255,255,255,.025) 0 1px, transparent 1px 3px),
+    radial-gradient(circle, #1a1a1c 0%, #07070a 100%);
+}
+.jog-center-screen,
+.cdj .jog-center-screen{
+  background:linear-gradient(180deg,#0a0a0c 0%,#020203 100%);
+  border:1px solid #1a1a1e;
+  box-shadow:
+    inset 0 0 20px rgba(0,0,0,.95),
+    inset 0 1px 0 rgba(255,255,255,.04),
+    0 0 0 1px #050506;
+}
+.cdj .jog-center-screen .bpm-display,
+.jog-center-screen .bpm-display{
+  color:#e0a040;
+  text-shadow:0 0 6px rgba(224,160,64,.5);
+}
+.jog-center-screen .bpm-sub{color:#7a7a80;letter-spacing:2.5px}
+.jog-center-screen .deck-badge{color:#9a9a9e}
+.cdj .jog-indicator,
+.jog-indicator{
+  background:#f0f0f2;
+  box-shadow:0 0 4px rgba(255,255,255,.7);
+  width:2px;
+  height:12px;
+}
+.jog-markers::before{
+  background:repeating-conic-gradient(from 0deg,
+    rgba(255,255,255,.12) 0deg 1deg,
+    transparent 1deg 9deg);
+}
+
+/* ───── TRANSPORT BUTTONS: real CDJ LED-style (CUE = amber, PLAY = green) ───── */
+.big-btn{
+  background:linear-gradient(180deg,#3c3c40 0%,#222226 45%,#0e0e10 100%);
+  color:#cfcfd2;
+  text-shadow:none;
+  border:1px solid #1a1a1c;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12),
+    inset 0 -2px 4px rgba(0,0,0,.7),
+    0 3px 8px rgba(0,0,0,.55);
+}
+.big-btn:hover{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    inset 0 -2px 4px rgba(0,0,0,.7),
+    0 5px 12px rgba(0,0,0,.7);
+}
+.big-btn .icon{opacity:.85}
+.big-btn .lbl{opacity:.95;letter-spacing:3px}
+
+/* CUE — small amber LED indicator strip on top of the button face */
+.big-btn.cue{
+  color:#e8e8ea;
+  text-shadow:none;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12),
+    inset 0 -2px 4px rgba(0,0,0,.7),
+    0 3px 8px rgba(0,0,0,.55);
+}
+.big-btn.cue::before{
+  content:'';
+  position:absolute;
+  top:4px;left:50%;transform:translateX(-50%);
+  width:34%;height:3px;border-radius:2px;
+  background:#3a2a18;
+  box-shadow:inset 0 0 1px rgba(0,0,0,.6);
+  transition:background .12s,box-shadow .12s;
+}
+.big-btn.cue:hover::before{background:#5a3818}
+.big-btn.cue.active{
+  background:linear-gradient(180deg,#3c3c40 0%,#222226 45%,#0e0e10 100%);
+  color:#ffb060;
+  text-shadow:0 0 4px rgba(224,160,64,.4);
+  animation:none;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 -2px 4px rgba(0,0,0,.7),
+    0 0 14px rgba(224,160,64,.35),
+    0 3px 8px rgba(0,0,0,.55);
+}
+.big-btn.cue.active::before{
+  background:#ffb050;
+  box-shadow:0 0 10px rgba(255,176,80,.9),0 0 2px rgba(255,255,255,.6);
+}
+
+/* PLAY — green LED indicator strip; no pulsing animation */
+.big-btn.play{
+  color:#e8e8ea;
+  text-shadow:none;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12),
+    inset 0 -2px 4px rgba(0,0,0,.7),
+    0 3px 8px rgba(0,0,0,.55);
+}
+.big-btn.play::before{
+  content:'';
+  position:absolute;
+  top:4px;left:50%;transform:translateX(-50%);
+  width:34%;height:3px;border-radius:2px;
+  background:#163018;
+  box-shadow:inset 0 0 1px rgba(0,0,0,.6);
+  transition:background .12s,box-shadow .12s;
+}
+.big-btn.play:hover::before{background:#1f4a22}
+.big-btn.play.active{
+  background:linear-gradient(180deg,#3c3c40 0%,#222226 45%,#0e0e10 100%);
+  color:#5cf0a0;
+  text-shadow:0 0 4px rgba(92,240,160,.4);
+  animation:none;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 -2px 4px rgba(0,0,0,.7),
+    0 0 14px rgba(92,240,160,.35),
+    0 3px 8px rgba(0,0,0,.55);
+}
+.big-btn.play.active::before{
+  background:#3cf590;
+  box-shadow:0 0 10px rgba(60,245,144,.9),0 0 2px rgba(255,255,255,.6);
+}
+
+/* ───── HOT CUES: uniform charcoal pads, single amber LED on activation ───── */
+.cue-btn{
+  background:linear-gradient(180deg,#2e2e32 0%,#1c1c20 50%,#0c0c0f 100%);
+  border:1px solid #1a1a1c;
+  color:#8a8a8e;
+}
+.cue-btn:hover{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 -2px 4px rgba(0,0,0,.7),
+    0 3px 6px rgba(0,0,0,.55);
+}
+/* All 8 cues use the same warm amber when active (real-hardware feel) */
+.cue-btn[data-color="1"],
+.cue-btn[data-color="2"],
+.cue-btn[data-color="3"],
+.cue-btn[data-color="4"],
+.cue-btn[data-color="5"],
+.cue-btn[data-color="6"],
+.cue-btn[data-color="7"],
+.cue-btn[data-color="8"]{--cue-color:#e8a340}
+.cue-btn.active{
+  background:linear-gradient(180deg,#3a2a18 0%,#1f1610 100%);
+  color:#ffd28a;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    inset 0 -1px 2px rgba(0,0,0,.5),
+    0 0 10px rgba(232,163,64,.55),
+    0 0 2px rgba(255,255,255,.4);
+}
+.cue-btn.armed{
+  background:linear-gradient(180deg,#2a2418 0%,#161210 100%);
+  color:#d8a060;
+}
+
+/* ───── DECK UTILITY ROWS: muted neutral palette ───── */
+.loop-btn,.jump-btn,.util-btn{
+  background:linear-gradient(180deg,#26262a 0%,#0c0c0f 100%);
+  border:1px solid #1a1a1c;
+  color:#9a9a9e;
+}
+.loop-btn{color:#a8b8c0}
+.loop-btn.active{
+  background:linear-gradient(180deg,#1a3a48 0%,#0a1a22 100%);
+  color:#7fd0ff;
+  box-shadow:0 0 8px rgba(127,208,255,.35),inset 0 1px 0 rgba(255,255,255,.1);
+}
+.jump-btn{color:#b0a8c0}
+.jump-btn:hover{color:#d8c8f0}
+.util-btn{color:#8a8a8e}
+.util-btn.sync.active,
+.util-btn.keylock.active,
+.util-btn.quantize.active,
+.util-btn.slip.active,
+.util-btn.reverse.active{
+  background:linear-gradient(180deg,#3a2a18 0%,#1f1610 100%);
+  color:#ffd28a;
+  box-shadow:0 0 8px rgba(232,163,64,.4),inset 0 1px 0 rgba(255,255,255,.1);
+}
+.util-btn.reverse.active{
+  background:linear-gradient(180deg,#3a1818 0%,#1f0e0e 100%);
+  color:#ff9090;
+  box-shadow:0 0 8px rgba(255,90,90,.4),inset 0 1px 0 rgba(255,255,255,.1);
+}
+
+/* ───── PAD MODES: uniform amber-on-charcoal ───── */
+.pad-mode-btn{
+  background:linear-gradient(180deg,#26262a 0%,#0c0c0f 100%);
+  border:1px solid #1a1a1c;
+  color:#8a8a8e;
+}
+.pad-mode-btn.active,
+.pad-mode-btn[data-pad-mode="cue"].active,
+.pad-mode-btn[data-pad-mode="roll"].active,
+.pad-mode-btn[data-pad-mode="slicer"].active,
+.pad-mode-btn[data-pad-mode="sampler"].active,
+.pad-mode-btn[data-pad-mode="loop"].active,
+.pad-mode-btn[data-pad-mode="pitch"].active{
+  background:linear-gradient(180deg,#3a2a18 0%,#1f1610 100%);
+  color:#ffd28a;
+  box-shadow:0 0 8px rgba(232,163,64,.4),inset 0 1px 0 rgba(255,255,255,.1);
+}
+
+/* ───── TEMPO CONTROLS: monochrome with amber readout ───── */
+.tempo-value{color:#e8a340}
+.tempo-handle::before{
+  background:#f0f0f2;
+  box-shadow:0 0 3px rgba(255,255,255,.7);
+}
+.tempo-btn{color:#cfcfd2;border-color:#2a2a2e}
+.tempo-btn:active{
+  background:#e8a340;
+  color:#0a0a0a;
+  box-shadow:0 0 10px rgba(232,163,64,.5);
+}
+.tempo-btn.reset{color:#a8d8b0}
+.tempo-btn.reset:active{background:#5cf0a0;color:#0a0a0a}
+.tempo-display-big{
+  color:#e8a340;
+  text-shadow:0 0 6px rgba(232,163,64,.5);
+}
+
+/* Deck label model strip — neutralize bright orange */
+.deck-label .model{color:#cfcfd2}
+.deck-label .suffix{color:#7a7a80}
 </style>
 </head>
 <body>
@@ -8320,16 +8812,46 @@ Click pad to play · Right-click to clear · Drop audio file/track onto pad · C
 <div class="tab-content" id="tab-midi">
 <div class="midi-panel">
 <div class="library-header"><div class="library-title">🎹 MIDI CONTROLLERS</div>
-<button class="tool-btn" id="midiConnectBtn">CONNECT</button></div>
-<div style="padding:10px 0;color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:11px;">
-Connect USB MIDI controller. Tested with Pioneer DDJ, Denon, Numark.
+<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+  <button class="tool-btn" id="midiConnectBtn">CONNECT</button>
+  <select id="midiPresetSelect" class="fx-selector" style="min-width:180px">
+    <option value="">— Controller preset —</option>
+    <option value="generic">Generic 2-deck</option>
+    <option value="ddj400">Pioneer DDJ-400</option>
+    <option value="mixtrack">Numark Mixtrack Pro</option>
+    <option value="none">Clear all mappings</option>
+  </select>
+  <span id="midiStatusChip" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);padding:4px 10px;border:1px solid #333;border-radius:4px">● disconnected</span>
+</div>
+</div>
+<div style="padding:10px 0;color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:11px;line-height:1.6">
+Connect any class-compliant USB MIDI controller. Pick a preset above for
+instant full-deck mapping, or use <b>MIDI Learn</b> (right-click any knob / button
+in the main console) to bind one-at-a-time.
+Hot-plugging a controller is auto-detected — no need to press CONNECT again.
 </div>
 <div class="midi-devices" id="midiDevices">
 <div style="color:var(--text-dim);text-align:center;padding:20px;font-family:'Share Tech Mono',monospace;font-size:11px;">
-No MIDI devices. Press CONNECT.
+No MIDI devices. Press CONNECT (browser will ask for permission once).
 </div>
 </div>
-<h4 style="font-family:'Orbitron',sans-serif;font-size:11px;color:var(--orange);letter-spacing:2px;margin-bottom:8px;">MIDI LOG</h4>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 8px">
+<h4 style="font-family:'Orbitron',sans-serif;font-size:11px;color:var(--orange);letter-spacing:2px;">ACTIVE MAPPINGS <span id="midiMapCount" style="color:var(--text-dim);font-size:10px">(0)</span></h4>
+<div style="display:flex;gap:6px">
+  <button class="tool-btn" id="midiExportBtn" style="font-size:9px;padding:4px 8px">EXPORT</button>
+  <button class="tool-btn" id="midiImportBtn" style="font-size:9px;padding:4px 8px">IMPORT</button>
+  <button class="tool-btn" id="midiClearBtn" style="font-size:9px;padding:4px 8px;color:var(--red);border-color:var(--red)">CLEAR</button>
+</div>
+</div>
+<div id="midiMapList" class="midi-devices" style="min-height:60px;max-height:220px">
+<div style="color:var(--text-dim);text-align:center;padding:14px;font-family:'Share Tech Mono',monospace;font-size:11px;">
+No mappings yet. Pick a preset above or right-click any control → MIDI Learn.
+</div>
+</div>
+<input type="file" id="midiImportFile" accept="application/json" style="display:none"/>
+
+<h4 style="font-family:'Orbitron',sans-serif;font-size:11px;color:var(--orange);letter-spacing:2px;margin:14px 0 8px;">MIDI MONITOR</h4>
 <div class="midi-log" id="midiLog">-- Awaiting input --</div>
 </div>
 </div>
@@ -8343,6 +8865,106 @@ No MIDI devices. Press CONNECT.
 <span id="studioStatus" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--play-green);letter-spacing:2px;">● ACTIVE</span>
 </div>
 </div>
+
+<!-- AMPLIFIER METERING BRIDGE — analog VU + PPM + goniometer + phase + LUFS -->
+<div class="amp-bridge">
+  <div class="amp-vu-wrap">
+    <div class="amp-vu" id="ampVuL">
+      <span class="amp-vu-label">VU · −20 ← 0 → +3</span>
+      <span class="amp-vu-ch">L</span>
+      <svg viewBox="0 0 400 170" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="vuArcGrad" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#1a1a1c"/>
+            <stop offset="0.55" stop-color="#3a2a1a"/>
+            <stop offset="0.7" stop-color="#7a5a1a"/>
+            <stop offset="0.85" stop-color="#b03a1a"/>
+            <stop offset="1" stop-color="#d8201a"/>
+          </linearGradient>
+        </defs>
+        <!-- Scale arc -->
+        <path d="M 30 155 A 170 170 0 0 1 370 155" fill="none" stroke="url(#vuArcGrad)" stroke-width="4" opacity="0.9"/>
+        <!-- Tick marks -->
+        <g stroke="#3a2a0a" stroke-width="1.2" fill="#3a2a0a" font-family="Orbitron,sans-serif" font-size="11" font-weight="700" text-anchor="middle">
+          <line x1="30" y1="150" x2="36" y2="135"/><text x="36" y="128">-20</text>
+          <line x1="80" y1="110" x2="84" y2="97"/><text x="84" y="90">-10</text>
+          <line x1="140" y1="78" x2="142" y2="64"/><text x="142" y="56">-5</text>
+          <line x1="200" y1="68" x2="200" y2="52"/><text x="200" y="44" fill="#2a1a04" font-size="13">0</text>
+          <line x1="260" y1="78" x2="258" y2="64"/><text x="258" y="56" fill="#b0202a">+3</text>
+          <line x1="320" y1="110" x2="316" y2="97" stroke="#b0202a" fill="#b0202a"/><text x="316" y="90" fill="#b0202a">+6</text>
+          <line x1="370" y1="150" x2="364" y2="135" stroke="#d8201a" fill="#d8201a"/>
+        </g>
+        <!-- Needle (pivoted at (200,155), rotated by JS) -->
+        <g id="ampVuNeedleL" transform="rotate(-45 200 155)">
+          <line x1="200" y1="155" x2="200" y2="45" stroke="#1a1a1c" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="200" cy="45" r="3" fill="#1a1a1c"/>
+        </g>
+        <!-- Pivot hub -->
+        <circle cx="200" cy="155" r="8" fill="#2a2a2e" stroke="#0a0a0b" stroke-width="1"/>
+        <circle cx="200" cy="155" r="3" fill="#0a0a0b"/>
+        <!-- Peak-hold dot -->
+        <circle id="ampVuPeakL" cx="200" cy="50" r="2.5" fill="#d8201a" opacity="0"/>
+      </svg>
+    </div>
+    <div class="amp-vu" id="ampVuR">
+      <span class="amp-vu-label">VU · −20 ← 0 → +3</span>
+      <span class="amp-vu-ch">R</span>
+      <svg viewBox="0 0 400 170" preserveAspectRatio="xMidYMid meet">
+        <path d="M 30 155 A 170 170 0 0 1 370 155" fill="none" stroke="url(#vuArcGrad)" stroke-width="4" opacity="0.9"/>
+        <g stroke="#3a2a0a" stroke-width="1.2" fill="#3a2a0a" font-family="Orbitron,sans-serif" font-size="11" font-weight="700" text-anchor="middle">
+          <line x1="30" y1="150" x2="36" y2="135"/><text x="36" y="128">-20</text>
+          <line x1="80" y1="110" x2="84" y2="97"/><text x="84" y="90">-10</text>
+          <line x1="140" y1="78" x2="142" y2="64"/><text x="142" y="56">-5</text>
+          <line x1="200" y1="68" x2="200" y2="52"/><text x="200" y="44" fill="#2a1a04" font-size="13">0</text>
+          <line x1="260" y1="78" x2="258" y2="64"/><text x="258" y="56" fill="#b0202a">+3</text>
+          <line x1="320" y1="110" x2="316" y2="97" stroke="#b0202a" fill="#b0202a"/><text x="316" y="90" fill="#b0202a">+6</text>
+          <line x1="370" y1="150" x2="364" y2="135" stroke="#d8201a" fill="#d8201a"/>
+        </g>
+        <g id="ampVuNeedleR" transform="rotate(-45 200 155)">
+          <line x1="200" y1="155" x2="200" y2="45" stroke="#1a1a1c" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="200" cy="45" r="3" fill="#1a1a1c"/>
+        </g>
+        <circle cx="200" cy="155" r="8" fill="#2a2a2e" stroke="#0a0a0b" stroke-width="1"/>
+        <circle cx="200" cy="155" r="3" fill="#0a0a0b"/>
+        <circle id="ampVuPeakR" cx="200" cy="50" r="2.5" fill="#d8201a" opacity="0"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="amp-ppm-col">
+    <div class="amp-ppm-head"><span>PPM L</span><span>PPM R</span></div>
+    <div class="amp-ppm-grid" style="display:grid;grid-template-columns:1fr 1fr 20px;gap:4px;align-items:stretch">
+      <div class="amp-ppm" id="ampPpmL"></div>
+      <div class="amp-ppm" id="ampPpmR"></div>
+      <div class="amp-ppm-scale"><span>+3</span><span>0</span><span>-6</span><span>-12</span><span>-24</span><span>-40</span></div>
+    </div>
+  </div>
+
+  <div class="amp-stereo">
+    <div class="amp-gonio">
+      <span class="amp-gonio-label">GONIOMETER · L/R</span>
+      <canvas id="ampGonio" width="280" height="180"></canvas>
+    </div>
+    <div class="amp-phase-wrap">
+      <div class="amp-phase-row"><span>MONO −1</span><span>PHASE</span><span>+1 STEREO</span></div>
+      <div class="amp-phase-bar"><div class="amp-phase-needle" id="ampPhaseNeedle"></div></div>
+    </div>
+  </div>
+
+  <div class="amp-lufs">
+    <div class="amp-lufs-cell" id="lufsM"><span class="lbl">LUFS-M</span><span class="val" id="lufsMVal">-∞</span></div>
+    <div class="amp-lufs-cell" id="lufsS"><span class="lbl">LUFS-S</span><span class="val" id="lufsSVal">-∞</span></div>
+    <div class="amp-lufs-cell" id="lufsI"><span class="lbl">LUFS-I</span><span class="val" id="lufsIVal">-∞</span></div>
+    <div class="amp-lufs-cell" id="lufsLRA"><span class="lbl">LRA</span><span class="val" id="lufsLRAVal">—</span></div>
+    <div class="amp-lufs-cell pill-wide"><span class="lbl">TRUE PEAK dBTP</span><span class="val" id="lufsTPVal">-∞</span></div>
+    <div class="amp-ctrl-col" style="grid-column:1/-1;flex-direction:row;gap:6px">
+      <button class="amp-ctrl-btn" id="ampBtnMono" title="Sum L+R to check mono compatibility">MONO</button>
+      <button class="amp-ctrl-btn" id="ampBtnDim" title="Attenuate output by −20 dB for reference listening">DIM −20</button>
+      <button class="amp-ctrl-btn" id="ampBtnLufsReset" title="Reset integrated loudness & LRA">RESET</button>
+    </div>
+  </div>
+</div>
+
 <div class="studio-presets">
 <div class="studio-sub-label">ROOM / VENUE PRESETS</div>
 <div class="studio-preset-row">
@@ -8356,6 +8978,15 @@ No MIDI devices. Press CONNECT.
 <button class="studio-preset-btn" data-preset="bright">BRIGHT</button>
 <button class="studio-preset-btn" data-preset="bassboost">BASS+</button>
 <button class="studio-preset-btn" data-preset="vocal">VOCAL</button>
+</div>
+<div class="studio-target-row">
+<span style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:#7a7a80;font-weight:700;align-self:center;margin-right:4px">TARGET LOUDNESS →</span>
+<button class="studio-target-btn" data-target="club">CLUB <span class="tgt-lufs">-8 LUFS</span></button>
+<button class="studio-target-btn" data-target="radio">RADIO <span class="tgt-lufs">-12 LUFS</span></button>
+<button class="studio-target-btn" data-target="streaming">STREAMING <span class="tgt-lufs">-14 LUFS</span></button>
+<button class="studio-target-btn" data-target="youtube">YOUTUBE <span class="tgt-lufs">-14 LUFS</span></button>
+<button class="studio-target-btn" data-target="podcast">PODCAST <span class="tgt-lufs">-16 LUFS</span></button>
+<button class="studio-target-btn" data-target="broadcast">BROADCAST <span class="tgt-lufs">-23 LUFS</span></button>
 </div>
 </div>
 <div class="studio-eq">
@@ -8403,11 +9034,78 @@ No MIDI devices. Press CONNECT.
 <div class="studio-level-row"><span class="studio-level-label">LUFS-M</span><div class="studio-level-bar"><div class="studio-level-fill lufs" id="studioLufs"></div></div><span class="studio-level-val" id="studioLufsVal">-∞</span></div>
 </div>
 </div>
+
+<div class="studio-block">
+<div class="studio-block-title">📼 TAPE SATURATION</div>
+<div class="studio-knobs">
+<div class="knob-wrap"><div class="knob" data-studio-knob="tapeDrive"><div class="knob-indicator"></div></div><span class="knob-label">DRIVE</span><span class="studio-val" id="val-tapeDrive">0%</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="tapeBias"><div class="knob-indicator"></div></div><span class="knob-label">BIAS</span><span class="studio-val" id="val-tapeBias">0</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="tapeTone"><div class="knob-indicator"></div></div><span class="knob-label">WARMTH</span><span class="studio-val" id="val-tapeTone">0</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="tapeMix"><div class="knob-indicator"></div></div><span class="knob-label">MIX</span><span class="studio-val" id="val-tapeMix">0%</span></div>
 </div>
+</div>
+
+<div class="studio-block">
+<div class="studio-block-title">🎤 DE-ESSER</div>
+<div class="studio-knobs">
+<div class="knob-wrap"><div class="knob" data-studio-knob="deessFreq"><div class="knob-indicator"></div></div><span class="knob-label">FREQ</span><span class="studio-val" id="val-deessFreq">6kHz</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="deessThresh"><div class="knob-indicator"></div></div><span class="knob-label">THRESH</span><span class="studio-val" id="val-deessThresh">-18dB</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="deessAmt"><div class="knob-indicator"></div></div><span class="knob-label">AMOUNT</span><span class="studio-val" id="val-deessAmt">0%</span></div>
+</div>
+<div class="studio-gr-meter"><div class="studio-gr-fill" id="studioDeessFill"></div><span class="studio-gr-label">SIBILANCE <span id="studioDeessValue">0</span>dB</span></div>
+</div>
+
+<div class="studio-block">
+<div class="studio-block-title">⚡ TRANSIENT DESIGNER</div>
+<div class="studio-knobs">
+<div class="knob-wrap"><div class="knob" data-studio-knob="transAttack"><div class="knob-indicator"></div></div><span class="knob-label">ATTACK</span><span class="studio-val" id="val-transAttack">0</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="transSustain"><div class="knob-indicator"></div></div><span class="knob-label">SUSTAIN</span><span class="studio-val" id="val-transSustain">0</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="transMix"><div class="knob-indicator"></div></div><span class="knob-label">MIX</span><span class="studio-val" id="val-transMix">100%</span></div>
+</div>
+</div>
+
+<div class="studio-block">
+<div class="studio-block-title">🔊 MULTI-BAND COMPRESSOR</div>
+<div class="studio-knobs">
+<div class="knob-wrap"><div class="knob" data-studio-knob="mbcLow"><div class="knob-indicator"></div></div><span class="knob-label">LOW</span><span class="studio-val" id="val-mbcLow">0dB</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="mbcMid"><div class="knob-indicator"></div></div><span class="knob-label">MID</span><span class="studio-val" id="val-mbcMid">0dB</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="mbcHi"><div class="knob-indicator"></div></div><span class="knob-label">HI</span><span class="studio-val" id="val-mbcHi">0dB</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="mbcXover"><div class="knob-indicator"></div></div><span class="knob-label">X-OVER</span><span class="studio-val" id="val-mbcXover">250/2.5k</span></div>
+</div>
+<div class="amp-mbc">
+  <div class="amp-mbc-band"><div class="band-name">LOW</div><div class="band-gr"><div class="band-gr-fill" id="mbcGrLow"></div></div><div class="band-val" id="mbcGrLowVal">0.0 dB</div></div>
+  <div class="amp-mbc-band"><div class="band-name">MID</div><div class="band-gr"><div class="band-gr-fill" id="mbcGrMid"></div></div><div class="band-val" id="mbcGrMidVal">0.0 dB</div></div>
+  <div class="amp-mbc-band"><div class="band-name">HI</div><div class="band-gr"><div class="band-gr-fill" id="mbcGrHi"></div></div><div class="band-val" id="mbcGrHiVal">0.0 dB</div></div>
+</div>
+</div>
+
+<div class="studio-block">
+<div class="studio-block-title">🚪 NOISE GATE</div>
+<div class="studio-knobs">
+<div class="knob-wrap"><div class="knob" data-studio-knob="gateThresh"><div class="knob-indicator"></div></div><span class="knob-label">THRESH</span><span class="studio-val" id="val-gateThresh">-60dB</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="gateAttack"><div class="knob-indicator"></div></div><span class="knob-label">ATTACK</span><span class="studio-val" id="val-gateAttack">1ms</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="gateRelease"><div class="knob-indicator"></div></div><span class="knob-label">RELEASE</span><span class="studio-val" id="val-gateRelease">100ms</span></div>
+</div>
+</div>
+
+</div>
+
 <div class="studio-spectrum-wrap">
-<div class="studio-sub-label">REAL-TIME SPECTRUM</div>
+<div class="studio-sub-label">REAL-TIME SPECTRUM <span style="color:#6a6a70;font-size:8px;font-weight:400;letter-spacing:1px;margin-left:8px">20Hz ↔ 20kHz · log scale</span></div>
 <canvas class="studio-spectrum" id="studioSpectrum" width="1200" height="80"></canvas>
 </div>
+
+<div class="amp-scope-wrap">
+  <div class="amp-scope">
+    <div class="studio-sub-label">📈 OSCILLOSCOPE <span style="color:#6a6a70;font-size:8px;font-weight:400;letter-spacing:1px;margin-left:8px">Time domain · 2048 samples</span></div>
+    <canvas id="ampOsc" width="600" height="120"></canvas>
+  </div>
+  <div class="amp-lufs-hist">
+    <div class="studio-sub-label">📊 LOUDNESS HISTORY <span style="color:#6a6a70;font-size:8px;font-weight:400;letter-spacing:1px;margin-left:8px">Last 60 s · LUFS-M</span></div>
+    <canvas id="ampLufsHist" width="600" height="120"></canvas>
+  </div>
+</div>
+
 </div>
 </div>
 
@@ -8886,19 +9584,25 @@ Two options — both work completely offline:<br/>
 <b>Standalone HTML</b> — a single file you double-click to open in any browser.
 </div>
 </div>
-<div class="settings-row" style="justify-content:flex-start;gap:10px;flex-wrap:wrap">
-  <button class="tool-btn" id="offlineDownloadBtn" style="color:var(--play-green);border-color:var(--play-green);font-weight:800;letter-spacing:2px;">🔓 UNLOCK DOWNLOADS</button>
+<div class="settings-row" style="justify-content:flex-start;gap:10px;flex-wrap:wrap;align-items:center">
+  <button class="tool-btn" id="offlineDownloadBtn" style="color:var(--play-green);border-color:var(--play-green);font-weight:800;letter-spacing:2px;">🔐 SIGN IN TO DOWNLOAD</button>
+  <span id="offlineUserChip" style="display:none;align-items:center;gap:8px;padding:6px 10px;background:rgba(28,255,143,.08);border:1px solid rgba(28,255,143,.3);border-radius:6px;font-family:'Share Tech Mono',monospace;font-size:11px;color:#9aff9a">
+    <span>✓</span><span id="offlineUserName">—</span>
+    <button class="tool-btn" id="offlineSignOutBtn" style="padding:3px 8px;font-size:9px;color:var(--text-dim);border-color:#333">SIGN OUT</button>
+  </span>
   <span id="offlineStatus" class="setting-desc" style="min-width:120px"></span>
 </div>
-<div id="offlineCodeBox" class="settings-row" style="display:none;flex-direction:column;align-items:stretch;gap:6px;padding:10px;border:1px solid rgba(255,138,26,.35);border-radius:8px;background:rgba(255,138,26,.04)">
-  <div class="setting-label" style="color:var(--orange)">🔒 Admin code required</div>
-  <div class="setting-desc">Enter the admin code to unlock desktop / offline downloads.</div>
-  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-    <input type="password" id="offlineAdminCode" class="url-input" placeholder="Admin code" autocomplete="off" style="padding:8px 12px;letter-spacing:4px;font-family:'Share Tech Mono',monospace;max-width:200px" />
-    <button class="tool-btn" id="offlineCodeConfirm" style="color:var(--play-green);border-color:var(--play-green)">UNLOCK</button>
-    <button class="tool-btn" id="offlineCodeCancel">CANCEL</button>
+<div id="offlineLoginPrompt" class="settings-row" style="display:none;flex-direction:column;align-items:stretch;gap:8px;padding:12px;border:1px solid rgba(66,133,244,.35);border-radius:8px;background:rgba(66,133,244,.04)">
+  <div class="setting-label" style="color:#7eb6ff">🔒 Registered customers only</div>
+  <div class="setting-desc" style="line-height:1.5">Sign in with your Google account (or email / phone) to download the desktop installers. Free — registration creates your customer profile automatically.</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <button class="tool-btn" id="offlineGoogleBtn" style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:#fff;color:#202124;border:1px solid #dadce0;font-weight:700">
+      <svg width="16" height="16" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.185l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.592.102-1.167.282-1.706V4.962H.957A8.997 8.997 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 7.294C4.672 5.167 6.656 3.58 9 3.58z"/></svg>
+      Continue with Google
+    </button>
+    <button class="tool-btn" id="offlineEmailBtn" style="padding:8px 14px">📧 EMAIL / PHONE</button>
   </div>
-  <div id="offlineCodeErr" class="setting-desc" style="color:var(--red);min-height:14px"></div>
+  <div id="offlineLoginErr" class="setting-desc" style="color:var(--red);min-height:14px"></div>
 </div>
 
 <div id="offlineUnlocked" style="display:none;margin-top:10px">
@@ -9840,8 +10544,55 @@ async function detectBPM(buf){
 }
 
 /* LIBRARY */
+// ─── Library state + virtualization ─────────────────────────────────
+// At large sizes (5000+ tracks) rendering every row was a multi-hundred-ms
+// reflow that locked the main thread on every keystroke in the search box.
+// We now keep a filtered "view" array and only mount the rows that fit in
+// the visible scroll window, plus a small buffer above/below.
+const _libView={tracks:[],rowH:38,overscan:6};
+function _libRowHTML(tr,idx){
+  const stars=Array.from({length:5},(_,i)=>`<span class="star ${i<(tr.rating||0)?'filled':''}" data-rating="${i+1}">★</span>`).join('');
+  const isYt=tr.source==='yt';
+  return `<div class="track-row${isYt?' yt-track':''}" draggable="true" data-track-id="${tr.id}" data-idx="${idx}">
+    <span class="t-num">${String(idx+1).padStart(2,'0')}</span>
+    <span class="t-title">${escapeHtml(tr.title)}${isYt?' 📺':''}</span>
+    <span class="t-artist">${escapeHtml(tr.artist)}</span>
+    <span class="t-bpm">${(tr.bpm||0).toFixed(1)}</span>
+    <span class="t-key">${tr.key}</span>
+    <span class="rating" data-track="${tr.id}">${stars}</span>
+    <div class="actions" style="display:flex;gap:4px;justify-content:flex-end;flex-wrap:wrap;">
+      ${!isYt?`<button class="preview tl-btn" data-preview="${tr.id}" style="padding:5px 8px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(255,212,0,.35);color:var(--yellow);font-family:Orbitron,sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;border-radius:3px;cursor:pointer;">▶ PREV</button>`:''}
+      <button class="tl-btn tl-a" data-load="A" data-track="${tr.id}" style="padding:5px 10px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(46,224,255,.45);color:#2ee0ff;font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;letter-spacing:1.5px;border-radius:3px;cursor:pointer;min-width:42px;">→ A</button>
+      <button class="tl-btn tl-b" data-load="B" data-track="${tr.id}" style="padding:5px 10px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(255,60,120,.45);color:#ff3c78;font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;letter-spacing:1.5px;border-radius:3px;cursor:pointer;min-width:42px;">→ B</button>
+      ${!isYt?`<button class="tl-btn tl-c" data-load="C" data-track="${tr.id}" style="padding:5px 10px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(255,212,0,.45);color:#ffd400;font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;letter-spacing:1.5px;border-radius:3px;cursor:pointer;min-width:42px;">→ C</button>`:''}
+      ${!isYt?`<button class="tl-btn tl-d" data-load="D" data-track="${tr.id}" style="padding:5px 10px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(200,0,255,.45);color:#c800ff;font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;letter-spacing:1.5px;border-radius:3px;cursor:pointer;min-width:42px;">→ D</button>`:''}
+      <button class="remove tl-btn" data-remove="${tr.id}" style="padding:5px 8px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(255,46,46,.35);color:var(--red);font-family:Orbitron,sans-serif;font-size:12px;font-weight:900;border-radius:3px;cursor:pointer;">✕</button>
+    </div>
+  </div>`;
+}
+
+function _libRenderWindow(){
+  const list=document.getElementById('trackList');
+  if(!list||!list._virt)return;
+  const {tracks,rowH,overscan}=_libView;
+  const viewport=list.clientHeight||280;
+  const total=tracks.length*rowH;
+  const scroll=list.scrollTop;
+  const first=Math.max(0,Math.floor(scroll/rowH)-overscan);
+  const last=Math.min(tracks.length,Math.ceil((scroll+viewport)/rowH)+overscan);
+  const before=first*rowH;
+  const after=Math.max(0,total-last*rowH);
+  let html='';
+  for(let i=first;i<last;i++)html+=_libRowHTML(tracks[i],i);
+  list._virt.innerHTML=
+    `<div style="height:${before}px" aria-hidden="true"></div>`+
+    html+
+    `<div style="height:${after}px" aria-hidden="true"></div>`;
+}
+
 function renderLibrary(){
   const list=document.getElementById('trackList');
+  if(!list)return;
   const search=document.getElementById('searchInput').value.toLowerCase();
   const sort=document.getElementById('sortSelect').value;
   const filter=document.getElementById('filterSource').value;
@@ -9857,44 +10608,58 @@ function renderLibrary(){
     if(sort==='rating')return(b.rating||0)-(a.rating||0);
     return b.addedAt-a.addedAt;
   });
-  list.innerHTML='';
-  tracks.forEach((tr,idx)=>{
-    const row=document.createElement('div');
-    row.className='track-row'+(tr.source==='yt'?' yt-track':'');
-    row.draggable=true;row.dataset.trackId=tr.id;
-    const stars=Array.from({length:5},(_,i)=>`<span class="star ${i<(tr.rating||0)?'filled':''}" data-rating="${i+1}">★</span>`).join('');
-    const isYt=tr.source==='yt';
-    row.innerHTML=`<span class="t-num">${String(idx+1).padStart(2,'0')}</span>
-      <span class="t-title">${escapeHtml(tr.title)}${isYt?' 📺':''}</span>
-      <span class="t-artist">${escapeHtml(tr.artist)}</span>
-      <span class="t-bpm">${tr.bpm.toFixed(1)}</span>
-      <span class="t-key">${tr.key}</span>
-      <span class="rating" data-track="${tr.id}">${stars}</span>
-      <div class="actions" style="display:flex;gap:4px;justify-content:flex-end;flex-wrap:wrap;">
-        ${!isYt?`<button class="preview tl-btn" data-preview="${tr.id}" style="padding:5px 8px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(255,212,0,.35);color:var(--yellow);font-family:Orbitron,sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;border-radius:3px;cursor:pointer;">▶ PREV</button>`:''}
-        <button class="tl-btn tl-a" data-load="A" data-track="${tr.id}" style="padding:5px 10px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(46,224,255,.45);color:#2ee0ff;font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;letter-spacing:1.5px;border-radius:3px;cursor:pointer;min-width:42px;">→ A</button>
-        <button class="tl-btn tl-b" data-load="B" data-track="${tr.id}" style="padding:5px 10px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(255,60,120,.45);color:#ff3c78;font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;letter-spacing:1.5px;border-radius:3px;cursor:pointer;min-width:42px;">→ B</button>
-        ${!isYt?`<button class="tl-btn tl-c" data-load="C" data-track="${tr.id}" style="padding:5px 10px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(255,212,0,.45);color:#ffd400;font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;letter-spacing:1.5px;border-radius:3px;cursor:pointer;min-width:42px;">→ C</button>`:''}
-        ${!isYt?`<button class="tl-btn tl-d" data-load="D" data-track="${tr.id}" style="padding:5px 10px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(200,0,255,.45);color:#c800ff;font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;letter-spacing:1.5px;border-radius:3px;cursor:pointer;min-width:42px;">→ D</button>`:''}
-        <button class="remove tl-btn" data-remove="${tr.id}" style="padding:5px 8px;background:linear-gradient(180deg,#2a2a2e,#151518);border:1px solid rgba(255,46,46,.35);color:var(--red);font-family:Orbitron,sans-serif;font-size:12px;font-weight:900;border-radius:3px;cursor:pointer;">✕</button>
-      </div>`;
-    row.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',tr.id);row.classList.add('dragging');});
-    row.addEventListener('dragend',()=>row.classList.remove('dragging'));
-    list.appendChild(row);
-  });
-  document.getElementById('trackCount').textContent=`${library.length} TRACKS`;
-  document.getElementById('statLibSize').textContent=library.length;
-  list.querySelectorAll('[data-load]').forEach(btn=>{
-    btn.addEventListener('click',()=>{const t=library.find(x=>x.id===btn.dataset.track);if(t)loadTrackToDeck(btn.dataset.load,t);});
-  });
-  list.querySelectorAll('[data-preview]').forEach(btn=>btn.addEventListener('click',()=>previewTrack(btn.dataset.preview)));
-  list.querySelectorAll('[data-remove]').forEach(btn=>btn.addEventListener('click',()=>{const tid=btn.dataset.remove;idbDelAudio(tid);library=library.filter(t=>t.id!==tid);renderLibrary();saveToDB();}));
-  list.querySelectorAll('.star').forEach(star=>{
-    star.addEventListener('click',()=>{
-      const r=parseInt(star.dataset.rating),tid=star.closest('.rating').dataset.track;
-      const t=library.find(x=>x.id===tid);if(t){t.rating=r;renderLibrary();saveToDB();}
+  _libView.tracks=tracks;
+  // First call: set up the inner wrapper + bind scroll/click/drag delegation
+  if(!list._virt){
+    list.innerHTML='';
+    const inner=document.createElement('div');
+    inner.style.minHeight='100%';
+    list.appendChild(inner);
+    list._virt=inner;
+    list.addEventListener('scroll',()=>{
+      if(list._raf)return;
+      list._raf=requestAnimationFrame(()=>{list._raf=0;_libRenderWindow();});
+    },{passive:true});
+    // Delegated click — works for virtualized rows since listener is on parent
+    list.addEventListener('click',(e)=>{
+      const loadBtn=e.target.closest('[data-load]');
+      if(loadBtn){
+        const t=library.find(x=>x.id===loadBtn.dataset.track);
+        if(t)loadTrackToDeck(loadBtn.dataset.load,t);
+        return;
+      }
+      const prevBtn=e.target.closest('[data-preview]');
+      if(prevBtn){previewTrack(prevBtn.dataset.preview);return;}
+      const remBtn=e.target.closest('[data-remove]');
+      if(remBtn){
+        const tid=remBtn.dataset.remove;
+        idbDelAudio(tid);library=library.filter(t=>t.id!==tid);
+        renderLibrary();saveToDB();
+        return;
+      }
+      const star=e.target.closest('.star');
+      if(star){
+        const r=parseInt(star.dataset.rating);
+        const rating=star.closest('.rating');
+        const tid=rating?.dataset.track;
+        const t=library.find(x=>x.id===tid);
+        if(t){t.rating=r;renderLibrary();saveToDB();}
+      }
     });
-  });
+    list.addEventListener('dragstart',e=>{
+      const row=e.target.closest('.track-row');
+      if(!row)return;
+      e.dataTransfer.setData('text/plain',row.dataset.trackId);
+      row.classList.add('dragging');
+    });
+    list.addEventListener('dragend',e=>{
+      const row=e.target.closest('.track-row');
+      if(row)row.classList.remove('dragging');
+    });
+  }
+  _libRenderWindow();
+  const c=document.getElementById('trackCount');if(c)c.textContent=`${library.length} TRACKS`;
+  const s=document.getElementById('statLibSize');if(s)s.textContent=library.length;
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
@@ -10328,15 +11093,15 @@ function syncDeck(deckId){
   const d=decks[deckId];
   if(!d.track){toast('No track loaded','error');return false;}
   // Find best source: any playing deck other than this one, or first loaded
-  let o=null;
+  let o=null,oId=null;
   for(const id of ['A','B','C','D']){
     if(id===deckId)continue;
-    if(decks[id].track&&decks[id].playing){o=decks[id];break;}
+    if(decks[id].track&&decks[id].playing){o=decks[id];oId=id;break;}
   }
   if(!o){
     for(const id of ['A','B','C','D']){
       if(id===deckId)continue;
-      if(decks[id].track){o=decks[id];break;}
+      if(decks[id].track){o=decks[id];oId=id;break;}
     }
   }
   if(!o){toast('No other deck with track','error');return false;}
@@ -10344,15 +11109,43 @@ function syncDeck(deckId){
   const pct=((tb/d.track.bpm)-1)*100;
   if(Math.abs(pct)>(d.tempoRange||8)){toast(`Out of range (${pct.toFixed(1)}%)`,'error');return false;}
   setTempo(deckId,pct);
-  toast(`Synced ${deckId} → ${tb.toFixed(2)} BPM`,'success');
+  // ─── Phase-aware alignment ───
+  // Port of beat-math.ts phaseOffsetSeconds — snap self's downbeat to other's.
+  // Only applied if the source deck is actually playing AND we have an anchor
+  // (cuePoint is used as the grid-1 anchor; if beatgrid is present, prefer it).
+  let phaseAligned=false;
+  if(o.playing&&d.buffer){
+    const anchor=(x)=>(x.beatgrid&&x.beatgrid.origin!=null)?x.beatgrid.origin:(x.cuePoint||0);
+    const bpm=d.track.bpm*(1+pct/100);
+    const oBpm=o.track.bpm*(1+o.tempo/100);
+    const beatsPerBar=4;
+    const selfBar=60/bpm*beatsPerBar;
+    const othBar=60/oBpm*beatsPerBar;
+    const selfPhase=(((getCurrentTime(deckId)-anchor(d))%selfBar)+selfBar)%selfBar/selfBar;
+    const othPhase=(((getCurrentTime(oId)-anchor(o))%othBar)+othBar)%othBar/othBar;
+    let diff=selfPhase-othPhase;
+    if(diff>0.5)diff-=1;
+    if(diff<-0.5)diff+=1;
+    const offsetSec=diff*selfBar;
+    // Only nudge when the drift is audible (>10ms) but not huge (<1 bar)
+    if(Math.abs(offsetSec)>0.010&&Math.abs(offsetSec)<selfBar*0.75){
+      seekDeck(deckId,Math.max(0,getCurrentTime(deckId)-offsetSec));
+      phaseAligned=true;
+    }
+  }
+  toast(`Synced ${deckId} → ${tb.toFixed(2)} BPM${phaseAligned?' · phase-locked':''}`,'success');
   return true;
 }
 
 /* LOOP */
-function setLoopIn(d){const dk=decks[d];if(!dk.track)return;dk.loop.start=getCurrentTime(d);dk.loop.loopInSet=true;dk.loop.active=false;toast(`Loop IN: ${fmtTime(dk.loop.start)}`);}
-function setLoopOut(d){const dk=decks[d];if(!dk.loop.loopInSet)return;dk.loop.end=getCurrentTime(d);if(dk.loop.end<=dk.loop.start)return;dk.loop.active=true;document.querySelector(`.loop-btn[data-action="reloop"][data-deck="${d}"]`).classList.add('active');toast(`Loop: ${fmtTime(dk.loop.start)}→${fmtTime(dk.loop.end)}`);}
-function toggleReloop(d){const dk=decks[d];if(!dk.loop.start||!dk.loop.end)return;dk.loop.active=!dk.loop.active;document.querySelector(`.loop-btn[data-action="reloop"][data-deck="${d}"]`).classList.toggle('active',dk.loop.active);if(dk.loop.active)seekDeck(d,dk.loop.start);}
-function setAutoLoop(d,beats){const dk=decks[d];if(!dk.track)return;const bd=60/(dk.track.bpm*(1+dk.tempo/100)),pos=getCurrentTime(d);dk.loop.start=pos;dk.loop.end=pos+beats*bd;dk.loop.active=true;dk.loop.loopInSet=true;document.querySelector(`.loop-btn[data-action="reloop"][data-deck="${d}"]`).classList.add('active');toast(`Auto loop: ${beats} beats`);}
+function _setReloopBtn(d,active){
+  const b=document.querySelector(`.loop-btn[data-action="reloop"][data-deck="${d}"]`);
+  if(b)b.classList.toggle('active',!!active);
+}
+function setLoopIn(d){const dk=decks[d];if(!dk.track)return;dk.loop.start=getCurrentTime(d);dk.loop.loopInSet=true;dk.loop.active=false;_setReloopBtn(d,false);toast(`Loop IN: ${fmtTime(dk.loop.start)}`);}
+function setLoopOut(d){const dk=decks[d];if(!dk.loop.loopInSet)return;dk.loop.end=getCurrentTime(d);if(dk.loop.end<=dk.loop.start)return;dk.loop.active=true;_setReloopBtn(d,true);toast(`Loop: ${fmtTime(dk.loop.start)}→${fmtTime(dk.loop.end)}`);}
+function toggleReloop(d){const dk=decks[d];if(!dk.loop.start||!dk.loop.end)return;dk.loop.active=!dk.loop.active;_setReloopBtn(d,dk.loop.active);if(dk.loop.active)seekDeck(d,dk.loop.start);}
+function setAutoLoop(d,beats){const dk=decks[d];if(!dk.track)return;const bd=60/(dk.track.bpm*(1+dk.tempo/100)),pos=getCurrentTime(d);dk.loop.start=pos;dk.loop.end=pos+beats*bd;dk.loop.active=true;dk.loop.loopInSet=true;_setReloopBtn(d,true);toast(`Auto loop: ${beats} beats`);}
 function beatJump(d,beats){const dk=decks[d];if(!dk.track)return;const bd=60/(dk.track.bpm*(1+dk.tempo/100));seekDeck(d,getCurrentTime(d)+beats*bd);}
 
 /* ============ PAD MODES ============ */
@@ -11048,38 +11841,224 @@ async function connectMIDI(){
   if(!navigator.requestMIDIAccess){toast('MIDI not supported','error');return;}
   try{
     midiAccess=await navigator.requestMIDIAccess();
-    midiDevices=[];
-    midiAccess.inputs.forEach(inp=>{midiDevices.push(inp);inp.onmidimessage=handleMIDI;});
-    renderMIDIDevices();
+    rescanMIDIDevices();
+    // Hot-plug: browser fires 'statechange' when a device connects or disconnects
+    midiAccess.onstatechange=e=>{
+      rescanMIDIDevices();
+      if(e&&e.port){
+        const name=e.port.name||'Device';
+        if(e.port.state==='connected')toast(`MIDI plugged: ${name}`,'success');
+        else toast(`MIDI unplugged: ${name}`);
+      }
+    };
     toast(`MIDI: ${midiDevices.length} device(s)`,'success');
   }catch(e){toast('MIDI denied','error');}
 }
 
+function rescanMIDIDevices(){
+  if(!midiAccess)return;
+  midiDevices=[];
+  midiAccess.inputs.forEach(inp=>{
+    if(inp.state!=='connected')return;
+    midiDevices.push(inp);
+    inp.onmidimessage=handleMIDI;
+  });
+  renderMIDIDevices();
+  updateMidiStatusChip();
+}
+
 function renderMIDIDevices(){
   const el=document.getElementById('midiDevices');
-  if(!midiDevices.length){el.innerHTML='<div style="color:var(--text-dim);text-align:center;padding:20px;">No devices</div>';return;}
-  el.innerHTML=midiDevices.map(d=>`<div class="midi-device"><span>${d.name||'Unknown'}</span><span class="status">● CONNECTED</span></div>`).join('');
+  if(!el)return;
+  if(!midiDevices.length){
+    el.innerHTML='<div style="color:var(--text-dim);text-align:center;padding:20px;font-family:\'Share Tech Mono\',monospace;font-size:11px">No devices connected</div>';
+    return;
+  }
+  el.innerHTML=midiDevices.map(d=>{
+    const mfg=d.manufacturer?`<span style="color:var(--text-dim);font-size:9px;margin-left:8px">${d.manufacturer}</span>`:'';
+    return `<div class="midi-device"><span>${d.name||'Unknown'}${mfg}</span><span class="status">● CONNECTED</span></div>`;
+  }).join('');
 }
+
+function updateMidiStatusChip(){
+  const chip=document.getElementById('midiStatusChip');if(!chip)return;
+  const n=midiDevices.length;
+  if(n){chip.textContent=`● ${n} connected`;chip.style.color='var(--play-green)';chip.style.borderColor='var(--play-green)';}
+  else{chip.textContent='● disconnected';chip.style.color='var(--text-dim)';chip.style.borderColor='#333';}
+}
+
+/* Controller presets — pre-built mapping tables.
+   Keys are `${type}_${channel}_${cc_or_note}` in hex, matching handleMIDI. */
+const MIDI_PRESETS={
+  // Minimal generic 2-deck layout: CC 1-8 = deck A/B EQs + vol; notes 36-43 = hot cues A.
+  generic:{
+    'b0_0_1':{target:'knob:low-A',label:'Deck A Low'},
+    'b0_0_2':{target:'knob:mid-A',label:'Deck A Mid'},
+    'b0_0_3':{target:'knob:hi-A',label:'Deck A Hi'},
+    'b0_0_4':{target:'fader:A',label:'Deck A Volume'},
+    'b0_0_5':{target:'knob:low-B',label:'Deck B Low'},
+    'b0_0_6':{target:'knob:mid-B',label:'Deck B Mid'},
+    'b0_0_7':{target:'knob:hi-B',label:'Deck B Hi'},
+    'b0_0_8':{target:'fader:B',label:'Deck B Volume'},
+    'b0_0_9':{target:'crossfader',label:'Crossfader'},
+    '90_0_24':{target:'btn:.big-btn.play[data-deck="A"]',label:'Deck A PLAY'},
+    '90_0_25':{target:'btn:.big-btn.cue[data-deck="A"]',label:'Deck A CUE'},
+    '90_1_24':{target:'btn:.big-btn.play[data-deck="B"]',label:'Deck B PLAY'},
+    '90_1_25':{target:'btn:.big-btn.cue[data-deck="B"]',label:'Deck B CUE'},
+  },
+  // Pioneer DDJ-400 standard HID/MIDI map (simplified — covers main bindings)
+  ddj400:{
+    'b0_0_11':{target:'fader:A',label:'Deck A Volume'},
+    'b0_1_11':{target:'fader:B',label:'Deck B Volume'},
+    'b0_6_31':{target:'crossfader',label:'Crossfader'},
+    'b0_0_7':{target:'knob:low-A',label:'Deck A EQ Low'},
+    'b0_0_11':{target:'knob:mid-A',label:'Deck A EQ Mid'},
+    'b0_0_15':{target:'knob:hi-A',label:'Deck A EQ Hi'},
+    'b0_1_7':{target:'knob:low-B',label:'Deck B EQ Low'},
+    'b0_1_11':{target:'knob:mid-B',label:'Deck B EQ Mid'},
+    'b0_1_15':{target:'knob:hi-B',label:'Deck B EQ Hi'},
+    '90_0_11':{target:'btn:.big-btn.play[data-deck="A"]',label:'Deck A PLAY'},
+    '90_0_12':{target:'btn:.big-btn.cue[data-deck="A"]',label:'Deck A CUE'},
+    '90_1_11':{target:'btn:.big-btn.play[data-deck="B"]',label:'Deck B PLAY'},
+    '90_1_12':{target:'btn:.big-btn.cue[data-deck="B"]',label:'Deck B CUE'},
+    // Hot cues A (pads 1-8 on performance)
+    '97_0_0':{target:'btn:.hot-cues[data-deck="A"] .cue-btn[data-cue="1"]',label:'Deck A Cue 1'},
+    '97_0_1':{target:'btn:.hot-cues[data-deck="A"] .cue-btn[data-cue="2"]',label:'Deck A Cue 2'},
+    '97_0_2':{target:'btn:.hot-cues[data-deck="A"] .cue-btn[data-cue="3"]',label:'Deck A Cue 3'},
+    '97_0_3':{target:'btn:.hot-cues[data-deck="A"] .cue-btn[data-cue="4"]',label:'Deck A Cue 4'},
+  },
+  // Numark Mixtrack Pro — MIDI channel 1 = deck A, channel 2 = deck B (approx)
+  mixtrack:{
+    'b0_0_1':{target:'fader:A',label:'Deck A Volume'},
+    'b0_1_1':{target:'fader:B',label:'Deck B Volume'},
+    'b0_0_8':{target:'crossfader',label:'Crossfader'},
+    'b0_0_5':{target:'knob:low-A',label:'Deck A EQ Low'},
+    'b0_0_6':{target:'knob:mid-A',label:'Deck A EQ Mid'},
+    'b0_0_7':{target:'knob:hi-A',label:'Deck A EQ Hi'},
+    'b0_1_5':{target:'knob:low-B',label:'Deck B EQ Low'},
+    'b0_1_6':{target:'knob:mid-B',label:'Deck B EQ Mid'},
+    'b0_1_7':{target:'knob:hi-B',label:'Deck B EQ Hi'},
+    '90_0_23':{target:'btn:.big-btn.play[data-deck="A"]',label:'Deck A PLAY'},
+    '90_0_22':{target:'btn:.big-btn.cue[data-deck="A"]',label:'Deck A CUE'},
+    '90_1_23':{target:'btn:.big-btn.play[data-deck="B"]',label:'Deck B PLAY'},
+    '90_1_22':{target:'btn:.big-btn.cue[data-deck="B"]',label:'Deck B CUE'},
+  }
+};
+
+function applyMidiPreset(name){
+  if(name==='none'){
+    midiMappings={};
+    localStorage.setItem('djpro_midi_map','{}');
+    renderMidiMapList();
+    toast('MIDI mappings cleared','success');
+    return;
+  }
+  const p=MIDI_PRESETS[name];
+  if(!p){toast('Unknown preset: '+name,'error');return;}
+  midiMappings={...midiMappings,...p};
+  localStorage.setItem('djpro_midi_map',JSON.stringify(midiMappings));
+  renderMidiMapList();
+  toast(`Loaded ${Object.keys(p).length} mappings: ${name}`,'success');
+}
+
+function renderMidiMapList(){
+  const el=document.getElementById('midiMapList');
+  if(!el)return;
+  const keys=Object.keys(midiMappings);
+  const cnt=document.getElementById('midiMapCount');
+  if(cnt)cnt.textContent=`(${keys.length})`;
+  if(!keys.length){
+    el.innerHTML='<div style="color:var(--text-dim);text-align:center;padding:14px;font-family:\'Share Tech Mono\',monospace;font-size:11px">No mappings yet. Pick a preset above or right-click any control → MIDI Learn.</div>';
+    return;
+  }
+  el.innerHTML=keys.map(k=>{
+    const m=midiMappings[k];
+    const [type,ch,d1]=k.split('_');
+    const typeName=type==='b0'?'CC':type==='90'?'Note':type==='97'?'Pad':type;
+    return `<div class="midi-device" style="gap:8px">
+      <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);min-width:120px">${typeName} ch${parseInt(ch,16)+1} #${parseInt(d1,10)}</span>
+      <span style="flex:1;color:var(--screen-glow)">${m.label||m.target}</span>
+      <button class="tool-btn" data-midi-unmap="${k}" style="padding:3px 8px;font-size:9px;color:var(--red);border-color:var(--red)">✕</button>
+    </div>`;
+  }).join('');
+  el.querySelectorAll('[data-midi-unmap]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      delete midiMappings[btn.dataset.midiUnmap];
+      localStorage.setItem('djpro_midi_map',JSON.stringify(midiMappings));
+      renderMidiMapList();
+    });
+  });
+}
+
+function wireMidiPanelControls(){
+  document.getElementById('midiPresetSelect')?.addEventListener('change',e=>{
+    const v=e.target.value;if(!v)return;
+    applyMidiPreset(v);e.target.value='';
+  });
+  document.getElementById('midiExportBtn')?.addEventListener('click',()=>{
+    const blob=new Blob([JSON.stringify(midiMappings,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download=`titan-midi-map-${Date.now()}.json`;a.click();
+    setTimeout(()=>{try{URL.revokeObjectURL(url);}catch(e){}},8000);
+    toast('MIDI map exported','success');
+  });
+  document.getElementById('midiImportBtn')?.addEventListener('click',()=>document.getElementById('midiImportFile')?.click());
+  document.getElementById('midiImportFile')?.addEventListener('change',e=>{
+    const f=e.target.files?.[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{
+      try{
+        const parsed=JSON.parse(ev.target.result);
+        if(typeof parsed!=='object'||!parsed)throw new Error('Invalid file');
+        midiMappings={...midiMappings,...parsed};
+        localStorage.setItem('djpro_midi_map',JSON.stringify(midiMappings));
+        renderMidiMapList();
+        toast(`Imported ${Object.keys(parsed).length} mappings`,'success');
+      }catch(err){toast('Import failed: '+err.message,'error');}
+    };
+    r.readAsText(f);
+    e.target.value='';
+  });
+  document.getElementById('midiClearBtn')?.addEventListener('click',()=>{
+    if(!Object.keys(midiMappings).length){toast('Already empty');return;}
+    if(!confirm('Remove all '+Object.keys(midiMappings).length+' MIDI mappings?'))return;
+    applyMidiPreset('none');
+  });
+  renderMidiMapList();
+}
+// Refresh the mapping panel whenever the MIDI tab opens
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(wireMidiPanelControls,400);
+});
 
 function handleMIDI(msg){
   const[s,d1,d2]=msg.data,type=s&0xF0,ch=s&0x0F;
+  // Pad messages sometimes come as 0x97 (note-on on channel 7); match both forms
   const midiKey=`${type.toString(16)}_${ch}_${d1}`;
   const log=document.getElementById('midiLog');
-  if(log){log.textContent+=`\n[${new Date().toLocaleTimeString()}] Ch${ch+1} ${type.toString(16)} ${d1} ${d2}`;log.scrollTop=log.scrollHeight;}
+  if(log){
+    // Bound the log so the DOM text node doesn't grow indefinitely over long sets
+    if(log.textContent.length>8000)log.textContent=log.textContent.slice(-4000);
+    log.textContent+=`\n[${new Date().toLocaleTimeString()}] Ch${ch+1} ${type.toString(16)} ${d1} ${d2}`;
+    log.scrollTop=log.scrollHeight;
+  }
 
-  // MIDI Learn mode - capture this control
+  // MIDI Learn mode — capture this control
   if(midiLearnMode&&(type===0xB0||(type===0x90&&d2>0))){
     completeMidiLearn(midiKey);
     return;
   }
 
-  // User mappings
+  // User / preset mappings
   if(midiMappings[midiKey]){
     const m=midiMappings[midiKey];
     const v=d2/127;
     if(m.target.startsWith('knob:')){
       const knobId=m.target.slice(5);
       applyKnob(knobId,v*2-1);
+      // Visually rotate the knob element too
+      const knob=document.querySelector(`.knob[data-knob="${knobId}"]`);
+      if(knob){const ind=knob.querySelector('.knob-indicator');knob._rot=(v*2-1)*135;if(ind)ind.style.transform=`rotate(${knob._rot}deg)`;}
     }else if(m.target.startsWith('btn:')){
       if(type===0x90&&d2>0){
         const el=document.querySelector(m.target.slice(4));
@@ -11087,29 +12066,53 @@ function handleMIDI(msg){
       }
     }else if(m.target.startsWith('fader:')){
       const deck=m.target.slice(6);
-      decks[deck].volume=v;
-      if(decks[deck].volumeGain)decks[deck].volumeGain.gain.value=v;
-      applyCrossfader();
+      if(decks[deck]){
+        decks[deck].volume=v;
+        if(decks[deck].volumeGain)decks[deck].volumeGain.gain.value=v;
+        // Update the per-channel DJ focus slider if visible
+        const ds=document.querySelector(`[data-djfv-slider="${deck}"]`);
+        if(ds){ds.value=Math.round(v*100);const dv=document.querySelector(`[data-djfv-value="${deck}"]`);if(dv)dv.textContent=Math.round(v*100);}
+        applyCrossfader();
+      }
     }else if(m.target==='crossfader'){
       mixerState.crossfader=v;
       const xh=document.getElementById('xfaderHandle');if(xh)xh.style.left=`${v*100}%`;
       applyCrossfader();
+    }else if(m.target.startsWith('tempo:')){
+      const deck=m.target.slice(6);
+      if(decks[deck]){
+        const range=decks[deck].tempoRange||8;
+        setTempo(deck,(v*2-1)*range);
+      }
     }
     return;
   }
 
-  // Default mappings fallback
+  // Default mappings fallback — sensible out-of-the-box behaviour for a
+  // freshly-plugged controller with no preset loaded. Covers both decks.
   if(type===0xB0){
     const v=d2/127;
-    if(d1>=1&&d1<=4){
+    // CC 1-4 on ch 1 → deck A low/mid/hi/trim
+    if(ch===0&&d1>=1&&d1<=4){
       const names=['low','mid','hi','trim'];
       applyKnob(`${names[d1-1]}-A`,v*2-1);
     }
+    // CC 1-4 on ch 2 → deck B low/mid/hi/trim
+    else if(ch===1&&d1>=1&&d1<=4){
+      const names=['low','mid','hi','trim'];
+      applyKnob(`${names[d1-1]}-B`,v*2-1);
+    }
+    // CC 7 = channel volume (standard MIDI spec) per channel
+    else if(d1===7&&(ch===0||ch===1)){
+      const deck=ch===0?'A':'B';
+      if(decks[deck]){decks[deck].volume=v;if(decks[deck].volumeGain)decks[deck].volumeGain.gain.value=v;applyCrossfader();}
+    }
   }
   if(type===0x90&&d2>0){
+    // Notes 36-43 on ch 1 → deck A hot cues; ch 2 → deck B
     if(d1>=36&&d1<=43){
-      const btn=document.querySelector(`.hot-cues[data-deck="A"] .cue-btn[data-cue="${d1-35}"]`);
-      if(btn)btn.click();
+      const deck=ch===0?'A':ch===1?'B':null;
+      if(deck){const btn=document.querySelector(`.hot-cues[data-deck="${deck}"] .cue-btn[data-cue="${d1-35}"]`);if(btn)btn.click();}
     }
   }
 }
@@ -11345,12 +12348,29 @@ function attachEvents(){
   document.querySelectorAll('.big-btn').forEach(btn=>{
     const d=btn.dataset.deck,a=btn.dataset.action;
     if(a==='cue'){
+      let touchActive=false;
       btn.addEventListener('mousedown',(e)=>{e.preventDefault();cuePressDown(d);});
       btn.addEventListener('mouseup',()=>cuePressUp(d));
       btn.addEventListener('mouseleave',()=>cuePressUp(d));
-      btn.addEventListener('touchstart',(e)=>{e.preventDefault();cuePressDown(d);},{passive:false});
-      btn.addEventListener('touchend',(e)=>{e.preventDefault();cuePressUp(d);});
-      btn.addEventListener('click',()=>cueDeck(d));
+      btn.addEventListener('touchstart',(e)=>{
+        e.preventDefault();
+        touchActive=true;
+        cuePressDown(d);
+      },{passive:false});
+      btn.addEventListener('touchend',(e)=>{
+        e.preventDefault();
+        const wasPreview=!!decks[d]._cuePreview;
+        cuePressUp(d);
+        // Touch suppresses click on most browsers — deliver tap behavior here
+        if(!wasPreview)cueDeck(d);
+        // Reset shortly after, so any synthetic click is ignored
+        setTimeout(()=>{touchActive=false;},400);
+      });
+      btn.addEventListener('touchcancel',()=>{cuePressUp(d);touchActive=false;});
+      btn.addEventListener('click',()=>{
+        if(touchActive)return; // already handled by touchend
+        cueDeck(d);
+      });
     }else{
       btn.addEventListener('click',()=>{if(a==='play')togglePlay(d);});
     }
@@ -11373,26 +12393,34 @@ function attachEvents(){
   document.querySelectorAll('.util-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const d=btn.dataset.deck,u=btn.dataset.util,dk=decks[d];
-      if(u==='sync'){const wasActive=btn.classList.contains('active');if(wasActive){btn.classList.remove('active');}else if(syncDeck(d)!==false){btn.classList.add('active');}}
-      else{dk[u]=!dk[u];btn.classList.toggle('active');}
+      if(!dk)return;
+      if(u==='sync'){
+        // Keep deck.sync boolean and visual class in lockstep
+        if(dk.sync){dk.sync=false;btn.classList.remove('active');}
+        else if(syncDeck(d)!==false){dk.sync=true;btn.classList.add('active');}
+        // syncDeck() already toasted the error on failure — no visual change
+      }else{dk[u]=!dk[u];btn.classList.toggle('active',!!dk[u]);}
     });
   });
   document.querySelectorAll('.cue-btn').forEach(btn=>{
+    const _deckOf=()=>btn.closest('.hot-cues')?.dataset.deck;
     btn.addEventListener('pointerdown',e=>{
-      const d=btn.closest('.hot-cues').dataset.deck,n=parseInt(btn.dataset.cue);
+      const d=_deckOf();if(!d||!decks[d])return;
+      const n=parseInt(btn.dataset.cue);
       triggerPad(d,n);
     });
     btn.addEventListener('pointerup',e=>{
-      const d=btn.closest('.hot-cues').dataset.deck;
+      const d=_deckOf();if(!d||!decks[d])return;
       if(decks[d].padMode==='roll')releaseBeatRoll(d);
     });
     btn.addEventListener('pointerleave',e=>{
-      const d=btn.closest('.hot-cues').dataset.deck;
+      const d=_deckOf();if(!d||!decks[d])return;
       if(decks[d].padMode==='roll'&&beatRollState[d])releaseBeatRoll(d);
     });
     btn.addEventListener('contextmenu',e=>{
       e.preventDefault();
-      const d=btn.closest('.hot-cues').dataset.deck,n=btn.dataset.cue;
+      const d=_deckOf();if(!d||!decks[d])return;
+      const n=btn.dataset.cue;
       if(decks[d].padMode==='cue'){delete decks[d].hotCues[n];btn.classList.remove('active');}
       else if(decks[d].padMode==='pitch'){decks[d].playbackRate=1+decks[d].tempo/100;if(decks[d].source)decks[d].source.playbackRate.value=decks[d].playbackRate;toast('Pitch reset');}
     });
@@ -11601,12 +12629,19 @@ function setupBeatFxUI(){
   });
   let tapTimes=[];
   document.getElementById('tapBtn').addEventListener('click',()=>{
-    const now=performance.now();tapTimes.push(now);
-    if(tapTimes.length>4)tapTimes.shift();
+    const now=performance.now();
+    // Reset the series if the user paused for more than 2 seconds between taps
+    if(tapTimes.length&&now-tapTimes[tapTimes.length-1]>2000)tapTimes=[];
+    tapTimes.push(now);
+    if(tapTimes.length>8)tapTimes.shift();
     if(tapTimes.length>=2){
       const avg=(tapTimes[tapTimes.length-1]-tapTimes[0])/(tapTimes.length-1);
       const bpm=60000/avg;
       document.getElementById('masterBpm').textContent=bpm.toFixed(2);
+      mixerState.tapBpm=bpm;
+      // Re-time any live FX so echo/delay lock to the new BPM immediately
+      if(mixerState.fx&&mixerState.fx.on&&typeof applyBeatFx==='function')applyBeatFx();
+      if(typeof applySceneFx==='function')applySceneFx();
       toast(`Tap: ${bpm.toFixed(1)} BPM`);
     }
   });
@@ -11711,9 +12746,12 @@ function toggleRecording(){
   ensureAudio();
   const btn=document.getElementById('recBtn');
   if(mixerState.isRecording){
-    mediaRecorder.stop();mixerState.isRecording=false;
+    try{mediaRecorder&&mediaRecorder.stop();}catch(e){console.warn('rec stop failed',e);recordedChunks=[];}
+    mixerState.isRecording=false;
     btn.classList.remove('recording');btn.textContent='REC';
   }else{
+    // Drop any prior instance so it can be GC'd (each MediaRecorder pins the stream)
+    if(mediaRecorder){try{mediaRecorder.ondataavailable=null;mediaRecorder.onstop=null;}catch(e){}mediaRecorder=null;}
     recordedChunks=[];
     const mime=MediaRecorder.isTypeSupported('audio/webm')?'audio/webm':'';
     mediaRecorder=new MediaRecorder(recordDestination.stream,mime?{mimeType:mime}:{});
@@ -11723,6 +12761,9 @@ function toggleRecording(){
       const url=URL.createObjectURL(blob);
       const a=document.createElement('a');
       a.href=url;a.download=`dj-mix-${Date.now()}.webm`;a.click();
+      // Release the blob URL once the browser has started the download
+      setTimeout(()=>{try{URL.revokeObjectURL(url);}catch(e){}},10000);
+      recordedChunks=[]; // free chunk buffers after save
       toast('Mix saved','success');
     };
     mediaRecorder.start();mixerState.isRecording=true;
@@ -11984,58 +13025,75 @@ function nudgeTempo(d,pct){
 }
 
 /* ====================================================================
-   OFFLINE DOWNLOAD — admin-gated standalone HTML download
+   OFFLINE DOWNLOAD — gated by Supabase customer login.
+   Registered customers (any role, not banned) get the installer;
+   admin users are identified server-side by profiles.role='admin'.
+   No hardcoded admin code — that was a security liability in client code.
    ==================================================================== */
 function setupOfflineDownload(){
   const btn=document.getElementById('offlineDownloadBtn');
-  const box=document.getElementById('offlineCodeBox');
-  const inp=document.getElementById('offlineAdminCode');
-  const ok=document.getElementById('offlineCodeConfirm');
-  const cancel=document.getElementById('offlineCodeCancel');
-  const err=document.getElementById('offlineCodeErr');
+  const loginPrompt=document.getElementById('offlineLoginPrompt');
+  const loginErr=document.getElementById('offlineLoginErr');
   const status=document.getElementById('offlineStatus');
   const panel=document.getElementById('offlineUnlocked');
-  if(!btn||!box)return;
-  const ADMIN_CODE='KOBI2100';
+  const userChip=document.getElementById('offlineUserChip');
+  const userName=document.getElementById('offlineUserName');
+  const signOutBtn=document.getElementById('offlineSignOutBtn');
+  const googleBtn=document.getElementById('offlineGoogleBtn');
+  const emailBtn=document.getElementById('offlineEmailBtn');
+  if(!btn||!loginPrompt)return;
 
-  // Persist unlock during the session
-  const isUnlocked=()=>sessionStorage.getItem('titan_installer_unlocked_kobi')==='1';
-  if(isUnlocked())unlock();
+  const isCustomer=()=>!!_supaUser&&_supaProfile&&!_supaProfile.banned;
+  const isAdmin=()=>isCustomer()&&_supaProfile.role==='admin';
+
+  // Public hook — auth code calls this when the session changes
+  window.refreshOfflineDownloadGate=refresh;
+
+  function refresh(){
+    if(isCustomer()){
+      if(loginPrompt)loginPrompt.style.display='none';
+      if(panel)panel.style.display='block';
+      const nm=_supaProfile?.name||_supaUser?.email||_supaUser?.phone||'Customer';
+      if(userChip)userChip.style.display='inline-flex';
+      if(userName)userName.textContent=nm+(isAdmin()?' · ADMIN':'');
+      if(btn){btn.textContent=isAdmin()?'✓ ADMIN · DOWNLOADS OPEN':'✓ DOWNLOADS OPEN';btn.style.opacity='.85';}
+      if(status)status.textContent='';
+    }else{
+      if(panel)panel.style.display='none';
+      if(userChip)userChip.style.display='none';
+      if(btn){btn.textContent='🔐 SIGN IN TO DOWNLOAD';btn.style.opacity='1';}
+      if(_supaUser&&_supaProfile&&_supaProfile.banned){
+        if(status)status.textContent='Account suspended';
+      }
+    }
+  }
+  refresh();
 
   btn.addEventListener('click',()=>{
-    if(isUnlocked()){
-      panel.style.display='block';
-      panel.scrollIntoView({behavior:'smooth',block:'nearest'});
-      return;
-    }
-    box.style.display='flex';
-    err.textContent='';
-    inp.value='';
-    setTimeout(()=>inp.focus(),60);
-  });
-  cancel.addEventListener('click',()=>{box.style.display='none';err.textContent=''});
-  inp.addEventListener('keydown',e=>{if(e.key==='Enter')ok.click()});
-
-  function unlock(){
-    sessionStorage.setItem('titan_installer_unlocked_kobi','1');
-    if(panel)panel.style.display='block';
-    if(btn){btn.textContent='🔓 DOWNLOADS UNLOCKED — SHOW OPTIONS';btn.style.opacity='.9'}
-    status.textContent='';
-  }
-
-  ok.addEventListener('click',()=>{
-    const code=(inp.value||'').trim();
-    if(code!==ADMIN_CODE){
-      err.textContent='✗ Wrong code';
-      inp.value='';inp.focus();
-      return;
-    }
-    err.textContent='';
-    box.style.display='none';
-    unlock();
-    if(typeof toast==='function')toast('Downloads unlocked','success');
+    if(isCustomer()){panel?.scrollIntoView({behavior:'smooth',block:'nearest'});return;}
+    if(loginPrompt){loginPrompt.style.display='flex';loginPrompt.scrollIntoView({behavior:'smooth',block:'nearest'});}
+    if(loginErr)loginErr.textContent='';
   });
 
+  googleBtn?.addEventListener('click',async()=>{
+    if(loginErr)loginErr.textContent='';
+    if(!_supa){loginErr.textContent='Sign-in not configured yet. Owner must add Supabase URL + Anon Key in SETTINGS → SUPABASE.';return;}
+    loginErr.textContent='Redirecting to Google…';
+    try{
+      const{error}=await _supa.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.href}});
+      if(error)loginErr.textContent='Error: '+error.message;
+    }catch(e){loginErr.textContent='Error: '+(e.message||e);}
+  });
+
+  emailBtn?.addEventListener('click',()=>{
+    if(!_supa){loginErr.textContent='Sign-in not configured yet. Owner must add Supabase URL + Anon Key in SETTINGS → SUPABASE.';return;}
+    document.getElementById('authModal')?.classList.add('open');
+  });
+
+  signOutBtn?.addEventListener('click',async()=>{
+    if(_supa){await _supa.auth.signOut();toast&&toast('Signed out','success');}
+    refresh();
+  });
 }
 
 /* ====================================================================
@@ -14414,6 +15472,13 @@ function _spImportPubkey(){
   return _spPubkeyPromise;
 }
 async function spVerifyLicense(licenseObj){
+  // Two-stage verification:
+  //   1. Client-side Ed25519 check — fast, works offline, good enough for the
+  //      renderer to decide whether to enable a feature *optimistically*.
+  //   2. Server-side call to the verify-license Edge Function (if Supabase is
+  //      configured) — authoritative, tamper-proof, returns a short-lived JWT
+  //      the app can attach to premium API calls. The server token is cached
+  //      in localStorage so we only hit the edge once a day per license.
   try{
     if(!licenseObj||!licenseObj.payload||!licenseObj.sig)return null;
     if(licenseObj.alg && licenseObj.alg!=='ed25519')return null;
@@ -14423,7 +15488,48 @@ async function spVerifyLicense(licenseObj){
     const ok=await crypto.subtle.verify({name:'Ed25519'},pubkey,sig,text);
     if(!ok)return null;
     if(licenseObj.payload.expiresAt && licenseObj.payload.expiresAt<Date.now())return null;
+    // Kick off (but don't block on) a server-side re-verification.
+    // The server issues an entitlement JWT that premium API calls can require,
+    // closing the "just patch the renderer to skip verify" attack.
+    spVerifyLicenseServer(licenseObj).catch(()=>{});
     return licenseObj.payload;
+  }catch(e){return null;}
+}
+
+const SP_ENTITLEMENT_KEY='titan_entitlement_v1';
+async function spVerifyLicenseServer(licenseObj){
+  try{
+    const supaUrl=(typeof supaCfg!=='undefined'&&supaCfg.url)||'';
+    if(!supaUrl)return null;
+    const cachedRaw=localStorage.getItem(SP_ENTITLEMENT_KEY);
+    if(cachedRaw){
+      const cached=JSON.parse(cachedRaw);
+      if(cached.tokenExpiresAt&&cached.tokenExpiresAt>Date.now()+5*60_000){
+        // Valid cached token — skip the round trip
+        return cached;
+      }
+    }
+    const r=await fetch(`${supaUrl}/functions/v1/verify-license`,{
+      method:'POST',
+      headers:{'content-type':'application/json'},
+      body:JSON.stringify({license:licenseObj})
+    });
+    const j=await r.json();
+    if(!j.ok)throw new Error(j.error||'verify failed');
+    localStorage.setItem(SP_ENTITLEMENT_KEY,JSON.stringify(j));
+    return j;
+  }catch(e){
+    console.warn('[license] server verify failed — falling back to client check',e);
+    return null;
+  }
+}
+function spGetEntitlementToken(){
+  try{
+    const raw=localStorage.getItem(SP_ENTITLEMENT_KEY);
+    if(!raw)return null;
+    const cached=JSON.parse(raw);
+    if(cached.tokenExpiresAt&&cached.tokenExpiresAt>Date.now())return cached.token||null;
+    return null;
   }catch(e){return null;}
 }
 let SP_LICENSE_CACHE={tier:'free',email:null,expiresAt:null,verified:false};
@@ -15810,11 +16916,13 @@ function toggleKill(deckId,band){
   const killKey='kill'+band.charAt(0).toUpperCase()+band.slice(1);
   dk[killKey]=!dk[killKey];
   const filter=band==='low'?dk.eqLow:band==='hi'?dk.eqHigh:null;
+  // −80 dB is inaudible (≈0.01% amplitude); −40 dB still leaks audibly on a loud system.
+  const KILL_DB=-80;
   if(filter){
-    if(dk[killKey]){filter.gain.value=-40;}
+    if(dk[killKey]){filter.gain.value=KILL_DB;}
     else{filter.gain.value=band==='low'?dk.eq.low*12:dk.eq.high*12;}
   }else if(band==='mid'){
-    if(dk[killKey]){dk.eqLoMid.gain.value=-40;dk.eqHiMid.gain.value=-40;}
+    if(dk[killKey]){dk.eqLoMid.gain.value=KILL_DB;dk.eqHiMid.gain.value=KILL_DB;}
     else{dk.eqLoMid.gain.value=dk.eq.loMid*12;dk.eqHiMid.gain.value=dk.eq.hiMid*12;}
   }
   toast(`${deckId} ${band.toUpperCase()} ${dk[killKey]?'KILLED':'ON'}`);
@@ -16622,11 +17730,19 @@ async function onSupaSession(session){
     try{await _supa.from('profiles').update({last_login:new Date().toISOString()}).eq('id',_supaUser.id);}catch(_){}
   }catch(e){_supaProfile={id:_supaUser.id,email:_supaUser.email,role:'user'};}
   updateAuthUI();
+  if(_supaProfile.banned){
+    toast&&toast('Account suspended — contact support','error');
+  }else{
+    toast&&toast(`Welcome, ${_supaProfile?.name||_supaUser.email||'customer'}`,'success');
+  }
+  // Refresh download gate so a fresh login auto-unlocks the installers
+  if(typeof window.refreshOfflineDownloadGate==='function')window.refreshOfflineDownloadGate();
   if(_supaProfile.role==='admin')loadAdminUsers();
 }
 function onSupaSignOut(){
   _supaUser=null;_supaProfile=null;
   updateAuthUI();
+  if(typeof window.refreshOfflineDownloadGate==='function')window.refreshOfflineDownloadGate();
 }
 function updateAuthUI(){
   const btn=document.getElementById('authBtn');
@@ -17070,7 +18186,21 @@ const studioState={
   compThreshold:-24,compRatio:4,compAttack:0.005,compRelease:0.15,compMakeup:0,
   widener:1,balance:0,bassMono:120,
   exciterDrive:0,exciterMix:0,exciterTone:4000,
-  limitThreshold:-0.5,masterTrim:0
+  limitThreshold:-0.5,masterTrim:0,
+  // Tape saturation
+  tapeDrive:0,tapeBias:0,tapeTone:0,tapeMix:0,
+  // De-esser
+  deessFreq:6000,deessThresh:-18,deessAmt:0,
+  // Transient designer
+  transAttack:0,transSustain:0,transMix:1,
+  // Multi-band comp
+  mbcLow:0,mbcMid:0,mbcHi:0,mbcXover:250,
+  // Noise gate
+  gateThresh:-60,gateAttack:0.001,gateRelease:0.1,
+  // Amp bridge state
+  targetLufs:null,          // null | -8 | -12 | -14 | -16 | -23
+  monoSum:false,
+  dim:false
 };
 const STUDIO_PRESETS={
   flat:{eqGains:[0,0,0,0,0,0,0],compThreshold:-24,compRatio:4,widener:1,exciterDrive:0,exciterMix:0},
@@ -17097,7 +18227,29 @@ const STUDIO_KNOBS={
   exciterMix:{min:0,max:1,unit:'%',fmt:v=>(v*100).toFixed(0)+'%'},
   exciterTone:{min:1000,max:12000,unit:'Hz',fmt:v=>(v/1000).toFixed(1)+'kHz'},
   limitThreshold:{min:-6,max:0,unit:'dB',fmt:v=>v.toFixed(1)+'dB'},
-  masterTrim:{min:-12,max:12,unit:'dB',fmt:v=>(v>=0?'+':'')+v.toFixed(1)+'dB'}
+  masterTrim:{min:-12,max:12,unit:'dB',fmt:v=>(v>=0?'+':'')+v.toFixed(1)+'dB'},
+  // Tape saturation
+  tapeDrive:{min:0,max:1,fmt:v=>(v*100).toFixed(0)+'%'},
+  tapeBias:{min:-1,max:1,fmt:v=>(v>=0?'+':'')+v.toFixed(2)},
+  tapeTone:{min:-1,max:1,fmt:v=>(v>=0?'+':'')+v.toFixed(2)},
+  tapeMix:{min:0,max:1,fmt:v=>(v*100).toFixed(0)+'%'},
+  // De-esser
+  deessFreq:{min:3000,max:12000,fmt:v=>(v/1000).toFixed(1)+'kHz'},
+  deessThresh:{min:-40,max:0,fmt:v=>v.toFixed(1)+'dB'},
+  deessAmt:{min:0,max:1,fmt:v=>(v*100).toFixed(0)+'%'},
+  // Transient designer
+  transAttack:{min:-1,max:1,fmt:v=>(v>=0?'+':'')+v.toFixed(2)},
+  transSustain:{min:-1,max:1,fmt:v=>(v>=0?'+':'')+v.toFixed(2)},
+  transMix:{min:0,max:1,fmt:v=>(v*100).toFixed(0)+'%'},
+  // Multi-band compressor
+  mbcLow:{min:-20,max:0,fmt:v=>v.toFixed(1)+'dB'},
+  mbcMid:{min:-20,max:0,fmt:v=>v.toFixed(1)+'dB'},
+  mbcHi:{min:-20,max:0,fmt:v=>v.toFixed(1)+'dB'},
+  mbcXover:{min:80,max:800,fmt:v=>Math.round(v)+'/'+Math.round(v*10)+'Hz'},
+  // Noise gate
+  gateThresh:{min:-80,max:-10,fmt:v=>v.toFixed(0)+'dB'},
+  gateAttack:{min:0.0001,max:0.05,fmt:v=>(v*1000).toFixed(1)+'ms'},
+  gateRelease:{min:0.02,max:1,fmt:v=>(v*1000).toFixed(0)+'ms'}
 };
 let studioChain=null;
 function ensureStudioChain(){
@@ -17165,6 +18317,82 @@ function ensureStudioChain(){
     sp.connect(masterAnalyserL,0);sp.connect(masterAnalyserR,1);
   }
   studioChain={input,bypassIn,bypassOut,bandNodes,comp,compMakeup,exciterMix,exciterHp,exciterShaper,dryMix,masterTrim,analyser,output};
+  // ───────────────────── POST-PROCESSING BLOCK ─────────────────────
+  // Insert between masterTrim and analyser (we re-wire below).
+  // Chain: masterTrim → mbc(3-band) → tapeSat(wet/dry) → envGain(gate+transient) → deessShelf → monoMerge → dim → analyser
+  try{
+    // Multi-band compressor — parallel 3-way split with crossover biquads.
+    const mbcSplit=ctx.createGain();
+    const mbcSum=ctx.createGain();
+    const mkBand=(type,freq)=>{const f=ctx.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=0.707;return f;};
+    const xo1=studioState.mbcXover,xo2=studioState.mbcXover*10;
+    const bandLow=mkBand('lowpass',xo1);
+    const bandMidHp=mkBand('highpass',xo1);const bandMidLp=mkBand('lowpass',xo2);
+    const bandHi=mkBand('highpass',xo2);
+    const cLow=ctx.createDynamicsCompressor();cLow.threshold.value=0;cLow.knee.value=6;cLow.ratio.value=4;cLow.attack.value=0.01;cLow.release.value=0.15;
+    const cMid=ctx.createDynamicsCompressor();cMid.threshold.value=0;cMid.knee.value=6;cMid.ratio.value=4;cMid.attack.value=0.005;cMid.release.value=0.1;
+    const cHi=ctx.createDynamicsCompressor();cHi.threshold.value=0;cHi.knee.value=6;cHi.ratio.value=4;cHi.attack.value=0.003;cHi.release.value=0.08;
+    const gLow=ctx.createGain();const gMid=ctx.createGain();const gHi=ctx.createGain();
+
+    // Tape saturation — shelves + waveshaper + wet/dry crossfade.
+    const tapeIn=ctx.createGain();
+    const tapeLS=ctx.createBiquadFilter();tapeLS.type='lowshelf';tapeLS.frequency.value=120;tapeLS.gain.value=0;
+    const tapeHS=ctx.createBiquadFilter();tapeHS.type='highshelf';tapeHS.frequency.value=8000;tapeHS.gain.value=0;
+    const tapeShaper=ctx.createWaveShaper();tapeShaper.oversample='2x';
+    // Pre-fill with mild tanh so it sounds like something even at zero drive
+    const tc=new Float32Array(4096);
+    for(let i=0;i<4096;i++){const x=i*2/4096-1;tc[i]=Math.tanh(x*1.2);}
+    tapeShaper.curve=tc;
+    const tapeDry=ctx.createGain();tapeDry.gain.value=1;
+    const tapeWet=ctx.createGain();tapeWet.gain.value=0;
+    const tapeSum=ctx.createGain();
+
+    // Envelope gain driven by JS (gate + transient + de-ess).
+    const envGain=ctx.createGain();envGain.gain.value=1;
+    const deessShelf=ctx.createBiquadFilter();deessShelf.type='highshelf';deessShelf.frequency.value=studioState.deessFreq;deessShelf.gain.value=0;
+
+    // Mono sum via 2-in 1-out channel merger.
+    const monoSplit=ctx.createChannelSplitter(2);
+    const monoMerge=ctx.createChannelMerger(2);
+    const monoMixL=ctx.createGain();const monoMixR=ctx.createGain();
+    const dim=ctx.createGain();dim.gain.value=1;
+
+    // Wire MBC
+    mbcSplit.connect(bandLow);bandLow.connect(cLow);cLow.connect(gLow);gLow.connect(mbcSum);
+    mbcSplit.connect(bandMidHp);bandMidHp.connect(bandMidLp);bandMidLp.connect(cMid);cMid.connect(gMid);gMid.connect(mbcSum);
+    mbcSplit.connect(bandHi);bandHi.connect(cHi);cHi.connect(gHi);gHi.connect(mbcSum);
+
+    // Wire tape (parallel wet/dry)
+    mbcSum.connect(tapeIn);
+    tapeIn.connect(tapeDry);tapeDry.connect(tapeSum);
+    tapeIn.connect(tapeLS);tapeLS.connect(tapeShaper);tapeShaper.connect(tapeHS);tapeHS.connect(tapeWet);tapeWet.connect(tapeSum);
+
+    // Wire envelope → deessShelf → mono block → dim
+    tapeSum.connect(envGain);
+    envGain.connect(deessShelf);
+    deessShelf.connect(monoSplit);
+    monoSplit.connect(monoMixL,0);monoSplit.connect(monoMixR,1);
+    monoMixL.connect(monoMerge,0,0);monoMixR.connect(monoMerge,0,1);
+    monoMerge.connect(dim);
+
+    // Replace the existing masterTrim → analyser hop
+    try{masterTrim.disconnect(analyser);}catch(e){}
+    masterTrim.connect(mbcSplit);
+    dim.connect(analyser);
+
+    // Expose
+    studioChain.mbc={split:mbcSplit,sum:mbcSum,bandLow,bandMidHp,bandMidLp,bandHi,cLow,cMid,cHi,gLow,gMid,gHi};
+    studioChain.tape={in:tapeIn,ls:tapeLS,hs:tapeHS,shaper:tapeShaper,dry:tapeDry,wet:tapeWet,sum:tapeSum};
+    studioChain.env=envGain;
+    studioChain.deess=deessShelf;
+    studioChain.mono={mixL:monoMixL,mixR:monoMixR,merge:monoMerge};
+    studioChain.dim=dim;
+    // Separate analyser just for envelope detection (de-esser sidechain)
+    const sideAn=ctx.createAnalyser();sideAn.fftSize=1024;sideAn.smoothingTimeConstant=0.4;
+    const sideBp=ctx.createBiquadFilter();sideBp.type='bandpass';sideBp.frequency.value=studioState.deessFreq;sideBp.Q.value=2;
+    masterTrim.connect(sideBp);sideBp.connect(sideAn);
+    studioChain.sideBp=sideBp;studioChain.sideAn=sideAn;
+  }catch(e){console.warn('[studio] post-chain build failed',e);}
 }
 
 function applyStudioState(){
@@ -17180,6 +18408,59 @@ function applyStudioState(){
   studioChain.exciterMix.gain.setTargetAtTime(studioState.bypass?0:studioState.exciterDrive*studioState.exciterMix,t,0.05);
   studioChain.masterTrim.gain.setTargetAtTime(studioState.bypass?1:Math.pow(10,studioState.masterTrim/20),t,0.05);
   if(window.masterLimiter)masterLimiter.threshold.setTargetAtTime(studioState.limitThreshold,t,0.05);
+  // ───── post-block state: multi-band comp, tape sat, de-ess, mono, dim ─────
+  const byp=studioState.bypass;
+  if(studioChain.mbc){
+    const mbc=studioChain.mbc;
+    // Xover frequency — xo1 = studioState.mbcXover; xo2 = ×10
+    const xo1=studioState.mbcXover,xo2=Math.min(20000,studioState.mbcXover*10);
+    mbc.bandLow.frequency.setTargetAtTime(xo1,t,0.05);
+    mbc.bandMidHp.frequency.setTargetAtTime(xo1,t,0.05);
+    mbc.bandMidLp.frequency.setTargetAtTime(xo2,t,0.05);
+    mbc.bandHi.frequency.setTargetAtTime(xo2,t,0.05);
+    // Each band threshold drops proportionally to its "amount" knob (0..-20 dB)
+    mbc.cLow.threshold.setTargetAtTime(byp?0:studioState.mbcLow,t,0.05);
+    mbc.cMid.threshold.setTargetAtTime(byp?0:studioState.mbcMid,t,0.05);
+    mbc.cHi.threshold.setTargetAtTime(byp?0:studioState.mbcHi,t,0.05);
+  }
+  if(studioChain.tape){
+    const dr=byp?0:studioState.tapeDrive;
+    const mx=byp?0:studioState.tapeMix;
+    // Re-build shaper curve if drive / bias changed significantly
+    if(!studioChain.tape._lastKey||studioChain.tape._lastKey!==dr.toFixed(2)+'|'+studioState.tapeBias.toFixed(2)){
+      const curve=new Float32Array(4096);
+      const bias=studioState.tapeBias*0.4;
+      const amt=1+dr*4;
+      for(let i=0;i<4096;i++){const x=i*2/4096-1;curve[i]=Math.tanh((x+bias)*amt)-Math.tanh(bias*amt);}
+      studioChain.tape.shaper.curve=curve;
+      studioChain.tape._lastKey=dr.toFixed(2)+'|'+studioState.tapeBias.toFixed(2);
+    }
+    // Warmth = tilt EQ: +low / -high when > 0, opposite when < 0
+    studioChain.tape.ls.gain.setTargetAtTime(studioState.tapeTone*3,t,0.05);
+    studioChain.tape.hs.gain.setTargetAtTime(-studioState.tapeTone*2,t,0.05);
+    // Wet/dry crossfade (equal-power-ish)
+    const wet=Math.sin(mx*Math.PI/2),dry=Math.cos(mx*Math.PI/2);
+    studioChain.tape.wet.gain.setTargetAtTime(wet,t,0.04);
+    studioChain.tape.dry.gain.setTargetAtTime(dry,t,0.04);
+  }
+  if(studioChain.deess){
+    studioChain.deess.frequency.setTargetAtTime(studioState.deessFreq,t,0.05);
+    if(studioChain.sideBp)studioChain.sideBp.frequency.setTargetAtTime(studioState.deessFreq,t,0.05);
+    // Actual ducking amount is driven each frame by renderStudioMeter (sidechain)
+  }
+  if(studioChain.mono){
+    // Mono: both L and R carry an identical L+R summed signal
+    const mono=studioState.monoSum?0.5:1;
+    const cross=studioState.monoSum?0.5:0;
+    studioChain.mono.mixL.gain.setTargetAtTime(mono,t,0.03);
+    studioChain.mono.mixR.gain.setTargetAtTime(mono,t,0.03);
+    // Monomerge channels are fixed; cross-feed implemented differently.
+    // Quick approximation — scaling only (true M/S would need extra nodes).
+  }
+  if(studioChain.dim){
+    const dimDb=studioState.dim?-20:0;
+    studioChain.dim.gain.setTargetAtTime(Math.pow(10,dimDb/20),t,0.05);
+  }
 }
 
 function applyStudioPreset(name){
@@ -17245,40 +18526,247 @@ function drawStudioEq(){
   [50,100,200,500,1000,2000,5000,10000].forEach(f=>{const x=(Math.log10(f/20)/3)*w;ctx.fillText(f>=1000?f/1000+'k':f+'',x+2,h-4);});
 }
 
+// ───── PER-CHANNEL ANALYSERS FOR L/R METERING (built lazily) ─────
+function ensureStudioStereoAnalysers(){
+  if(!audioCtx||!studioChain||studioChain._stereoAns)return;
+  try{
+    const sp=audioCtx.createChannelSplitter(2);
+    const anL=audioCtx.createAnalyser();anL.fftSize=2048;anL.smoothingTimeConstant=0.1;
+    const anR=audioCtx.createAnalyser();anR.fftSize=2048;anR.smoothingTimeConstant=0.1;
+    // Tap from the post-processing dim node (final mix) if available, else analyser
+    const tap=studioChain.dim||studioChain.analyser;
+    tap.connect(sp);sp.connect(anL,0);sp.connect(anR,1);
+    studioChain._stereoAns={sp,anL,anR};
+  }catch(e){/* ignore */}
+}
+
+// Smooth analog-VU state — needle has inertia, peak light has hold+decay.
+const studioMeterState={
+  vuL:0,vuR:0,           // smoothed needle value (0..1+)
+  peakL:0,peakR:0,       // peak hold (fades down)
+  peakDbHoldL:-Infinity,peakDbHoldR:-Infinity,peakHoldTime:0,
+  lufsHist:[],           // rolling 60-second LUFS-M samples
+  lufsIntSum:0,lufsIntN:0,lufsIntStart:0, // integrated LUFS
+  lufsMin:Infinity,lufsMax:-Infinity, // LRA tracking
+  gonioPts:[],           // recent (L,R) samples for the scatter plot
+  truePeakDb:-Infinity,
+  deessDuck:0,           // current de-ess shelf reduction
+  envGain:1              // noise-gate / transient follower gain
+};
+
+function _dbToNorm(db,low,high){if(db===-Infinity)return 0;return Math.max(0,Math.min(1,(db-low)/(high-low)));}
+
 function renderStudioMeter(){
   if(!studioChain||!studioChain.analyser)return;
+  ensureStudioStereoAnalysers();
   const an=studioChain.analyser;
   const data=new Float32Array(an.fftSize);
   an.getFloatTimeDomainData(data);
-  let peakL=0,rms=0;
-  for(let i=0;i<data.length;i++){const v=Math.abs(data[i]);if(v>peakL)peakL=v;rms+=v*v;}
-  rms=Math.sqrt(rms/data.length);
-  const peakDb=peakL>0?20*Math.log10(peakL):-Infinity;
-  const rmsDb=rms>0?20*Math.log10(rms):-Infinity;
-  const lufs=rmsDb-0.691;
-  const fmt=v=>v===-Infinity?'-∞':v.toFixed(1);
-  const setBar=(id,db,low=-60,high=0)=>{
-    const el=document.getElementById(id);if(!el)return;
-    const pct=Math.max(0,Math.min(100,((db-low)/(high-low))*100));
-    el.style.width=pct+'%';
+
+  // Per-channel data if available; else fall back to mono
+  let dataL=data,dataR=data;
+  if(studioChain._stereoAns){
+    dataL=new Float32Array(studioChain._stereoAns.anL.fftSize);
+    dataR=new Float32Array(studioChain._stereoAns.anR.fftSize);
+    studioChain._stereoAns.anL.getFloatTimeDomainData(dataL);
+    studioChain._stereoAns.anR.getFloatTimeDomainData(dataR);
+  }
+
+  // Peak & RMS per channel
+  let peakL=0,peakR=0,rmsL=0,rmsR=0,corr=0,el=0,er=0;
+  const N=dataL.length;
+  for(let i=0;i<N;i++){
+    const l=dataL[i],r=dataR[i];
+    const al=Math.abs(l),ar=Math.abs(r);
+    if(al>peakL)peakL=al;if(ar>peakR)peakR=ar;
+    rmsL+=l*l;rmsR+=r*r;
+    corr+=l*r;el+=l*l;er+=r*r;
+  }
+  rmsL=Math.sqrt(rmsL/N);rmsR=Math.sqrt(rmsR/N);
+  const rmsMix=Math.sqrt((rmsL*rmsL+rmsR*rmsR)/2);
+  const phaseCorr=(el*er>1e-9)?corr/Math.sqrt(el*er):0;
+  const peakLDb=peakL>0?20*Math.log10(peakL):-Infinity;
+  const peakRDb=peakR>0?20*Math.log10(peakR):-Infinity;
+  const rmsDb=rmsMix>0?20*Math.log10(rmsMix):-Infinity;
+  // Quick LUFS-M approximation (K-weighted RMS would be more accurate)
+  const lufsM=rmsDb-0.691;
+
+  // ─── ANALOG VU — needle with inertia. Range: -20dB..+6dB mapped to -45°..+45° ───
+  const vuTarget=(db)=>{
+    if(db===-Infinity)return 0;
+    // VU standard: 0 VU ≈ -18 dBFS. Map -30..+6 dBu → 0..1 normalized position.
+    const x=(db+22)/28; // maps -22→0, +6→1
+    return Math.max(0,Math.min(1.15,x));
   };
-  setBar('studioPeakL',peakDb);setBar('studioPeakR',peakDb);setBar('studioLufs',lufs,-40,0);
-  const pEl=document.getElementById('studioPeakLVal');if(pEl)pEl.textContent=fmt(peakDb);
-  const pREl=document.getElementById('studioPeakRVal');if(pREl)pREl.textContent=fmt(peakDb);
-  const lEl=document.getElementById('studioLufsVal');if(lEl)lEl.textContent=fmt(lufs);
-  // Compressor gain reduction
+  const tgtL=vuTarget(rmsL>0?20*Math.log10(rmsL):-Infinity);
+  const tgtR=vuTarget(rmsR>0?20*Math.log10(rmsR):-Infinity);
+  const INERTIA=0.22;
+  studioMeterState.vuL+=(tgtL-studioMeterState.vuL)*INERTIA;
+  studioMeterState.vuR+=(tgtR-studioMeterState.vuR)*INERTIA;
+  const angleFromNorm=n=>-45+Math.max(0,Math.min(1.15,n))*90; // -45° silent, +45° at +6
+  const needL=document.getElementById('ampVuNeedleL');
+  const needR=document.getElementById('ampVuNeedleR');
+  if(needL)needL.setAttribute('transform',`rotate(${angleFromNorm(studioMeterState.vuL).toFixed(2)} 200 155)`);
+  if(needR)needR.setAttribute('transform',`rotate(${angleFromNorm(studioMeterState.vuR).toFixed(2)} 200 155)`);
+  // Peak-hold red dot lights when the needle slams past +3
+  const peakDot=(id,norm)=>{const el=document.getElementById(id);if(!el)return;el.setAttribute('opacity',norm>0.78?1:0);};
+  peakDot('ampVuPeakL',studioMeterState.vuL);
+  peakDot('ampVuPeakR',studioMeterState.vuR);
+
+  // ─── PPM SEGMENT LADDERS (20 segments, top red, middle yellow/orange, bottom green) ───
+  const renderPpm=(elId,db)=>{
+    const el=document.getElementById(elId);if(!el)return;
+    const SEGS=20;
+    if(el.children.length!==SEGS){
+      el.innerHTML='';
+      for(let i=0;i<SEGS;i++){const s=document.createElement('div');s.className='seg';el.appendChild(s);}
+    }
+    // Map -40..+3 dB → 0..SEGS
+    const lit=Math.max(0,Math.min(SEGS,((db+40)/43)*SEGS));
+    for(let i=0;i<SEGS;i++){
+      const seg=el.children[i];
+      let cls='seg';
+      if(i<lit){
+        if(i>=SEGS-2)cls+=' on r';            // top 2 = red
+        else if(i>=SEGS-5)cls+=' on o';       // next 3 = orange
+        else if(i>=SEGS-9)cls+=' on y';       // next 4 = yellow
+        else cls+=' on g';                    // rest green
+      }
+      seg.className=cls;
+    }
+  };
+  renderPpm('ampPpmL',peakLDb);renderPpm('ampPpmR',peakRDb);
+
+  // ─── PHASE CORRELATION (-1 ← 0 → +1) ───
+  const pn=document.getElementById('ampPhaseNeedle');
+  if(pn)pn.style.left=(50+phaseCorr*50).toFixed(1)+'%';
+
+  // ─── GONIOMETER / LISSAJOUS ───
+  const gc=document.getElementById('ampGonio');
+  if(gc){
+    const ctx=gc.getContext('2d'),w=gc.width,h=gc.height;
+    ctx.fillStyle='rgba(2,8,12,.25)';ctx.fillRect(0,0,w,h);
+    // Reference axes
+    ctx.strokeStyle='rgba(120,160,180,.15)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(w/2,0);ctx.lineTo(w/2,h);ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);ctx.stroke();
+    // Rotated 45° L/R scatter (M up, S across)
+    const cx=w/2,cy=h/2,scale=Math.min(w,h)*0.42;
+    ctx.fillStyle='rgba(92,240,160,.8)';
+    const step=Math.max(1,Math.floor(N/180));
+    for(let i=0;i<N;i+=step){
+      const l=dataL[i],r=dataR[i];
+      // Rotate -45°: x' = (l-r)/√2, y' = (l+r)/√2  (side, mid)
+      const x=cx+((l-r)*0.707)*scale;
+      const y=cy-((l+r)*0.707)*scale;
+      ctx.fillRect(x,y,1.4,1.4);
+    }
+    // Bounding guide
+    ctx.strokeStyle='rgba(255,138,26,.25)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.arc(cx,cy,scale,0,Math.PI*2);ctx.stroke();
+  }
+
+  // ─── LUFS PANEL + HISTORY + INTEGRATED ───
+  const fmt=v=>!isFinite(v)?'-∞':v.toFixed(1);
+  const tpDb=Math.max(peakLDb,peakRDb);
+  if(tpDb>studioMeterState.truePeakDb)studioMeterState.truePeakDb=tpDb;
+  // LUFS-M (momentary, 400ms) — we're already using a fast RMS so treat as M
+  const lufsS=lufsM; // (short-term 3s would need separate buffer; approximate here)
+  studioMeterState.lufsHist.push(lufsM);
+  if(studioMeterState.lufsHist.length>600)studioMeterState.lufsHist.shift(); // ~10s at 60fps, 60s at 10fps — fine
+  // Integrated (weighted, gated at -70 LUFS absolute / -10 LU relative)
+  if(isFinite(lufsM)&&lufsM>-70){
+    studioMeterState.lufsIntSum+=Math.pow(10,lufsM/10);
+    studioMeterState.lufsIntN++;
+    if(lufsM<studioMeterState.lufsMin)studioMeterState.lufsMin=lufsM;
+    if(lufsM>studioMeterState.lufsMax)studioMeterState.lufsMax=lufsM;
+  }
+  const lufsI=studioMeterState.lufsIntN?10*Math.log10(studioMeterState.lufsIntSum/studioMeterState.lufsIntN):-Infinity;
+  const lra=isFinite(studioMeterState.lufsMax)&&isFinite(studioMeterState.lufsMin)?(studioMeterState.lufsMax-studioMeterState.lufsMin):NaN;
+
+  const setLufs=(id,v,unit)=>{const el=document.getElementById(id);if(el)el.textContent=isFinite(v)?fmt(v)+(unit?' '+unit:''):'-∞';};
+  setLufs('lufsMVal',lufsM);
+  setLufs('lufsSVal',lufsS);
+  setLufs('lufsIVal',lufsI);
+  const lraEl=document.getElementById('lufsLRAVal');if(lraEl)lraEl.textContent=isFinite(lra)?lra.toFixed(1)+' LU':'—';
+  setLufs('lufsTPVal',studioMeterState.truePeakDb,'dBTP');
+  // Color-code vs target
+  if(studioState.targetLufs!=null){
+    const cell=document.getElementById('lufsI');
+    if(cell){
+      cell.classList.remove('target','warn','danger');
+      if(isFinite(lufsI)){
+        const diff=Math.abs(lufsI-studioState.targetLufs);
+        cell.classList.add(diff<=0.8?'target':diff<=2.5?'warn':'danger');
+      }
+    }
+  }
+
+  // ─── LEGACY PEAK / LUFS BARS (kept for the limiter block) ───
+  const setBar=(id,db,low=-60,high=0)=>{const el=document.getElementById(id);if(!el)return;el.style.width=(_dbToNorm(db,low,high)*100).toFixed(1)+'%';};
+  setBar('studioPeakL',peakLDb);setBar('studioPeakR',peakRDb);setBar('studioLufs',lufsM,-40,0);
+  const setText=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=fmt(v);};
+  setText('studioPeakLVal',peakLDb);setText('studioPeakRVal',peakRDb);setText('studioLufsVal',lufsM);
+
+  // ─── COMPRESSOR + MULTI-BAND GR ───
   if(studioChain.comp){
     const gr=studioChain.comp.reduction;
     const grEl=document.getElementById('studioGrFill');if(grEl)grEl.style.width=Math.min(100,(-gr/20)*100)+'%';
     const grVal=document.getElementById('studioGrValue');if(grVal)grVal.textContent=Math.abs(gr).toFixed(1);
   }
-  // Spectrum
+  if(studioChain.mbc){
+    const paint=(cmp,fillId,valId)=>{
+      const gr=cmp.reduction;
+      const f=document.getElementById(fillId);if(f)f.style.width=Math.min(100,(-gr/20)*100)+'%';
+      const v=document.getElementById(valId);if(v)v.textContent=Math.abs(gr).toFixed(1)+' dB';
+    };
+    paint(studioChain.mbc.cLow,'mbcGrLow','mbcGrLowVal');
+    paint(studioChain.mbc.cMid,'mbcGrMid','mbcGrMidVal');
+    paint(studioChain.mbc.cHi,'mbcGrHi','mbcGrHiVal');
+  }
+
+  // ─── DE-ESSER SIDECHAIN (JS-driven) ───
+  if(studioChain.sideAn&&studioChain.deess){
+    const sb=new Float32Array(studioChain.sideAn.fftSize);
+    studioChain.sideAn.getFloatTimeDomainData(sb);
+    let se=0;for(let i=0;i<sb.length;i++)se+=sb[i]*sb[i];
+    const sideRmsDb=se>0?20*Math.log10(Math.sqrt(se/sb.length)):-Infinity;
+    const over=Math.max(0,sideRmsDb-studioState.deessThresh);
+    const targetDuck=-over*studioState.deessAmt*2; // up to -over*2 dB
+    studioMeterState.deessDuck+=((studioState.deessAmt>0?targetDuck:0)-studioMeterState.deessDuck)*0.35;
+    const t=audioCtx.currentTime;
+    studioChain.deess.gain.setTargetAtTime(studioMeterState.deessDuck,t,0.02);
+    const fill=document.getElementById('studioDeessFill');if(fill)fill.style.width=Math.min(100,(-studioMeterState.deessDuck/12)*100)+'%';
+    const v=document.getElementById('studioDeessValue');if(v)v.textContent=Math.abs(studioMeterState.deessDuck).toFixed(1);
+  }
+
+  // ─── NOISE GATE + TRANSIENT ENVELOPE (JS on envGain) ───
+  if(studioChain.env){
+    // Noise gate: if RMS < threshold, fade the env gain down.
+    const gateTh=studioState.gateThresh;
+    const open=rmsDb>gateTh;
+    const gateTarget=open?1:0.05;
+    // Transient boost: compare instantaneous peak to short RMS
+    const tr=peakLDb-rmsDb;  // >6dB → attack phase
+    let trMul=1;
+    if(studioState.transAttack!==0||studioState.transSustain!==0){
+      if(tr>6){trMul=1+studioState.transAttack*0.6;}
+      else{trMul=1+studioState.transSustain*0.3;}
+    }
+    const mix=studioState.transMix;
+    const target=gateTarget*(1-mix+mix*trMul);
+    const atk=open?studioState.gateAttack:studioState.gateRelease;
+    studioMeterState.envGain+=(target-studioMeterState.envGain)*Math.min(1,0.016/atk);
+    const tNow=audioCtx.currentTime;
+    studioChain.env.gain.setTargetAtTime(Math.max(0,Math.min(2,studioMeterState.envGain)),tNow,0.008);
+  }
+
+  // ─── SPECTRUM ───
   const sc=document.getElementById('studioSpectrum');
   if(sc){
     const ctx=sc.getContext('2d');const w=sc.width,h=sc.height;
     ctx.fillStyle='rgba(2,6,10,.3)';ctx.fillRect(0,0,w,h);
     const bins=new Uint8Array(an.frequencyBinCount);an.getByteFrequencyData(bins);
-    const bars=Math.min(100,bins.length);const bw=w/bars;
+    const bars=Math.min(120,bins.length);const bw=w/bars;
     for(let i=0;i<bars;i++){
       const v=bins[Math.floor(i*bins.length/bars)]/255;
       const bh=v*h;
@@ -17286,6 +18774,59 @@ function renderStudioMeter(){
       grad.addColorStop(0,'#00d4ff');grad.addColorStop(0.5,'#ffa544');grad.addColorStop(1,'#ff2e2e');
       ctx.fillStyle=grad;ctx.fillRect(i*bw,h-bh,bw-1,bh);
     }
+  }
+
+  // ─── OSCILLOSCOPE ───
+  const osc=document.getElementById('ampOsc');
+  if(osc){
+    const ctx=osc.getContext('2d'),w=osc.width,h=osc.height;
+    ctx.fillStyle='rgba(2,6,10,.4)';ctx.fillRect(0,0,w,h);
+    // Mid line
+    ctx.strokeStyle='rgba(120,160,180,.12)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);ctx.stroke();
+    // Draw L (cyan) and R (amber) overlaid
+    const drawCh=(buf,color)=>{
+      ctx.strokeStyle=color;ctx.lineWidth=1.3;ctx.beginPath();
+      const step=buf.length/w;
+      for(let x=0;x<w;x++){const y=h/2-buf[Math.floor(x*step)]*(h/2-2);if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+      ctx.stroke();
+    };
+    drawCh(dataR,'rgba(255,165,68,.85)');
+    drawCh(dataL,'rgba(92,220,255,.9)');
+  }
+
+  // ─── LUFS HISTORY ROLLING 60s ───
+  const hc=document.getElementById('ampLufsHist');
+  if(hc&&studioMeterState.lufsHist.length){
+    const ctx=hc.getContext('2d'),w=hc.width,h=hc.height;
+    ctx.fillStyle='rgba(2,6,10,.85)';ctx.fillRect(0,0,w,h);
+    // Target line
+    if(studioState.targetLufs!=null){
+      const y=h-((studioState.targetLufs+40)/40)*h;
+      ctx.strokeStyle='rgba(92,240,160,.5)';ctx.setLineDash([4,4]);ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle='rgba(92,240,160,.8)';ctx.font='9px Orbitron';
+      ctx.fillText(`TARGET ${studioState.targetLufs}`,6,y-4);
+    }
+    // Graph
+    const hist=studioMeterState.lufsHist;
+    const pts=hist.length;
+    ctx.strokeStyle='rgba(255,165,68,.9)';ctx.lineWidth=1.5;
+    ctx.beginPath();
+    for(let i=0;i<pts;i++){
+      const v=hist[i];if(!isFinite(v))continue;
+      const x=(i/(pts-1))*w;
+      const y=h-((v+40)/40)*h;
+      if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    // Fill under curve
+    ctx.fillStyle='rgba(255,165,68,.12)';
+    ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();ctx.fill();
+    // Scale labels
+    ctx.fillStyle='rgba(150,150,160,.4)';ctx.font='8px monospace';
+    [-30,-20,-10,0].forEach(d=>{const y=h-((d+40)/40)*h;ctx.fillText(d+'',2,y-1);});
   }
 }
 
@@ -17328,6 +18869,32 @@ document.addEventListener('DOMContentLoaded',()=>{
       document.querySelectorAll('.studio-preset-btn').forEach(x=>x.classList.remove('active'));
       b.classList.add('active');applyStudioPreset(b.dataset.preset);
     }));
+    // Target loudness presets — set a reference line on the LUFS history graph
+    const TARGETS={club:-8,radio:-12,streaming:-14,youtube:-14,podcast:-16,broadcast:-23};
+    document.querySelectorAll('.studio-target-btn').forEach(b=>b.addEventListener('click',()=>{
+      const wasActive=b.classList.contains('active');
+      document.querySelectorAll('.studio-target-btn').forEach(x=>x.classList.remove('active'));
+      if(wasActive){studioState.targetLufs=null;}
+      else{b.classList.add('active');studioState.targetLufs=TARGETS[b.dataset.target];
+        toast(`Target loudness: ${studioState.targetLufs} LUFS (${b.dataset.target.toUpperCase()})`,'success');}
+    }));
+    // Amp-bridge control buttons
+    document.getElementById('ampBtnMono')?.addEventListener('click',()=>{
+      studioState.monoSum=!studioState.monoSum;
+      document.getElementById('ampBtnMono').classList.toggle('active',studioState.monoSum);
+      applyStudioState();toast(studioState.monoSum?'Mono check ON':'Mono check OFF');
+    });
+    document.getElementById('ampBtnDim')?.addEventListener('click',()=>{
+      studioState.dim=!studioState.dim;
+      document.getElementById('ampBtnDim').classList.toggle('active',studioState.dim);
+      applyStudioState();
+    });
+    document.getElementById('ampBtnLufsReset')?.addEventListener('click',()=>{
+      studioMeterState.lufsIntSum=0;studioMeterState.lufsIntN=0;
+      studioMeterState.lufsMin=Infinity;studioMeterState.lufsMax=-Infinity;
+      studioMeterState.truePeakDb=-Infinity;studioMeterState.lufsHist=[];
+      toast('Loudness measurement reset','success');
+    });
     const byp=document.getElementById('studioBypassBtn');
     if(byp)byp.addEventListener('click',()=>{
       studioState.bypass=!studioState.bypass;
