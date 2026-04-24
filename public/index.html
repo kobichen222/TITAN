@@ -17698,8 +17698,45 @@ function setupStudioPro(){
   document.querySelectorAll('[data-sp-bass-preset]').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const key=btn.dataset.spBassPreset;
-      if(key==='clear')SP.bass.pattern=spBassEmptyPattern();
-      else if(SP_BASS_PRESETS[key])SP.bass.pattern=SP_BASS_PRESETS[key].map(s=>({...s}));
+      if(key==='clear'){
+        SP.bass.pattern=spBassEmptyPattern();
+        toast&&toast('TB-303 pattern cleared');
+      }else if(SP_BASS_PRESETS[key]){
+        SP.bass.pattern=SP_BASS_PRESETS[key].map(s=>({...s}));
+        toast&&toast(`TB-303 pattern: ${btn.textContent.trim()}`,'success');
+        // Audible preview — if the sequencer isn't already running, plays
+        // one bar of the new pattern so the user hears the change right
+        // after clicking.  When the transport IS running, the scheduler
+        // already picks up SP.bass.pattern on the next step.
+        if(!SP.transport.playing){
+          try{
+            spInitAudio();
+            const bpm=SP.transport.bpm||128;
+            const stepMs=60000/bpm/4;
+            // Use plain setTimeout (addTimer is scoped to the step loop +
+            // only fires while transport.playing).  The pattern is in
+            // SP.bass.pattern, so read it at fire-time to catch further
+            // preset changes during the preview.
+            for(let i=0;i<16;i++){
+              const step=i;
+              setTimeout(()=>{
+                const s=SP.bass.pattern[step];
+                if(!s||!s.on)return;
+                const midi=s.midi+(s.octave||0)*12;
+                spBassNoteOn(midi,!!s.accent,!!s.slide);
+                const next=SP.bass.pattern[(step+1)%16];
+                const gate=(next&&next.on&&next.slide)?stepMs*0.95:stepMs*0.75;
+                setTimeout(()=>{
+                  if(SP.bass.currentMidi===midi && !(next&&next.on&&next.slide))
+                    spBassNoteOff(false);
+                },gate);
+              },step*stepMs);
+            }
+            // final release safety — kills any hanging note after the bar ends
+            setTimeout(()=>{if(SP.bass.voice)spBassNoteOff(false);},16*stepMs+150);
+          }catch(e){console.warn('bass preview failed',e);}
+        }
+      }
       spBuildBassSeq();
       document.querySelectorAll('[data-sp-bass-preset]').forEach(b=>b.classList.toggle('active',b===btn && key!=='clear'));
     });
