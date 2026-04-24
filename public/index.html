@@ -8190,6 +8190,7 @@ body.theme-light .cdj .cue-btn{
 
 <div class="main-tabs">
 <button class="tab-btn active" data-tab="deck" data-t="tab_decks">◉ DECKS</button>
+<button class="tab-btn learn-tab-btn" data-tab="learn" data-t="tab_learn" style="background:linear-gradient(180deg,rgba(92,240,160,.18),rgba(92,240,160,.04));color:#5cf0a0;border:1px solid rgba(92,240,160,.45)">🎓 LEARN</button>
 <button class="tab-btn" data-tab="vinyl" data-t="tab_vinyl">💿 VINYL</button>
 <button class="tab-btn" data-tab="sampler" data-t="tab_sampler">▣ SAMPLER</button>
 <button class="tab-btn" data-tab="playlists" data-t="tab_playlists">≡ PLAYLISTS</button>
@@ -8404,6 +8405,62 @@ body.theme-light .cdj .cue-btn{
 <div class="track-list" id="trackList"></div>
 </div>
 </div>
+
+<!-- ========== LEARN TAB — interactive DJ lessons ========== -->
+<div class="tab-content" id="tab-learn">
+<div class="settings-panel learn-panel" style="max-width:1400px;padding:0;background:none;border:none;box-shadow:none">
+
+  <!-- Hero / course overview -->
+  <div id="learnHero" style="background:linear-gradient(135deg,#0a1a12 0%,#061812 60%,#020a06 100%);border:1px solid rgba(92,240,160,.25);border-radius:14px;padding:22px 28px;margin-bottom:14px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-30%;right:-10%;width:50%;height:180%;background:radial-gradient(ellipse at center,rgba(92,240,160,.08),transparent 60%);pointer-events:none"></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;position:relative">
+      <div style="flex:1;min-width:280px">
+        <div style="font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:3px;color:#5cf0a0;font-weight:700;margin-bottom:6px">🎓 TITAN ACADEMY</div>
+        <h2 style="font-family:'Orbitron',sans-serif;font-size:28px;font-weight:800;letter-spacing:1px;color:#fff;margin-bottom:8px;line-height:1.1">Become a DJ in your browser.</h2>
+        <p style="font-size:14px;line-height:1.6;color:#9ad8b0;max-width:640px">No turntables. No software to install. No party pressure. Just short, hands-on lessons that walk you through every move a real DJ makes — starting with your very first play button.</p>
+      </div>
+      <div id="learnProgressCard" style="background:#02080c;border:1px solid rgba(92,240,160,.2);border-radius:10px;padding:14px 18px;min-width:200px;text-align:center">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:#7a7a80;margin-bottom:4px">YOUR PROGRESS</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:32px;font-weight:800;color:#5cf0a0;text-shadow:0 0 12px rgba(92,240,160,.5);line-height:1"><span id="learnPctDone">0</span>%</div>
+        <div style="height:6px;background:#020a08;border-radius:3px;margin-top:8px;overflow:hidden;border:1px solid rgba(92,240,160,.15)">
+          <div id="learnProgressBar" style="height:100%;background:linear-gradient(90deg,#5cf0a0,#00d074);width:0%;transition:width .4s ease"></div>
+        </div>
+        <div id="learnXpLine" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#7a7a80;margin-top:6px"><span id="learnCompleted">0</span> / <span id="learnTotal">0</span> lessons · <span id="learnXp">0</span> XP</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Difficulty filter -->
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+    <span style="font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);font-weight:700;margin-right:4px">LEVEL</span>
+    <button class="learn-level-btn active" data-level="all" style="padding:6px 14px;background:linear-gradient(180deg,#5cf0a0,#00a858);color:#000;border:none;border-radius:4px;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1.5px;font-weight:700;cursor:pointer">ALL</button>
+    <button class="learn-level-btn" data-level="beginner" style="padding:6px 14px;background:#0a1a12;color:#9ad8b0;border:1px solid rgba(92,240,160,.3);border-radius:4px;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1.5px;font-weight:700;cursor:pointer">BEGINNER</button>
+    <button class="learn-level-btn" data-level="intermediate" style="padding:6px 14px;background:#141418;color:#ffd28a;border:1px solid rgba(255,170,90,.3);border-radius:4px;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1.5px;font-weight:700;cursor:pointer">INTERMEDIATE</button>
+    <button class="learn-level-btn" data-level="advanced" style="padding:6px 14px;background:#141418;color:#ff90a0;border:1px solid rgba(255,90,120,.3);border-radius:4px;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1.5px;font-weight:700;cursor:pointer">ADVANCED</button>
+    <button id="learnResetBtn" class="tool-btn" style="padding:6px 12px;font-size:10px;margin-left:auto;color:var(--red);border-color:var(--red)">RESET PROGRESS</button>
+  </div>
+
+  <!-- Lesson grid -->
+  <div id="learnLessonGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px"></div>
+
+  <!-- Active lesson overlay — shown while a lesson is running -->
+  <div id="learnActiveLesson" style="display:none;position:fixed;bottom:16px;right:16px;max-width:380px;background:linear-gradient(135deg,#02120a 0%,#000 100%);border:2px solid #5cf0a0;border-radius:12px;padding:16px 20px;box-shadow:0 12px 40px rgba(0,0,0,.8),0 0 20px rgba(92,240,160,.3);z-index:4000;font-family:'Share Tech Mono',monospace">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <span style="font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;color:#5cf0a0;font-weight:700">🎓 LESSON · STEP <span id="learnStepN">1</span>/<span id="learnStepTotal">1</span></span>
+      <button id="learnCloseBtn" style="background:none;border:none;color:#7a7a80;font-size:18px;cursor:pointer">✕</button>
+    </div>
+    <h3 id="learnActiveTitle" style="font-family:'Orbitron',sans-serif;font-size:16px;color:#fff;margin-bottom:8px;font-weight:800">…</h3>
+    <p id="learnActiveInstruction" style="font-size:13px;line-height:1.6;color:#cfe6d8;margin-bottom:14px">…</p>
+    <div style="display:flex;gap:8px;justify-content:flex-end;align-items:center">
+      <span id="learnActiveHint" style="flex:1;color:#7a9a88;font-size:11px"></span>
+      <button id="learnSkipBtn" class="tool-btn" style="padding:5px 10px;font-size:10px;color:var(--text-dim);border-color:#333">SKIP</button>
+      <button id="learnNextBtn" class="tool-btn" style="padding:5px 14px;font-size:10px;color:#5cf0a0;border-color:#5cf0a0">NEXT ▸</button>
+    </div>
+  </div>
+
+</div>
+</div>
+<!-- ========== /LEARN TAB ========== -->
 
 <div class="tab-content" id="tab-vinyl">
 <div class="vinyl-stage">
@@ -20305,6 +20362,325 @@ document.addEventListener('DOMContentLoaded',init);
       });
     },500);
   });
+})();
+
+/* ============================================================
+   TITAN ACADEMY — interactive DJ lessons
+   The "let people learn DJ-ing in their browser" product angle.
+   Pure data + a small runner; every lesson = list of steps with
+   a completion check. No backend — progress is in localStorage.
+   ============================================================ */
+(function(){
+  const LEARN_KEY='titan_learn_progress_v1';
+  let progress={completed:{},xp:0};
+  try{const raw=localStorage.getItem(LEARN_KEY);if(raw)progress={...progress,...JSON.parse(raw)};}catch(_){}
+  const save=()=>{try{localStorage.setItem(LEARN_KEY,JSON.stringify(progress));}catch(_){}};
+
+  /* ─── Lesson library ──────────────────────────────────────────
+     Each step has:
+       title   — big headline
+       text    — detailed instruction
+       hint    — small hint shown when the user lingers
+       check   — () => boolean — returns true when the user did
+                 what the step asks. polled at 300ms.
+       highlight — CSS selector to pulse (optional)
+  ─────────────────────────────────────────────────────────────── */
+  const LESSONS=[
+    { id:'l01', level:'beginner', title:'🎉 Your first play',
+      blurb:"Open the app and drop in the first track. You're about to hear your first DJ cue.",
+      xp:50,
+      steps:[
+        {title:'Load a demo track onto Deck A',
+         text:'Open the LIBRARY below the decks and click the blue "→ A" button on any row. The track appears on Deck A up top.',
+         hint:'No library? Click + DEMO in the header.',
+         highlight:'[data-load="A"]',
+         check:()=>decks&&decks.A&&!!decks.A.track},
+        {title:'Press PLAY on Deck A',
+         text:'Find the big green PLAY button on Deck A — it\'s right under the jog wheel. Click it.',
+         hint:'Orbital LED turns green when playback starts.',
+         highlight:'.big-btn.play[data-deck="A"]',
+         check:()=>decks&&decks.A&&decks.A.playing},
+        {title:'Tap CUE to jump to the start',
+         text:'The orange CUE button sends the track back to its cue point. Try it — it\'s how a DJ rewinds without dragging.',
+         hint:'CUE also pauses when you were playing.',
+         highlight:'.big-btn.cue[data-deck="A"]',
+         check:()=>decks&&decks.A&&!decks.A.playing}
+      ]},
+    { id:'l02', level:'beginner', title:'🔊 Volume + EQ',
+      blurb:'Shape what you\'re hearing. The four knobs above the fader are your ears.',
+      xp:50,
+      steps:[
+        {title:'Turn the LOW knob on Deck A',
+         text:'The bottom knob is the bass. Roll it all the way left (less bass) and back to the center (flat). Hear the difference?',
+         hint:'Grab the knob and drag up/down.',
+         highlight:'.knob[data-knob="low-A"]',
+         check:()=>{const k=document.querySelector('.knob[data-knob="low-A"]');return k&&Math.abs(k._rot||0)>30;}},
+        {title:'Bring the channel fader up',
+         text:'Channel faders (the tall vertical sliders) set how loud each deck is in the mix. Push Deck A\'s fader up to roughly 80%.',
+         hint:'Drag the silver handle up.',
+         check:()=>decks&&decks.A&&decks.A.volume>0.5},
+      ]},
+    { id:'l03', level:'beginner', title:'🎚 Load Deck B and cross-fade',
+      blurb:'The crossfader is how two decks blend into one. You are about to do your first mix.',
+      xp:75,
+      steps:[
+        {title:'Load any track onto Deck B',
+         text:'In the library, pick a different track and click the pink "→ B" button.',
+         highlight:'[data-load="B"]',
+         check:()=>decks&&decks.B&&!!decks.B.track},
+        {title:'Press PLAY on Deck B too',
+         text:'Both decks should now play together. Don\'t worry about timing yet — just let them run.',
+         highlight:'.big-btn.play[data-deck="B"]',
+         check:()=>decks&&decks.A&&decks.B&&decks.A.playing&&decks.B.playing},
+        {title:'Move the crossfader all the way right',
+         text:'The horizontal slider at the bottom of the mixer — slide it right. Deck A fades out, Deck B takes over.',
+         hint:'You are now officially mixing.',
+         check:()=>mixerState&&mixerState.crossfader>0.85},
+      ]},
+    { id:'l04', level:'intermediate', title:'⚡ Beatmatching',
+      blurb:'Making two tracks sound like one song. The core DJ skill.',
+      xp:120,
+      steps:[
+        {title:'Load two tracks with similar BPM',
+         text:'Aim for tracks within 4 BPM of each other. Load them onto A and B.',
+         check:()=>decks&&decks.A&&decks.B&&decks.A.track&&decks.B.track},
+        {title:'Press SYNC on Deck B',
+         text:'SYNC auto-matches tempo AND phase. Hit it — then scroll back and read "· phase-locked" in the toast.',
+         highlight:'.util-btn.sync[data-deck="B"]',
+         check:()=>decks&&decks.B&&decks.B.sync===true},
+        {title:'Try manual nudge',
+         text:'Drag the TEMPO slider on Deck B by a few percent. Even with SYNC on, small nudges keep you in control.',
+         hint:'Touch the pitch fader, not the playback rate.',
+         check:()=>decks&&decks.B&&Math.abs(decks.B.tempo||0)>0.1},
+      ]},
+    { id:'l05', level:'intermediate', title:'🔥 Hot cues',
+      blurb:'Mark favourite moments in a track and jump to them instantly.',
+      xp:100,
+      steps:[
+        {title:'Press pad 1 on Deck A while playing',
+         text:'The 8 pads under the jog wheel are your hot cues. With Deck A playing, click pad 1 to drop a marker.',
+         highlight:'.hot-cues[data-deck="A"] .cue-btn[data-cue="1"]',
+         check:()=>decks&&decks.A&&decks.A.hotCues&&decks.A.hotCues[1]!=null},
+        {title:'Play for a few seconds, then hit pad 1 again',
+         text:'You should jump right back to the moment you marked. Magic, right?',
+         check:()=>decks&&decks.A&&decks.A.hotCues&&decks.A.hotCues[1]!=null}
+      ]},
+    { id:'l06', level:'intermediate', title:'🔁 Loops',
+      blurb:"Capture a killer 4-bar section and let it ride.",
+      xp:100,
+      steps:[
+        {title:'With Deck A playing, press LOOP IN',
+         text:'LOOP IN marks the start of a loop at wherever the track is right now.',
+         highlight:'.loop-btn[data-action="loopIn"][data-deck="A"]',
+         check:()=>decks&&decks.A&&decks.A.loop&&decks.A.loop.loopInSet},
+        {title:'A few seconds later, press LOOP OUT',
+         text:'LOOP OUT marks the end. The loop activates immediately — you\'ll hear the section repeat.',
+         highlight:'.loop-btn[data-action="loopOut"][data-deck="A"]',
+         check:()=>decks&&decks.A&&decks.A.loop&&decks.A.loop.active},
+        {title:'Press RELOOP to toggle it off',
+         text:'RELOOP disables the loop without erasing it. Press it again to bring the loop back — useful for surprise reveals.',
+         check:()=>decks&&decks.A&&decks.A.loop&&!decks.A.loop.active}
+      ]},
+    { id:'l07', level:'intermediate', title:'💿 Filters + FX',
+      blurb:'Sweep a filter and you\'ve just made the crowd raise their hands.',
+      xp:100,
+      steps:[
+        {title:'Turn the COLOR FX knob for Channel A',
+         text:'The small knob at the top of the channel — it\'s a real-time filter. Roll it up: high-pass filter (bass drops out). Down: low-pass.',
+         check:()=>mixerState&&mixerState.colorFx&&Math.abs(mixerState.colorFx.A||0)>0.1},
+      ]},
+    { id:'l08', level:'advanced', title:'🎯 Key-matched mixing',
+      blurb:'Mixing in the same musical key = no clashing notes.',
+      xp:150,
+      steps:[
+        {title:'Open the LIBRARY and sort by KEY',
+         text:'Click the KEY column header — tracks now group by musical key. Pick two tracks in neighbouring Camelot codes (e.g. 8A + 9A).',
+         check:()=>true},
+        {title:'Load them onto A and B',
+         text:'Now when you mix, the keys won\'t fight each other.',
+         check:()=>decks&&decks.A&&decks.B&&decks.A.track&&decks.B.track},
+      ]},
+    { id:'l09', level:'advanced', title:'🎛 The SOUND mastering tab',
+      blurb:'Every broadcaster runs a limiter + compressor. Here\'s how.',
+      xp:120,
+      steps:[
+        {title:'Open the SOUND tab',
+         text:'Top navigation — SOUND. That\'s your mastering chain: EQ, compressor, limiter, the VU meters, LUFS readout.',
+         highlight:'.tab-btn[data-tab="studio"]',
+         check:()=>document.getElementById('tab-studio')?.classList.contains('active')},
+        {title:'Pick the CLUB target loudness',
+         text:'Below the room presets there\'s a TARGET LOUDNESS row. Click CLUB (-8 LUFS). The history graph shows a green target line — aim to sit on it.',
+         check:()=>studioState&&studioState.targetLufs===-8},
+      ]},
+    { id:'l10', level:'advanced', title:'🎙 Record your set',
+      blurb:'Turn what you just did into an MP3 you can share.',
+      xp:100,
+      steps:[
+        {title:'Press REC in the header',
+         text:'Top-right corner — the red REC pill. Click it and TITAN starts capturing the master bus.',
+         highlight:'#recBtn',
+         check:()=>mixerState&&mixerState.isRecording===true},
+        {title:'Press STOP when you\'re done',
+         text:'The button is now STOP. Click it — a .webm file downloads. That\'s your first DJ set on disk.',
+         check:()=>mixerState&&mixerState.isRecording===false}
+      ]},
+  ];
+
+  /* ─── Rendering the lesson grid ─── */
+  function totalXp(){return LESSONS.reduce((a,l)=>a+(l.xp||0),0);}
+  function render(){
+    const grid=document.getElementById('learnLessonGrid');
+    if(!grid)return;
+    const activeLevel=document.querySelector('.learn-level-btn.active')?.dataset.level||'all';
+    const filtered=LESSONS.filter(l=>activeLevel==='all'||l.level===activeLevel);
+    const done=LESSONS.filter(l=>progress.completed[l.id]).length;
+    const pct=Math.round(done/LESSONS.length*100);
+    document.getElementById('learnPctDone').textContent=pct;
+    document.getElementById('learnProgressBar').style.width=pct+'%';
+    document.getElementById('learnCompleted').textContent=done;
+    document.getElementById('learnTotal').textContent=LESSONS.length;
+    document.getElementById('learnXp').textContent=progress.xp||0;
+    grid.innerHTML=filtered.map(l=>{
+      const complete=!!progress.completed[l.id];
+      const levelColor=l.level==='beginner'?'#5cf0a0':l.level==='intermediate'?'#ffaa5a':'#ff90a0';
+      return `<div class="learn-card" data-lesson-id="${l.id}" style="background:${complete?'linear-gradient(135deg,#0a1a12,#061812)':'linear-gradient(180deg,#1a1a1e,#0a0a0c)'};border:1px solid ${complete?'rgba(92,240,160,.4)':'#2a2a2e'};border-radius:10px;padding:16px;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+          <span style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:${levelColor};font-weight:700">${l.level.toUpperCase()}</span>
+          ${complete?'<span style="color:#5cf0a0;font-size:14px">✓ DONE</span>':''}
+        </div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:15px;font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:.5px">${l.title}</div>
+        <div style="font-size:12px;line-height:1.5;color:#9a9a9e;margin-bottom:10px">${l.blurb}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#7a7a80">${l.steps.length} step${l.steps.length!==1?'s':''} · +${l.xp} XP</span>
+          <button class="tool-btn" data-start-lesson="${l.id}" style="padding:5px 14px;font-size:10px;color:${complete?'#7a7a80':'#5cf0a0'};border-color:${complete?'#333':'#5cf0a0'};font-weight:700">${complete?'REPLAY':'START ▸'}</button>
+        </div>
+      </div>`;
+    }).join('');
+    grid.querySelectorAll('[data-start-lesson]').forEach(b=>{
+      b.addEventListener('click',e=>{e.stopPropagation();startLesson(b.dataset.startLesson);});
+    });
+    grid.querySelectorAll('.learn-card').forEach(c=>{
+      c.addEventListener('click',()=>startLesson(c.dataset.lessonId));
+      c.addEventListener('mouseenter',()=>{c.style.transform='translateY(-2px)';c.style.boxShadow='0 8px 20px rgba(0,0,0,.6)';});
+      c.addEventListener('mouseleave',()=>{c.style.transform='';c.style.boxShadow='';});
+    });
+  }
+
+  /* ─── Lesson runner ─── */
+  let active=null,pollTimer=null,hintTimer=null,highlightEl=null;
+  function startLesson(id){
+    const lesson=LESSONS.find(l=>l.id===id);if(!lesson)return;
+    active={lesson,stepIdx:0,startedAt:Date.now()};
+    // If the lesson needs a deck and tab-deck isn't active, jump there
+    document.querySelector('.tab-btn[data-tab="deck"]')?.click();
+    setTimeout(showStep,200);
+  }
+  function showStep(){
+    if(!active)return;
+    const {lesson,stepIdx}=active;
+    const step=lesson.steps[stepIdx];
+    const panel=document.getElementById('learnActiveLesson');
+    panel.style.display='block';
+    document.getElementById('learnStepN').textContent=stepIdx+1;
+    document.getElementById('learnStepTotal').textContent=lesson.steps.length;
+    document.getElementById('learnActiveTitle').textContent=step.title;
+    document.getElementById('learnActiveInstruction').textContent=step.text;
+    document.getElementById('learnActiveHint').textContent='';
+    if(hintTimer)clearTimeout(hintTimer);
+    if(step.hint)hintTimer=setTimeout(()=>{
+      const el=document.getElementById('learnActiveHint');if(el)el.textContent='💡 '+step.hint;
+    },6000);
+    // Highlight
+    clearHighlight();
+    if(step.highlight){
+      const el=document.querySelector(step.highlight);
+      if(el){highlightEl=el;el.classList.add('titan-learn-highlight');}
+    }
+    // Poll for completion
+    if(pollTimer)clearInterval(pollTimer);
+    pollTimer=setInterval(()=>{
+      try{if(step.check&&step.check()){markStepDone();}}catch(_){}
+    },300);
+  }
+  function clearHighlight(){
+    if(highlightEl){highlightEl.classList.remove('titan-learn-highlight');highlightEl=null;}
+  }
+  function markStepDone(){
+    if(!active)return;
+    if(pollTimer){clearInterval(pollTimer);pollTimer=null;}
+    const next=document.getElementById('learnNextBtn');
+    if(next){next.textContent='✓ GREAT! NEXT ▸';next.style.background='linear-gradient(180deg,#5cf0a0,#00a858)';next.style.color='#000';}
+  }
+  function nextStep(){
+    if(!active)return;
+    active.stepIdx++;
+    const next=document.getElementById('learnNextBtn');
+    if(next){next.textContent='NEXT ▸';next.style.background='';next.style.color='#5cf0a0';}
+    if(active.stepIdx>=active.lesson.steps.length){
+      finishLesson();return;
+    }
+    showStep();
+  }
+  function finishLesson(){
+    const {lesson}=active||{};
+    clearHighlight();
+    if(pollTimer){clearInterval(pollTimer);pollTimer=null;}
+    if(hintTimer){clearTimeout(hintTimer);hintTimer=null;}
+    if(lesson&&!progress.completed[lesson.id]){
+      progress.completed[lesson.id]=Date.now();
+      progress.xp=(progress.xp||0)+(lesson.xp||0);
+      save();
+    }
+    document.getElementById('learnActiveLesson').style.display='none';
+    active=null;
+    if(lesson){
+      toast&&toast(`🎉 Lesson complete! +${lesson.xp} XP`,'success');
+    }
+    render();
+  }
+  function closeLesson(){
+    clearHighlight();
+    if(pollTimer){clearInterval(pollTimer);pollTimer=null;}
+    if(hintTimer){clearTimeout(hintTimer);hintTimer=null;}
+    document.getElementById('learnActiveLesson').style.display='none';
+    active=null;
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
+    // Inject the highlight CSS (tolerant to existing styles — uses animation)
+    if(!document.getElementById('titanLearnCss')){
+      const s=document.createElement('style');s.id='titanLearnCss';
+      s.textContent=`
+        @keyframes titanLearnPulse{0%,100%{box-shadow:0 0 0 0 rgba(92,240,160,0)}50%{box-shadow:0 0 0 8px rgba(92,240,160,.4),0 0 18px rgba(92,240,160,.6)}}
+        .titan-learn-highlight{animation:titanLearnPulse 1.4s ease-in-out infinite;border-radius:6px;position:relative;z-index:50}
+        .learn-card:hover{border-color:rgba(92,240,160,.7) !important}
+        .learn-level-btn:hover{transform:translateY(-1px)}
+      `;
+      document.head.appendChild(s);
+    }
+    document.querySelectorAll('.learn-level-btn').forEach(b=>{
+      b.addEventListener('click',()=>{
+        document.querySelectorAll('.learn-level-btn').forEach(x=>{
+          x.classList.remove('active');
+          x.style.background=x.dataset.level==='beginner'?'#0a1a12':x.dataset.level==='intermediate'?'#141418':x.dataset.level==='advanced'?'#141418':'#0a1a12';
+          x.style.color=x.dataset.level==='beginner'?'#9ad8b0':x.dataset.level==='intermediate'?'#ffd28a':x.dataset.level==='advanced'?'#ff90a0':'#9ad8b0';
+        });
+        b.classList.add('active');
+        b.style.background='linear-gradient(180deg,#5cf0a0,#00a858)';
+        b.style.color='#000';
+        render();
+      });
+    });
+    document.getElementById('learnNextBtn')?.addEventListener('click',nextStep);
+    document.getElementById('learnSkipBtn')?.addEventListener('click',nextStep);
+    document.getElementById('learnCloseBtn')?.addEventListener('click',closeLesson);
+    document.getElementById('learnResetBtn')?.addEventListener('click',()=>{
+      if(!confirm('Reset all lesson progress and XP? This cannot be undone.'))return;
+      progress={completed:{},xp:0};save();render();
+      toast&&toast('Progress reset','success');
+    });
+    render();
+  },600));
 })();
 </script>
 </body>
