@@ -3925,12 +3925,138 @@ body.work-mode .dsb-wmexit{display:inline-flex;background:linear-gradient(180deg
   color:rgba(255,255,255,.25);
 }
 
-/* ═══════ PHOTOREALISTIC ANALOG VU METER ═══════
-   Based on the McIntosh / Pioneer amp aesthetic: brushed-brass bezel,
-   aged-ivory dial face, hair-thin black needle casting a soft shadow,
-   red warning zone with inner glow, glass-dome highlight across the top.
-   Zero shortcuts — every detail is stacked: bezel → shadow → face →
-   print → needle → glass. */
+/* ═══════ DIGITAL PRECISION METERING — UAD / iZotope aesthetic ═══════
+   Dark matte chassis, 48-segment colour-graded LED ladders, peak-hold
+   indicators that hang + fall, K-weighted reference lines, massive
+   numeric LED read-out. No paper, no paint, no brass. This is the
+   look of a plug-in that costs $400 and ships in every pro studio. */
+.amp-digital{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  padding:12px;
+  background:linear-gradient(180deg,#0d0d10,#050507);
+  border:1px solid #1a1a1c;border-radius:10px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.03),
+    inset 0 0 30px rgba(0,0,0,.7),
+    0 6px 18px rgba(0,0,0,.7);
+}
+.amp-dm-col{
+  display:grid;
+  grid-template-rows:auto 1fr auto auto;
+  gap:6px;min-height:240px;
+  padding:8px;
+  background:linear-gradient(180deg,#050506,#020203);
+  border:1px solid #141418;border-radius:6px;
+  box-shadow:
+    inset 0 0 14px rgba(0,0,0,.95),
+    inset 0 1px 0 rgba(255,255,255,.04);
+  position:relative;
+}
+.amp-dm-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:3px 6px;border-bottom:1px dashed rgba(46,224,255,.15);
+}
+.amp-dm-label{
+  font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:3px;
+  color:#2ee0ff;font-weight:800;
+  text-shadow:0 0 4px rgba(46,224,255,.5);
+}
+.amp-dm-hold{
+  font-family:'Share Tech Mono',monospace;font-size:10px;
+  color:#7a7a80;letter-spacing:1px;
+}
+.amp-dm-hold b{color:#ffb040;font-weight:700}
+
+.amp-dm-body{
+  display:grid;grid-template-columns:28px 1fr 12px;gap:3px;
+  padding:4px 2px;min-height:180px;
+}
+.amp-dm-scale{
+  display:flex;flex-direction:column;justify-content:space-between;
+  font-family:'Share Tech Mono',monospace;font-size:8px;color:#3a3a42;
+  letter-spacing:.5px;text-align:right;padding:1px 3px 1px 0;
+  border-right:1px solid rgba(255,255,255,.03);
+}
+.amp-dm-scale span{line-height:1}
+.amp-dm-scale span.zero{color:#ff6060;font-weight:700}
+.amp-dm-scale span.minus6{color:#ffb040;font-weight:700}
+.amp-dm-scale span.minus18{color:#60ff90;font-weight:700}
+
+.amp-dm-ladder{
+  display:flex;flex-direction:column-reverse;
+  gap:1px;padding:1px;
+  background:#010203;border:1px solid #0a0a0b;border-radius:2px;
+  box-shadow:inset 0 0 8px rgba(0,0,0,.95);
+  position:relative;overflow:hidden;
+}
+.amp-dm-seg{
+  flex:1;min-height:2px;border-radius:0.5px;
+  background:#061014;
+  transition:background .03s,box-shadow .03s;
+}
+/* Lit segments — colour depends on position (set via data-zone) */
+.amp-dm-seg.on.g{background:#28e070;box-shadow:0 0 3px rgba(40,224,112,.8),inset 0 0 1px rgba(255,255,255,.2)}
+.amp-dm-seg.on.y{background:#f0d020;box-shadow:0 0 3px rgba(240,208,32,.85),inset 0 0 1px rgba(255,255,255,.25)}
+.amp-dm-seg.on.o{background:#ff8010;box-shadow:0 0 4px rgba(255,128,16,.9),inset 0 0 1px rgba(255,255,255,.3)}
+.amp-dm-seg.on.r{background:#ff2020;box-shadow:0 0 5px rgba(255,32,32,1),inset 0 0 1px rgba(255,255,255,.35)}
+/* Peak-hold segment — single bright dash that hangs at the peak */
+.amp-dm-seg.hold{
+  background:#ffffff !important;
+  box-shadow:0 0 6px rgba(255,255,255,.95),0 0 2px #fff !important;
+}
+.amp-dm-seg.hold.clip{
+  background:#ff2020 !important;
+  box-shadow:0 0 10px rgba(255,32,32,1),0 0 2px #fff !important;
+}
+
+.amp-dm-gridlines{
+  position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:
+    linear-gradient(to bottom,
+      transparent 0%,
+      rgba(255,32,32,.18) 4.7%,    /* 0 dB */
+      transparent 4.8%,transparent 14.2%,
+      rgba(255,176,64,.12) 14.3%,  /* -6 dB */
+      transparent 14.4%,transparent 28.5%,
+      rgba(96,255,144,.1) 28.6%,   /* -18 dB */
+      transparent 28.7%);
+}
+
+.amp-dm-numeric{
+  font-family:'Orbitron',sans-serif;font-size:30px;font-weight:900;
+  letter-spacing:2px;line-height:1;text-align:center;
+  padding:8px 4px 4px;
+  color:#2ee0ff;
+  text-shadow:
+    0 0 8px rgba(46,224,255,.7),
+    0 0 2px rgba(46,224,255,1);
+  font-variant-numeric:tabular-nums;
+  background:linear-gradient(180deg,#020608,#000);
+  border:1px solid #1a2a30;border-radius:4px;
+  box-shadow:inset 0 0 12px rgba(0,0,0,.9),inset 0 1px 0 rgba(46,224,255,.08);
+}
+.amp-dm-numeric.warn{color:#ffb040;text-shadow:0 0 8px rgba(255,176,64,.7)}
+.amp-dm-numeric.clip{color:#ff4040;text-shadow:0 0 10px rgba(255,64,64,.9),0 0 2px #fff}
+.amp-dm-unit{
+  font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:3px;
+  color:#5a5a60;text-align:center;font-weight:700;
+  padding-bottom:2px;
+}
+
+/* Chip label strip at the top-right of the whole digital block */
+.amp-digital::before{
+  content:'DIGITAL PRECISION METERING · 48 SEG · PEAK+HOLD';
+  position:absolute;top:-1px;right:10px;
+  font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:3px;
+  color:rgba(46,224,255,.4);font-weight:700;
+  transform:translateY(-50%);
+  background:#0d0d10;padding:0 6px;
+}
+.amp-digital{position:relative}
+
+/* Legacy analog VU CSS kept below so the JS that touches amp-vu-* ids
+   is still valid even after the swap; the SVG elements have been
+   removed from the DOM, so these rules only paint if something opts in. */
 .amp-vu-wrap{display:flex;flex-direction:column;gap:10px;justify-content:center}
 .amp-vu{
   width:100%;max-width:460px;aspect-ratio:2.4/1;
@@ -9035,12 +9161,63 @@ No mappings yet. Pick a preset above or right-click any control → MIDI Learn.
 
 <!-- AMPLIFIER METERING BRIDGE — analog VU + PPM + goniometer + phase + LUFS -->
 <div class="amp-bridge">
-  <div class="amp-vu-wrap">
-    <!-- ═══════ VU METER — precise geometry, clean broadcast look ═══════
-         Geometry: 400×200 viewBox, pivot at (200,180), arc radius 150,
-         sweep ±55° (110° total). Every tick + number is computed exactly
-         on the arc with trig — no hand-placed pixels. The needle is
-         shorter than the scale so it never obscures the numbers. -->
+  <div class="amp-digital" style="max-width:480px">
+    <!-- L CHANNEL -->
+    <div class="amp-dm-col">
+      <div class="amp-dm-head">
+        <span class="amp-dm-label">LEFT</span>
+        <span class="amp-dm-hold">HOLD <b id="ampDmHoldL">-∞</b></span>
+      </div>
+      <div class="amp-dm-body">
+        <div class="amp-dm-scale">
+          <span>+3</span><span class="zero">0</span><span>-3</span><span class="minus6">-6</span>
+          <span>-12</span><span class="minus18">-18</span><span>-30</span><span>-45</span><span>-60</span>
+        </div>
+        <div class="amp-dm-ladder" id="ampDmLadderL">
+          <div class="amp-dm-gridlines"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:space-between;padding:1px 0">
+          <!-- Right-side mini tick strip -->
+          <span style="width:6px;height:1px;background:rgba(255,255,255,.15)"></span>
+          <span style="width:6px;height:1px;background:rgba(255,255,255,.15)"></span>
+          <span style="width:6px;height:1px;background:rgba(255,255,255,.15)"></span>
+          <span style="width:6px;height:1px;background:rgba(255,255,255,.15)"></span>
+          <span style="width:6px;height:1px;background:rgba(255,255,255,.15)"></span>
+        </div>
+      </div>
+      <div class="amp-dm-numeric" id="ampDmNumL">-∞</div>
+      <div class="amp-dm-unit">dBFS · L · PEAK</div>
+    </div>
+
+    <!-- R CHANNEL -->
+    <div class="amp-dm-col">
+      <div class="amp-dm-head">
+        <span class="amp-dm-label">RIGHT</span>
+        <span class="amp-dm-hold">HOLD <b id="ampDmHoldR">-∞</b></span>
+      </div>
+      <div class="amp-dm-body">
+        <div class="amp-dm-scale">
+          <span>+3</span><span class="zero">0</span><span>-3</span><span class="minus6">-6</span>
+          <span>-12</span><span class="minus18">-18</span><span>-30</span><span>-45</span><span>-60</span>
+        </div>
+        <div class="amp-dm-ladder" id="ampDmLadderR">
+          <div class="amp-dm-gridlines"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:space-between;padding:1px 0">
+          <span style="width:6px;height:1px;background:rgba(255,255,255,.15)"></span>
+          <span style="width:6px;height:1px;background:rgba(255,255,255,.15)"></span>
+          <span style="width:6px;height:1px;background:rgba(255,255,255,.15)"></span>
+          <span style="width:6px;height:1px;background:rgba(255,255,255,.15)"></span>
+          <span style="width:6px;height:1px;background:rgba(255,255,255,.15)"></span>
+        </div>
+      </div>
+      <div class="amp-dm-numeric" id="ampDmNumR">-∞</div>
+      <div class="amp-dm-unit">dBFS · R · PEAK</div>
+    </div>
+  </div>
+
+  <!-- Legacy analog wrap, kept hidden so JS references don't 404. -->
+  <div class="amp-vu-wrap" style="display:none" aria-hidden="true">
 
     <!-- L CHANNEL -->
     <div class="amp-vu" id="ampVuL">
@@ -19099,17 +19276,99 @@ function renderStudioMeter(){
   const INERTIA=0.22;
   studioMeterState.vuL+=(tgtL-studioMeterState.vuL)*INERTIA;
   studioMeterState.vuR+=(tgtR-studioMeterState.vuR)*INERTIA;
-  // Arc sweeps from -55° (silent) to +55° (+6 dB). Pivot moved to (200,180).
-  // Normalized 0 → -55°, 0.77 → 0 dB (straight up), 1.15 → +55° max.
-  const angleFromNorm=n=>-55+Math.max(0,Math.min(1.15,n))*(110/1.15);
-  const needL=document.getElementById('ampVuNeedleL');
-  const needR=document.getElementById('ampVuNeedleR');
-  if(needL)needL.setAttribute('transform',`rotate(${angleFromNorm(studioMeterState.vuL).toFixed(2)} 200 180)`);
-  if(needR)needR.setAttribute('transform',`rotate(${angleFromNorm(studioMeterState.vuR).toFixed(2)} 200 180)`);
-  // Peak-hold OVER lamp lights once the needle enters the red zone (above +3)
-  const peakDot=(id,norm)=>{const el=document.getElementById(id);if(!el)return;el.setAttribute('opacity',norm>0.85?1:0);};
-  peakDot('ampVuPeakL',studioMeterState.vuL);
-  peakDot('ampVuPeakR',studioMeterState.vuR);
+
+  // ───── DIGITAL PRECISION METERS ─────
+  // Peak-hold state per channel. The segment holds at the highest peak
+  // for 1.2s then falls at 24 dB/s (the rate used by Waves + iZotope).
+  if(!studioMeterState.dm){
+    studioMeterState.dm={
+      holdL:-Infinity,holdLAt:0,
+      holdR:-Infinity,holdRAt:0,
+    };
+  }
+  const NOW=performance.now();
+  const HOLD_MS=1200;
+  const FALL_DB_PER_MS=24/1000;
+  const updHold=(peakDb,holdKey,atKey)=>{
+    const dm=studioMeterState.dm;
+    if(peakDb>dm[holdKey]){dm[holdKey]=peakDb;dm[atKey]=NOW;}
+    else if(NOW-dm[atKey]>HOLD_MS){
+      dm[holdKey]-=FALL_DB_PER_MS*(16); // ~60fps frame
+      if(dm[holdKey]<-90)dm[holdKey]=-Infinity;
+    }
+  };
+  updHold(peakLDb,'holdL','holdLAt');
+  updHold(peakRDb,'holdR','holdRAt');
+
+  // Build segments once, then toggle classes each frame (cheap)
+  const ensureSegs=(ladderId)=>{
+    const lad=document.getElementById(ladderId);
+    if(!lad||lad._segs)return lad;
+    const SEGS=48;
+    const gridlines=lad.querySelector('.amp-dm-gridlines');
+    const frag=document.createDocumentFragment();
+    const segs=[];
+    for(let i=0;i<SEGS;i++){
+      const s=document.createElement('div');s.className='amp-dm-seg';
+      frag.appendChild(s);segs.push(s);
+    }
+    lad.insertBefore(frag,gridlines);
+    lad._segs=segs;
+    return lad;
+  };
+  const ladL=ensureSegs('ampDmLadderL');
+  const ladR=ensureSegs('ampDmLadderR');
+
+  // Map a dB value to a segment count. Scale: -60 dB = 0 segs, 0 dB = 46, +3 dB = 48.
+  const SEGS=48;
+  const dbToSegs=(db)=>{
+    if(!isFinite(db))return 0;
+    // Piecewise: linear from -60..-18 (18 segs), -18..-6 (14 segs), -6..0 (14 segs), 0..+3 (2 segs)
+    // Packs visual detail into the range you actually care about.
+    if(db<=-60)return 0;
+    if(db>=3)return SEGS;
+    if(db<=-18)return Math.round(((db+60)/42)*18);         // 0..18
+    if(db<=-6) return 18+Math.round(((db+18)/12)*14);      // 18..32
+    if(db<=0)  return 32+Math.round(((db+6)/6)*14);        // 32..46
+    return 46+Math.round((db/3)*2);                        // 46..48
+  };
+  const colourFor=(segIdx)=>{
+    // green up to 32 (=0 dB), yellow 32..40, orange 40..46, red 46..48
+    if(segIdx>=46)return 'r';
+    if(segIdx>=40)return 'o';
+    if(segIdx>=32)return 'y';
+    return 'g';
+  };
+
+  const paintLadder=(ladder,peakDb,holdDb,numId,holdId,unitId)=>{
+    if(!ladder||!ladder._segs)return;
+    const segs=ladder._segs;
+    const lit=dbToSegs(peakDb);
+    const holdSeg=dbToSegs(holdDb);
+    for(let i=0;i<SEGS;i++){
+      const s=segs[i];
+      let cls='amp-dm-seg';
+      if(i<lit)cls+=' on '+colourFor(i);
+      if(i===holdSeg-1&&holdSeg>0){cls+=' hold';if(holdSeg>=46)cls+=' clip';}
+      if(s.className!==cls)s.className=cls;
+    }
+    // Numeric readout
+    const num=document.getElementById(numId);
+    if(num){
+      const txt=isFinite(peakDb)?(peakDb>=0?'+':'')+peakDb.toFixed(1):'-∞';
+      if(num.textContent!==txt)num.textContent=txt;
+      let cls='amp-dm-numeric';
+      if(peakDb>=0)cls+=' clip';
+      else if(peakDb>=-6)cls+=' warn';
+      if(num.className!==cls)num.className=cls;
+    }
+    const hold=document.getElementById(holdId);
+    if(hold){
+      hold.textContent=isFinite(holdDb)?(holdDb>=0?'+':'')+holdDb.toFixed(1):'-∞';
+    }
+  };
+  paintLadder(ladL,peakLDb,studioMeterState.dm.holdL,'ampDmNumL','ampDmHoldL');
+  paintLadder(ladR,peakRDb,studioMeterState.dm.holdR,'ampDmNumR','ampDmHoldR');
 
   // ─── PPM SEGMENT LADDERS (20 segments, top red, middle yellow/orange, bottom green) ───
   const renderPpm=(elId,db)=>{
