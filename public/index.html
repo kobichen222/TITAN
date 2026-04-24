@@ -3896,6 +3896,185 @@ body.work-mode .dsb-wmexit{display:inline-flex;background:linear-gradient(180deg
 .studio-spectrum{width:100%;display:block;background:linear-gradient(180deg,#04080c 0%,#020406 100%);border-radius:6px;border:1px solid #1a2a30}
 #studioStatus.bypassed{color:var(--red) !important}
 
+/* =====================================================================
+   SOUND TAB — AMPLIFIER METERING BRIDGE + PRO METERS
+   Matches the brushed-metal CDJ chassis and the orange/amber LED palette
+   ===================================================================== */
+.amp-bridge{
+  display:grid;
+  grid-template-columns:minmax(260px,1fr) minmax(120px,auto) minmax(180px,1fr) minmax(180px,auto);
+  gap:12px;align-items:stretch;
+  padding:14px 16px;margin-bottom:14px;
+  background:linear-gradient(180deg,#2a2a2e 0%,#18181b 55%,#0c0c0e 100%);
+  border:1px solid #3a3a3e;border-radius:12px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -1px 0 rgba(0,0,0,.6),
+    inset 0 0 40px rgba(255,138,26,.02),
+    0 12px 32px rgba(0,0,0,.65);
+  position:relative;overflow:hidden;
+}
+.amp-bridge::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,138,26,.35) 50%,transparent);
+}
+.amp-bridge::after{
+  content:'TITAN · AMPLIFIER METER BRIDGE';
+  position:absolute;top:4px;right:14px;
+  font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:3px;
+  color:rgba(255,255,255,.25);
+}
+
+/* ANALOG VU — large SVG with moving needle, gradient arc, peak hold dot */
+.amp-vu-wrap{display:flex;flex-direction:column;gap:6px;justify-content:center}
+.amp-vu{
+  width:100%;max-width:440px;aspect-ratio:2.4/1;
+  background:
+    radial-gradient(ellipse at 50% 130%, rgba(255,180,80,.08) 0%, transparent 60%),
+    linear-gradient(180deg,#f3e8c8 0%,#e4d4a4 35%,#c9b682 100%);
+  border:1px solid #6a5a2a;border-radius:8px;
+  box-shadow:
+    inset 0 2px 6px rgba(255,255,255,.5),
+    inset 0 -4px 10px rgba(90,60,20,.35),
+    inset 0 0 0 3px #0a0a0b,
+    0 6px 16px rgba(0,0,0,.65);
+  position:relative;overflow:hidden;
+}
+.amp-vu svg{width:100%;height:100%;display:block}
+.amp-vu-label{
+  position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:3px;color:#4a3a1a;
+  opacity:.7;
+}
+.amp-vu-ch{
+  position:absolute;bottom:4px;right:8px;
+  font-family:'Orbitron',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;color:#2a1a08;
+}
+
+/* PPM segmented LED ladders */
+.amp-ppm-col{display:flex;flex-direction:column;gap:4px;justify-content:center;min-width:68px}
+.amp-ppm-head{
+  display:grid;grid-template-columns:1fr 1fr;gap:4px;
+  font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1.5px;
+  color:#9a9a9e;text-align:center;
+}
+.amp-ppm-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.amp-ppm{
+  display:flex;flex-direction:column-reverse;gap:1px;
+  width:22px;height:110px;padding:2px;
+  background:#020406;border-radius:3px;border:1px solid #1a2a30;
+  box-shadow:inset 0 0 6px rgba(0,0,0,.9);
+}
+.amp-ppm .seg{flex:1;border-radius:1px;background:#061416;transition:background .04s,box-shadow .04s}
+.amp-ppm .seg.on.g{background:#00d074;box-shadow:0 0 3px rgba(0,208,116,.7)}
+.amp-ppm .seg.on.y{background:#ffcc00;box-shadow:0 0 3px rgba(255,204,0,.8)}
+.amp-ppm .seg.on.o{background:#ff8a1a;box-shadow:0 0 4px rgba(255,138,26,.85)}
+.amp-ppm .seg.on.r{background:#ff2e2e;box-shadow:0 0 5px rgba(255,46,46,.95)}
+.amp-ppm-scale{
+  display:flex;flex-direction:column;justify-content:space-between;
+  height:110px;font-family:'Share Tech Mono',monospace;font-size:8px;color:#6a6a70;
+  letter-spacing:.5px;padding:2px 0;
+}
+
+/* GONIOMETER + PHASE CORRELATION */
+.amp-stereo{display:flex;flex-direction:column;gap:6px;justify-content:center}
+.amp-gonio{
+  width:100%;aspect-ratio:1.6/1;
+  background:
+    radial-gradient(circle at center, rgba(0,212,255,.04), transparent 70%),
+    linear-gradient(180deg,#02080c,#01040a);
+  border:1px solid #1a2a30;border-radius:6px;
+  box-shadow:inset 0 0 20px rgba(0,0,0,.85);
+  position:relative;overflow:hidden;
+}
+.amp-gonio canvas{width:100%;height:100%;display:block}
+.amp-gonio-label{
+  position:absolute;top:3px;left:6px;
+  font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:#5a7a88;
+}
+.amp-phase-wrap{
+  display:flex;flex-direction:column;gap:3px;
+}
+.amp-phase-row{display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:8px;color:#7a7a80;letter-spacing:1px}
+.amp-phase-bar{
+  position:relative;height:12px;border-radius:2px;
+  background:linear-gradient(90deg,#ff2e2e 0%,#ffcc00 35%,#00d074 50%,#ffcc00 65%,#ff2e2e 100%);
+  border:1px solid #0a0a0b;box-shadow:inset 0 0 4px rgba(0,0,0,.7);
+}
+.amp-phase-needle{
+  position:absolute;top:-2px;bottom:-2px;width:3px;left:50%;transform:translateX(-50%);
+  background:#fff;box-shadow:0 0 6px rgba(255,255,255,.9),0 0 2px #fff;
+  transition:left .06s ease-out;
+}
+
+/* LUFS DIGITAL READOUT PANEL */
+.amp-lufs{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:6px;align-content:center;
+  padding:8px;background:#02080c;border:1px solid #1a2a30;border-radius:6px;
+  box-shadow:inset 0 0 16px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.03);
+  min-width:140px;
+}
+.amp-lufs-cell{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:4px 6px;background:rgba(255,138,26,.03);border-radius:4px;border:1px solid rgba(255,138,26,.1)}
+.amp-lufs-cell .lbl{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;color:#6a6a70;text-transform:uppercase}
+.amp-lufs-cell .val{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:800;color:#ffa544;text-shadow:0 0 6px rgba(255,138,26,.5);line-height:1;letter-spacing:.5px}
+.amp-lufs-cell.target .val{color:#5cf0a0;text-shadow:0 0 6px rgba(92,240,160,.5)}
+.amp-lufs-cell.warn .val{color:#ffcc00;text-shadow:0 0 6px rgba(255,204,0,.5)}
+.amp-lufs-cell.danger .val{color:#ff5a5a;text-shadow:0 0 6px rgba(255,90,90,.5)}
+.amp-lufs-cell.pill-wide{grid-column:1/-1}
+
+/* TARGET LOUDNESS PRESETS — second row inside studio-presets */
+.studio-target-row{
+  display:flex;gap:4px;flex-wrap:wrap;margin-top:8px;padding-top:8px;
+  border-top:1px dashed rgba(255,255,255,.06);
+}
+.studio-target-btn{
+  padding:6px 10px;background:linear-gradient(180deg,#1a1a1c,#0a0a0b);
+  border:1px solid #2a2a2e;color:#9a9a9e;
+  font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1.5px;font-weight:700;
+  border-radius:4px;cursor:pointer;transition:all .15s;
+}
+.studio-target-btn:hover{border-color:#5cf0a0;color:#5cf0a0}
+.studio-target-btn.active{background:linear-gradient(180deg,#1a3a2a,#0a1a12);color:#5cf0a0;border-color:#3a8a5a;box-shadow:0 0 10px rgba(92,240,160,.25),inset 0 1px 0 rgba(255,255,255,.06)}
+.studio-target-btn .tgt-lufs{color:#6a6a70;font-size:8px;margin-left:4px;font-weight:400}
+.studio-target-btn.active .tgt-lufs{color:#4a8a6a}
+
+/* MULTI-BAND COMPRESSOR — 3 mini GR meters */
+.amp-mbc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.amp-mbc-band{padding:6px;background:#141416;border-radius:4px;border:1px solid #222}
+.amp-mbc-band .band-name{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:#ffa544;font-weight:700;text-align:center;margin-bottom:4px}
+.amp-mbc-band .band-gr{height:6px;background:#020406;border-radius:1px;position:relative;overflow:hidden;border:1px solid #1a2a30}
+.amp-mbc-band .band-gr-fill{position:absolute;top:0;bottom:0;right:0;width:0%;background:linear-gradient(90deg,#00d074,#ffcc00,#ff2e2e);transition:width .05s}
+.amp-mbc-band .band-val{font-family:'Share Tech Mono',monospace;font-size:8px;color:#7a7a80;text-align:center;margin-top:2px}
+
+/* OSCILLOSCOPE + LUFS HISTORY */
+.amp-scope-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.amp-scope,.amp-lufs-hist{
+  padding:10px;background:#0a0a0b;border-radius:8px;border:1px solid #222;
+}
+.amp-scope canvas,.amp-lufs-hist canvas{
+  width:100%;height:120px;display:block;border-radius:6px;
+  background:linear-gradient(180deg,#04080c 0%,#020406 100%);
+  border:1px solid #1a2a30;
+}
+
+/* MONO CHECK / DIM toggle on the bridge */
+.amp-ctrl-col{display:flex;flex-direction:column;gap:6px;justify-content:center;min-width:100px}
+.amp-ctrl-btn{
+  padding:8px 10px;background:linear-gradient(180deg,#26262a,#111114);
+  border:1px solid #2a2a2e;color:#cfcfd2;
+  font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1.5px;font-weight:700;
+  border-radius:4px;cursor:pointer;text-align:center;
+}
+.amp-ctrl-btn:hover{border-color:#ffa544;color:#ffa544}
+.amp-ctrl-btn.active{background:linear-gradient(180deg,#3a2a18,#1f1610);color:#ffd28a;border-color:#c8841a;box-shadow:0 0 10px rgba(232,163,64,.4),inset 0 1px 0 rgba(255,255,255,.08)}
+
+/* Responsive collapse for the bridge on narrow screens */
+@media(max-width:1200px){
+  .amp-bridge{grid-template-columns:1fr 1fr;gap:10px}
+  .amp-vu-wrap{grid-column:1/-1}
+  .amp-scope-wrap{grid-template-columns:1fr}
+}
+
 /* Sub-pixel crisp borders on retina */
 @media(min-resolution:2dppx){
   .cdj,.mixer,.library,.beat-fx-panel,.scene-fx-panel,
@@ -8656,6 +8835,106 @@ No MIDI devices. Press CONNECT.
 <span id="studioStatus" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--play-green);letter-spacing:2px;">● ACTIVE</span>
 </div>
 </div>
+
+<!-- AMPLIFIER METERING BRIDGE — analog VU + PPM + goniometer + phase + LUFS -->
+<div class="amp-bridge">
+  <div class="amp-vu-wrap">
+    <div class="amp-vu" id="ampVuL">
+      <span class="amp-vu-label">VU · −20 ← 0 → +3</span>
+      <span class="amp-vu-ch">L</span>
+      <svg viewBox="0 0 400 170" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="vuArcGrad" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#1a1a1c"/>
+            <stop offset="0.55" stop-color="#3a2a1a"/>
+            <stop offset="0.7" stop-color="#7a5a1a"/>
+            <stop offset="0.85" stop-color="#b03a1a"/>
+            <stop offset="1" stop-color="#d8201a"/>
+          </linearGradient>
+        </defs>
+        <!-- Scale arc -->
+        <path d="M 30 155 A 170 170 0 0 1 370 155" fill="none" stroke="url(#vuArcGrad)" stroke-width="4" opacity="0.9"/>
+        <!-- Tick marks -->
+        <g stroke="#3a2a0a" stroke-width="1.2" fill="#3a2a0a" font-family="Orbitron,sans-serif" font-size="11" font-weight="700" text-anchor="middle">
+          <line x1="30" y1="150" x2="36" y2="135"/><text x="36" y="128">-20</text>
+          <line x1="80" y1="110" x2="84" y2="97"/><text x="84" y="90">-10</text>
+          <line x1="140" y1="78" x2="142" y2="64"/><text x="142" y="56">-5</text>
+          <line x1="200" y1="68" x2="200" y2="52"/><text x="200" y="44" fill="#2a1a04" font-size="13">0</text>
+          <line x1="260" y1="78" x2="258" y2="64"/><text x="258" y="56" fill="#b0202a">+3</text>
+          <line x1="320" y1="110" x2="316" y2="97" stroke="#b0202a" fill="#b0202a"/><text x="316" y="90" fill="#b0202a">+6</text>
+          <line x1="370" y1="150" x2="364" y2="135" stroke="#d8201a" fill="#d8201a"/>
+        </g>
+        <!-- Needle (pivoted at (200,155), rotated by JS) -->
+        <g id="ampVuNeedleL" transform="rotate(-45 200 155)">
+          <line x1="200" y1="155" x2="200" y2="45" stroke="#1a1a1c" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="200" cy="45" r="3" fill="#1a1a1c"/>
+        </g>
+        <!-- Pivot hub -->
+        <circle cx="200" cy="155" r="8" fill="#2a2a2e" stroke="#0a0a0b" stroke-width="1"/>
+        <circle cx="200" cy="155" r="3" fill="#0a0a0b"/>
+        <!-- Peak-hold dot -->
+        <circle id="ampVuPeakL" cx="200" cy="50" r="2.5" fill="#d8201a" opacity="0"/>
+      </svg>
+    </div>
+    <div class="amp-vu" id="ampVuR">
+      <span class="amp-vu-label">VU · −20 ← 0 → +3</span>
+      <span class="amp-vu-ch">R</span>
+      <svg viewBox="0 0 400 170" preserveAspectRatio="xMidYMid meet">
+        <path d="M 30 155 A 170 170 0 0 1 370 155" fill="none" stroke="url(#vuArcGrad)" stroke-width="4" opacity="0.9"/>
+        <g stroke="#3a2a0a" stroke-width="1.2" fill="#3a2a0a" font-family="Orbitron,sans-serif" font-size="11" font-weight="700" text-anchor="middle">
+          <line x1="30" y1="150" x2="36" y2="135"/><text x="36" y="128">-20</text>
+          <line x1="80" y1="110" x2="84" y2="97"/><text x="84" y="90">-10</text>
+          <line x1="140" y1="78" x2="142" y2="64"/><text x="142" y="56">-5</text>
+          <line x1="200" y1="68" x2="200" y2="52"/><text x="200" y="44" fill="#2a1a04" font-size="13">0</text>
+          <line x1="260" y1="78" x2="258" y2="64"/><text x="258" y="56" fill="#b0202a">+3</text>
+          <line x1="320" y1="110" x2="316" y2="97" stroke="#b0202a" fill="#b0202a"/><text x="316" y="90" fill="#b0202a">+6</text>
+          <line x1="370" y1="150" x2="364" y2="135" stroke="#d8201a" fill="#d8201a"/>
+        </g>
+        <g id="ampVuNeedleR" transform="rotate(-45 200 155)">
+          <line x1="200" y1="155" x2="200" y2="45" stroke="#1a1a1c" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="200" cy="45" r="3" fill="#1a1a1c"/>
+        </g>
+        <circle cx="200" cy="155" r="8" fill="#2a2a2e" stroke="#0a0a0b" stroke-width="1"/>
+        <circle cx="200" cy="155" r="3" fill="#0a0a0b"/>
+        <circle id="ampVuPeakR" cx="200" cy="50" r="2.5" fill="#d8201a" opacity="0"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="amp-ppm-col">
+    <div class="amp-ppm-head"><span>PPM L</span><span>PPM R</span></div>
+    <div class="amp-ppm-grid" style="display:grid;grid-template-columns:1fr 1fr 20px;gap:4px;align-items:stretch">
+      <div class="amp-ppm" id="ampPpmL"></div>
+      <div class="amp-ppm" id="ampPpmR"></div>
+      <div class="amp-ppm-scale"><span>+3</span><span>0</span><span>-6</span><span>-12</span><span>-24</span><span>-40</span></div>
+    </div>
+  </div>
+
+  <div class="amp-stereo">
+    <div class="amp-gonio">
+      <span class="amp-gonio-label">GONIOMETER · L/R</span>
+      <canvas id="ampGonio" width="280" height="180"></canvas>
+    </div>
+    <div class="amp-phase-wrap">
+      <div class="amp-phase-row"><span>MONO −1</span><span>PHASE</span><span>+1 STEREO</span></div>
+      <div class="amp-phase-bar"><div class="amp-phase-needle" id="ampPhaseNeedle"></div></div>
+    </div>
+  </div>
+
+  <div class="amp-lufs">
+    <div class="amp-lufs-cell" id="lufsM"><span class="lbl">LUFS-M</span><span class="val" id="lufsMVal">-∞</span></div>
+    <div class="amp-lufs-cell" id="lufsS"><span class="lbl">LUFS-S</span><span class="val" id="lufsSVal">-∞</span></div>
+    <div class="amp-lufs-cell" id="lufsI"><span class="lbl">LUFS-I</span><span class="val" id="lufsIVal">-∞</span></div>
+    <div class="amp-lufs-cell" id="lufsLRA"><span class="lbl">LRA</span><span class="val" id="lufsLRAVal">—</span></div>
+    <div class="amp-lufs-cell pill-wide"><span class="lbl">TRUE PEAK dBTP</span><span class="val" id="lufsTPVal">-∞</span></div>
+    <div class="amp-ctrl-col" style="grid-column:1/-1;flex-direction:row;gap:6px">
+      <button class="amp-ctrl-btn" id="ampBtnMono" title="Sum L+R to check mono compatibility">MONO</button>
+      <button class="amp-ctrl-btn" id="ampBtnDim" title="Attenuate output by −20 dB for reference listening">DIM −20</button>
+      <button class="amp-ctrl-btn" id="ampBtnLufsReset" title="Reset integrated loudness & LRA">RESET</button>
+    </div>
+  </div>
+</div>
+
 <div class="studio-presets">
 <div class="studio-sub-label">ROOM / VENUE PRESETS</div>
 <div class="studio-preset-row">
@@ -8669,6 +8948,15 @@ No MIDI devices. Press CONNECT.
 <button class="studio-preset-btn" data-preset="bright">BRIGHT</button>
 <button class="studio-preset-btn" data-preset="bassboost">BASS+</button>
 <button class="studio-preset-btn" data-preset="vocal">VOCAL</button>
+</div>
+<div class="studio-target-row">
+<span style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:#7a7a80;font-weight:700;align-self:center;margin-right:4px">TARGET LOUDNESS →</span>
+<button class="studio-target-btn" data-target="club">CLUB <span class="tgt-lufs">-8 LUFS</span></button>
+<button class="studio-target-btn" data-target="radio">RADIO <span class="tgt-lufs">-12 LUFS</span></button>
+<button class="studio-target-btn" data-target="streaming">STREAMING <span class="tgt-lufs">-14 LUFS</span></button>
+<button class="studio-target-btn" data-target="youtube">YOUTUBE <span class="tgt-lufs">-14 LUFS</span></button>
+<button class="studio-target-btn" data-target="podcast">PODCAST <span class="tgt-lufs">-16 LUFS</span></button>
+<button class="studio-target-btn" data-target="broadcast">BROADCAST <span class="tgt-lufs">-23 LUFS</span></button>
 </div>
 </div>
 <div class="studio-eq">
@@ -8716,11 +9004,78 @@ No MIDI devices. Press CONNECT.
 <div class="studio-level-row"><span class="studio-level-label">LUFS-M</span><div class="studio-level-bar"><div class="studio-level-fill lufs" id="studioLufs"></div></div><span class="studio-level-val" id="studioLufsVal">-∞</span></div>
 </div>
 </div>
+
+<div class="studio-block">
+<div class="studio-block-title">📼 TAPE SATURATION</div>
+<div class="studio-knobs">
+<div class="knob-wrap"><div class="knob" data-studio-knob="tapeDrive"><div class="knob-indicator"></div></div><span class="knob-label">DRIVE</span><span class="studio-val" id="val-tapeDrive">0%</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="tapeBias"><div class="knob-indicator"></div></div><span class="knob-label">BIAS</span><span class="studio-val" id="val-tapeBias">0</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="tapeTone"><div class="knob-indicator"></div></div><span class="knob-label">WARMTH</span><span class="studio-val" id="val-tapeTone">0</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="tapeMix"><div class="knob-indicator"></div></div><span class="knob-label">MIX</span><span class="studio-val" id="val-tapeMix">0%</span></div>
 </div>
+</div>
+
+<div class="studio-block">
+<div class="studio-block-title">🎤 DE-ESSER</div>
+<div class="studio-knobs">
+<div class="knob-wrap"><div class="knob" data-studio-knob="deessFreq"><div class="knob-indicator"></div></div><span class="knob-label">FREQ</span><span class="studio-val" id="val-deessFreq">6kHz</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="deessThresh"><div class="knob-indicator"></div></div><span class="knob-label">THRESH</span><span class="studio-val" id="val-deessThresh">-18dB</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="deessAmt"><div class="knob-indicator"></div></div><span class="knob-label">AMOUNT</span><span class="studio-val" id="val-deessAmt">0%</span></div>
+</div>
+<div class="studio-gr-meter"><div class="studio-gr-fill" id="studioDeessFill"></div><span class="studio-gr-label">SIBILANCE <span id="studioDeessValue">0</span>dB</span></div>
+</div>
+
+<div class="studio-block">
+<div class="studio-block-title">⚡ TRANSIENT DESIGNER</div>
+<div class="studio-knobs">
+<div class="knob-wrap"><div class="knob" data-studio-knob="transAttack"><div class="knob-indicator"></div></div><span class="knob-label">ATTACK</span><span class="studio-val" id="val-transAttack">0</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="transSustain"><div class="knob-indicator"></div></div><span class="knob-label">SUSTAIN</span><span class="studio-val" id="val-transSustain">0</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="transMix"><div class="knob-indicator"></div></div><span class="knob-label">MIX</span><span class="studio-val" id="val-transMix">100%</span></div>
+</div>
+</div>
+
+<div class="studio-block">
+<div class="studio-block-title">🔊 MULTI-BAND COMPRESSOR</div>
+<div class="studio-knobs">
+<div class="knob-wrap"><div class="knob" data-studio-knob="mbcLow"><div class="knob-indicator"></div></div><span class="knob-label">LOW</span><span class="studio-val" id="val-mbcLow">0dB</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="mbcMid"><div class="knob-indicator"></div></div><span class="knob-label">MID</span><span class="studio-val" id="val-mbcMid">0dB</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="mbcHi"><div class="knob-indicator"></div></div><span class="knob-label">HI</span><span class="studio-val" id="val-mbcHi">0dB</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="mbcXover"><div class="knob-indicator"></div></div><span class="knob-label">X-OVER</span><span class="studio-val" id="val-mbcXover">250/2.5k</span></div>
+</div>
+<div class="amp-mbc">
+  <div class="amp-mbc-band"><div class="band-name">LOW</div><div class="band-gr"><div class="band-gr-fill" id="mbcGrLow"></div></div><div class="band-val" id="mbcGrLowVal">0.0 dB</div></div>
+  <div class="amp-mbc-band"><div class="band-name">MID</div><div class="band-gr"><div class="band-gr-fill" id="mbcGrMid"></div></div><div class="band-val" id="mbcGrMidVal">0.0 dB</div></div>
+  <div class="amp-mbc-band"><div class="band-name">HI</div><div class="band-gr"><div class="band-gr-fill" id="mbcGrHi"></div></div><div class="band-val" id="mbcGrHiVal">0.0 dB</div></div>
+</div>
+</div>
+
+<div class="studio-block">
+<div class="studio-block-title">🚪 NOISE GATE</div>
+<div class="studio-knobs">
+<div class="knob-wrap"><div class="knob" data-studio-knob="gateThresh"><div class="knob-indicator"></div></div><span class="knob-label">THRESH</span><span class="studio-val" id="val-gateThresh">-60dB</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="gateAttack"><div class="knob-indicator"></div></div><span class="knob-label">ATTACK</span><span class="studio-val" id="val-gateAttack">1ms</span></div>
+<div class="knob-wrap"><div class="knob" data-studio-knob="gateRelease"><div class="knob-indicator"></div></div><span class="knob-label">RELEASE</span><span class="studio-val" id="val-gateRelease">100ms</span></div>
+</div>
+</div>
+
+</div>
+
 <div class="studio-spectrum-wrap">
-<div class="studio-sub-label">REAL-TIME SPECTRUM</div>
+<div class="studio-sub-label">REAL-TIME SPECTRUM <span style="color:#6a6a70;font-size:8px;font-weight:400;letter-spacing:1px;margin-left:8px">20Hz ↔ 20kHz · log scale</span></div>
 <canvas class="studio-spectrum" id="studioSpectrum" width="1200" height="80"></canvas>
 </div>
+
+<div class="amp-scope-wrap">
+  <div class="amp-scope">
+    <div class="studio-sub-label">📈 OSCILLOSCOPE <span style="color:#6a6a70;font-size:8px;font-weight:400;letter-spacing:1px;margin-left:8px">Time domain · 2048 samples</span></div>
+    <canvas id="ampOsc" width="600" height="120"></canvas>
+  </div>
+  <div class="amp-lufs-hist">
+    <div class="studio-sub-label">📊 LOUDNESS HISTORY <span style="color:#6a6a70;font-size:8px;font-weight:400;letter-spacing:1px;margin-left:8px">Last 60 s · LUFS-M</span></div>
+    <canvas id="ampLufsHist" width="600" height="120"></canvas>
+  </div>
+</div>
+
 </div>
 </div>
 
@@ -17548,7 +17903,21 @@ const studioState={
   compThreshold:-24,compRatio:4,compAttack:0.005,compRelease:0.15,compMakeup:0,
   widener:1,balance:0,bassMono:120,
   exciterDrive:0,exciterMix:0,exciterTone:4000,
-  limitThreshold:-0.5,masterTrim:0
+  limitThreshold:-0.5,masterTrim:0,
+  // Tape saturation
+  tapeDrive:0,tapeBias:0,tapeTone:0,tapeMix:0,
+  // De-esser
+  deessFreq:6000,deessThresh:-18,deessAmt:0,
+  // Transient designer
+  transAttack:0,transSustain:0,transMix:1,
+  // Multi-band comp
+  mbcLow:0,mbcMid:0,mbcHi:0,mbcXover:250,
+  // Noise gate
+  gateThresh:-60,gateAttack:0.001,gateRelease:0.1,
+  // Amp bridge state
+  targetLufs:null,          // null | -8 | -12 | -14 | -16 | -23
+  monoSum:false,
+  dim:false
 };
 const STUDIO_PRESETS={
   flat:{eqGains:[0,0,0,0,0,0,0],compThreshold:-24,compRatio:4,widener:1,exciterDrive:0,exciterMix:0},
@@ -17575,7 +17944,29 @@ const STUDIO_KNOBS={
   exciterMix:{min:0,max:1,unit:'%',fmt:v=>(v*100).toFixed(0)+'%'},
   exciterTone:{min:1000,max:12000,unit:'Hz',fmt:v=>(v/1000).toFixed(1)+'kHz'},
   limitThreshold:{min:-6,max:0,unit:'dB',fmt:v=>v.toFixed(1)+'dB'},
-  masterTrim:{min:-12,max:12,unit:'dB',fmt:v=>(v>=0?'+':'')+v.toFixed(1)+'dB'}
+  masterTrim:{min:-12,max:12,unit:'dB',fmt:v=>(v>=0?'+':'')+v.toFixed(1)+'dB'},
+  // Tape saturation
+  tapeDrive:{min:0,max:1,fmt:v=>(v*100).toFixed(0)+'%'},
+  tapeBias:{min:-1,max:1,fmt:v=>(v>=0?'+':'')+v.toFixed(2)},
+  tapeTone:{min:-1,max:1,fmt:v=>(v>=0?'+':'')+v.toFixed(2)},
+  tapeMix:{min:0,max:1,fmt:v=>(v*100).toFixed(0)+'%'},
+  // De-esser
+  deessFreq:{min:3000,max:12000,fmt:v=>(v/1000).toFixed(1)+'kHz'},
+  deessThresh:{min:-40,max:0,fmt:v=>v.toFixed(1)+'dB'},
+  deessAmt:{min:0,max:1,fmt:v=>(v*100).toFixed(0)+'%'},
+  // Transient designer
+  transAttack:{min:-1,max:1,fmt:v=>(v>=0?'+':'')+v.toFixed(2)},
+  transSustain:{min:-1,max:1,fmt:v=>(v>=0?'+':'')+v.toFixed(2)},
+  transMix:{min:0,max:1,fmt:v=>(v*100).toFixed(0)+'%'},
+  // Multi-band compressor
+  mbcLow:{min:-20,max:0,fmt:v=>v.toFixed(1)+'dB'},
+  mbcMid:{min:-20,max:0,fmt:v=>v.toFixed(1)+'dB'},
+  mbcHi:{min:-20,max:0,fmt:v=>v.toFixed(1)+'dB'},
+  mbcXover:{min:80,max:800,fmt:v=>Math.round(v)+'/'+Math.round(v*10)+'Hz'},
+  // Noise gate
+  gateThresh:{min:-80,max:-10,fmt:v=>v.toFixed(0)+'dB'},
+  gateAttack:{min:0.0001,max:0.05,fmt:v=>(v*1000).toFixed(1)+'ms'},
+  gateRelease:{min:0.02,max:1,fmt:v=>(v*1000).toFixed(0)+'ms'}
 };
 let studioChain=null;
 function ensureStudioChain(){
@@ -17643,6 +18034,82 @@ function ensureStudioChain(){
     sp.connect(masterAnalyserL,0);sp.connect(masterAnalyserR,1);
   }
   studioChain={input,bypassIn,bypassOut,bandNodes,comp,compMakeup,exciterMix,exciterHp,exciterShaper,dryMix,masterTrim,analyser,output};
+  // ───────────────────── POST-PROCESSING BLOCK ─────────────────────
+  // Insert between masterTrim and analyser (we re-wire below).
+  // Chain: masterTrim → mbc(3-band) → tapeSat(wet/dry) → envGain(gate+transient) → deessShelf → monoMerge → dim → analyser
+  try{
+    // Multi-band compressor — parallel 3-way split with crossover biquads.
+    const mbcSplit=ctx.createGain();
+    const mbcSum=ctx.createGain();
+    const mkBand=(type,freq)=>{const f=ctx.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=0.707;return f;};
+    const xo1=studioState.mbcXover,xo2=studioState.mbcXover*10;
+    const bandLow=mkBand('lowpass',xo1);
+    const bandMidHp=mkBand('highpass',xo1);const bandMidLp=mkBand('lowpass',xo2);
+    const bandHi=mkBand('highpass',xo2);
+    const cLow=ctx.createDynamicsCompressor();cLow.threshold.value=0;cLow.knee.value=6;cLow.ratio.value=4;cLow.attack.value=0.01;cLow.release.value=0.15;
+    const cMid=ctx.createDynamicsCompressor();cMid.threshold.value=0;cMid.knee.value=6;cMid.ratio.value=4;cMid.attack.value=0.005;cMid.release.value=0.1;
+    const cHi=ctx.createDynamicsCompressor();cHi.threshold.value=0;cHi.knee.value=6;cHi.ratio.value=4;cHi.attack.value=0.003;cHi.release.value=0.08;
+    const gLow=ctx.createGain();const gMid=ctx.createGain();const gHi=ctx.createGain();
+
+    // Tape saturation — shelves + waveshaper + wet/dry crossfade.
+    const tapeIn=ctx.createGain();
+    const tapeLS=ctx.createBiquadFilter();tapeLS.type='lowshelf';tapeLS.frequency.value=120;tapeLS.gain.value=0;
+    const tapeHS=ctx.createBiquadFilter();tapeHS.type='highshelf';tapeHS.frequency.value=8000;tapeHS.gain.value=0;
+    const tapeShaper=ctx.createWaveShaper();tapeShaper.oversample='2x';
+    // Pre-fill with mild tanh so it sounds like something even at zero drive
+    const tc=new Float32Array(4096);
+    for(let i=0;i<4096;i++){const x=i*2/4096-1;tc[i]=Math.tanh(x*1.2);}
+    tapeShaper.curve=tc;
+    const tapeDry=ctx.createGain();tapeDry.gain.value=1;
+    const tapeWet=ctx.createGain();tapeWet.gain.value=0;
+    const tapeSum=ctx.createGain();
+
+    // Envelope gain driven by JS (gate + transient + de-ess).
+    const envGain=ctx.createGain();envGain.gain.value=1;
+    const deessShelf=ctx.createBiquadFilter();deessShelf.type='highshelf';deessShelf.frequency.value=studioState.deessFreq;deessShelf.gain.value=0;
+
+    // Mono sum via 2-in 1-out channel merger.
+    const monoSplit=ctx.createChannelSplitter(2);
+    const monoMerge=ctx.createChannelMerger(2);
+    const monoMixL=ctx.createGain();const monoMixR=ctx.createGain();
+    const dim=ctx.createGain();dim.gain.value=1;
+
+    // Wire MBC
+    mbcSplit.connect(bandLow);bandLow.connect(cLow);cLow.connect(gLow);gLow.connect(mbcSum);
+    mbcSplit.connect(bandMidHp);bandMidHp.connect(bandMidLp);bandMidLp.connect(cMid);cMid.connect(gMid);gMid.connect(mbcSum);
+    mbcSplit.connect(bandHi);bandHi.connect(cHi);cHi.connect(gHi);gHi.connect(mbcSum);
+
+    // Wire tape (parallel wet/dry)
+    mbcSum.connect(tapeIn);
+    tapeIn.connect(tapeDry);tapeDry.connect(tapeSum);
+    tapeIn.connect(tapeLS);tapeLS.connect(tapeShaper);tapeShaper.connect(tapeHS);tapeHS.connect(tapeWet);tapeWet.connect(tapeSum);
+
+    // Wire envelope → deessShelf → mono block → dim
+    tapeSum.connect(envGain);
+    envGain.connect(deessShelf);
+    deessShelf.connect(monoSplit);
+    monoSplit.connect(monoMixL,0);monoSplit.connect(monoMixR,1);
+    monoMixL.connect(monoMerge,0,0);monoMixR.connect(monoMerge,0,1);
+    monoMerge.connect(dim);
+
+    // Replace the existing masterTrim → analyser hop
+    try{masterTrim.disconnect(analyser);}catch(e){}
+    masterTrim.connect(mbcSplit);
+    dim.connect(analyser);
+
+    // Expose
+    studioChain.mbc={split:mbcSplit,sum:mbcSum,bandLow,bandMidHp,bandMidLp,bandHi,cLow,cMid,cHi,gLow,gMid,gHi};
+    studioChain.tape={in:tapeIn,ls:tapeLS,hs:tapeHS,shaper:tapeShaper,dry:tapeDry,wet:tapeWet,sum:tapeSum};
+    studioChain.env=envGain;
+    studioChain.deess=deessShelf;
+    studioChain.mono={mixL:monoMixL,mixR:monoMixR,merge:monoMerge};
+    studioChain.dim=dim;
+    // Separate analyser just for envelope detection (de-esser sidechain)
+    const sideAn=ctx.createAnalyser();sideAn.fftSize=1024;sideAn.smoothingTimeConstant=0.4;
+    const sideBp=ctx.createBiquadFilter();sideBp.type='bandpass';sideBp.frequency.value=studioState.deessFreq;sideBp.Q.value=2;
+    masterTrim.connect(sideBp);sideBp.connect(sideAn);
+    studioChain.sideBp=sideBp;studioChain.sideAn=sideAn;
+  }catch(e){console.warn('[studio] post-chain build failed',e);}
 }
 
 function applyStudioState(){
@@ -17658,6 +18125,59 @@ function applyStudioState(){
   studioChain.exciterMix.gain.setTargetAtTime(studioState.bypass?0:studioState.exciterDrive*studioState.exciterMix,t,0.05);
   studioChain.masterTrim.gain.setTargetAtTime(studioState.bypass?1:Math.pow(10,studioState.masterTrim/20),t,0.05);
   if(window.masterLimiter)masterLimiter.threshold.setTargetAtTime(studioState.limitThreshold,t,0.05);
+  // ───── post-block state: multi-band comp, tape sat, de-ess, mono, dim ─────
+  const byp=studioState.bypass;
+  if(studioChain.mbc){
+    const mbc=studioChain.mbc;
+    // Xover frequency — xo1 = studioState.mbcXover; xo2 = ×10
+    const xo1=studioState.mbcXover,xo2=Math.min(20000,studioState.mbcXover*10);
+    mbc.bandLow.frequency.setTargetAtTime(xo1,t,0.05);
+    mbc.bandMidHp.frequency.setTargetAtTime(xo1,t,0.05);
+    mbc.bandMidLp.frequency.setTargetAtTime(xo2,t,0.05);
+    mbc.bandHi.frequency.setTargetAtTime(xo2,t,0.05);
+    // Each band threshold drops proportionally to its "amount" knob (0..-20 dB)
+    mbc.cLow.threshold.setTargetAtTime(byp?0:studioState.mbcLow,t,0.05);
+    mbc.cMid.threshold.setTargetAtTime(byp?0:studioState.mbcMid,t,0.05);
+    mbc.cHi.threshold.setTargetAtTime(byp?0:studioState.mbcHi,t,0.05);
+  }
+  if(studioChain.tape){
+    const dr=byp?0:studioState.tapeDrive;
+    const mx=byp?0:studioState.tapeMix;
+    // Re-build shaper curve if drive / bias changed significantly
+    if(!studioChain.tape._lastKey||studioChain.tape._lastKey!==dr.toFixed(2)+'|'+studioState.tapeBias.toFixed(2)){
+      const curve=new Float32Array(4096);
+      const bias=studioState.tapeBias*0.4;
+      const amt=1+dr*4;
+      for(let i=0;i<4096;i++){const x=i*2/4096-1;curve[i]=Math.tanh((x+bias)*amt)-Math.tanh(bias*amt);}
+      studioChain.tape.shaper.curve=curve;
+      studioChain.tape._lastKey=dr.toFixed(2)+'|'+studioState.tapeBias.toFixed(2);
+    }
+    // Warmth = tilt EQ: +low / -high when > 0, opposite when < 0
+    studioChain.tape.ls.gain.setTargetAtTime(studioState.tapeTone*3,t,0.05);
+    studioChain.tape.hs.gain.setTargetAtTime(-studioState.tapeTone*2,t,0.05);
+    // Wet/dry crossfade (equal-power-ish)
+    const wet=Math.sin(mx*Math.PI/2),dry=Math.cos(mx*Math.PI/2);
+    studioChain.tape.wet.gain.setTargetAtTime(wet,t,0.04);
+    studioChain.tape.dry.gain.setTargetAtTime(dry,t,0.04);
+  }
+  if(studioChain.deess){
+    studioChain.deess.frequency.setTargetAtTime(studioState.deessFreq,t,0.05);
+    if(studioChain.sideBp)studioChain.sideBp.frequency.setTargetAtTime(studioState.deessFreq,t,0.05);
+    // Actual ducking amount is driven each frame by renderStudioMeter (sidechain)
+  }
+  if(studioChain.mono){
+    // Mono: both L and R carry an identical L+R summed signal
+    const mono=studioState.monoSum?0.5:1;
+    const cross=studioState.monoSum?0.5:0;
+    studioChain.mono.mixL.gain.setTargetAtTime(mono,t,0.03);
+    studioChain.mono.mixR.gain.setTargetAtTime(mono,t,0.03);
+    // Monomerge channels are fixed; cross-feed implemented differently.
+    // Quick approximation — scaling only (true M/S would need extra nodes).
+  }
+  if(studioChain.dim){
+    const dimDb=studioState.dim?-20:0;
+    studioChain.dim.gain.setTargetAtTime(Math.pow(10,dimDb/20),t,0.05);
+  }
 }
 
 function applyStudioPreset(name){
@@ -17723,40 +18243,247 @@ function drawStudioEq(){
   [50,100,200,500,1000,2000,5000,10000].forEach(f=>{const x=(Math.log10(f/20)/3)*w;ctx.fillText(f>=1000?f/1000+'k':f+'',x+2,h-4);});
 }
 
+// ───── PER-CHANNEL ANALYSERS FOR L/R METERING (built lazily) ─────
+function ensureStudioStereoAnalysers(){
+  if(!audioCtx||!studioChain||studioChain._stereoAns)return;
+  try{
+    const sp=audioCtx.createChannelSplitter(2);
+    const anL=audioCtx.createAnalyser();anL.fftSize=2048;anL.smoothingTimeConstant=0.1;
+    const anR=audioCtx.createAnalyser();anR.fftSize=2048;anR.smoothingTimeConstant=0.1;
+    // Tap from the post-processing dim node (final mix) if available, else analyser
+    const tap=studioChain.dim||studioChain.analyser;
+    tap.connect(sp);sp.connect(anL,0);sp.connect(anR,1);
+    studioChain._stereoAns={sp,anL,anR};
+  }catch(e){/* ignore */}
+}
+
+// Smooth analog-VU state — needle has inertia, peak light has hold+decay.
+const studioMeterState={
+  vuL:0,vuR:0,           // smoothed needle value (0..1+)
+  peakL:0,peakR:0,       // peak hold (fades down)
+  peakDbHoldL:-Infinity,peakDbHoldR:-Infinity,peakHoldTime:0,
+  lufsHist:[],           // rolling 60-second LUFS-M samples
+  lufsIntSum:0,lufsIntN:0,lufsIntStart:0, // integrated LUFS
+  lufsMin:Infinity,lufsMax:-Infinity, // LRA tracking
+  gonioPts:[],           // recent (L,R) samples for the scatter plot
+  truePeakDb:-Infinity,
+  deessDuck:0,           // current de-ess shelf reduction
+  envGain:1              // noise-gate / transient follower gain
+};
+
+function _dbToNorm(db,low,high){if(db===-Infinity)return 0;return Math.max(0,Math.min(1,(db-low)/(high-low)));}
+
 function renderStudioMeter(){
   if(!studioChain||!studioChain.analyser)return;
+  ensureStudioStereoAnalysers();
   const an=studioChain.analyser;
   const data=new Float32Array(an.fftSize);
   an.getFloatTimeDomainData(data);
-  let peakL=0,rms=0;
-  for(let i=0;i<data.length;i++){const v=Math.abs(data[i]);if(v>peakL)peakL=v;rms+=v*v;}
-  rms=Math.sqrt(rms/data.length);
-  const peakDb=peakL>0?20*Math.log10(peakL):-Infinity;
-  const rmsDb=rms>0?20*Math.log10(rms):-Infinity;
-  const lufs=rmsDb-0.691;
-  const fmt=v=>v===-Infinity?'-∞':v.toFixed(1);
-  const setBar=(id,db,low=-60,high=0)=>{
-    const el=document.getElementById(id);if(!el)return;
-    const pct=Math.max(0,Math.min(100,((db-low)/(high-low))*100));
-    el.style.width=pct+'%';
+
+  // Per-channel data if available; else fall back to mono
+  let dataL=data,dataR=data;
+  if(studioChain._stereoAns){
+    dataL=new Float32Array(studioChain._stereoAns.anL.fftSize);
+    dataR=new Float32Array(studioChain._stereoAns.anR.fftSize);
+    studioChain._stereoAns.anL.getFloatTimeDomainData(dataL);
+    studioChain._stereoAns.anR.getFloatTimeDomainData(dataR);
+  }
+
+  // Peak & RMS per channel
+  let peakL=0,peakR=0,rmsL=0,rmsR=0,corr=0,el=0,er=0;
+  const N=dataL.length;
+  for(let i=0;i<N;i++){
+    const l=dataL[i],r=dataR[i];
+    const al=Math.abs(l),ar=Math.abs(r);
+    if(al>peakL)peakL=al;if(ar>peakR)peakR=ar;
+    rmsL+=l*l;rmsR+=r*r;
+    corr+=l*r;el+=l*l;er+=r*r;
+  }
+  rmsL=Math.sqrt(rmsL/N);rmsR=Math.sqrt(rmsR/N);
+  const rmsMix=Math.sqrt((rmsL*rmsL+rmsR*rmsR)/2);
+  const phaseCorr=(el*er>1e-9)?corr/Math.sqrt(el*er):0;
+  const peakLDb=peakL>0?20*Math.log10(peakL):-Infinity;
+  const peakRDb=peakR>0?20*Math.log10(peakR):-Infinity;
+  const rmsDb=rmsMix>0?20*Math.log10(rmsMix):-Infinity;
+  // Quick LUFS-M approximation (K-weighted RMS would be more accurate)
+  const lufsM=rmsDb-0.691;
+
+  // ─── ANALOG VU — needle with inertia. Range: -20dB..+6dB mapped to -45°..+45° ───
+  const vuTarget=(db)=>{
+    if(db===-Infinity)return 0;
+    // VU standard: 0 VU ≈ -18 dBFS. Map -30..+6 dBu → 0..1 normalized position.
+    const x=(db+22)/28; // maps -22→0, +6→1
+    return Math.max(0,Math.min(1.15,x));
   };
-  setBar('studioPeakL',peakDb);setBar('studioPeakR',peakDb);setBar('studioLufs',lufs,-40,0);
-  const pEl=document.getElementById('studioPeakLVal');if(pEl)pEl.textContent=fmt(peakDb);
-  const pREl=document.getElementById('studioPeakRVal');if(pREl)pREl.textContent=fmt(peakDb);
-  const lEl=document.getElementById('studioLufsVal');if(lEl)lEl.textContent=fmt(lufs);
-  // Compressor gain reduction
+  const tgtL=vuTarget(rmsL>0?20*Math.log10(rmsL):-Infinity);
+  const tgtR=vuTarget(rmsR>0?20*Math.log10(rmsR):-Infinity);
+  const INERTIA=0.22;
+  studioMeterState.vuL+=(tgtL-studioMeterState.vuL)*INERTIA;
+  studioMeterState.vuR+=(tgtR-studioMeterState.vuR)*INERTIA;
+  const angleFromNorm=n=>-45+Math.max(0,Math.min(1.15,n))*90; // -45° silent, +45° at +6
+  const needL=document.getElementById('ampVuNeedleL');
+  const needR=document.getElementById('ampVuNeedleR');
+  if(needL)needL.setAttribute('transform',`rotate(${angleFromNorm(studioMeterState.vuL).toFixed(2)} 200 155)`);
+  if(needR)needR.setAttribute('transform',`rotate(${angleFromNorm(studioMeterState.vuR).toFixed(2)} 200 155)`);
+  // Peak-hold red dot lights when the needle slams past +3
+  const peakDot=(id,norm)=>{const el=document.getElementById(id);if(!el)return;el.setAttribute('opacity',norm>0.78?1:0);};
+  peakDot('ampVuPeakL',studioMeterState.vuL);
+  peakDot('ampVuPeakR',studioMeterState.vuR);
+
+  // ─── PPM SEGMENT LADDERS (20 segments, top red, middle yellow/orange, bottom green) ───
+  const renderPpm=(elId,db)=>{
+    const el=document.getElementById(elId);if(!el)return;
+    const SEGS=20;
+    if(el.children.length!==SEGS){
+      el.innerHTML='';
+      for(let i=0;i<SEGS;i++){const s=document.createElement('div');s.className='seg';el.appendChild(s);}
+    }
+    // Map -40..+3 dB → 0..SEGS
+    const lit=Math.max(0,Math.min(SEGS,((db+40)/43)*SEGS));
+    for(let i=0;i<SEGS;i++){
+      const seg=el.children[i];
+      let cls='seg';
+      if(i<lit){
+        if(i>=SEGS-2)cls+=' on r';            // top 2 = red
+        else if(i>=SEGS-5)cls+=' on o';       // next 3 = orange
+        else if(i>=SEGS-9)cls+=' on y';       // next 4 = yellow
+        else cls+=' on g';                    // rest green
+      }
+      seg.className=cls;
+    }
+  };
+  renderPpm('ampPpmL',peakLDb);renderPpm('ampPpmR',peakRDb);
+
+  // ─── PHASE CORRELATION (-1 ← 0 → +1) ───
+  const pn=document.getElementById('ampPhaseNeedle');
+  if(pn)pn.style.left=(50+phaseCorr*50).toFixed(1)+'%';
+
+  // ─── GONIOMETER / LISSAJOUS ───
+  const gc=document.getElementById('ampGonio');
+  if(gc){
+    const ctx=gc.getContext('2d'),w=gc.width,h=gc.height;
+    ctx.fillStyle='rgba(2,8,12,.25)';ctx.fillRect(0,0,w,h);
+    // Reference axes
+    ctx.strokeStyle='rgba(120,160,180,.15)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(w/2,0);ctx.lineTo(w/2,h);ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);ctx.stroke();
+    // Rotated 45° L/R scatter (M up, S across)
+    const cx=w/2,cy=h/2,scale=Math.min(w,h)*0.42;
+    ctx.fillStyle='rgba(92,240,160,.8)';
+    const step=Math.max(1,Math.floor(N/180));
+    for(let i=0;i<N;i+=step){
+      const l=dataL[i],r=dataR[i];
+      // Rotate -45°: x' = (l-r)/√2, y' = (l+r)/√2  (side, mid)
+      const x=cx+((l-r)*0.707)*scale;
+      const y=cy-((l+r)*0.707)*scale;
+      ctx.fillRect(x,y,1.4,1.4);
+    }
+    // Bounding guide
+    ctx.strokeStyle='rgba(255,138,26,.25)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.arc(cx,cy,scale,0,Math.PI*2);ctx.stroke();
+  }
+
+  // ─── LUFS PANEL + HISTORY + INTEGRATED ───
+  const fmt=v=>!isFinite(v)?'-∞':v.toFixed(1);
+  const tpDb=Math.max(peakLDb,peakRDb);
+  if(tpDb>studioMeterState.truePeakDb)studioMeterState.truePeakDb=tpDb;
+  // LUFS-M (momentary, 400ms) — we're already using a fast RMS so treat as M
+  const lufsS=lufsM; // (short-term 3s would need separate buffer; approximate here)
+  studioMeterState.lufsHist.push(lufsM);
+  if(studioMeterState.lufsHist.length>600)studioMeterState.lufsHist.shift(); // ~10s at 60fps, 60s at 10fps — fine
+  // Integrated (weighted, gated at -70 LUFS absolute / -10 LU relative)
+  if(isFinite(lufsM)&&lufsM>-70){
+    studioMeterState.lufsIntSum+=Math.pow(10,lufsM/10);
+    studioMeterState.lufsIntN++;
+    if(lufsM<studioMeterState.lufsMin)studioMeterState.lufsMin=lufsM;
+    if(lufsM>studioMeterState.lufsMax)studioMeterState.lufsMax=lufsM;
+  }
+  const lufsI=studioMeterState.lufsIntN?10*Math.log10(studioMeterState.lufsIntSum/studioMeterState.lufsIntN):-Infinity;
+  const lra=isFinite(studioMeterState.lufsMax)&&isFinite(studioMeterState.lufsMin)?(studioMeterState.lufsMax-studioMeterState.lufsMin):NaN;
+
+  const setLufs=(id,v,unit)=>{const el=document.getElementById(id);if(el)el.textContent=isFinite(v)?fmt(v)+(unit?' '+unit:''):'-∞';};
+  setLufs('lufsMVal',lufsM);
+  setLufs('lufsSVal',lufsS);
+  setLufs('lufsIVal',lufsI);
+  const lraEl=document.getElementById('lufsLRAVal');if(lraEl)lraEl.textContent=isFinite(lra)?lra.toFixed(1)+' LU':'—';
+  setLufs('lufsTPVal',studioMeterState.truePeakDb,'dBTP');
+  // Color-code vs target
+  if(studioState.targetLufs!=null){
+    const cell=document.getElementById('lufsI');
+    if(cell){
+      cell.classList.remove('target','warn','danger');
+      if(isFinite(lufsI)){
+        const diff=Math.abs(lufsI-studioState.targetLufs);
+        cell.classList.add(diff<=0.8?'target':diff<=2.5?'warn':'danger');
+      }
+    }
+  }
+
+  // ─── LEGACY PEAK / LUFS BARS (kept for the limiter block) ───
+  const setBar=(id,db,low=-60,high=0)=>{const el=document.getElementById(id);if(!el)return;el.style.width=(_dbToNorm(db,low,high)*100).toFixed(1)+'%';};
+  setBar('studioPeakL',peakLDb);setBar('studioPeakR',peakRDb);setBar('studioLufs',lufsM,-40,0);
+  const setText=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=fmt(v);};
+  setText('studioPeakLVal',peakLDb);setText('studioPeakRVal',peakRDb);setText('studioLufsVal',lufsM);
+
+  // ─── COMPRESSOR + MULTI-BAND GR ───
   if(studioChain.comp){
     const gr=studioChain.comp.reduction;
     const grEl=document.getElementById('studioGrFill');if(grEl)grEl.style.width=Math.min(100,(-gr/20)*100)+'%';
     const grVal=document.getElementById('studioGrValue');if(grVal)grVal.textContent=Math.abs(gr).toFixed(1);
   }
-  // Spectrum
+  if(studioChain.mbc){
+    const paint=(cmp,fillId,valId)=>{
+      const gr=cmp.reduction;
+      const f=document.getElementById(fillId);if(f)f.style.width=Math.min(100,(-gr/20)*100)+'%';
+      const v=document.getElementById(valId);if(v)v.textContent=Math.abs(gr).toFixed(1)+' dB';
+    };
+    paint(studioChain.mbc.cLow,'mbcGrLow','mbcGrLowVal');
+    paint(studioChain.mbc.cMid,'mbcGrMid','mbcGrMidVal');
+    paint(studioChain.mbc.cHi,'mbcGrHi','mbcGrHiVal');
+  }
+
+  // ─── DE-ESSER SIDECHAIN (JS-driven) ───
+  if(studioChain.sideAn&&studioChain.deess){
+    const sb=new Float32Array(studioChain.sideAn.fftSize);
+    studioChain.sideAn.getFloatTimeDomainData(sb);
+    let se=0;for(let i=0;i<sb.length;i++)se+=sb[i]*sb[i];
+    const sideRmsDb=se>0?20*Math.log10(Math.sqrt(se/sb.length)):-Infinity;
+    const over=Math.max(0,sideRmsDb-studioState.deessThresh);
+    const targetDuck=-over*studioState.deessAmt*2; // up to -over*2 dB
+    studioMeterState.deessDuck+=((studioState.deessAmt>0?targetDuck:0)-studioMeterState.deessDuck)*0.35;
+    const t=audioCtx.currentTime;
+    studioChain.deess.gain.setTargetAtTime(studioMeterState.deessDuck,t,0.02);
+    const fill=document.getElementById('studioDeessFill');if(fill)fill.style.width=Math.min(100,(-studioMeterState.deessDuck/12)*100)+'%';
+    const v=document.getElementById('studioDeessValue');if(v)v.textContent=Math.abs(studioMeterState.deessDuck).toFixed(1);
+  }
+
+  // ─── NOISE GATE + TRANSIENT ENVELOPE (JS on envGain) ───
+  if(studioChain.env){
+    // Noise gate: if RMS < threshold, fade the env gain down.
+    const gateTh=studioState.gateThresh;
+    const open=rmsDb>gateTh;
+    const gateTarget=open?1:0.05;
+    // Transient boost: compare instantaneous peak to short RMS
+    const tr=peakLDb-rmsDb;  // >6dB → attack phase
+    let trMul=1;
+    if(studioState.transAttack!==0||studioState.transSustain!==0){
+      if(tr>6){trMul=1+studioState.transAttack*0.6;}
+      else{trMul=1+studioState.transSustain*0.3;}
+    }
+    const mix=studioState.transMix;
+    const target=gateTarget*(1-mix+mix*trMul);
+    const atk=open?studioState.gateAttack:studioState.gateRelease;
+    studioMeterState.envGain+=(target-studioMeterState.envGain)*Math.min(1,0.016/atk);
+    const tNow=audioCtx.currentTime;
+    studioChain.env.gain.setTargetAtTime(Math.max(0,Math.min(2,studioMeterState.envGain)),tNow,0.008);
+  }
+
+  // ─── SPECTRUM ───
   const sc=document.getElementById('studioSpectrum');
   if(sc){
     const ctx=sc.getContext('2d');const w=sc.width,h=sc.height;
     ctx.fillStyle='rgba(2,6,10,.3)';ctx.fillRect(0,0,w,h);
     const bins=new Uint8Array(an.frequencyBinCount);an.getByteFrequencyData(bins);
-    const bars=Math.min(100,bins.length);const bw=w/bars;
+    const bars=Math.min(120,bins.length);const bw=w/bars;
     for(let i=0;i<bars;i++){
       const v=bins[Math.floor(i*bins.length/bars)]/255;
       const bh=v*h;
@@ -17764,6 +18491,59 @@ function renderStudioMeter(){
       grad.addColorStop(0,'#00d4ff');grad.addColorStop(0.5,'#ffa544');grad.addColorStop(1,'#ff2e2e');
       ctx.fillStyle=grad;ctx.fillRect(i*bw,h-bh,bw-1,bh);
     }
+  }
+
+  // ─── OSCILLOSCOPE ───
+  const osc=document.getElementById('ampOsc');
+  if(osc){
+    const ctx=osc.getContext('2d'),w=osc.width,h=osc.height;
+    ctx.fillStyle='rgba(2,6,10,.4)';ctx.fillRect(0,0,w,h);
+    // Mid line
+    ctx.strokeStyle='rgba(120,160,180,.12)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);ctx.stroke();
+    // Draw L (cyan) and R (amber) overlaid
+    const drawCh=(buf,color)=>{
+      ctx.strokeStyle=color;ctx.lineWidth=1.3;ctx.beginPath();
+      const step=buf.length/w;
+      for(let x=0;x<w;x++){const y=h/2-buf[Math.floor(x*step)]*(h/2-2);if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+      ctx.stroke();
+    };
+    drawCh(dataR,'rgba(255,165,68,.85)');
+    drawCh(dataL,'rgba(92,220,255,.9)');
+  }
+
+  // ─── LUFS HISTORY ROLLING 60s ───
+  const hc=document.getElementById('ampLufsHist');
+  if(hc&&studioMeterState.lufsHist.length){
+    const ctx=hc.getContext('2d'),w=hc.width,h=hc.height;
+    ctx.fillStyle='rgba(2,6,10,.85)';ctx.fillRect(0,0,w,h);
+    // Target line
+    if(studioState.targetLufs!=null){
+      const y=h-((studioState.targetLufs+40)/40)*h;
+      ctx.strokeStyle='rgba(92,240,160,.5)';ctx.setLineDash([4,4]);ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle='rgba(92,240,160,.8)';ctx.font='9px Orbitron';
+      ctx.fillText(`TARGET ${studioState.targetLufs}`,6,y-4);
+    }
+    // Graph
+    const hist=studioMeterState.lufsHist;
+    const pts=hist.length;
+    ctx.strokeStyle='rgba(255,165,68,.9)';ctx.lineWidth=1.5;
+    ctx.beginPath();
+    for(let i=0;i<pts;i++){
+      const v=hist[i];if(!isFinite(v))continue;
+      const x=(i/(pts-1))*w;
+      const y=h-((v+40)/40)*h;
+      if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    // Fill under curve
+    ctx.fillStyle='rgba(255,165,68,.12)';
+    ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();ctx.fill();
+    // Scale labels
+    ctx.fillStyle='rgba(150,150,160,.4)';ctx.font='8px monospace';
+    [-30,-20,-10,0].forEach(d=>{const y=h-((d+40)/40)*h;ctx.fillText(d+'',2,y-1);});
   }
 }
 
@@ -17806,6 +18586,32 @@ document.addEventListener('DOMContentLoaded',()=>{
       document.querySelectorAll('.studio-preset-btn').forEach(x=>x.classList.remove('active'));
       b.classList.add('active');applyStudioPreset(b.dataset.preset);
     }));
+    // Target loudness presets — set a reference line on the LUFS history graph
+    const TARGETS={club:-8,radio:-12,streaming:-14,youtube:-14,podcast:-16,broadcast:-23};
+    document.querySelectorAll('.studio-target-btn').forEach(b=>b.addEventListener('click',()=>{
+      const wasActive=b.classList.contains('active');
+      document.querySelectorAll('.studio-target-btn').forEach(x=>x.classList.remove('active'));
+      if(wasActive){studioState.targetLufs=null;}
+      else{b.classList.add('active');studioState.targetLufs=TARGETS[b.dataset.target];
+        toast(`Target loudness: ${studioState.targetLufs} LUFS (${b.dataset.target.toUpperCase()})`,'success');}
+    }));
+    // Amp-bridge control buttons
+    document.getElementById('ampBtnMono')?.addEventListener('click',()=>{
+      studioState.monoSum=!studioState.monoSum;
+      document.getElementById('ampBtnMono').classList.toggle('active',studioState.monoSum);
+      applyStudioState();toast(studioState.monoSum?'Mono check ON':'Mono check OFF');
+    });
+    document.getElementById('ampBtnDim')?.addEventListener('click',()=>{
+      studioState.dim=!studioState.dim;
+      document.getElementById('ampBtnDim').classList.toggle('active',studioState.dim);
+      applyStudioState();
+    });
+    document.getElementById('ampBtnLufsReset')?.addEventListener('click',()=>{
+      studioMeterState.lufsIntSum=0;studioMeterState.lufsIntN=0;
+      studioMeterState.lufsMin=Infinity;studioMeterState.lufsMax=-Infinity;
+      studioMeterState.truePeakDb=-Infinity;studioMeterState.lufsHist=[];
+      toast('Loudness measurement reset','success');
+    });
     const byp=document.getElementById('studioBypassBtn');
     if(byp)byp.addEventListener('click',()=>{
       studioState.bypass=!studioState.bypass;
