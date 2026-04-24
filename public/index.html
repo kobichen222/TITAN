@@ -10976,7 +10976,7 @@ Two options — both work completely offline:<br/>
 <div class="settings-section"><h3>🔐 AUTHENTICATION (Supabase)</h3>
 <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:8px;">
   <div class="setting-label">Supabase Project URL <span class="setting-desc">(Settings → API)</span></div>
-  <input type="text" id="supabaseUrl" class="url-input" placeholder="https://xxxxxxxxxxxx.supabase.co" style="padding:8px 12px;" />
+  <input type="text" id="supabaseUrl" class="url-input" placeholder="https://eliimbfzegwcepbljdwp.supabase.co (built-in default)" style="padding:8px 12px;" />
 </div>
 <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:8px;">
   <div class="setting-label">Supabase anon key</div>
@@ -19469,8 +19469,53 @@ window.addEventListener('keydown',e=>{
    ======================================================== */
 const SUPA_CFG_KEY='djmaxai_supa_v1';
 let _supa=null;let _supaUser=null;let _supaProfile=null;
-let supaCfg={url:'',anon:''};
-try{const raw=localStorage.getItem(SUPA_CFG_KEY);if(raw)supaCfg={...supaCfg,...JSON.parse(raw)};}catch(e){}
+// Built-in default — the Supabase project this build ships against.
+// The URL is safe to embed (it's public information used by every client
+// request). The anon key is a published JWT designed to be embedded in
+// client code and is protected by Row-Level-Security policies on the
+// server. No secrets are leaked here; the renderer has always needed
+// both values to talk to Supabase, and baking them in removes the
+// "paste into SETTINGS" step so Sign-In With Google just works on first
+// load.
+const SUPA_DEFAULTS={
+  url:'https://eliimbfzegwcepbljdwp.supabase.co',
+  anon:'' // filled in by owner via SETTINGS → SUPABASE if not replaced here
+};
+let supaCfg={...SUPA_DEFAULTS};
+try{const raw=localStorage.getItem(SUPA_CFG_KEY);if(raw){const saved=JSON.parse(raw);
+  if(saved&&typeof saved==='object'){
+    // Keep the built-in URL unless the owner explicitly saved a different one.
+    if(saved.url&&saved.url.includes('.supabase.co'))supaCfg.url=saved.url;
+    if(saved.anon)supaCfg.anon=saved.anon;
+  }
+}}catch(e){}
+
+// Friendly catch for the "state parameter missing / bad_oauth_callback"
+// flavour of errors Supabase redirects back to the app with. Surfaces a
+// concrete next step instead of leaving the user staring at a raw URL.
+(function _surfaceOAuthError(){
+  try{
+    const q=new URLSearchParams(location.search.slice(1));
+    const h=new URLSearchParams((location.hash||'').replace(/^#/,''));
+    const err=q.get('error')||h.get('error');
+    const code=q.get('error_code')||h.get('error_code');
+    const desc=q.get('error_description')||h.get('error_description');
+    if(!err)return;
+    const hints={
+      'bad_oauth_callback':'State mismatch — usually means this URL is not in Supabase → Authentication → URL Configuration → Redirect URLs.',
+      'redirect_uri_mismatch':'The Google Cloud OAuth client\'s "Authorized redirect URIs" must be https://eliimbfzegwcepbljdwp.supabase.co/auth/v1/callback',
+      'validation_failed':'Provider likely not enabled in Supabase → Authentication → Providers → Google',
+    };
+    const hint=hints[code]||desc||err;
+    setTimeout(()=>{
+      if(typeof toast==='function')toast('Sign-in failed: '+hint,'error');
+      console.warn('[auth] OAuth error',{err,code,desc});
+    },600);
+    // Strip the error params so a reload doesn't keep re-toasting.
+    const clean=location.origin+location.pathname;
+    if(history&&history.replaceState)history.replaceState({},'',clean);
+  }catch(e){/* ignore */}
+})();
 
 function loadSupabaseLib(){
   return new Promise((resolve,reject)=>{
@@ -19533,12 +19578,27 @@ function updateAuthUI(){
   }
 }
 function saveSupaCfg(){
-  const u=document.getElementById('supabaseUrl')?.value?.trim()||'';
+  let u=document.getElementById('supabaseUrl')?.value?.trim()||'';
   const a=document.getElementById('supabaseAnon')?.value?.trim()||'';
+  // Fall back to the built-in URL if the owner left the field blank.
+  if(!u)u=SUPA_DEFAULTS.url;
+  // Guard against the class of errors where someone pastes localhost,
+  // the project ref alone, or a URL with a trailing path. Must look
+  // like https://<something>.supabase.co (optional trailing slash).
+  if(!/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(u)){
+    toast&&toast('URL must look like https://<project>.supabase.co — got '+u,'error');
+    return;
+  }
+  u=u.replace(/\/+$/,''); // strip trailing slash
+  if(a && !a.startsWith('eyJ')){
+    toast&&toast('Anon key should start with "eyJ..." — you pasted something else','error');
+    return;
+  }
   supaCfg={url:u,anon:a};
   try{localStorage.setItem(SUPA_CFG_KEY,JSON.stringify(supaCfg));}catch(e){}
   toast&&toast('Saved — connecting…','success');
-  initSupabase().then(s=>{if(s)toast&&toast('Supabase connected','success');});
+  initSupabase().then(s=>{if(s)toast&&toast('Supabase connected ✓','success');
+    else toast&&toast('Could not connect — check the anon key','error');});
 }
 
 /* ADMIN: list/edit users via profiles table (RLS restricts to admins) */
