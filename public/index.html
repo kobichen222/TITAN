@@ -9346,6 +9346,77 @@ body.theme-gold .step-btn.active{background:#ffcf40 !important;color:#1a0a00 !im
 /* Deck label model strip — neutralize bright orange */
 .deck-label .model{color:#cfcfd2}
 .deck-label .suffix{color:#7a7a80}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FINAL UNIFIED JOG-WHEEL CENTRE (BPM panel)
+   Wins the cascade over every earlier + theme-specific rule so every
+   jog wheel — in DECKS tab, VINYL stage's deck mirrors, theme-gold,
+   theme-blade, DJ-FOCUS, WORK-MODE — uses the same polished analog
+   readout: dark matte disc, thin neutral rim, 12 precise ticks, an
+   amber needle, and the BPM number as the hero.
+   ═══════════════════════════════════════════════════════════════════ */
+.cdj .jog-center-screen,
+.jog-center-screen{
+  width:120px !important;height:120px !important;
+  border-radius:50% !important;
+  background:
+    radial-gradient(circle at 50% 32%, rgba(255,255,255,.06) 0%, transparent 60%),
+    linear-gradient(180deg,#161618 0%,#0a0a0c 55%,#020203 100%) !important;
+  border:1px solid #2e2e36 !important;
+  display:flex !important;align-items:center !important;justify-content:center !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.05),
+    inset 0 -12px 18px rgba(0,0,0,.85),
+    inset 0 0 0 3px #050507,
+    0 0 0 1px #000,
+    0 6px 16px rgba(0,0,0,.75) !important;
+  overflow:hidden !important;position:relative !important;
+}
+.jog-bpm-dial{
+  position:absolute !important;inset:0 !important;
+  width:100% !important;height:100% !important;pointer-events:none !important;
+}
+.jdial-needle{
+  transition:transform .18s cubic-bezier(.22,.9,.3,1) !important;
+  transform-origin:50px 50px !important;
+}
+/* Pixel-centred text stack — absolute+translate, never a margin hack */
+.jdial-text{
+  position:absolute !important;left:50% !important;top:50% !important;
+  transform:translate(-50%,-50%) !important;
+  display:flex !important;flex-direction:column !important;
+  align-items:center !important;justify-content:center !important;
+  gap:1px !important;pointer-events:none !important;z-index:3 !important;line-height:1 !important;
+}
+.cdj .jog-center-screen .bpm-display,
+.jog-center-screen .bpm-display{
+  font-family:'Orbitron',sans-serif !important;
+  font-size:24px !important;font-weight:800 !important;
+  color:#ff9030 !important;
+  text-shadow:0 0 6px rgba(255,144,48,.5) !important;
+  letter-spacing:-.5px !important;
+  font-variant-numeric:tabular-nums !important;
+  line-height:1 !important;margin:0 !important;
+  -webkit-font-smoothing:antialiased !important;
+  text-rendering:geometricPrecision !important;
+}
+.cdj .jog-center-screen .bpm-sub,
+.jog-center-screen .bpm-sub{
+  font-family:'Orbitron',sans-serif !important;
+  font-size:7px !important;font-weight:700 !important;
+  color:#6a6a72 !important;letter-spacing:4px !important;margin-top:4px !important;
+  opacity:.9 !important;
+}
+/* Deck badge intentionally hidden (redundant with the deck-number
+   tag in the chassis). Already hidden in most modes; lock it here too. */
+.cdj .jog-center-screen .deck-badge,
+.jog-center-screen .deck-badge{display:none !important}
+/* Theme-gold keeps amber on amber dial nicely */
+body.theme-gold .cdj .jog-center-screen .bpm-display,
+body.theme-gold .jog-center-screen .bpm-display{color:#ffcf40 !important;text-shadow:0 0 6px rgba(255,207,64,.5) !important}
+/* Theme-blade: cyan number on the same dark dial */
+body.theme-blade .cdj .jog-center-screen .bpm-display,
+body.theme-blade .jog-center-screen .bpm-display{color:#2ee0ff !important;text-shadow:0 0 6px rgba(46,224,255,.5) !important}
 </style>
 </head>
 <body>
@@ -11851,8 +11922,10 @@ function setupDeck(id){
   d.saturation.curve=curve;d.saturation.oversample='2x';
   // Color FX
   d.colorFilter=audioCtx.createBiquadFilter();d.colorFilter.type='allpass';d.colorFilter.frequency.value=1000;
-  // Volume + channel + analyser
-  d.volumeGain=audioCtx.createGain();d.volumeGain.gain.value=0.8;
+  // Volume + channel + analyser — volumeGain starts at 0 to match the
+  // mixer fader's bottom-default position. setY + playDeck ramp it to
+  // the tapered target on first user input.
+  d.volumeGain=audioCtx.createGain();d.volumeGain.gain.value=0;
   d.channelGain=audioCtx.createGain();d.channelGain.gain.value=1;
   d.analyser=audioCtx.createAnalyser();d.analyser.fftSize=512;
   // Chain: trim → low → loMid → hiMid → high → compressor → saturation → color → volume → channel → master
@@ -12635,7 +12708,11 @@ function playDeck(deckId){
   }
   d.source.start(0,d.offset);d.startTime=audioCtx.currentTime;d.playing=true;
   if(d.volumeGain){
-    const target=d.volume!==undefined?d.volume:0.8;
+    // Apply the perceptual taper so play-in matches the fader's current
+    // audible position. A linear ramp to raw d.volume sounded louder than
+    // whatever the fader was actually showing.
+    const rawV=(d.volume!==undefined)?d.volume:0;
+    const target=(typeof _djFaderTaper==='function')?_djFaderTaper(rawV):rawV;
     const now=audioCtx.currentTime;
     d.volumeGain.gain.cancelScheduledValues(now);
     d.volumeGain.gain.setValueAtTime(0,now);
@@ -12682,7 +12759,7 @@ function pauseDeck(deckId){
     d.volumeGain.gain.cancelScheduledValues(now);
     d.volumeGain.gain.setValueAtTime(cur,now);
     d.volumeGain.gain.linearRampToValueAtTime(0,now+0.006);
-    setTimeout(()=>{try{src.stop();src.disconnect();}catch(e){}if(d.source===src)d.source=null;d.volumeGain.gain.setValueAtTime(d.volume!==undefined?d.volume:0.8,audioCtx.currentTime);},12);
+    setTimeout(()=>{try{src.stop();src.disconnect();}catch(e){}if(d.source===src)d.source=null;const raw=(d.volume!==undefined)?d.volume:0;const restore=(typeof _djFaderTaper==='function')?_djFaderTaper(raw):raw;d.volumeGain.gain.setValueAtTime(restore,audioCtx.currentTime);},12);
   }else{
     try{d.source.stop();}catch(e){}
     d.source.disconnect();
@@ -13788,7 +13865,7 @@ function handleMIDI(msg){
       const deck=m.target.slice(6);
       if(decks[deck]){
         decks[deck].volume=v;
-        if(decks[deck].volumeGain)decks[deck].volumeGain.gain.value=v;
+        if(decks[deck].volumeGain)_rampGain(decks[deck].volumeGain.gain,_djFaderTaper(v),audioCtx,0.012);
         // Update the per-channel DJ focus slider if visible
         const ds=document.querySelector(`[data-djfv-slider="${deck}"]`);
         if(ds){ds.value=Math.round(v*100);const dv=document.querySelector(`[data-djfv-value="${deck}"]`);if(dv)dv.textContent=Math.round(v*100);}
@@ -13825,7 +13902,7 @@ function handleMIDI(msg){
     // CC 7 = channel volume (standard MIDI spec) per channel
     else if(d1===7&&(ch===0||ch===1)){
       const deck=ch===0?'A':'B';
-      if(decks[deck]){decks[deck].volume=v;if(decks[deck].volumeGain)decks[deck].volumeGain.gain.value=v;applyCrossfader();}
+      if(decks[deck]){decks[deck].volume=v;if(decks[deck].volumeGain)_rampGain(decks[deck].volumeGain.gain,_djFaderTaper(v),audioCtx,0.012);applyCrossfader();}
     }
   }
   if(type===0x90&&d2>0){
@@ -14046,20 +14123,52 @@ function setupSceneFx(){
 }
 
 /* CROSSFADER */
+/* Perceptual audio-taper for DJ channel faders.
+   Linear fader movement feels wrong on ears — the human loudness response
+   is logarithmic. Classic DJ mixer law: quadratic-ish curve that gives
+   fine control near unity and a long quiet tail near zero.
+     v=0   → 0   (mute)
+     v=0.5 → 0.22 (~ -13 dB)
+     v=0.7 → 0.45 (~ -7 dB)
+     v=0.9 → 0.78 (~ -2 dB)
+     v=1.0 → 1   (0 dB / unity) */
+function _djFaderTaper(v){
+  if(v<=0)return 0;
+  if(v>=1)return 1;
+  return v*v*(0.3+v*0.7);
+}
+/* Short smoothing time constant for all fader / xfader writes. 12 ms
+   is slow enough to kill zipper noise, fast enough to still feel
+   instant under the finger.  The pre-existing `.gain.value = …` made
+   every fader movement a discontinuity and that's what the user heard
+   as "not smooth". */
+function _rampGain(param,target,ctx,tau){
+  if(!param||!ctx)return;
+  try{
+    param.cancelScheduledValues(ctx.currentTime);
+    param.setTargetAtTime(target,ctx.currentTime,tau||0.012);
+  }catch(_){param.value=target;}
+}
+
 function applyCrossfader(){
   const x=mixerState.crossfader,curve=mixerState.xfaderCurve;
   ensureAudio();
+  const ctx=audioCtx;
   ['A','B','C','D'].forEach(deckId=>{
-    const d=decks[deckId],a=mixerState.xfaderAssign[deckId];let gain=1;
-    if(a==='THRU'){gain=1;}
+    const d=decks[deckId],a=mixerState.xfaderAssign[deckId];let xgain=1;
+    if(a==='THRU'){xgain=1;}
     else{
       const isA=a==='A';let pos=isA?(1-x):x;
       if(curve==='sharp')pos=Math.pow(pos,2.5);
       else if(curve==='cut')pos=pos>0.5?1:0;
       else pos=Math.cos((1-pos)*Math.PI/2);
-      gain=pos;
+      xgain=pos;
     }
-    if(d.channelGain)d.channelGain.gain.value=gain*d.volume;
+    // volumeGain already carries the tapered fader position (see setY /
+    // playDeck). channelGain is dedicated to the crossfader contribution
+    // alone — double-applying would cube the curve and the fader would
+    // feel dead until it's almost at the top.
+    if(d.channelGain)_rampGain(d.channelGain.gain,xgain,ctx,0.012);
   });
 }
 
@@ -14205,7 +14314,18 @@ function attachEvents(){
     const w=document.querySelector(`.fader-wrap[data-fader="${d}"]`);
     if(!w)return;
     const h=document.getElementById(`fader-${d}`);let drag=false;let pendingCy=null,rafId=null;
-    function setY(cy){const r=w.getBoundingClientRect();let y=(cy-r.top)/r.height;y=Math.max(0,Math.min(0.9,y));h.style.bottom=`${(1-y-0.1)*100}%`;const v=1-y/0.9;decks[d].volume=v;if(decks[d].volumeGain)decks[d].volumeGain.gain.value=v;applyCrossfader();}
+    function setY(cy){
+      const r=w.getBoundingClientRect();let y=(cy-r.top)/r.height;
+      y=Math.max(0,Math.min(0.9,y));
+      h.style.bottom=`${(1-y-0.1)*100}%`;
+      const v=1-y/0.9;
+      decks[d].volume=v;
+      // Smooth 12 ms ramp on both gain stages — no zipper noise. The taper
+      // is applied once, on volumeGain. applyCrossfader composes the
+      // crossfader position into channelGain using the same taper.
+      if(decks[d].volumeGain)_rampGain(decks[d].volumeGain.gain,_djFaderTaper(v),audioCtx,0.012);
+      applyCrossfader();
+    }
     function scheduleSetY(cy){pendingCy=cy;if(rafId!=null)return;rafId=requestAnimationFrame(()=>{rafId=null;if(pendingCy!=null)setY(pendingCy);pendingCy=null;});}
     const endFader=e=>{try{w.releasePointerCapture(e.pointerId);}catch(_){}drag=false;if(rafId!=null){cancelAnimationFrame(rafId);rafId=null;}};
     w.addEventListener('pointerdown',e=>{w.setPointerCapture(e.pointerId);drag=true;setY(e.clientY);});
@@ -21541,7 +21661,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         if(d.eqHigh&&audioCtx){d.eqHigh.gain.cancelScheduledValues(audioCtx.currentTime);d.eqHigh.gain.setValueAtTime(0,audioCtx.currentTime);}
         if(d.colorFilter){d.colorFilter.type='allpass';d.colorFilter.frequency.value=1000;}
         if(d.trimGain&&audioCtx){d.trimGain.gain.cancelScheduledValues(audioCtx.currentTime);d.trimGain.gain.setValueAtTime(1,audioCtx.currentTime);}
-        if(d.volumeGain&&audioCtx){d.volumeGain.gain.cancelScheduledValues(audioCtx.currentTime);d.volumeGain.gain.setValueAtTime(d.volume!=null?d.volume:0.8,audioCtx.currentTime);}
+        if(d.volumeGain&&audioCtx){d.volumeGain.gain.cancelScheduledValues(audioCtx.currentTime);const raw=d.volume!=null?d.volume:0;const tap=(typeof _djFaderTaper==='function')?_djFaderTaper(raw):raw;d.volumeGain.gain.setValueAtTime(tap,audioCtx.currentTime);}
       });
       if(window.sceneFxWet&&audioCtx){sceneFxWet.gain.cancelScheduledValues(audioCtx.currentTime);sceneFxWet.gain.setValueAtTime(0,audioCtx.currentTime);}
       mixerState.crossfader=0.5;const h=document.getElementById('xfaderHandle');if(h)h.style.left='50%';
@@ -21654,7 +21774,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       d.volumeGain.gain.linearRampToValueAtTime(0,now+0.008);
       setTimeout(()=>{
         try{src&&src.stop();src&&src.disconnect();}catch(e){}
-        if(audioCtx){d.volumeGain.gain.cancelScheduledValues(audioCtx.currentTime);d.volumeGain.gain.setValueAtTime(d.volume!=null?d.volume:0.8,audioCtx.currentTime);}
+        if(audioCtx){d.volumeGain.gain.cancelScheduledValues(audioCtx.currentTime);const raw=d.volume!=null?d.volume:0;const tap=(typeof _djFaderTaper==='function')?_djFaderTaper(raw):raw;d.volumeGain.gain.setValueAtTime(tap,audioCtx.currentTime);}
       },18);
     }else if(src){try{src.stop();src.disconnect();}catch(e){}}
     _updatePlayUI(id,false);
