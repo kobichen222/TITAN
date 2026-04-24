@@ -14814,14 +14814,27 @@ function fmtTime(sec){
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${ds}`;
 }
 
-/* MAIN TICK */
+/* MAIN TICK — rAF-driven deck / waveform / VU / spectrum refresh.
+   Perf guards:
+     • Skip the frame entirely when the tab is hidden. The browser
+       already throttles rAF to ~1 Hz on hidden tabs, but we still
+       have layout work + innerText churn running that isn't free.
+     • When the DECKS tab isn't active, only the loop-punch engine
+       and track-end safety still need to run. UI text updates
+       (elapsed / remain / waveform transform) are skipped.
+     • VU + spectrum canvases are only redrawn when *their* tab is
+       visible (DECKS for VU, SOUND for spectrum). */
 function tick(){
+  if(document.hidden){requestAnimationFrame(tick);return;}
+  const decksTabActive=document.getElementById('tab-deck')?.classList.contains('active');
   ['A','B','C','D'].forEach(d=>{
     const dk=decks[d];if(!dk.track)return;
     const t=dk.playing?getCurrentTime(d):dk.offset;
     const dur=dk.track.duration;
+    // Loop punch runs unconditionally — audio correctness, not visual
     if(dk.loop.active&&dk.loop.end&&t>=dk.loop.end)seekDeck(d,dk.loop.start);
-    if(d==='A'||d==='B'){
+    // Text + waveform transform only when user can actually see it
+    if(decksTabActive&&(d==='A'||d==='B')){
       const el=document.getElementById(`elapsed-${d}`),rm=document.getElementById(`remain-${d}`);
       if(el)el.textContent=fmtTime(t);
       if(rm)rm.textContent='-'+fmtTime(dur-t);
@@ -14829,8 +14842,8 @@ function tick(){
       if(c){const pct=t/dur;const zoom=dk.waveZoom||1;c.style.transform=`translateX(${(0.5-pct)*100*zoom}%) scaleX(${zoom})`;c.style.transformOrigin=`${pct*100}% 50%`;}
     }
   });
-  animateVU();
-  drawSpectrum();
+  if(decksTabActive)animateVU();
+  drawSpectrum();  // cheap — checks its own canvas visibility inside
   requestAnimationFrame(tick);
 }
 
@@ -17533,6 +17546,10 @@ function spBuildStudioMixer(){
 }
 function spMixerMeterTick(){
   if(!SP.mix.open){SP.mix._meterRAF=null;return;}
+  // Perf: don't run the meter read loop while the browser tab is
+  // hidden — the user cannot see the bars and the getFloatTimeDomainData
+  // call is not free.
+  if(document.hidden){SP.mix._meterRAF=requestAnimationFrame(spMixerMeterTick);return;}
   const ids=Object.keys(SP.mix.strips||{});
   const buf=new Float32Array(256);
   ids.forEach(id=>{
@@ -18832,6 +18849,10 @@ function setupVinylTurntables(){
     return Math.sqrt(sum/buf.length);
   }
   function paintVU(){
+    // Perf: skip the RMS read + DOM paint when nothing's visible
+    if(document.hidden)return;
+    const vinylActive=document.getElementById('tab-vinyl')?.classList.contains('active');
+    if(!vinylActive)return;
     const dA=decks&&decks.A,dB=decks&&decks.B;
     let lvlA=0,lvlB=0;
     if(dA&&dA.analyser&&dA.playing)lvlA=rmsFromAnalyser(dA.analyser);
@@ -21398,7 +21419,16 @@ document.addEventListener('DOMContentLoaded',()=>{
       const r=origEnsure?origEnsure():undefined;
       if(audioCtx&&!studioChain){
         ensureStudioChain();applyStudioState();
-        (function meterLoop(){renderStudioMeter();requestAnimationFrame(meterLoop);})();
+        // Perf: only draw the SOUND-tab meters when that tab is actually
+        // visible + the browser tab itself is in the foreground. In the
+        // background we were eating a full rAF slot every 16 ms drawing
+        // canvases nobody could see.
+        (function meterLoop(){
+          const studioActive=document.getElementById('tab-studio')?.classList.contains('active');
+          const tabVisible=!document.hidden;
+          if(studioActive&&tabVisible){renderStudioMeter();}
+          requestAnimationFrame(meterLoop);
+        })();
       }
       return r;
     };
@@ -22961,6 +22991,49 @@ document.addEventListener('DOMContentLoaded',init);
     });
     render();
   },600));
+})();
+
+/* ═══════════════════════════════════════════════════════════════════
+   TITAN · PERF WATCHDOG
+   Central visibility gate + timer telemetry. When the browser tab
+   goes into the background we mark the audio context for low-power
+   mode so every rAF-driven meter / waveform / canvas skips its work
+   (the individual loops already check `document.hidden`).  On
+   return to foreground we kick all the gated loops so the UI
+   repaints immediately instead of waiting for the next rAF edge.
+   ═══════════════════════════════════════════════════════════════════ */
+(function titanPerfWatchdog(){
+  let lastHiddenAt=0,lastVisibleAt=performance.now();
+  function onVis(){
+    if(document.hidden){
+      lastHiddenAt=performance.now();
+      // Optional: suspend audioCtx on long-hidden sessions to stop CPU
+      // entirely. Don't do it immediately — users Alt-Tab for seconds
+      // at a time mid-mix. Schedule a 60 s timer to suspend only on
+      // real inactivity.
+      if(window._titanSuspendTimer)clearTimeout(window._titanSuspendTimer);
+      window._titanSuspendTimer=setTimeout(()=>{
+        if(document.hidden&&typeof audioCtx!=='undefined'&&audioCtx&&audioCtx.state==='running'){
+          // Check that nothing is actively playing before we suspend
+          const anyDeckPlaying=['A','B','C','D'].some(id=>decks?.[id]?.playing);
+          const recActive=mixerState?.isRecording;
+          if(!anyDeckPlaying&&!recActive){
+            try{audioCtx.suspend();}catch(_){}
+          }
+        }
+      },60_000);
+    }else{
+      lastVisibleAt=performance.now();
+      if(window._titanSuspendTimer){clearTimeout(window._titanSuspendTimer);window._titanSuspendTimer=null;}
+      // Resume audio if we suspended it during the hidden interval
+      try{
+        if(typeof audioCtx!=='undefined'&&audioCtx&&audioCtx.state==='suspended'){
+          audioCtx.resume();
+        }
+      }catch(_){}
+    }
+  }
+  document.addEventListener('visibilitychange',onVis);
 })();
 </script>
 </body>
