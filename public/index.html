@@ -10,7 +10,7 @@
 :root{--deck-bg:#1a1a1c;--deck-panel:#242428;--deck-border:#3a3a3e;--screen-glow:#00d4ff;--orange:#ff7a00;--orange-glow:#ffa544;--cue-orange:#ff5a00;--play-green:#00ff7a;--red:#ff2e2e;--yellow:#ffd400;--purple:#c800ff;--pink:#ff3c78;--text:#e8e8ea;--text-dim:#9a9a9e;--bg:#0a0a0a}
 body.theme-light{--deck-bg:#e5e5e7;--deck-panel:#f5f5f7;--deck-border:#b0b0b2;--text:#1a1a1c;--text-dim:#5a5a5e;--bg:#f0f0f2}
 body.theme-neon{--orange:#ff00ff;--screen-glow:#00ffff;--play-green:#00ff00}
-body.theme-gold{--orange:#e8c463;--orange-glow:#fff0a8;--cue-orange:#ffcf40;--play-green:#f5d76e;--screen-glow:#ffd97a;--yellow:#f4c430;--red:#c83c3c;--purple:#c7a856;--pink:#e6b25a;--text:#f3e3b0;--text-dim:#c9a85a;--bg:#0a0806;--deck-bg:#1a1410;--deck-panel:#221a12;--deck-border:#6b4f1e}
+body.theme-gold{--orange:#3a2a0a;--orange-glow:#5a3f12;--cue-orange:#6b4a18;--play-green:#2a3a1a;--screen-glow:#2a1a08;--yellow:#c8a848;--red:#8a2020;--purple:#5a4020;--pink:#a8886a;--text:#1a1208;--text-dim:#4a3a1a;--bg:#0a0806;--deck-bg:#c8a656;--deck-panel:#d4b468;--deck-border:#8a6a2e}
 body.theme-euphonia{--orange:#c77848;--orange-glow:#e8a778;--cue-orange:#ffb347;--play-green:#7fffa3;--screen-glow:#9ee5ff;--yellow:#ffd966;--red:#ff5050;--purple:#b087e8;--pink:#ff8ab3;--text:#eaeaec;--text-dim:#8a8a90;--bg:#050507;--deck-bg:#0d0d0f;--deck-panel:#141416;--deck-border:#2a2a2e}
 body.theme-blade{--orange:#00f0ff;--orange-glow:#7ff7ff;--cue-orange:#00f0ff;--play-green:#00f0ff;--screen-glow:#00f0ff;--yellow:#00f0ff;--red:#ff3344;--purple:#00f0ff;--pink:#00f0ff;--text:#e8f5fa;--text-dim:#6a7a88;--bg:#060810;--deck-bg:#0c0e14;--deck-panel:#12141a;--deck-border:#1e2028}
 html,body{background:radial-gradient(ellipse at center,#222 0%,var(--bg) 70%);min-height:100vh;font-family:'Barlow Condensed',sans-serif;color:var(--text)}
@@ -291,10 +291,44 @@ body.show-all .console.show-all{max-width:none;width:calc(100vw - 16px)}
 .jog-markers::before{content:'';position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.15) 0deg 1deg,transparent 1deg 9deg);mask:radial-gradient(circle,transparent 55%,#000 55%,#000 58%,transparent 58%);-webkit-mask:radial-gradient(circle,transparent 55%,#000 55%,#000 58%,transparent 58%)}
 .jog-platter{position:absolute;inset:32px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#2a2a2e 0%,#121214 60%,#050506 100%);box-shadow:inset 0 2px 8px rgba(255,255,255,.08),inset 0 -4px 10px rgba(0,0,0,.9);display:flex;justify-content:center;align-items:center;cursor:grab}
 .jog-platter-disc{position:absolute;inset:12px;border-radius:50%;background:repeating-radial-gradient(circle,rgba(255,255,255,.02) 0px,rgba(255,255,255,.02) 1px,transparent 1px,transparent 3px),radial-gradient(circle,#1a1a1c 0%,#0a0a0b 100%)}
-.jog-center-screen{width:80px;height:80px;border-radius:50%;background:linear-gradient(180deg,#0a1418 0%,#020608 100%);border:2px solid #1a2a30;display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:inset 0 0 20px rgba(0,212,255,.1);z-index:2;position:relative}
-.jog-center-screen .bpm-display{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:800;color:var(--orange-glow);text-shadow:0 0 10px rgba(255,122,0,.8);line-height:1}
-.jog-center-screen .bpm-sub{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--screen-glow);letter-spacing:2px;margin-top:2px}
-.jog-center-screen .deck-badge{font-family:'Orbitron',sans-serif;font-size:8px;color:#fff;letter-spacing:2px;margin-top:3px;opacity:.7}
+/* ═══ TITAN ONYX · jog-wheel center (analog BPM dial + digital readout) ═══ */
+.jog-center-screen{
+  width:96px;height:96px;border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255,255,255,.04), transparent 60%),
+    linear-gradient(180deg,#141416 0%,#08080a 55%,#020203 100%);
+  border:1px solid #2a2a30;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.04),
+    inset 0 -8px 14px rgba(0,0,0,.8),
+    inset 0 0 0 3px #050507,
+    0 0 0 1px #000,
+    0 4px 12px rgba(0,0,0,.7);
+  z-index:2;position:relative;overflow:hidden;
+}
+.jog-bpm-dial{
+  position:absolute;inset:4px;width:calc(100% - 8px);height:calc(100% - 8px);
+  pointer-events:none;
+}
+.jdial-needle{transition:transform .18s cubic-bezier(.22,.9,.3,1);transform-origin:50px 50px}
+.jog-center-screen .bpm-display{
+  font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;
+  color:#ff8a1a;
+  text-shadow:0 0 6px rgba(255,138,26,.7),0 1px 0 rgba(0,0,0,.8);
+  line-height:1;letter-spacing:.3px;
+  font-variant-numeric:tabular-nums;
+  position:relative;z-index:3;margin-top:28px;
+}
+.jog-center-screen .bpm-sub{
+  font-family:'Share Tech Mono',monospace;font-size:7px;
+  color:#6a6a72;letter-spacing:2.5px;margin-top:2px;
+  position:relative;z-index:3;
+}
+.jog-center-screen .deck-badge{
+  font-family:'Orbitron',sans-serif;font-size:8px;color:#fff;
+  letter-spacing:2px;margin-top:3px;opacity:.6;position:relative;z-index:3;
+}
 .jog-indicator{position:absolute;top:34px;left:50%;width:3px;height:14px;background:linear-gradient(180deg,#fff 0%,var(--orange) 100%);transform:translateX(-50%);border-radius:2px;z-index:3}
 .jog-platter.spinning{animation:platterSpin 2s linear infinite}
 @keyframes platterSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
@@ -4176,6 +4210,370 @@ body.work-mode .dsb-wmexit{display:inline-flex;background:linear-gradient(180deg
 /* Manufacturer / model tag at bottom-center — pure vintage-amp flavour */
 .amp-vu-wrap .amp-vu::before,
 .amp-vu-wrap .amp-vu::after{z-index:4}
+
+/* PPM segmented LED ladders */
+/* ═══════════════════════════════════════════════════════════════════
+   ACADEMY — product-grade learning tab
+   Visual language: warm teal → emerald gradient for the primary path,
+   soft charcoal cards, generous spacing, large numeric progress.
+   Reference marks: Duolingo's course path, Yousician's lesson cards,
+   Simply Piano's badge drawer. Everything is scoped with `.academy-*`
+   so nothing can bleed into the rest of the console UI.
+   ═══════════════════════════════════════════════════════════════════ */
+.academy-wrap{
+  display:flex;flex-direction:column;gap:16px;
+  max-width:1200px;margin:0 auto;padding:0 4px;
+  font-family:'Inter','SF Pro Text','Segoe UI',system-ui,sans-serif;
+  color:#e8f0ea;
+}
+.academy-hero{
+  position:relative;overflow:hidden;
+  padding:28px 32px;border-radius:16px;
+  background:
+    radial-gradient(ellipse at 85% -30%, rgba(92,240,160,.18), transparent 55%),
+    radial-gradient(ellipse at 15% 130%, rgba(46,224,255,.08), transparent 50%),
+    linear-gradient(135deg,#09181c 0%,#071410 55%,#050a07 100%);
+  border:1px solid rgba(92,240,160,.2);
+  box-shadow:0 10px 28px rgba(0,0,0,.5);
+}
+.academy-hero::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 92% 92%, rgba(255,255,255,.04), transparent 40%);
+}
+.academy-hero-grid{
+  display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center;
+  position:relative;z-index:1;
+}
+@media(max-width:760px){.academy-hero-grid{grid-template-columns:1fr}}
+.academy-kicker{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:3px;
+  color:#5cf0a0;font-weight:700;text-transform:uppercase;
+  padding:5px 12px;border:1px solid rgba(92,240,160,.35);border-radius:999px;
+  background:rgba(92,240,160,.06);
+  margin-bottom:14px;
+}
+.academy-title{
+  font-family:'Orbitron',sans-serif;font-size:34px;font-weight:900;
+  letter-spacing:-.5px;line-height:1.05;color:#fff;margin:0 0 10px;
+}
+.academy-title span{color:#5cf0a0}
+.academy-tagline{
+  font-size:14px;line-height:1.6;color:#a0c8af;max-width:560px;margin:0 0 18px;
+}
+.academy-cta{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:12px 22px;border:none;border-radius:10px;
+  background:linear-gradient(180deg,#5cf0a0 0%,#00b868 100%);
+  color:#041a0d;font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:2px;
+  font-weight:800;cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,184,104,.35);
+  transition:transform .15s, box-shadow .15s;
+}
+.academy-cta:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(0,184,104,.45)}
+.academy-cta.ghost{
+  background:transparent;color:#5cf0a0;
+  border:1px solid rgba(92,240,160,.4);box-shadow:none;
+}
+.academy-cta.ghost:hover{background:rgba(92,240,160,.08);box-shadow:none}
+
+.academy-stats{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;min-width:260px;
+}
+.academy-stat{
+  padding:14px 16px;border-radius:10px;
+  background:rgba(4,12,8,.7);
+  border:1px solid rgba(92,240,160,.12);
+  display:flex;flex-direction:column;gap:4px;
+}
+.academy-stat-label{
+  font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;
+  color:#6a8a78;text-transform:uppercase;
+}
+.academy-stat-value{
+  font-family:'Orbitron',sans-serif;font-size:26px;font-weight:800;
+  color:#5cf0a0;line-height:1;letter-spacing:-.5px;
+  font-variant-numeric:tabular-nums;
+}
+.academy-stat-value small{font-size:12px;color:#7a9a8a;font-weight:600;margin-left:4px}
+
+.academy-progress-track{
+  height:4px;background:rgba(92,240,160,.08);border-radius:2px;overflow:hidden;
+  margin-top:6px;
+}
+.academy-progress-fill{
+  height:100%;background:linear-gradient(90deg,#5cf0a0,#00d074);
+  transition:width .5s cubic-bezier(.22,.88,.3,1);
+}
+
+/* ───── Continue card ───── */
+.academy-continue{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 20px;border-radius:12px;
+  background:linear-gradient(90deg,rgba(92,240,160,.08),rgba(46,224,255,.03));
+  border:1px solid rgba(92,240,160,.2);
+  cursor:pointer;transition:transform .15s, background .15s;
+}
+.academy-continue:hover{transform:translateX(2px);background:linear-gradient(90deg,rgba(92,240,160,.12),rgba(46,224,255,.05))}
+.academy-continue-icon{
+  width:48px;height:48px;border-radius:10px;
+  background:linear-gradient(180deg,#5cf0a0,#00a858);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:#041a0d;flex-shrink:0;
+}
+.academy-continue-body{flex:1;min-width:0}
+.academy-continue-label{
+  font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;
+  color:#7a9a88;text-transform:uppercase;margin-bottom:3px;
+}
+.academy-continue-title{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:800;color:#fff;margin-bottom:2px}
+.academy-continue-meta{font-size:11px;color:#8aaa98}
+.academy-continue-arrow{color:#5cf0a0;font-size:20px;opacity:.6;transition:transform .15s,opacity .15s}
+.academy-continue:hover .academy-continue-arrow{transform:translateX(4px);opacity:1}
+
+/* ───── Course cards ───── */
+.academy-section-title{
+  display:flex;align-items:baseline;justify-content:space-between;
+  font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;
+  color:#a0c8af;text-transform:uppercase;font-weight:700;
+  padding:0 4px;
+}
+.academy-section-title small{
+  font-family:'Share Tech Mono',monospace;font-size:10px;
+  color:#5a7a68;letter-spacing:1px;text-transform:none;
+}
+.academy-courses{display:flex;flex-direction:column;gap:14px}
+
+.course-card{
+  position:relative;
+  background:linear-gradient(135deg,#0f1a14 0%,#0a1410 100%);
+  border:1px solid #1a2a1e;border-radius:14px;
+  overflow:hidden;
+  transition:border-color .15s, transform .15s;
+}
+.course-card:hover{border-color:rgba(92,240,160,.3);transform:translateY(-1px)}
+.course-card.locked{opacity:.55}
+.course-card.complete{border-color:rgba(92,240,160,.35)}
+.course-card.complete::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#5cf0a0,#00d074);
+}
+.course-head{
+  display:grid;grid-template-columns:56px 1fr auto;gap:18px;align-items:center;
+  padding:18px 22px;
+}
+.course-num{
+  width:56px;height:56px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;
+  color:var(--cc,#5cf0a0);
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(0,0,0,.3));
+  border:1px solid rgba(255,255,255,.05);
+  box-shadow:inset 0 0 10px rgba(0,0,0,.5);
+}
+.course-body{display:flex;flex-direction:column;gap:4px;min-width:0}
+.course-title{
+  font-family:'Orbitron',sans-serif;font-size:17px;font-weight:800;
+  color:#fff;letter-spacing:.3px;
+}
+.course-desc{font-size:13px;color:#8aaa98;line-height:1.45}
+.course-meta{
+  display:flex;gap:14px;margin-top:6px;flex-wrap:wrap;
+  font-family:'Share Tech Mono',monospace;font-size:10px;color:#6a8a78;
+  letter-spacing:1px;
+}
+.course-meta span{display:flex;align-items:center;gap:4px}
+.course-meta b{color:var(--cc,#a0d8b0);font-weight:600}
+.course-action{
+  padding:10px 18px;border-radius:8px;
+  font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;font-weight:800;
+  background:transparent;border:1px solid rgba(92,240,160,.4);
+  color:#5cf0a0;cursor:pointer;
+  transition:background .15s, color .15s;
+  white-space:nowrap;
+}
+.course-action:hover{background:rgba(92,240,160,.1)}
+.course-action.primary{background:linear-gradient(180deg,#5cf0a0,#00b868);color:#041a0d;border-color:transparent}
+.course-action.primary:hover{background:linear-gradient(180deg,#6cff9f,#00c872)}
+
+.course-lessons{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:8px;padding:0 22px 22px;
+}
+.lesson-chip{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:8px;
+  background:#070e0a;border:1px solid #152218;
+  cursor:pointer;
+  transition:background .15s, border-color .15s, transform .15s;
+}
+.lesson-chip:hover{background:#0a1510;border-color:rgba(92,240,160,.3);transform:translateX(2px)}
+.lesson-chip.done{border-color:rgba(92,240,160,.4);background:rgba(92,240,160,.04)}
+.lesson-chip.locked{opacity:.4;cursor:not-allowed}
+.lesson-chip.locked:hover{transform:none;border-color:#152218}
+.lesson-chip-mark{
+  width:22px;height:22px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  border:1.5px solid #2a3a30;background:transparent;
+  font-size:11px;color:#5a7a68;
+}
+.lesson-chip.done .lesson-chip-mark{background:#5cf0a0;border-color:#5cf0a0;color:#041a0d;font-weight:900}
+.lesson-chip-body{flex:1;min-width:0}
+.lesson-chip-title{font-size:12.5px;font-weight:600;color:#d0e8d8;line-height:1.2;margin-bottom:1px}
+.lesson-chip-xp{
+  font-family:'Share Tech Mono',monospace;font-size:9px;color:#6a8a78;
+  letter-spacing:1px;
+}
+
+/* ───── Achievements ───── */
+.academy-badges{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:10px;
+}
+.badge-card{
+  padding:16px 12px;border-radius:10px;
+  background:#0c1510;border:1px solid #1a2a1e;
+  text-align:center;
+  transition:border-color .15s, transform .15s;
+  cursor:default;
+}
+.badge-card.earned{border-color:rgba(92,240,160,.4);background:linear-gradient(180deg,rgba(92,240,160,.06),#0a1410)}
+.badge-card.earned:hover{transform:translateY(-2px);border-color:rgba(92,240,160,.6)}
+.badge-card.locked{opacity:.45}
+.badge-icon{font-size:28px;line-height:1;margin-bottom:8px;display:block;filter:grayscale(.8)}
+.badge-card.earned .badge-icon{filter:none}
+.badge-name{
+  font-family:'Orbitron',sans-serif;font-size:11px;font-weight:800;letter-spacing:1px;
+  color:#d0e8d8;margin-bottom:3px;
+}
+.badge-desc{font-size:10px;color:#7a9a88;line-height:1.3;min-height:26px}
+
+/* ───── Full-screen active-lesson overlay ───── */
+.academy-lesson-overlay{
+  display:none;position:fixed;inset:0;z-index:5000;
+  background:rgba(2,8,6,.85);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;
+  padding:20px;
+  animation:academyFade .25s ease;
+}
+.academy-lesson-overlay.open{display:flex}
+@keyframes academyFade{from{opacity:0}to{opacity:1}}
+.academy-lesson-modal{
+  width:100%;max-width:560px;
+  background:linear-gradient(180deg,#0f1a14,#0a1410);
+  border:1px solid rgba(92,240,160,.35);
+  border-radius:18px;
+  box-shadow:0 20px 60px rgba(0,0,0,.8),0 0 40px rgba(92,240,160,.15);
+  padding:28px 32px 24px;
+  position:relative;
+  animation:academyPop .3s cubic-bezier(.22,1.4,.4,1);
+}
+@keyframes academyPop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.academy-lesson-close{
+  position:absolute;top:14px;right:16px;
+  background:transparent;border:none;color:#6a8a78;font-size:22px;
+  cursor:pointer;padding:4px 10px;line-height:1;border-radius:6px;
+}
+.academy-lesson-close:hover{color:#5cf0a0;background:rgba(92,240,160,.08)}
+.academy-lesson-kicker{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;
+  color:#6a8a78;text-transform:uppercase;margin-bottom:14px;
+}
+.academy-lesson-dots{display:flex;gap:5px}
+.academy-lesson-dot{
+  width:22px;height:4px;border-radius:2px;background:#1a2a20;
+  transition:background .3s;
+}
+.academy-lesson-dot.done{background:#5cf0a0}
+.academy-lesson-dot.active{background:linear-gradient(90deg,#5cf0a0,#00d074);box-shadow:0 0 8px rgba(92,240,160,.5)}
+.academy-lesson-title{
+  font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;
+  color:#fff;letter-spacing:-.3px;line-height:1.2;margin-bottom:10px;
+}
+.academy-lesson-text{font-size:14px;line-height:1.65;color:#b8d8c0;margin-bottom:16px}
+.academy-lesson-hint{
+  display:none;padding:10px 14px;border-radius:8px;
+  background:rgba(46,224,255,.06);border:1px solid rgba(46,224,255,.2);
+  font-size:12px;color:#8ecae8;line-height:1.4;margin-bottom:16px;
+}
+.academy-lesson-hint.show{display:block}
+.academy-lesson-status{
+  display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;
+  background:rgba(92,240,160,.08);border:1px solid rgba(92,240,160,.3);
+  font-size:12px;color:#5cf0a0;font-weight:600;margin-bottom:16px;
+  opacity:0;transform:translateY(4px);
+  transition:opacity .25s, transform .25s;
+}
+.academy-lesson-status.show{opacity:1;transform:none}
+.academy-lesson-nav{display:flex;gap:10px;justify-content:space-between;align-items:center}
+.academy-lesson-btn{
+  padding:10px 18px;border-radius:8px;
+  font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;font-weight:800;
+  cursor:pointer;transition:background .15s, color .15s, transform .15s;
+}
+.academy-lesson-btn.back{background:transparent;border:1px solid #2a3a30;color:#7a9a88}
+.academy-lesson-btn.back:hover{color:#d0e8d8;border-color:#4a6a58}
+.academy-lesson-btn.back:disabled{opacity:.3;cursor:not-allowed}
+.academy-lesson-btn.skip{background:transparent;border:1px solid transparent;color:#6a8a78}
+.academy-lesson-btn.skip:hover{color:#a0c8af}
+.academy-lesson-btn.next{
+  background:linear-gradient(180deg,#5cf0a0,#00b868);color:#041a0d;border:none;
+  box-shadow:0 4px 14px rgba(0,184,104,.3);
+}
+.academy-lesson-btn.next:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,184,104,.4)}
+.academy-lesson-btn.next.ready{animation:academyPulse 1s ease-in-out infinite}
+@keyframes academyPulse{0%,100%{box-shadow:0 4px 14px rgba(0,184,104,.3)}50%{box-shadow:0 4px 14px rgba(0,184,104,.3),0 0 0 8px rgba(92,240,160,.15)}}
+
+/* Arrow that points to the target control during a lesson */
+.academy-target-arrow{
+  position:fixed;z-index:4999;pointer-events:none;
+  width:36px;height:36px;
+  color:#5cf0a0;filter:drop-shadow(0 0 8px rgba(92,240,160,.8));
+  animation:academyArrow 1.2s ease-in-out infinite;
+}
+@keyframes academyArrow{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+.academy-highlight{
+  animation:academyHighlight 1.4s ease-in-out infinite;
+  border-radius:6px;position:relative;z-index:50;
+}
+@keyframes academyHighlight{
+  0%,100%{box-shadow:0 0 0 0 rgba(92,240,160,0),0 0 0 0 rgba(92,240,160,0)}
+  50%{box-shadow:0 0 0 4px rgba(92,240,160,.4),0 0 22px rgba(92,240,160,.5)}
+}
+
+/* Completion celebration overlay */
+.academy-celebrate{
+  display:none;position:fixed;inset:0;z-index:5100;
+  align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at center, rgba(92,240,160,.25), rgba(0,0,0,.85) 60%);
+  animation:academyFade .3s ease;
+}
+.academy-celebrate.open{display:flex}
+.academy-celebrate-card{
+  text-align:center;padding:40px 50px;
+  background:linear-gradient(180deg,#0f1a14,#051410);
+  border:1px solid rgba(92,240,160,.5);border-radius:20px;
+  box-shadow:0 30px 80px rgba(0,0,0,.9),0 0 60px rgba(92,240,160,.3);
+  max-width:420px;
+  animation:academyPop .4s cubic-bezier(.22,1.4,.4,1);
+}
+.academy-celebrate-icon{font-size:64px;line-height:1;margin-bottom:16px;display:block;animation:academyBounce .6s ease-in-out infinite alternate}
+@keyframes academyBounce{from{transform:translateY(0) scale(1)}to{transform:translateY(-6px) scale(1.05)}}
+.academy-celebrate-title{font-family:'Orbitron',sans-serif;font-size:26px;font-weight:900;color:#fff;margin-bottom:8px;letter-spacing:-.3px}
+.academy-celebrate-sub{font-size:14px;color:#a0c8af;margin-bottom:24px;line-height:1.5}
+.academy-celebrate-xp{
+  font-family:'Orbitron',sans-serif;font-size:38px;font-weight:900;color:#5cf0a0;
+  text-shadow:0 0 20px rgba(92,240,160,.6);margin-bottom:20px;letter-spacing:-.5px;
+}
+.academy-celebrate-xp small{font-size:14px;color:#7a9a88;font-weight:600;margin-left:4px}
+
+/* Hide the old inline-styled controls on the LEARN tab if they still render */
+#learnActiveLesson{display:none !important}
 
 /* PPM segmented LED ladders */
 .amp-ppm-col{display:flex;flex-direction:column;gap:4px;justify-content:center;min-width:68px}
@@ -8071,6 +8469,198 @@ body.theme-light .cdj .cue-btn{
 .cdj .pad-modes,.cdj .hot-cues{width:100% !important;box-sizing:border-box !important}
 .cdj .pad-mode-btn,.cdj .cue-btn{min-width:0 !important;box-sizing:border-box !important}
 
+/* ═══════════════════════════════════════════════════════════════════
+   TITAN GOLD — Vestax PMC-style brushed-brass panel look
+   Decks + mixer chassis become brushed gold metal with dark text,
+   black knobs with white indicator, and subtle corner screws.
+   Matches the reference photo the user supplied.
+   ═══════════════════════════════════════════════════════════════════ */
+body.theme-gold{
+  /* Brushed-brass backdrop for the whole page */
+  background:
+    radial-gradient(ellipse at 50% 50%, #3a2a10 0%, #1a0e04 70%) !important;
+}
+/* Deck chassis — brushed brass with faint vertical grain */
+body.theme-gold .cdj,
+body.theme-gold .mixer{
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(0,0,0,.03) 0 1px,
+      transparent 1px 2px,
+      rgba(255,255,255,.02) 2px 3px,
+      transparent 3px 4px) ,
+    linear-gradient(180deg,#e6c878 0%,#d4b456 35%,#b8983e 75%,#8e6e22 100%) !important;
+  border:1px solid #6a4a0e !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,245,200,.6),
+    inset 0 -2px 8px rgba(60,40,8,.55),
+    inset 0 0 0 2px #2a1a08,
+    inset 0 0 0 3px #8a6a2e,
+    0 12px 28px rgba(0,0,0,.7) !important;
+  position:relative;
+}
+/* Four brass screws in the corners */
+body.theme-gold .cdj::before,
+body.theme-gold .cdj::after,
+body.theme-gold .mixer::before,
+body.theme-gold .mixer::after{
+  content:'';position:absolute;width:10px;height:10px;border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 30%,#f0d890 0%,#a07830 55%,#2a1408 100%) !important;
+  box-shadow:
+    inset 0 0 0 1px #1a0a00,
+    0 1px 1px rgba(0,0,0,.6) !important;
+  z-index:4;pointer-events:none;
+}
+body.theme-gold .cdj::before{top:8px;left:10px !important;background:radial-gradient(circle at 35% 30%,#f0d890 0%,#a07830 55%,#2a1408 100%) !important;height:10px;width:10px;border-radius:50%;opacity:1;}
+body.theme-gold .cdj::after{top:8px;right:10px;bottom:auto;left:auto;height:10px;width:10px;}
+body.theme-gold .mixer::before{top:8px;left:10px;height:10px;width:10px;background:radial-gradient(circle at 35% 30%,#f0d890 0%,#a07830 55%,#2a1408 100%) !important;opacity:1;}
+body.theme-gold .mixer::after{top:8px;right:10px;bottom:auto;left:auto;height:10px;width:10px;display:block !important}
+
+/* Text over brass should be dark (matches the Vestax reference). */
+body.theme-gold .deck-label,
+body.theme-gold .deck-number,
+body.theme-gold .time-label,
+body.theme-gold .tempo-header,
+body.theme-gold .knob-label,
+body.theme-gold .channel-label,
+body.theme-gold .crossfader-label,
+body.theme-gold .mixer-brand,
+body.theme-gold .loop-btn,
+body.theme-gold .jump-btn,
+body.theme-gold .util-btn,
+body.theme-gold .pad-mode-btn{
+  color:#1a0a00 !important;
+  text-shadow:0 1px 0 rgba(255,240,200,.25) !important;
+}
+body.theme-gold .deck-number{
+  background:transparent !important;
+  -webkit-text-fill-color:#1a0a00 !important;
+  border:1px solid rgba(26,10,0,.3) !important;
+  box-shadow:inset 0 1px 0 rgba(255,245,200,.5) !important;
+}
+/* Knobs = black plastic with white indicator line (the Vestax look) */
+body.theme-gold .knob{
+  background:
+    radial-gradient(circle at 35% 30%,#3a3a3a 0%,#1a1a1a 45%,#050505 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    inset 0 -2px 4px rgba(0,0,0,.8),
+    0 3px 6px rgba(0,0,0,.6),
+    0 0 0 1px rgba(0,0,0,.7),
+    0 0 0 2px rgba(255,220,150,.25) !important;
+}
+body.theme-gold .knob-indicator{
+  background:linear-gradient(180deg,#fff,#d0d0d0) !important;
+  box-shadow:0 0 2px rgba(255,255,255,.6) !important;
+}
+/* Faders — gold chassis, dark silver handle with black accent line */
+body.theme-gold .fader-wrap,
+body.theme-gold .crossfader-track{
+  background:linear-gradient(180deg,#1a1208,#050302) !important;
+  border:1px solid #3a2810 !important;
+  box-shadow:inset 0 0 8px rgba(0,0,0,.95) !important;
+}
+body.theme-gold .fader-handle,
+body.theme-gold .crossfader-handle{
+  background:linear-gradient(180deg,#e0e0e0 0%,#a0a0a0 40%,#606060 70%,#2a2a2a 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.5),
+    inset 0 -1px 0 rgba(0,0,0,.4),
+    0 3px 6px rgba(0,0,0,.8) !important;
+}
+body.theme-gold .fader-handle::before,
+body.theme-gold .crossfader-handle::before{
+  background:#0a0a0a !important;box-shadow:none !important;
+}
+/* Small action buttons — dark pills on gold */
+body.theme-gold .loop-btn,
+body.theme-gold .jump-btn,
+body.theme-gold .util-btn,
+body.theme-gold .pad-mode-btn,
+body.theme-gold .tempo-btn{
+  background:linear-gradient(180deg,#2a2010,#0a0806) !important;
+  border:1px solid #4a3818 !important;
+  color:#f3e3b0 !important;
+  text-shadow:none !important;
+  box-shadow:inset 0 1px 0 rgba(255,240,200,.1),0 1px 2px rgba(0,0,0,.6) !important;
+}
+/* Hot cue pads — ivory with subtle shadow, the Vestax rubber-pad look */
+body.theme-gold .cue-btn{
+  background:linear-gradient(180deg,#f0e0a0,#c8a656) !important;
+  border:1px solid #6a4a0e !important;
+  color:#1a0a00 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,250,220,.6),
+    inset 0 -2px 3px rgba(90,60,15,.3),
+    0 2px 3px rgba(0,0,0,.5) !important;
+}
+body.theme-gold .cue-btn.active{
+  background:linear-gradient(180deg,#fff0a8,#e8c463) !important;
+  color:#1a0a00 !important;
+  box-shadow:
+    0 0 12px rgba(255,220,150,.7),
+    inset 0 1px 0 rgba(255,255,240,.8) !important;
+}
+/* Big transport buttons — keep dark but rim with gold */
+body.theme-gold .big-btn{
+  background:linear-gradient(180deg,#2a2010,#0a0806) !important;
+  border:1px solid #8a6a2e !important;
+  color:#f3e3b0 !important;
+}
+body.theme-gold .big-btn.play.active{
+  background:linear-gradient(180deg,#e8c463,#8a6a2e) !important;
+  color:#0a0806 !important;
+  box-shadow:0 0 20px rgba(232,196,99,.6),inset 0 1px 0 rgba(255,250,220,.4) !important;
+}
+body.theme-gold .big-btn.cue.active{
+  background:linear-gradient(180deg,#ffcf40,#a87a18) !important;
+  color:#0a0806 !important;
+  box-shadow:0 0 18px rgba(255,207,64,.7),inset 0 1px 0 rgba(255,250,220,.4) !important;
+}
+/* Jog wheel sits in gold — outer ring becomes brass */
+body.theme-gold .jog-outer{
+  background:
+    radial-gradient(circle at 30% 30%,#f0d890 0%,#b8983e 45%,#6a4a0e 100%) !important;
+  box-shadow:
+    inset 0 2px 6px rgba(255,245,200,.4),
+    inset 0 -4px 10px rgba(30,18,4,.7),
+    0 0 0 2px #2a1a08,
+    0 0 0 4px #8a6a2e,
+    0 8px 18px rgba(0,0,0,.7) !important;
+}
+body.theme-gold .jog-platter{
+  background:
+    radial-gradient(circle at 35% 35%,#2a2a2e 0%,#0a0a0b 70%,#000 100%) !important;
+}
+/* BPM dial stays dark so the orange needle pops */
+body.theme-gold .jog-center-screen{
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255,245,200,.08), transparent 60%),
+    linear-gradient(180deg,#141008 0%,#050302 100%) !important;
+  border:1px solid #8a6a2e !important;
+  box-shadow:
+    inset 0 0 0 3px #050302,
+    0 0 0 1px #6a4a0e,
+    0 2px 6px rgba(0,0,0,.8) !important;
+}
+body.theme-gold .jog-center-screen .bpm-display{
+  color:#f5d76e !important;text-shadow:0 0 6px rgba(245,215,110,.7) !important;
+}
+/* Screens (display panels) — keep dark LCD feel against gold chassis */
+body.theme-gold .screen{
+  background:linear-gradient(180deg,#0e0a04 0%,#050302 100%) !important;
+  border:1px solid #3a2810 !important;
+  box-shadow:
+    inset 0 0 0 2px #1a0e04,
+    inset 0 0 16px rgba(255,220,120,.05),
+    0 0 0 1px rgba(255,220,150,.15) !important;
+}
+body.theme-gold .track-title{color:#f5e3a8 !important;text-shadow:0 0 6px rgba(245,215,110,.4) !important}
+body.theme-gold .screen-bpm{color:#f5d76e !important}
+body.theme-gold .time-value{color:#f5e3a8 !important}
+body.theme-gold .waveform{background:#050302 !important;border:1px solid #3a2810 !important}
+
 /* ============================================================
    PROFESSIONAL TURNTABLE / CDJ LOOK
    Realistic Pioneer-style hardware: matte black + brushed
@@ -10576,7 +11166,7 @@ function buildDeckHTML(d){
     <button class="pad-mode-btn" data-pad-mode="pitch" data-deck="${d}">PITCH</button>
   </div>
   <div class="hot-cues" data-deck="${d}">${[1,2,3,4,5,6,7,8].map(n=>`<button class="cue-btn" data-color="${n}" data-cue="${n}">${n}</button>`).join('')}</div>
-  <div class="jog-wrapper"><div class="jog-wheel" id="jog-${d}"><div class="jog-outer"></div><div class="jog-ring"><div class="jog-ring-light"></div></div><div class="jog-markers"></div><div class="jog-platter" id="platter-${d}"><div class="jog-platter-disc"></div></div><div class="jog-indicator"></div><div class="jog-center-screen"><div class="bpm-display" id="centerBpm-${d}">---.-</div><div class="bpm-sub">BPM</div></div></div></div>
+  <div class="jog-wrapper"><div class="jog-wheel" id="jog-${d}"><div class="jog-outer"></div><div class="jog-ring"><div class="jog-ring-light"></div></div><div class="jog-markers"></div><div class="jog-platter" id="platter-${d}"><div class="jog-platter-disc"></div></div><div class="jog-indicator"></div><div class="jog-center-screen"><svg class="jog-bpm-dial" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="jgrad-${d}" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#2ee0ff"/><stop offset="0.5" stop-color="#c7a856"/><stop offset="1" stop-color="#ff5050"/></linearGradient></defs><path class="jdial-track" d="M 20 78 A 42 42 0 1 1 80 78" fill="none" stroke="#15151a" stroke-width="3"/><path class="jdial-range" d="M 20 78 A 42 42 0 1 1 80 78" fill="none" stroke="url(#jgrad-${d})" stroke-width="1.4" opacity="0.65" stroke-linecap="round"/><g class="jdial-ticks" stroke="#5a5a62" stroke-width="1"><line x1="20" y1="78" x2="22" y2="74"/><line x1="15" y1="55" x2="19" y2="54"/><line x1="20" y1="32" x2="24" y2="34"/><line x1="37" y1="17" x2="39" y2="21"/><line x1="50" y1="13" x2="50" y2="18"/><line x1="63" y1="17" x2="61" y2="21"/><line x1="80" y1="32" x2="76" y2="34"/><line x1="85" y1="55" x2="81" y2="54"/><line x1="80" y1="78" x2="78" y2="74"/></g><g class="jdial-labels" font-family="Orbitron,sans-serif" font-size="6" font-weight="700" fill="#6a6a72" text-anchor="middle"><text x="13" y="82">60</text><text x="50" y="11">130</text><text x="87" y="82">200</text></g><g class="jdial-needle" id="bpmNeedle-${d}" transform="rotate(0 50 50)"><line x1="50" y1="50" x2="50" y2="18" stroke="#ff8a1a" stroke-width="1.5" stroke-linecap="round"/><circle cx="50" cy="18" r="1.8" fill="#ff8a1a"/></g><circle class="jdial-hub" cx="50" cy="50" r="4" fill="#0a0a0b" stroke="#3a3a42" stroke-width="0.8"/><circle cx="50" cy="50" r="1.5" fill="#ff8a1a" opacity="0.8"/></svg><div class="bpm-display" id="centerBpm-${d}">---</div><div class="bpm-sub">BPM</div></div></div></div>
   <div class="transport">
     <button class="big-btn cue" data-deck="${d}" data-action="cue"><span class="icon">◄◄</span><span class="lbl">CUE</span></button>
     <button class="big-btn play" data-deck="${d}" data-action="play"><span class="icon" id="playIcon-${d}">▶</span><span class="lbl" id="playLabel-${d}">PLAY</span></button>
@@ -11317,6 +11907,7 @@ async function loadTrackToDeck(deckId,track){
   setText(`bpm-${deckId}`,track.bpm.toFixed(2));
   setText(`key-${deckId}`,track.key);
   setText(`centerBpm-${deckId}`,track.bpm.toFixed(1));
+  {const ndl=document.getElementById(`bpmNeedle-${deckId}`);if(ndl){const clamp=Math.max(60,Math.min(200,track.bpm||0));const ang=-135+((clamp-60)/140)*270;ndl.setAttribute('transform',`rotate(${ang.toFixed(1)} 50 50)`);}}
   setText(`cdTitle-${deckId}`,track.title.toUpperCase());
   setText(`cdBpm-${deckId}`,track.bpm.toFixed(1)+' BPM');
   document.querySelectorAll(`.hot-cues[data-deck="${deckId}"] .cue-btn`).forEach(b=>b.classList.remove('active'));
@@ -11712,6 +12303,8 @@ function setTempo(deckId,pct){
     const nb=d.track.bpm*(1+pct/100);
     const bpmEl=document.getElementById(`bpm-${deckId}`);if(bpmEl)bpmEl.textContent=nb.toFixed(2);
     const cbEl=document.getElementById(`centerBpm-${deckId}`);if(cbEl)cbEl.textContent=nb.toFixed(1);
+    const ndl=document.getElementById(`bpmNeedle-${deckId}`);
+    if(ndl){const clamp=Math.max(60,Math.min(200,nb));const ang=-135+((clamp-60)/140)*270;ndl.setAttribute('transform',`rotate(${ang.toFixed(1)} 50 50)`);}
     const cdBpm=document.getElementById(`cdBpm-${deckId}`);if(cdBpm)cdBpm.textContent=nb.toFixed(1)+' BPM';
   }
   updateMasterBpm();
