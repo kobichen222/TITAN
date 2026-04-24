@@ -10454,16 +10454,18 @@ No mappings yet. Pick a preset above or right-click any control → MIDI Learn.
     </div>
   </div>
   <div class="vibe-chips" id="spVibeChips">
-    <button class="vibe-chip" data-vibe="dark techno 128 acid bass driving">🌒 DARK TECHNO</button>
-    <button class="vibe-chip" data-vibe="uplifting trance 138 supersaw big reverb">🚀 UPLIFTING TRANCE</button>
-    <button class="vibe-chip" data-vibe="deep house 122 piano warm pad summer">🌊 DEEP HOUSE</button>
-    <button class="vibe-chip" data-vibe="big room 128 lead heavy drive">🔊 BIG ROOM</button>
-    <button class="vibe-chip" data-vibe="psytrance 145 acid dark rolling bass">🌀 PSYTRANCE</button>
-    <button class="vibe-chip" data-vibe="minimal techno 126 percussion dark">⚫ MINIMAL</button>
-    <button class="vibe-chip" data-vibe="tech house 124 rolling groove">🎛 TECH HOUSE</button>
-    <button class="vibe-chip" data-vibe="hoover trance 140 classic hardstyle">🌪 HOOVER</button>
-    <button class="vibe-chip" data-vibe="dreamy ambient pad 110 vox reverb">☁ DREAMY PAD</button>
-    <button class="vibe-chip" data-vibe="acid 130 303 dark energy">💊 ACID</button>
+    <button class="vibe-chip" data-vibe="peak time techno 130 berlin driving dark">🌒 DARK TECHNO</button>
+    <button class="vibe-chip" data-vibe="uplifting trance 140 supersaw rolling peak drop">🚀 UPLIFTING TRANCE</button>
+    <button class="vibe-chip" data-vibe="deep house 122 warm pad summer soul sunset">🌊 DEEP HOUSE</button>
+    <button class="vibe-chip" data-vibe="big room 128 festival lead heavy drive peak">🔊 BIG ROOM</button>
+    <button class="vibe-chip" data-vibe="psytrance 145 acid rolling bass forest">🌀 PSYTRANCE</button>
+    <button class="vibe-chip" data-vibe="minimal techno 126 dub percussion underground">⚫ MINIMAL</button>
+    <button class="vibe-chip" data-vibe="tech house 124 jackin rolling peak dancefloor">🎛 TECH HOUSE</button>
+    <button class="vibe-chip" data-vibe="hoover trance 142 classic hardstyle rave">🌪 HOOVER</button>
+    <button class="vibe-chip" data-vibe="dreamy ambient pad 110 vox reverb cosmic">☁ DREAMY PAD</button>
+    <button class="vibe-chip" data-vibe="acid 130 303 dark energy rolling drop">💊 ACID</button>
+    <button class="vibe-chip" data-vibe="peak time techno 132 drop club drive heavy">🔥 PEAK TIME</button>
+    <button class="vibe-chip" data-vibe="classic house 123 piano chord summer ibiza">🎹 CLASSIC HOUSE</button>
   </div>
   <div class="vibe-status" id="spVibeStatus"></div>
 </div>
@@ -15808,6 +15810,108 @@ const SP_DRUM_PRESETS={
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   ],
+  /* ═══ NEW PRO-GRADE DROP PATTERNS ═══
+     Crafted to the conventions of top-tier producers — Above & Beyond / Armin
+     (trance-peak), Adam Beyer / Amelie Lens (techno-drive), FISHER / Chris
+     Lake (tech-house-peak), Kerri Chandler (house-groove). Every pattern is
+     a DROP-phase layout: full kick, layered clap + snare, proper offbeat hat
+     placement, realistic percussive fills. Drop them straight into a club
+     and they feel right. */
+  'trance-peak':[
+    /* 138-140 BPM drop. Kick 4-on-floor, clap/snare stacked on 2+4,
+       closed hat 16ths for driving energy, open hat on the "&" of 2+4
+       (classic EDM trance offbeat), shaker constant, ride hitting
+       every 8th from the 2nd half for lift. */
+    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],   // KICK
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // SNARE (layered with clap)
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],   // CHH 16ths
+    [0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0],   // OHH on "&" of 2/4
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // CLAP
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],   // CRASH bar 1
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],   // LOWTOM fill
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],   // HITOM fill
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],   // RIM
+    [0,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0],   // RIDE from half-bar
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],   // SHAKER
+    [0,0,1,0,0,0,0,1,0,0,1,0,0,0,0,1],   // PERC syncopated
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  'techno-drive':[
+    /* 128-132 BPM Berlin peak-time. Kick 4-on-floor — no snare, no clap
+       (pure techno). CHH offbeat 8ths, RIDE ticking 16ths for relentless
+       forward push. Heavy RIM accents + COWBELL for industrial feel.
+       Toms used as transitional fills at phrase ends. */
+    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],   // KICK
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],   // CHH offbeat 8ths
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],   // OHH at very end for tension
+    [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0],   // CLAP on 4 only
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],   // LOWTOM fill
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // RIM accent 2+4
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],   // RIDE driving 16ths
+    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],   // SHAKER 8th
+    [0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],   // PERC offbeat
+    [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],   // COWBELL accent
+  ],
+  'house-groove':[
+    /* 122-124 BPM NYC / Chicago groove. Kick 4-on-floor with a ghost kick
+       on the "&" of 3 (step 7) — classic Kerri Chandler move. Clap 2+4,
+       offbeat CHH, open hat on "&" of 4 (step 15) for lift.  Swung
+       shakers + syncopated congas = proper soul-house feel. */
+    [1,0,0,0,1,0,0,1,1,0,0,0,1,0,0,0],   // KICK w/ ghost on 7
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],   // no snare (clap does the work)
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],   // CHH offbeat
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],   // OHH on "&" of 4
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // CLAP 2+4
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],   // CRASH bar 1
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],   // HITOM pickup
+    [0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0],   // RIM syncopation
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],   // SHAKER 16ths (swung by engine)
+    [0,0,1,0,1,0,0,1,0,0,1,0,0,1,0,0],   // CONGAS polyrhythmic
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
+  'tech-house-peak':[
+    /* 124-126 BPM big-club drop — FISHER / Chris Lake. Bouncy kick with
+       extra sixteenth on step 2 + 14, clap on 2+4 (always), offbeat CHH,
+       open hat on every "&", ride bell from mid-bar, heavy percussion
+       layer for tribal drive.  This is the pattern that fills dancefloors. */
+    [1,0,1,0,1,0,0,1,1,0,0,0,1,0,1,0],   // KICK bouncy
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // SNARE 2+4 (stacked w/ clap)
+    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],   // CHH 8ths
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],   // OHH "&"s
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // CLAP 2+4
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],   // HITOM end-of-bar fill
+    [0,0,1,0,0,0,0,1,0,0,1,0,0,1,0,0],   // RIM syncopated accents
+    [0,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0],   // RIDE from mid-bar for lift
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],   // SHAKER
+    [0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],   // PERC tribal 8ths
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],   // COWBELL accent
+  ],
+  'deep-house-garage':[
+    /* 120-122 BPM UK garage / NY deep. Kick mostly on 1+3, extra on "&"
+       of 2 for swing. Snare + clap stacked on 2+4. CHH 16ths but
+       with ghosted beats for a swung feel. Open hat on "&" of 4.
+       Sparse perc, warm ride. */
+    [1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0],   // KICK w/ ghost
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // SNARE
+    [1,0,1,1,1,0,1,0,1,0,1,1,1,0,1,0],   // CHH w/ ghosts
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],   // OHH final "&"
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // CLAP
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0],   // RIM syncopation
+    [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],   // RIDE 2+4
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],   // PERC
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  ],
 };
 function spDrumPresetCopy(key){
   const src=SP_DRUM_PRESETS[key];
@@ -16203,6 +16307,40 @@ const SP_BASS_PRESETS={
     null,{note:'A1'},null,null,
     {note:'C3',accent:true},null,null,{note:'A1'},
   ]),
+  /* ═══ NEW PRO-GRADE BASS PATTERNS ═══ */
+  /* Classic Above & Beyond / Armin rolling octave bass — proper trance
+     drop feel. Octave jump down on the 1, back up for drive. Slide on
+     the last step carries into the next bar. */
+  'trance-rolling':spBassPatternFrom([
+    {note:'A1',accent:true},{note:'A2'},{note:'A1'},{note:'A2'},
+    {note:'A1'},{note:'A2'},{note:'A1'},{note:'E2',slide:true},
+    {note:'A1',accent:true},{note:'A2'},{note:'A1'},{note:'A2'},
+    {note:'C2'},{note:'D2'},{note:'A1'},{note:'A2',slide:true},
+  ]),
+  /* Berlin-techno sub bass — held fundamental on 1 + syncopated
+     accents on 3 and the "&" of 4. Deep + hypnotic. */
+  'techno-sub':spBassPatternFrom([
+    {note:'A1',accent:true},null,null,null,
+    null,null,{note:'A1'},null,
+    {note:'A1'},null,null,{note:'G2',slide:true},
+    null,null,{note:'A1'},{note:'E2'},
+  ]),
+  /* Jackin' tech-house — FISHER-style bouncy octave walk with
+     slides for groove. Drops the 1 hard, adds offbeat push. */
+  'jackin-bass':spBassPatternFrom([
+    {note:'A1',accent:true},null,{note:'A2'},null,
+    {note:'A1'},{note:'A2',slide:true},{note:'C3'},null,
+    {note:'A1',accent:true},null,{note:'A2'},{note:'A1'},
+    {note:'E2'},{note:'A2',slide:true},{note:'A1'},{note:'G2'},
+  ]),
+  /* Deep house sub roll — warm 1/8-note walk with minimal octave
+     motion.  Sits under the pattern without fighting the kick. */
+  'deep-roll':spBassPatternFrom([
+    {note:'A1'},null,{note:'A1'},null,
+    {note:'A1'},null,{note:'C2'},null,
+    {note:'E2'},null,{note:'E2'},null,
+    {note:'D2'},null,{note:'A1',slide:true},null,
+  ]),
 };
 function spBuildBassSeq(){
   const row=document.getElementById('spBassSeq');
@@ -16398,20 +16536,24 @@ const SP_CHORD_VARIANTS={
   _default      :['am-trance','am-lift'],
 };
 const SP_VIBE_PRESETS={
-  // core vibe templates — referenced by chip + keyword parser
-  'trance'     :{bpm:138,drum:'trance',bass:'trance-bass',synth:'trance-supersaw',chord:'am-lift',fx:{delaySend:.35,reverbSend:.55,chorusMix:.3,masterDrive:.15}},
-  'uplifting'  :{bpm:140,drum:'trance-2',bass:'trance-bass',synth:'trance-supersaw',chord:'am-lift',fx:{delaySend:.4,reverbSend:.65,chorusMix:.4}},
-  'hoover'     :{bpm:142,drum:'trance-2',bass:'hoover-bass',synth:'hoover',chord:'am-trance',fx:{delaySend:.3,reverbSend:.5,chorusMix:.4,masterDrive:.3}},
-  'psytrance'  :{bpm:145,drum:'psytrance',bass:'psytrance-bass',synth:'acid-303',chord:'em-psy',fx:{delaySend:.2,reverbSend:.35,masterDrive:.35}},
-  'techno'     :{bpm:130,drum:'techno',bass:'tech-riff',synth:'techno-reese',chord:'am-techno',fx:{delaySend:.25,reverbSend:.25,masterDrive:.3}},
-  'dark-techno':{bpm:132,drum:'techno-2',bass:'tech-riff',synth:'dark-bass',chord:'am-techno',fx:{delaySend:.2,reverbSend:.4,masterDrive:.4}},
-  'acid'       :{bpm:130,drum:'techno',bass:'classic-acid',synth:'acid-303',chord:'am-techno',fx:{delaySend:.35,reverbSend:.3,masterDrive:.35}},
-  'house'      :{bpm:124,drum:'house',bass:'deep-bass',synth:'house-piano',chord:'am-house',fx:{delaySend:.25,reverbSend:.4,chorusMix:.25}},
-  'deep-house' :{bpm:122,drum:'deep-house',bass:'deep-bass',synth:'warm-pad',chord:'em-deep',fx:{delaySend:.25,reverbSend:.55,chorusMix:.35}},
-  'tech-house' :{bpm:124,drum:'tech-house',bass:'rolling-bass',synth:'tech-stab',chord:'am-house',fx:{delaySend:.3,reverbSend:.3}},
-  'big-room'   :{bpm:128,drum:'big-room',bass:'reese-bass',synth:'big-room',chord:'am-lift',fx:{delaySend:.25,reverbSend:.5,masterDrive:.35}},
-  'minimal'    :{bpm:126,drum:'minimal',bass:'minimal-bass',synth:'deep-pluck',chord:'cm-minimal',fx:{delaySend:.3,reverbSend:.35}},
-  'dreamy'     :{bpm:110,drum:'deep-house',bass:'sub-bass',synth:'vox-pad',chord:'em-deep',fx:{delaySend:.4,reverbSend:.75,chorusMix:.55}},
+  /* Core vibe templates — referenced by chip + keyword parser.
+     Values tuned 2026-04 to pro-tier club-ready sound — bigger reverb
+     tails on melodic vibes, proper drive on techno, and peak-time drop
+     patterns for anything that reads as "high energy" in the prompt. */
+  'trance'     :{bpm:138,drum:'trance-peak',   bass:'trance-rolling',synth:'trance-supersaw',chord:'am-lift',      fx:{delaySend:.50,reverbSend:.75,chorusMix:.45,masterDrive:.20}},
+  'uplifting'  :{bpm:140,drum:'trance-peak',   bass:'trance-rolling',synth:'trance-supersaw',chord:'am-euphoric',  fx:{delaySend:.55,reverbSend:.85,chorusMix:.55,masterDrive:.18}},
+  'hoover'     :{bpm:142,drum:'trance-2',      bass:'hoover-bass',   synth:'hoover',         chord:'am-trance',    fx:{delaySend:.40,reverbSend:.60,chorusMix:.50,masterDrive:.35}},
+  'psytrance'  :{bpm:145,drum:'psytrance',     bass:'psytrance-bass',synth:'acid-303',       chord:'em-psy',       fx:{delaySend:.25,reverbSend:.45,masterDrive:.45}},
+  'techno'     :{bpm:130,drum:'techno-drive',  bass:'techno-sub',    synth:'techno-reese',   chord:'am-techno',    fx:{delaySend:.30,reverbSend:.35,masterDrive:.40}},
+  'dark-techno':{bpm:132,drum:'techno-drive',  bass:'techno-sub',    synth:'dark-bass',      chord:'fm-dark',      fx:{delaySend:.25,reverbSend:.50,masterDrive:.50}},
+  'acid'       :{bpm:130,drum:'techno',        bass:'classic-acid',  synth:'acid-303',       chord:'am-techno',    fx:{delaySend:.45,reverbSend:.40,masterDrive:.40}},
+  'house'      :{bpm:124,drum:'house-groove',  bass:'deep-roll',     synth:'house-piano',    chord:'am-house',     fx:{delaySend:.30,reverbSend:.55,chorusMix:.30}},
+  'deep-house' :{bpm:122,drum:'deep-house-garage',bass:'deep-roll',  synth:'warm-pad',       chord:'em-deep',      fx:{delaySend:.30,reverbSend:.70,chorusMix:.40}},
+  'tech-house' :{bpm:124,drum:'tech-house-peak',bass:'jackin-bass',  synth:'tech-stab',      chord:'am-house',     fx:{delaySend:.40,reverbSend:.40,masterDrive:.15}},
+  'big-room'   :{bpm:128,drum:'big-room',      bass:'reese-bass',    synth:'big-room',       chord:'am-lift',      fx:{delaySend:.30,reverbSend:.60,masterDrive:.40,chorusMix:.30}},
+  'minimal'    :{bpm:126,drum:'minimal',       bass:'minimal-bass',  synth:'deep-pluck',     chord:'cm-minimal',   fx:{delaySend:.35,reverbSend:.45}},
+  'dreamy'     :{bpm:110,drum:'deep-house-garage',bass:'sub-bass',   synth:'vox-pad',        chord:'em-deep',      fx:{delaySend:.45,reverbSend:.85,chorusMix:.60}},
+  'peak-time'  :{bpm:130,drum:'techno-drive',  bass:'techno-sub',    synth:'reese-bass',     chord:'am-techno',    fx:{delaySend:.30,reverbSend:.40,masterDrive:.50}},
 };
 const SP_VIBE_KEYWORDS={
   // keyword -> key in SP_VIBE_PRESETS (order: longest match wins at parse time)
@@ -16424,7 +16566,7 @@ const SP_VIBE_KEYWORDS={
   'uplifting':'uplifting','progressive':'uplifting','melodic':'uplifting',
   'emotional':'uplifting','euphoric':'uplifting','anjuna':'uplifting',
   'hardstyle':'hoover','hoover':'hoover','hard dance':'hoover','hardcore':'hoover',
-  'detroit':'techno','berlin':'techno','industrial':'dark-techno','warehouse':'techno','peak time':'techno',
+  'detroit':'techno','berlin':'techno','industrial':'dark-techno','warehouse':'techno','peak time':'peak-time','peak-time':'peak-time','club':'peak-time','dancefloor':'peak-time','drop':'peak-time',
   'acid techno':'acid','303':'acid','acid':'acid',
   'afterhours':'minimal','lofi':'minimal','underground':'minimal',
   'jackin':'tech-house','jack':'tech-house','club':'house',
