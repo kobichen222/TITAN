@@ -9463,9 +9463,193 @@ body.show-all .cdj .jog-center-screen .bpm-sub{
   .cdj .jog-center-screen .bpm-display,
   .jog-center-screen .bpm-display{font-size:20px !important}
 }
+/* ===== TITAN LANDING ===== */
+#titan-landing{position:fixed;inset:0;z-index:99999;background:radial-gradient(ellipse at 30% 20%,#1a1a1f 0%,#070708 60%,#000 100%);color:#e8e8ea;font-family:'Barlow Condensed',sans-serif;overflow-y:auto;animation:tlIn .35s ease-out}
+#titan-landing.tl-out{opacity:0;pointer-events:none;transition:opacity .35s ease-out}
+@keyframes tlIn{from{opacity:0}to{opacity:1}}
+#titan-landing .tl-bg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 85% 15%,rgba(255,122,0,.18) 0%,transparent 45%),radial-gradient(circle at 10% 90%,rgba(0,212,255,.12) 0%,transparent 45%)}
+#titan-landing .tl-grid{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0 60px,rgba(255,255,255,.018) 60px 61px),repeating-linear-gradient(0deg,transparent 0 60px,rgba(255,255,255,.018) 60px 61px);mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%)}
+#titan-landing .tl-wrap{position:relative;max-width:1240px;margin:0 auto;padding:32px 32px 60px}
+#titan-landing .tl-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:64px}
+#titan-landing .tl-brand{font-family:'Orbitron',sans-serif;font-weight:900;font-size:22px;letter-spacing:5px;color:#fff;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+#titan-landing .tl-brand .tl-tag{font-size:10px;background:#ff7a00;color:#000;padding:4px 8px;border-radius:3px;letter-spacing:2px}
+#titan-landing .tl-brand b{color:#ff7a00;font-weight:900}
+#titan-landing .tl-navlinks{display:flex;gap:28px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:#9a9a9e;text-transform:uppercase}
+#titan-landing .tl-navlinks a{color:inherit;text-decoration:none;cursor:pointer}
+#titan-landing .tl-navlinks a:hover{color:#ff7a00}
+#titan-landing .tl-hero{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;margin-bottom:80px}
+@media (max-width:900px){#titan-landing .tl-hero{grid-template-columns:1fr;gap:32px}}
+#titan-landing .tl-eyebrow{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:4px;color:#ff7a00;border:1px solid rgba(255,122,0,.4);padding:6px 14px;border-radius:99px;margin-bottom:22px;background:rgba(255,122,0,.06);text-transform:uppercase}
+#titan-landing h1{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(40px,5.6vw,68px);line-height:1.02;letter-spacing:1px;color:#fff;margin-bottom:22px;text-transform:uppercase}
+#titan-landing h1 em{font-style:normal;background:linear-gradient(135deg,#ff7a00,#ffb347);-webkit-background-clip:text;background-clip:text;color:transparent}
+#titan-landing .tl-sub{font-size:19px;line-height:1.55;color:#b8b8bc;max-width:540px;margin-bottom:36px;font-weight:400}
+#titan-landing .tl-cta-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+#titan-landing .tl-cta{font-family:'Orbitron',sans-serif;font-weight:800;font-size:14px;letter-spacing:3px;padding:18px 32px;border-radius:6px;cursor:pointer;border:none;text-transform:uppercase;transition:transform .12s ease, box-shadow .2s ease, border-color .2s ease, color .2s ease;display:inline-flex;align-items:center;gap:10px}
+#titan-landing .tl-cta-primary{background:linear-gradient(135deg,#ff7a00,#ff5a00);color:#000;box-shadow:0 8px 32px rgba(255,122,0,.35)}
+#titan-landing .tl-cta-primary:hover{transform:translateY(-2px);box-shadow:0 12px 44px rgba(255,122,0,.6)}
+#titan-landing .tl-cta-ghost{background:transparent;color:#e8e8ea;border:1px solid #3a3a3e}
+#titan-landing .tl-cta-ghost:hover{border-color:#00d4ff;color:#00d4ff}
+#titan-landing .tl-meta{margin-top:22px;font-family:'Share Tech Mono',monospace;font-size:11px;color:#6a6a6e;letter-spacing:2px;text-transform:uppercase}
+#titan-landing .tl-meta b{color:#9a9a9e;font-weight:400}
+#titan-landing .tl-meta b+b::before{content:' · ';color:#3a3a3e;margin:0 6px}
+#titan-landing .tl-mock{position:relative;aspect-ratio:5/4;border-radius:16px;background:linear-gradient(135deg,#1a1a1c 0%,#0a0a0b 100%);border:1px solid #2a2a2e;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.7), inset 0 0 60px rgba(0,0,0,.4)}
+#titan-landing .tl-mock::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 14px,rgba(255,255,255,.018) 14px 15px),repeating-linear-gradient(0deg,transparent 0 14px,rgba(255,255,255,.018) 14px 15px)}
+#titan-landing .tl-jog{position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 30%,#3a3a3e,#0a0a0b 70%);border:3px solid #1a1a1c;box-shadow:0 8px 30px rgba(0,0,0,.6),inset 0 0 30px rgba(0,0,0,.6)}
+#titan-landing .tl-jog.l{width:40%;aspect-ratio:1;top:14%;left:6%}
+#titan-landing .tl-jog.r{width:40%;aspect-ratio:1;top:14%;right:6%}
+#titan-landing .tl-jog::before{content:'';position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,#222 0%,#0a0a0b 70%);border:1px solid #2a2a2e}
+#titan-landing .tl-jog::after{content:'';position:absolute;inset:30%;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffa544 0%,#ff5a00 50%,#5a2200 100%);box-shadow:0 0 28px rgba(255,122,0,.6),inset 0 -6px 12px rgba(0,0,0,.5);animation:tlSpin 6s linear infinite}
+#titan-landing .tl-jog.r::after{animation-direction:reverse;animation-duration:5s;background:radial-gradient(circle at 30% 30%,#7fefff 0%,#00d4ff 50%,#003a5a 100%);box-shadow:0 0 28px rgba(0,212,255,.6),inset 0 -6px 12px rgba(0,0,0,.5)}
+@keyframes tlSpin{to{transform:rotate(360deg)}}
+#titan-landing .tl-mixer{position:absolute;left:50%;bottom:8%;transform:translateX(-50%);width:22%;height:64%;background:#0d0d0f;border:1px solid #2a2a2e;border-radius:6px;display:flex;justify-content:space-around;align-items:flex-end;padding:18% 10% 10%}
+#titan-landing .tl-mixer span{display:block;width:7px;height:100%;background:linear-gradient(to top,#1a1a1c 0%,#1a1a1c 60%,#ff7a00 60%,#ff7a00 100%);border-radius:2px;animation:tlVu 1.4s ease-in-out infinite alternate;transform-origin:bottom}
+#titan-landing .tl-mixer span:nth-child(2){animation-delay:.2s;background:linear-gradient(to top,#1a1a1c 0%,#1a1a1c 35%,#00ff7a 35%,#00ff7a 100%)}
+#titan-landing .tl-mixer span:nth-child(3){animation-delay:.4s;background:linear-gradient(to top,#1a1a1c 0%,#1a1a1c 50%,#ffd400 50%,#ffd400 100%)}
+#titan-landing .tl-mixer span:nth-child(4){animation-delay:.6s;background:linear-gradient(to top,#1a1a1c 0%,#1a1a1c 30%,#00d4ff 30%,#00d4ff 100%)}
+@keyframes tlVu{from{filter:brightness(.55);transform:scaleY(.85)}to{filter:brightness(1.25);transform:scaleY(1)}}
+#titan-landing .tl-mock-label{position:absolute;top:12px;left:14px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:#5a5a5e;text-transform:uppercase}
+#titan-landing .tl-mock-led{position:absolute;top:14px;right:14px;display:flex;gap:5px}
+#titan-landing .tl-mock-led i{width:6px;height:6px;border-radius:50%;background:#ff7a00;box-shadow:0 0 6px #ff7a00;animation:tlBlink 1.6s infinite}
+#titan-landing .tl-mock-led i:nth-child(2){background:#00ff7a;box-shadow:0 0 6px #00ff7a;animation-delay:.4s}
+#titan-landing .tl-mock-led i:nth-child(3){background:#00d4ff;box-shadow:0 0 6px #00d4ff;animation-delay:.8s}
+@keyframes tlBlink{0%,80%,100%{opacity:1}90%{opacity:.3}}
+#titan-landing .tl-features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:64px}
+@media (max-width:900px){#titan-landing .tl-features{grid-template-columns:1fr}}
+#titan-landing .tl-feat{background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,0));border:1px solid #1f1f23;border-radius:12px;padding:26px;transition:border-color .2s ease, transform .2s ease}
+#titan-landing .tl-feat:hover{border-color:#ff7a00;transform:translateY(-3px)}
+#titan-landing .tl-feat-ico{font-size:28px;margin-bottom:14px;display:block}
+#titan-landing .tl-feat h3{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:3px;color:#fff;margin-bottom:10px;text-transform:uppercase}
+#titan-landing .tl-feat p{font-size:14px;line-height:1.55;color:#9a9a9e}
+#titan-landing .tl-band{border-top:1px solid #1f1f23;border-bottom:1px solid #1f1f23;padding:32px 0;margin-bottom:48px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;text-align:center}
+@media (max-width:900px){#titan-landing .tl-band{grid-template-columns:repeat(2,1fr)}}
+#titan-landing .tl-stat b{display:block;font-family:'Orbitron',sans-serif;font-weight:900;font-size:34px;background:linear-gradient(135deg,#ff7a00,#ffb347);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px}
+#titan-landing .tl-stat span{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:#9a9a9e;text-transform:uppercase}
+#titan-landing .tl-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-family:'Share Tech Mono',monospace;font-size:11px;color:#6a6a6e;letter-spacing:2px;text-transform:uppercase}
+#titan-landing .tl-foot a{color:#9a9a9e;text-decoration:none;border-bottom:1px dashed #3a3a3e;padding-bottom:1px}
+#titan-landing .tl-foot a:hover{color:#ff7a00;border-color:#ff7a00}
+body.tl-locked{overflow:hidden}
 </style>
 </head>
 <body>
+<div id="titan-landing" lang="en" dir="ltr" role="dialog" aria-label="Welcome to DJ TITAN">
+  <div class="tl-bg"></div>
+  <div class="tl-grid"></div>
+  <div class="tl-wrap">
+    <nav class="tl-nav">
+      <div class="tl-brand"><span class="tl-tag">DJ</span><b>TITAN</b></div>
+      <div class="tl-navlinks">
+        <a id="tlNavFeat">Features</a>
+        <a id="tlNavLearn">Academy</a>
+        <a href="https://github.com/kobichen222/TITAN/releases/latest" target="_blank" rel="noopener">Download</a>
+      </div>
+    </nav>
+
+    <section class="tl-hero">
+      <div>
+        <span class="tl-eyebrow">Professional DJ Studio · Browser-Native</span>
+        <h1>Mix like a pro.<br/><em>Right in your browser.</em></h1>
+        <p class="tl-sub">Four decks. A full mixer. Real turntables. AI-assisted mixing. No install, no setup — open the studio and play. Built for everyone, from the curious beginner to the working DJ.</p>
+        <div class="tl-cta-row">
+          <button class="tl-cta tl-cta-primary" id="tlEnter" type="button">Enter Studio →</button>
+          <button class="tl-cta tl-cta-ghost" id="tlLearn" type="button">🎓 Start Learning</button>
+        </div>
+        <div class="tl-meta">
+          <b>Offline-first</b><b>MIDI ready</b><b>Web Audio</b><b>Free to try</b>
+        </div>
+      </div>
+      <div class="tl-mock" aria-hidden="true">
+        <div class="tl-mock-label">TITAN-3K · DUAL DECK</div>
+        <div class="tl-mock-led"><i></i><i></i><i></i></div>
+        <div class="tl-jog l"></div>
+        <div class="tl-jog r"></div>
+        <div class="tl-mixer"><span></span><span></span><span></span><span></span></div>
+      </div>
+    </section>
+
+    <section class="tl-features">
+      <div class="tl-feat">
+        <span class="tl-feat-ico">🎛</span>
+        <h3>4 Decks + Mixer</h3>
+        <p>Four TITAN-3K decks with sync, cue, loops and hot cues. A 4-channel mixer with EQ, filter and per-channel FX.</p>
+      </div>
+      <div class="tl-feat">
+        <span class="tl-feat-ico">💿</span>
+        <h3>TITAN VINYL</h3>
+        <p>Analog-feel turntables with jog scrub, pitch-bend, key-lock and a 7-button transport row for instant cue setting.</p>
+      </div>
+      <div class="tl-feat">
+        <span class="tl-feat-ico">🤖</span>
+        <h3>AI Mixing</h3>
+        <p>Off-thread BPM and key detection, harmonic Camelot guidance, and AUTO-MIX with explicit FROM / TO selectors.</p>
+      </div>
+      <div class="tl-feat">
+        <span class="tl-feat-ico">🎓</span>
+        <h3>TITAN Academy</h3>
+        <p>Interactive lessons with XP, progress and live highlight cues — learn DJing the same way Duolingo teaches a language.</p>
+      </div>
+      <div class="tl-feat">
+        <span class="tl-feat-ico">🎚</span>
+        <h3>TITAN LAB</h3>
+        <p>64-pad sampler, recorder, drum-machine patterns and a library of trance / house / techno presets, studio-grade.</p>
+      </div>
+      <div class="tl-feat">
+        <span class="tl-feat-ico">⚡</span>
+        <h3>Offline + Cloud</h3>
+        <p>Service Worker keeps the studio working without Wi-Fi. Sync your library and sessions to the cloud when you want.</p>
+      </div>
+    </section>
+
+    <section class="tl-band">
+      <div class="tl-stat"><b>4×</b><span>Decks</span></div>
+      <div class="tl-stat"><b>15+</b><span>Lessons</span></div>
+      <div class="tl-stat"><b>30+</b><span>Presets</span></div>
+      <div class="tl-stat"><b>0</b><span>Install</span></div>
+    </section>
+
+    <div class="tl-foot">
+      <div>© DJ TITAN — Professional DJ Studio</div>
+      <div>
+        <a href="?home=1">Home</a> ·
+        <a href="https://github.com/kobichen222/TITAN/releases/latest" target="_blank" rel="noopener">Windows installer</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY='titan_landing_seen_v1';
+  var el=document.getElementById('titan-landing');
+  if(!el) return;
+  var force=/[?&]home=1\b/.test(location.search);
+  var seen=false;
+  try{seen=localStorage.getItem(KEY)==='1'}catch(_){}
+  if(seen && !force){el.parentNode.removeChild(el);return}
+  document.body.classList.add('tl-locked');
+  function dismiss(goLearn){
+    try{localStorage.setItem(KEY,'1')}catch(_){}
+    el.classList.add('tl-out');
+    document.body.classList.remove('tl-locked');
+    setTimeout(function(){
+      if(el.parentNode) el.parentNode.removeChild(el);
+      if(goLearn){
+        var t=document.querySelector('.tab-btn[data-tab="learn"], .tab-btn[data-tab="academy"]');
+        if(t) t.click();
+      }
+    },360);
+  }
+  var enter=document.getElementById('tlEnter');
+  var learn=document.getElementById('tlLearn');
+  var nf=document.getElementById('tlNavFeat');
+  var nl=document.getElementById('tlNavLearn');
+  if(enter) enter.addEventListener('click',function(){dismiss(false)});
+  if(learn) learn.addEventListener('click',function(){dismiss(true)});
+  if(nf) nf.addEventListener('click',function(){var f=el.querySelector('.tl-features');if(f) f.scrollIntoView({behavior:'smooth'})});
+  if(nl) nl.addEventListener('click',function(){dismiss(true)});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape' && document.getElementById('titan-landing')) dismiss(false);
+  });
+})();
+</script>
 <div class="header-bar">
 <div class="brand"><span class="max">DJ</span> <span>TITAN</span> — Professional DJ Studio</div>
 <div class="deck-switch-bar header-dsb">
