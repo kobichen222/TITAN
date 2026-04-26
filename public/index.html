@@ -3914,9 +3914,57 @@ body.work-mode{
 }
 body.work-mode .console,body.work-mode .library,
 body.work-mode .beat-fx-panel,body.work-mode .scene-fx-panel,
-body.work-mode .mixer-toolbar,body.work-mode .rgb-ambient{
+body.work-mode .mixer-toolbar,body.work-mode .top-fx-row,body.work-mode .rgb-ambient{
   max-width:none !important;width:calc(100vw - 12px) !important;
 }
+/* When the FX panels live inside the top-fx-row grid, they must fill
+   their grid column (100%), not the whole viewport (100vw) — otherwise
+   each child claims the full screen and they overlap. The row itself
+   gets 100vw above; the cells inside it get 100% of the cell. */
+body.work-mode .top-fx-row > .mixer-toolbar,
+body.work-mode .top-fx-row > .beat-fx-panel,
+body.work-mode .top-fx-row > .scene-fx-panel{
+  width:100% !important;max-width:none !important;min-width:0 !important;margin:0 !important;
+}
+/* Larger work-mode padding/font-size on the FX buttons can overflow a
+   grid cell on narrower screens. Allow buttons to wrap and the
+   selectors to shrink so the AUTO MIX / BEAT FX / SCENE FX columns
+   stay inside their share of the row. */
+body.work-mode .top-fx-row{
+  grid-template-columns:minmax(0,1.4fr) minmax(0,1.8fr) minmax(0,1.5fr) !important;
+  gap:14px !important;
+}
+body.work-mode .top-fx-row .beat-fx-panel,
+body.work-mode .top-fx-row .scene-fx-panel{
+  padding:10px 14px !important;
+}
+body.work-mode .top-fx-row .beat-fx-panel .beat-buttons{
+  display:flex !important;flex-wrap:wrap !important;gap:6px !important;flex:1 1 100%;
+}
+body.work-mode .top-fx-row .beat-btn{
+  flex:1 1 auto;min-width:48px !important;padding:8px 6px !important;font-size:11px !important;letter-spacing:1px !important;
+}
+body.work-mode .top-fx-row .scene-fx-panel .scene-fx-buttons{
+  display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:6px !important;
+}
+body.work-mode .top-fx-row .scene-btn{
+  padding:8px 4px !important;font-size:10.5px !important;letter-spacing:1.2px !important;min-width:0;
+}
+body.work-mode .top-fx-row .fx-selector{
+  min-width:80px !important;font-size:11px !important;padding:5px 8px !important;
+}
+body.work-mode .top-fx-row .mtb-automix .automix-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:5px !important;
+}
+body.work-mode .top-fx-row .mtb-automix .automix-btn{
+  padding:8px 4px !important;font-size:10px !important;letter-spacing:1px !important;min-height:32px;
+}
+body.work-mode .top-fx-row .mtb-automix .automix-btn .amx-txt{font-size:10px}
+body.work-mode .top-fx-row .mtb-automix .automix-decks{padding:4px 2px !important;gap:4px !important}
+body.work-mode .top-fx-row .mtb-automix .automix-deck-btn{height:26px;font-size:10.5px !important;padding:0 4px 0 14px !important}
+body.work-mode .top-fx-row .mtb-automix .automix-sub{gap:6px !important}
+body.work-mode .top-fx-row .mtb-automix .automix-bars{padding:4px 8px !important;font-size:10px !important;min-width:54px}
+body.work-mode .top-fx-row .mtb-automix .automix-sync{padding:6px 12px !important;font-size:10px !important}
 /* Keep the floating deck-switch-bar pinned (the full-width rule above does
    not apply to it because it's not in the list). */
 body.work-mode .console{grid-template-columns:1fr 420px 1fr}
