@@ -9653,29 +9653,110 @@ body.show-all .cdj .jog-center-screen .bpm-sub{
 #titan-landing .tl-meta b{color:#9a9a9e;font-weight:400;display:inline-flex;align-items:center;gap:8px}
 #titan-landing .tl-meta b::before{content:'';width:5px;height:5px;border-radius:50%;background:#ff7a00;box-shadow:0 0 6px rgba(255,122,0,.6)}
 
-/* Hero mock */
-#titan-landing .tl-mock{position:relative;aspect-ratio:5/4;border-radius:18px;background:linear-gradient(135deg,#1a1a1c 0%,#0a0a0b 100%);border:1px solid #2a2a2e;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 60px rgba(255,122,0,.08),inset 0 0 60px rgba(0,0,0,.4);animation:tlFloat 7s ease-in-out infinite;will-change:transform}
-#titan-landing .tl-mock::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 14px,rgba(255,255,255,.018) 14px 15px),repeating-linear-gradient(0deg,transparent 0 14px,rgba(255,255,255,.018) 14px 15px)}
-#titan-landing .tl-mock::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(255,122,0,.15) 0%,transparent 50%);pointer-events:none}
-#titan-landing .tl-jog{position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 30%,#3a3a3e,#0a0a0b 70%);border:3px solid #1a1a1c;box-shadow:0 8px 30px rgba(0,0,0,.6),inset 0 0 30px rgba(0,0,0,.6)}
-#titan-landing .tl-jog.l{width:40%;aspect-ratio:1;top:14%;left:6%}
-#titan-landing .tl-jog.r{width:40%;aspect-ratio:1;top:14%;right:6%}
-#titan-landing .tl-jog::before{content:'';position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,#222 0%,#0a0a0b 70%);border:1px solid #2a2a2e}
-#titan-landing .tl-jog::after{content:'';position:absolute;inset:30%;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffa544 0%,#ff5a00 50%,#5a2200 100%);box-shadow:0 0 28px rgba(255,122,0,.6),inset 0 -6px 12px rgba(0,0,0,.5);animation:tlSpin 6s linear infinite;will-change:transform}
-#titan-landing .tl-jog.r::after{animation-direction:reverse;animation-duration:5s;background:radial-gradient(circle at 30% 30%,#7fefff 0%,#00d4ff 50%,#003a5a 100%);box-shadow:0 0 28px rgba(0,212,255,.6),inset 0 -6px 12px rgba(0,0,0,.5)}
-@keyframes tlSpin{to{transform:rotate(360deg)}}
-#titan-landing .tl-mixer{position:absolute;left:50%;bottom:8%;transform:translateX(-50%);width:22%;height:64%;background:#0d0d0f;border:1px solid #2a2a2e;border-radius:6px;display:flex;justify-content:space-around;align-items:flex-end;padding:18% 10% 10%;box-shadow:0 6px 24px rgba(0,0,0,.5),inset 0 0 20px rgba(0,0,0,.6)}
-#titan-landing .tl-mixer span{display:block;width:7px;height:100%;background:linear-gradient(to top,#1a1a1c 0%,#1a1a1c 60%,#ff7a00 60%,#ff7a00 100%);border-radius:2px;animation:tlVu 1.4s ease-in-out infinite alternate;transform-origin:bottom;will-change:transform,filter}
-#titan-landing .tl-mixer span:nth-child(2){animation-delay:.2s;background:linear-gradient(to top,#1a1a1c 0%,#1a1a1c 35%,#00ff7a 35%,#00ff7a 100%)}
-#titan-landing .tl-mixer span:nth-child(3){animation-delay:.4s;background:linear-gradient(to top,#1a1a1c 0%,#1a1a1c 50%,#ffd400 50%,#ffd400 100%)}
-#titan-landing .tl-mixer span:nth-child(4){animation-delay:.6s;background:linear-gradient(to top,#1a1a1c 0%,#1a1a1c 30%,#00d4ff 30%,#00d4ff 100%)}
-@keyframes tlVu{from{filter:brightness(.55);transform:scaleY(.85)}to{filter:brightness(1.25);transform:scaleY(1)}}
-#titan-landing .tl-mock-label{position:absolute;top:12px;left:14px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:#5a5a5e;text-transform:uppercase}
-#titan-landing .tl-mock-led{position:absolute;top:14px;right:14px;display:flex;gap:5px}
-#titan-landing .tl-mock-led i{width:6px;height:6px;border-radius:50%;background:#ff7a00;box-shadow:0 0 6px #ff7a00;animation:tlBlink 1.6s infinite}
-#titan-landing .tl-mock-led i:nth-child(2){background:#00ff7a;box-shadow:0 0 6px #00ff7a;animation-delay:.4s}
-#titan-landing .tl-mock-led i:nth-child(3){background:#00d4ff;box-shadow:0 0 6px #00d4ff;animation-delay:.8s}
+/* Hero mock — TITAN-3K dual-deck controller */
+#titan-landing .tl-mock{position:relative;aspect-ratio:16/11;border-radius:18px;background:
+  linear-gradient(180deg,#26262a 0%,#1a1a1d 35%,#101013 70%,#08080a 100%);
+  border:1px solid #2e2e34;overflow:hidden;
+  box-shadow:0 50px 120px rgba(0,0,0,.8),0 0 60px rgba(255,122,0,.08),
+    inset 0 1px 0 rgba(255,255,255,.06),
+    inset 0 -2px 0 rgba(0,0,0,.7),
+    inset 0 0 60px rgba(0,0,0,.5);
+  animation:tlFloat 7s ease-in-out infinite;will-change:transform;
+  display:grid;grid-template-rows:32px minmax(0,1fr);
+  padding:34px 3.4% 4%;gap:2.4%;isolation:isolate}
+#titan-landing .tl-mock::before{content:'';position:absolute;inset:0;background:
+  repeating-linear-gradient(90deg,transparent 0 14px,rgba(255,255,255,.015) 14px 15px),
+  repeating-linear-gradient(0deg,transparent 0 14px,rgba(255,255,255,.015) 14px 15px);
+  pointer-events:none;z-index:0}
+#titan-landing .tl-mock::after{content:'';position:absolute;left:0;right:0;top:0;height:38%;
+  background:radial-gradient(ellipse at 50% 0%,rgba(255,122,0,.12) 0%,transparent 60%);
+  pointer-events:none;z-index:0}
+#titan-landing .tl-mock-label{position:absolute;top:13px;left:16px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:#7a7a80;text-transform:uppercase;z-index:3}
+#titan-landing .tl-mock-led{position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:3}
+#titan-landing .tl-mock-led i{width:6px;height:6px;border-radius:50%;background:#ff7a00;box-shadow:0 0 8px #ff7a00,inset 0 0 2px rgba(255,255,255,.4);animation:tlBlink 1.6s infinite}
+#titan-landing .tl-mock-led i:nth-child(2){background:#00ff7a;box-shadow:0 0 8px #00ff7a,inset 0 0 2px rgba(255,255,255,.4);animation-delay:.4s}
+#titan-landing .tl-mock-led i:nth-child(3){background:#00d4ff;box-shadow:0 0 8px #00d4ff,inset 0 0 2px rgba(255,255,255,.4);animation-delay:.8s}
 @keyframes tlBlink{0%,80%,100%{opacity:1}90%{opacity:.3}}
+
+/* Top — twin track screens */
+#titan-landing .tl-mock-screens{display:grid;grid-template-columns:1fr 1fr;gap:2.4%;position:relative;z-index:2}
+#titan-landing .tl-screen{display:grid;grid-template-rows:auto 1fr auto;gap:6px;padding:9px 12px;background:linear-gradient(180deg,#04080c,#020406);border:1px solid #1a2630;border-radius:8px;box-shadow:inset 0 0 18px rgba(0,212,255,.06),inset 0 0 0 1px rgba(0,0,0,.6),0 4px 14px rgba(0,0,0,.5)}
+#titan-landing .tl-screen-title{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1.5px;color:#cfe9ff;text-transform:uppercase;line-height:1;min-width:0}
+#titan-landing .tl-screen-title span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#titan-landing .tl-screen-title em{font-style:normal;font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1.5px;color:#5a8aa6;flex:0 0 auto}
+#titan-landing .tl-screen-wave{display:flex;align-items:center;gap:1.5px;height:36px;padding:2px 0}
+#titan-landing .tl-screen-wave i{flex:1;background:linear-gradient(180deg,#ff9a40,#ff5a00);border-radius:1px;box-shadow:0 0 4px rgba(255,122,0,.5);animation:tlWave 2.6s ease-in-out infinite;transform-origin:center}
+#titan-landing .tl-screen-wave i:nth-child(2n){animation-delay:.15s}
+#titan-landing .tl-screen-wave i:nth-child(3n){animation-delay:.3s}
+#titan-landing .tl-screen-wave i:nth-child(4n){animation-delay:.45s}
+#titan-landing .tl-screen-wave i:nth-child(5n){animation-delay:.6s}
+#titan-landing .tl-screen-wave i:nth-child(7n){animation-delay:.75s}
+#titan-landing .tl-screen-wave-cyan i{background:linear-gradient(180deg,#7fefff,#00a4cc);box-shadow:0 0 4px rgba(0,212,255,.5)}
+@keyframes tlWave{0%,100%{height:30%}50%{height:96%}}
+#titan-landing .tl-screen-wave i:nth-child(odd){animation-duration:2.2s}
+#titan-landing .tl-screen-wave i:nth-child(even){animation-duration:3s}
+#titan-landing .tl-screen-meta{display:flex;align-items:baseline;justify-content:space-between;font-family:'Orbitron',sans-serif;color:#ffb347;font-size:14px;font-weight:900;letter-spacing:1px;text-shadow:0 0 8px rgba(255,122,0,.4)}
+#titan-landing .tl-screen-meta b{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:#5a8aa6;font-weight:400}
+#titan-landing .tl-screen-meta span:last-child{color:#7fefff;font-size:13px;text-shadow:0 0 8px rgba(0,212,255,.5)}
+#titan-landing .tl-screen-wave-cyan ~ .tl-screen-meta span:first-child,
+#titan-landing .tl-screen-r .tl-screen-meta span:first-child{color:#7fefff;text-shadow:0 0 8px rgba(0,212,255,.5)}
+#titan-landing .tl-screen-r .tl-screen-meta span:last-child{color:#ffb347;text-shadow:0 0 8px rgba(255,122,0,.4)}
+
+/* Bottom row — jog | mixer | jog */
+#titan-landing .tl-deck-row{display:grid;grid-template-columns:1fr 0.7fr 1fr;gap:2.4%;align-items:stretch;position:relative;z-index:2;min-height:0}
+#titan-landing .tl-side{display:grid;grid-template-rows:1fr auto;gap:8px;min-width:0;align-content:end}
+
+/* Jog wheels */
+#titan-landing .tl-jog{position:relative;border-radius:50%;width:88%;aspect-ratio:1;justify-self:center;align-self:end;background:radial-gradient(circle at 30% 30%,#48484e,#1a1a1c 60%,#0a0a0b 100%);border:3px solid #0a0a0c;box-shadow:0 14px 36px rgba(0,0,0,.7),inset 0 0 30px rgba(0,0,0,.7),inset 0 2px 0 rgba(255,255,255,.06)}
+#titan-landing .tl-jog::before{content:'';position:absolute;inset:7%;border-radius:50%;background:repeating-conic-gradient(from 0deg,#16161a 0deg 4deg,#0c0c0e 4deg 8deg);border:1px solid #2a2a2e;box-shadow:inset 0 0 14px rgba(0,0,0,.7)}
+#titan-landing .tl-jog::after{content:'';position:absolute;inset:24%;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffd49a 0%,#ff7a00 35%,#7a2a00 90%);box-shadow:0 0 32px rgba(255,122,0,.7),inset 0 -8px 14px rgba(0,0,0,.5),inset 0 4px 8px rgba(255,255,255,.15);animation:tlSpin 6s linear infinite;will-change:transform}
+#titan-landing .tl-jog.r::after{animation-direction:reverse;animation-duration:5s;background:radial-gradient(circle at 30% 30%,#bff5ff 0%,#00d4ff 35%,#003a5a 90%);box-shadow:0 0 32px rgba(0,212,255,.7),inset 0 -8px 14px rgba(0,0,0,.5),inset 0 4px 8px rgba(255,255,255,.15)}
+#titan-landing .tl-jog-bpm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:clamp(10px,1.3vw,15px);font-weight:900;color:#0a0a0c;letter-spacing:1.5px;z-index:2;text-shadow:0 1px 0 rgba(255,255,255,.25)}
+@keyframes tlSpin{to{transform:rotate(360deg)}}
+
+/* Hot-cue pads */
+#titan-landing .tl-pads{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:100%;max-width:88%;justify-self:center}
+#titan-landing .tl-pads i{aspect-ratio:1.6/1;border-radius:4px;background:linear-gradient(180deg,#2a2a30,#15151a);border:1px solid #0a0a0d;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -1px 0 rgba(0,0,0,.7),0 2px 4px rgba(0,0,0,.5);position:relative}
+#titan-landing .tl-side-l .tl-pads i:nth-child(1){background:linear-gradient(180deg,#ffb347,#ff7a00);box-shadow:0 0 10px rgba(255,122,0,.6),inset 0 1px 0 rgba(255,255,255,.3)}
+#titan-landing .tl-side-l .tl-pads i:nth-child(3){background:linear-gradient(180deg,#7fefff,#00d4ff);box-shadow:0 0 10px rgba(0,212,255,.6),inset 0 1px 0 rgba(255,255,255,.3)}
+#titan-landing .tl-side-l .tl-pads i:nth-child(6){background:linear-gradient(180deg,#5af09a,#00ff7a);box-shadow:0 0 10px rgba(0,255,122,.6),inset 0 1px 0 rgba(255,255,255,.3)}
+#titan-landing .tl-side-r .tl-pads i:nth-child(2){background:linear-gradient(180deg,#7fefff,#00d4ff);box-shadow:0 0 10px rgba(0,212,255,.6),inset 0 1px 0 rgba(255,255,255,.3)}
+#titan-landing .tl-side-r .tl-pads i:nth-child(4){background:linear-gradient(180deg,#ffb347,#ff7a00);box-shadow:0 0 10px rgba(255,122,0,.6),inset 0 1px 0 rgba(255,255,255,.3)}
+#titan-landing .tl-side-r .tl-pads i:nth-child(7){background:linear-gradient(180deg,#ffec80,#ffd400);box-shadow:0 0 10px rgba(255,212,0,.55),inset 0 1px 0 rgba(255,255,255,.3)}
+
+/* Center mixer */
+#titan-landing .tl-mixer{position:relative;background:linear-gradient(180deg,#1a1a1f 0%,#0a0a0c 100%);border:1px solid #2a2a2e;border-radius:8px;display:grid;grid-template-rows:auto 1fr auto;gap:8px;padding:12px 10px 10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),inset 0 0 18px rgba(0,0,0,.7),0 6px 18px rgba(0,0,0,.6)}
+#titan-landing .tl-mixer-rail{position:absolute;left:10px;right:10px;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,122,0,.5) 30%,rgba(0,212,255,.5) 70%,transparent);border-radius:2px}
+#titan-landing .tl-mixer-knobs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;align-items:center;justify-items:center}
+#titan-landing .tl-mixer-knobs i{--k:60%;width:clamp(14px,2.2vw,22px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 30% 30%,#3a3a40,#0a0a0c 75%);border:1px solid #0a0a0c;box-shadow:0 2px 4px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.1);position:relative}
+#titan-landing .tl-mixer-knobs i::before{content:'';position:absolute;left:50%;top:8%;width:2px;height:42%;background:#ff7a00;border-radius:1px;box-shadow:0 0 4px rgba(255,122,0,.8);transform:translateX(-50%) rotate(calc((var(--k) - 50%) * 2.4))}
+#titan-landing .tl-mixer-knobs i:nth-child(1)::before,
+#titan-landing .tl-mixer-knobs i:nth-child(4)::before{background:#ff7a00;box-shadow:0 0 4px rgba(255,122,0,.8)}
+#titan-landing .tl-mixer-knobs i:nth-child(2)::before,
+#titan-landing .tl-mixer-knobs i:nth-child(5)::before{background:#ffd400;box-shadow:0 0 4px rgba(255,212,0,.8)}
+#titan-landing .tl-mixer-knobs i:nth-child(3)::before,
+#titan-landing .tl-mixer-knobs i:nth-child(6)::before{background:#00d4ff;box-shadow:0 0 4px rgba(0,212,255,.8)}
+#titan-landing .tl-mixer-faders{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;align-items:end;padding:0 4px;min-height:0}
+#titan-landing .tl-mixer-faders span{position:relative;display:block;width:100%;max-width:8px;height:100%;justify-self:center;background:linear-gradient(180deg,#000 0%,#0a0a0c 100%);border:1px solid #1a1a1c;border-radius:2px;box-shadow:inset 0 0 4px rgba(0,0,0,.8)}
+#titan-landing .tl-mixer-faders span::before{content:'';position:absolute;left:0;right:0;bottom:60%;height:55%;border-radius:2px;background:linear-gradient(to top,#1a1a1c 0%,#ff7a00 100%);box-shadow:0 0 6px rgba(255,122,0,.5);animation:tlVu 1.4s ease-in-out infinite alternate;transform-origin:bottom}
+#titan-landing .tl-mixer-faders span::after{content:'';position:absolute;left:-3px;right:-3px;top:35%;height:8px;border-radius:2px;background:linear-gradient(180deg,#cfcfd4 0%,#7a7a80 50%,#3a3a3e 100%);box-shadow:0 1px 2px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.4)}
+#titan-landing .tl-mixer-faders span:nth-child(2)::before{animation-delay:.2s;background:linear-gradient(to top,#1a1a1c 0%,#00ff7a 100%);box-shadow:0 0 6px rgba(0,255,122,.5)}
+#titan-landing .tl-mixer-faders span:nth-child(2)::after{top:50%}
+#titan-landing .tl-mixer-faders span:nth-child(3)::before{animation-delay:.4s;background:linear-gradient(to top,#1a1a1c 0%,#ffd400 100%);box-shadow:0 0 6px rgba(255,212,0,.5)}
+#titan-landing .tl-mixer-faders span:nth-child(3)::after{top:42%}
+#titan-landing .tl-mixer-faders span:nth-child(4)::before{animation-delay:.6s;background:linear-gradient(to top,#1a1a1c 0%,#00d4ff 100%);box-shadow:0 0 6px rgba(0,212,255,.5)}
+#titan-landing .tl-mixer-faders span:nth-child(4)::after{top:55%}
+@keyframes tlVu{from{filter:brightness(.7);transform:scaleY(.85)}to{filter:brightness(1.25);transform:scaleY(1)}}
+#titan-landing .tl-mixer-cross{position:relative;height:14px;background:linear-gradient(180deg,#000,#0a0a0c);border:1px solid #1a1a1c;border-radius:3px;box-shadow:inset 0 0 6px rgba(0,0,0,.8)}
+#titan-landing .tl-mixer-cross i{position:absolute;top:50%;left:48%;transform:translate(-50%,-50%);width:18px;height:22px;background:linear-gradient(180deg,#cfcfd4,#7a7a80 50%,#3a3a3e);border-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.4)}
+
+@media (max-width:520px){
+  #titan-landing .tl-mock{aspect-ratio:16/12;padding:30px 3% 4%}
+  #titan-landing .tl-screen-meta{font-size:12px}
+  #titan-landing .tl-screen-title{font-size:9px;letter-spacing:1px}
+  #titan-landing .tl-mixer-knobs{gap:4px}
+  #titan-landing .tl-jog-bpm{font-size:10px}
+}
 
 /* Features */
 #titan-landing .tl-features{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.6vw,22px);margin-bottom:clamp(40px,6vw,72px)}
@@ -9793,9 +9874,48 @@ body.tl-locked{overflow:hidden}
       <div class="tl-mock" aria-hidden="true">
         <div class="tl-mock-label">TITAN-3K · DUAL DECK</div>
         <div class="tl-mock-led"><i></i><i></i><i></i></div>
-        <div class="tl-jog l"></div>
-        <div class="tl-jog r"></div>
-        <div class="tl-mixer"><span></span><span></span><span></span><span></span></div>
+        <div class="tl-mock-screens">
+          <div class="tl-screen tl-screen-l">
+            <div class="tl-screen-title"><span>REQUIEM</span><em>extended mix</em></div>
+            <div class="tl-screen-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="tl-screen-meta"><span>128.0</span><b>BPM</b><span>8A</span></div>
+          </div>
+          <div class="tl-screen tl-screen-r">
+            <div class="tl-screen-title"><span>GHOST FREQUENCY</span><em>club edit</em></div>
+            <div class="tl-screen-wave tl-screen-wave-cyan"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="tl-screen-meta"><span>128.0</span><b>BPM</b><span>9A</span></div>
+          </div>
+        </div>
+        <div class="tl-deck-row">
+          <div class="tl-side tl-side-l">
+            <div class="tl-jog l">
+              <div class="tl-jog-bpm">128.0</div>
+            </div>
+            <div class="tl-pads">
+              <i></i><i></i><i></i><i></i>
+              <i></i><i></i><i></i><i></i>
+            </div>
+          </div>
+          <div class="tl-mixer">
+            <div class="tl-mixer-rail"></div>
+            <div class="tl-mixer-knobs">
+              <i style="--k:80%"></i><i style="--k:55%"></i>
+              <i style="--k:65%"></i><i style="--k:70%"></i>
+              <i style="--k:50%"></i><i style="--k:60%"></i>
+            </div>
+            <div class="tl-mixer-faders"><span></span><span></span><span></span><span></span></div>
+            <div class="tl-mixer-cross"><i></i></div>
+          </div>
+          <div class="tl-side tl-side-r">
+            <div class="tl-jog r">
+              <div class="tl-jog-bpm">128.0</div>
+            </div>
+            <div class="tl-pads">
+              <i></i><i></i><i></i><i></i>
+              <i></i><i></i><i></i><i></i>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -9850,7 +9970,7 @@ body.tl-locked{overflow:hidden}
 </div>
 <script>
 (function(){
-  var KEY='titan_landing_seen_v1';
+  var KEY='titan_landing_seen_v3';
   var el=document.getElementById('titan-landing');
   if(!el) return;
   var force=/[?&]home=1\b/.test(location.search);
