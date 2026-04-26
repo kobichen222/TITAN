@@ -1561,6 +1561,29 @@ body.work-mode .console::before,body.work-mode .console::after{
 .automix-sync:hover{background:var(--orange);color:#000;box-shadow:0 0 12px rgba(255,138,26,.6)}
 .automix-sync.active{background:var(--orange);color:#000;box-shadow:0 0 14px rgba(255,138,26,.7),inset 0 0 8px rgba(0,0,0,.3);border-color:#fff}
 
+/* AUTO MIX PRO — deck selectors + AI MIX + set builder + score readout */
+.automix-pro{display:flex;flex-direction:column;gap:6px;margin-top:8px;padding:8px 6px 6px;border-top:1px dashed rgba(255,255,255,.08)}
+.automix-pro .amp-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.automix-pro .amp-label{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1.6px;color:var(--text-dim);font-weight:700;min-width:36px}
+.automix-pro .amp-deck-pick{display:flex;gap:3px;flex:1}
+.automix-pro .amp-deck-pick button{flex:1;padding:5px 0;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;font-weight:700;background:linear-gradient(180deg,#26262b 0%,#15151a 100%);color:var(--text-dim);border:1px solid rgba(255,255,255,.08);border-radius:4px;cursor:pointer;transition:all .12s;min-width:26px}
+.automix-pro .amp-deck-pick button:hover{border-color:var(--orange);color:var(--orange)}
+.automix-pro .amp-deck-pick button.active{background:linear-gradient(180deg,var(--orange),#c85a00);color:#0a0a0a;border-color:var(--orange-glow);box-shadow:0 0 10px rgba(255,138,26,.4)}
+.automix-pro .amp-action-row{gap:6px}
+.automix-pro .automix-btn.ai{flex:1;background:linear-gradient(180deg,rgba(140,0,200,.25),rgba(60,0,90,.5));border:1px solid rgba(186,80,255,.55);color:#e8c8ff;font-weight:800}
+.automix-pro .automix-btn.ai:hover{border-color:#c060ff;color:#fff;box-shadow:0 0 14px rgba(186,80,255,.45)}
+.automix-pro .amp-score{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 10px;background:#0a0a0c;border:1px solid rgba(255,255,255,.08);border-radius:5px;min-width:90px}
+.automix-pro .amp-score-label{font-family:'Orbitron',sans-serif;font-size:7.5px;letter-spacing:1.4px;color:var(--text-dim);font-weight:700}
+.automix-pro .amp-score-val{font-family:'Share Tech Mono',monospace;font-size:14px;font-weight:800;color:#aaa;letter-spacing:0.5px;line-height:1.1}
+.automix-pro .amp-score-val.good{color:#5cf0a0;text-shadow:0 0 6px rgba(92,240,160,.45)}
+.automix-pro .amp-score-val.ok{color:#ffb24a;text-shadow:0 0 6px rgba(255,178,74,.4)}
+.automix-pro .amp-score-val.weak{color:#ff5a5a;text-shadow:0 0 6px rgba(255,90,90,.4)}
+.automix-pro .amp-score-detail{font-family:'Share Tech Mono',monospace;font-size:8px;color:#7a7a82;letter-spacing:.4px;margin-top:2px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px}
+@media(max-width:900px){
+  .automix-pro .amp-action-row{flex-wrap:wrap}
+  .automix-pro .amp-score{width:100%}
+}
+
 /* DECK SWITCH BAR — 4-deck focus toggle */
 .deck-switch-bar{
   width:100%;max-width:1700px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;
@@ -12339,9 +12362,39 @@ function buildMixerToolbarHTML(){
         <button class="automix-btn" data-mix="smooth" title="Long bass-swap blend">SMOOTH</button>
         <button class="automix-btn" data-mix="energy" title="High-pass sweep + expo fade">ENERGY</button>
         <button class="automix-btn" data-mix="harmonic" title="Key-matched blend">HARMONIC</button>
+        <button class="automix-btn" data-mix="filter" title="Low-pass filter sweep — festival-style">FILTER</button>
+        <button class="automix-btn" data-mix="flanger" title="Comb-filter sweep transition">FLANGER</button>
+        <button class="automix-btn danger" data-mix="drop" title="1 bar of silence then drop on the down-beat">DROP</button>
         <button class="automix-btn danger" data-mix="cut" title="Hard cut on next downbeat">CUT</button>
         <button class="automix-btn echo" data-mix="echo" title="Echo tail on outgoing">ECHO</button>
         <button class="automix-btn pick" id="automixPickBtn" title="Load smart next track">PICK</button>
+      </div>
+      <div class="automix-pro">
+        <div class="amp-row amp-pick-row">
+          <span class="amp-label">FROM</span>
+          <div class="amp-deck-pick" data-amp-pick="from">
+            <button data-deck="AUTO" class="active" title="Auto-pick the playing deck">AUTO</button>
+            <button data-deck="A">A</button><button data-deck="B">B</button>
+            <button data-deck="C">C</button><button data-deck="D">D</button>
+          </div>
+        </div>
+        <div class="amp-row amp-pick-row">
+          <span class="amp-label">TO</span>
+          <div class="amp-deck-pick" data-amp-pick="to">
+            <button data-deck="AUTO" class="active" title="Auto-pick the next idle deck">AUTO</button>
+            <button data-deck="A">A</button><button data-deck="B">B</button>
+            <button data-deck="C">C</button><button data-deck="D">D</button>
+          </div>
+        </div>
+        <div class="amp-row amp-action-row">
+          <button class="automix-btn ai" id="aiMixBtn" title="🧠 AI picks the best style for the current pair and runs the mix">🧠 AI MIX</button>
+          <button class="automix-btn ai" id="aiSetBtn" title="🎼 AI builds a continuous set from your library">🎼 BUILD SET</button>
+          <div class="amp-score" id="amScoreBox" title="AI-predicted compatibility — BPM × key × energy">
+            <span class="amp-score-label">SCORE</span>
+            <span class="amp-score-val" id="amScoreVal">—</span>
+            <span class="amp-score-detail" id="amScoreDetail"></span>
+          </div>
+        </div>
       </div>
       <div class="automix-sub">
         <span class="automix-sub-label">BARS</span>
@@ -22734,11 +22787,27 @@ function eqSwap(outId,inId,durSec,filterStyle){
     dOut.colorFilter.frequency.setValueAtTime(20,t0);
     dOut.colorFilter.frequency.exponentialRampToValueAtTime(8000,t1);
   }
+  if(filterStyle==='lp-sweep'&&dOut.colorFilter){
+    // Low-pass sweep — bass-loud filter close, classic festival fade-out.
+    dOut.colorFilter.type='lowpass';dOut.colorFilter.frequency.cancelScheduledValues(t0);
+    dOut.colorFilter.frequency.setValueAtTime(18000,t0);
+    dOut.colorFilter.frequency.exponentialRampToValueAtTime(180,t1);
+  }
   if(filterStyle==='echo-out'&&window.sceneFxWet){
     sceneFxWet.gain.cancelScheduledValues(t0);
     sceneFxWet.gain.setValueAtTime(sceneFxWet.gain.value,t0);
     sceneFxWet.gain.linearRampToValueAtTime(0.7,t0+durSec*0.5);
     sceneFxWet.gain.linearRampToValueAtTime(0,t1+1);
+  }
+  if(filterStyle==='flanger'&&dOut.colorFilter){
+    // Comb-style allpass sweep — pseudo-flanger using the per-deck
+    // colorFilter biquad. Sweeps the resonance peak through the
+    // mid-band as the volume fades.
+    dOut.colorFilter.type='bandpass';dOut.colorFilter.Q.value=8;
+    dOut.colorFilter.frequency.cancelScheduledValues(t0);
+    dOut.colorFilter.frequency.setValueAtTime(2200,t0);
+    dOut.colorFilter.frequency.exponentialRampToValueAtTime(420,t0+durSec*0.5);
+    dOut.colorFilter.frequency.exponentialRampToValueAtTime(5800,t1);
   }
 }
 
@@ -22982,6 +23051,31 @@ async function runProfessionalTransition(from,to,style,bars){
       eqSwap(from,to,durSec*0.6,'hp-sweep');
       if(canUseXf){automix.usedCrossfader=true;fadeCrossfaderCurve(from==='A'?1:0,durSec*1000,'exp');}
       else{fadeChannelVolume(from,0,durSec);fadeChannelVolume(to,1,durSec*0.4);}
+    }else if(style==='filter'){
+      // Low-pass sweep on outgoing — slow, hands-up-friendly fade.
+      eqSwap(from,to,durSec*0.85,'lp-sweep');
+      if(canUseXf){automix.usedCrossfader=true;fadeCrossfaderCurve(from==='A'?1:0,durSec*1000,'cosine');}
+      else{fadeChannelVolume(from,0,durSec);fadeChannelVolume(to,1,durSec*0.5);}
+    }else if(style==='flanger'){
+      eqSwap(from,to,durSec*0.7,'flanger');
+      if(canUseXf){automix.usedCrossfader=true;fadeCrossfaderCurve(from==='A'?1:0,durSec*1000,'cosine');}
+      else{fadeChannelVolume(from,0,durSec);fadeChannelVolume(to,1,durSec*0.5);}
+    }else if(style==='drop'){
+      // Beat-cut: 1 bar of silence on the outgoing right before the
+      // drop, then the incoming slams in at full on the down-beat.
+      const oneBar=beatDur*4;
+      const silenceAt=Math.max(0,durSec-oneBar);
+      automix.timers.push(setTimeout(()=>{
+        fadeChannelVolume(from,0,0.08);
+      },silenceAt*1000));
+      automix.timers.push(setTimeout(()=>{
+        fadeChannelVolume(to,1,0.05);
+      },durSec*1000));
+      if(canUseXf){
+        // Snap the crossfader at the drop instant for instant hand-off.
+        automix.usedCrossfader=true;
+        automix.timers.push(setTimeout(()=>fadeCrossfaderCurve(from==='A'?1:0,80,'cut'),durSec*1000));
+      }
     }else if(style==='harmonic'||style==='smooth'){
       eqSwap(from,to,durSec*0.8,null);
       if(canUseXf){automix.usedCrossfader=true;fadeCrossfaderCurve(from==='A'?1:0,durSec*1000,'cosine');}
@@ -23021,6 +23115,120 @@ function automixFinish(from,to){
   }
 }
 
+/* ──────────────────────────────────────────────────────────────────────
+   AUTO-MIX — AI brain
+   Scoring + smart selection layered on top of the existing engine.  All
+   numbers normalised to 0..100 so the panel can show a single "MIX
+   QUALITY" readout.  bpmScore / harmonicScore / energyScore already
+   live above (used by smartPickNextTrack); the AI layer just composes
+   them into actionable decisions.
+   ──────────────────────────────────────────────────────────────────── */
+automix.selectedFrom='AUTO';
+automix.selectedTo='AUTO';
+
+function aiMixScore(fromId,toId){
+  const a=decks&&decks[fromId],b=decks&&decks[toId];
+  if(!a||!b||!a.track||!b.track)return null;
+  const tolPct=(parseFloat(document.getElementById('aiBpmTol')?.value||6))/100;
+  const bpmA=a.track.bpm*(1+(a.tempo||0)/100);
+  const bpmB=b.track.bpm*(1+(b.tempo||0)/100);
+  const sB=bpmScore(bpmA,bpmB,tolPct);
+  const sH=harmonicScore(a.track.key,b.track.key);
+  const sE=energyScore(a.track.energy,b.track.energy,'build');
+  const composite=sB*0.45+sH*0.35+sE*0.20;
+  return {
+    total:Math.round(composite*100),
+    bpm:Math.round(sB*100),harmonic:Math.round(sH*100),energy:Math.round(sE*100),
+    bpmA:Math.round(bpmA*10)/10,bpmB:Math.round(bpmB*10)/10,
+    keyA:a.track.key||'--',keyB:b.track.key||'--'
+  };
+}
+
+function aiPickBestStyle(fromId,toId){
+  const s=aiMixScore(fromId,toId);
+  if(!s)return 'smooth';
+  // Strong harmonic match → harmonic blend.
+  if(s.harmonic>=85&&s.bpm>=70)return 'harmonic';
+  // Tight BPM but mediocre key → energy/HP-sweep keeps the dance-floor.
+  if(s.bpm>=85&&s.harmonic<70)return 'energy';
+  // Energy ramp-up → drop on the bar feels like a peak-time switch.
+  const aE=decks[fromId].track.energy||5,bE=decks[toId].track.energy||5;
+  if(bE-aE>=2.5)return 'drop';
+  if(bE-aE<=-2)return 'filter';
+  // Big BPM drift → echo bridges the gap.
+  if(s.bpm<=50)return 'echo';
+  return 'smooth';
+}
+
+function aiResolveDeckPair(){
+  ensureAudio();
+  // Honour the user's manual selection, but fall back to auto-pick when
+  // they leave it on AUTO so the brain can still find a working pair.
+  let from=automix.selectedFrom!=='AUTO'?automix.selectedFrom:null;
+  let to=automix.selectedTo!=='AUTO'?automix.selectedTo:null;
+  if(!from||!decks[from]||!decks[from].playing)from=automixPickSource();
+  if(!from)return {from:null,to:null,err:'Start playing a deck first'};
+  if(!to||to===from||!decks[to])to=automixPickTarget(from);
+  if(!to)return {from:null,to:null,err:'No idle deck available'};
+  return {from,to,err:null};
+}
+
+function aiAutoMix(){
+  if(automix.phase!=='idle'){cancelAutoMix();return;}
+  const pair=aiResolveDeckPair();
+  if(pair.err){toast(pair.err,'error');return;}
+  // If the target deck is empty, AI loads its smart pick first.
+  const start=()=>{
+    const style=aiPickBestStyle(pair.from,pair.to);
+    const score=aiMixScore(pair.from,pair.to);
+    const tag=score?` · score ${score.total}/100`:'';
+    toast(`🧠 AI MIX → ${pair.from}→${pair.to} · ${style.toUpperCase()}${tag}`,'success');
+    const barsRaw=parseInt(document.getElementById('automixBars')?.value||16);
+    const bars=Math.max(1,Math.round(barsRaw/4));
+    automix.from=pair.from;automix.to=pair.to;automix.style=style;automix.bars=bars;
+    automixSetButtonState(style,true);
+    runProfessionalTransition(pair.from,pair.to,style,bars).then(ok=>{
+      if(!ok&&automix.phase!=='idle')cancelAutoMix(true);
+    }).catch(e=>{console.error('ai-mix',e);cancelAutoMix(true);});
+  };
+  if(!decks[pair.to]||!decks[pair.to].track){
+    const next=smartPickNextTrack();
+    if(!next){toast('No suitable next track','error');return;}
+    loadTrackToDeck(pair.to,next).then(()=>{
+      setTimeout(()=>{autoGainMatch(pair.to);start();},400);
+    }).catch(()=>start());
+  }else{
+    start();
+  }
+}
+
+function aiBuildSet(){
+  // Turn on continuous mix + run an immediate AI mix.  The chain logic
+  // already handles the "mix → wait → mix again" loop in automixFinish.
+  if(!automix.continuous){
+    automix.continuous=true;
+    const cb=document.getElementById('automixContBtn');
+    if(cb)cb.classList.add('active');
+  }
+  toast('🎼 SET BUILDER engaged — AI will keep mixing','success');
+  if(automix.phase==='idle')aiAutoMix();
+}
+
+function refreshAiMixScoreDisplay(){
+  const el=document.getElementById('amScoreVal');
+  const detail=document.getElementById('amScoreDetail');
+  if(!el)return;
+  const pair=aiResolveDeckPair();
+  if(pair.err||!pair.from||!pair.to){el.textContent='—';if(detail)detail.textContent='';return;}
+  const s=aiMixScore(pair.from,pair.to);
+  if(!s){el.textContent='—';if(detail)detail.textContent=`${pair.from}→${pair.to}`;return;}
+  el.textContent=s.total+'/100';
+  el.className='amp-score-val'+(s.total>=80?' good':s.total>=60?' ok':' weak');
+  if(detail)detail.textContent=`${pair.from}→${pair.to} · BPM ${s.bpm} · KEY ${s.harmonic} · ENG ${s.energy}`;
+}
+window.aiAutoMix=aiAutoMix;
+window.aiMixScore=aiMixScore;
+
 function manualAutoMix(style){
   if(automix.phase!=='idle'){
     const btn=document.querySelector(`.automix-btn[data-mix="${style}"]`);
@@ -23029,10 +23237,9 @@ function manualAutoMix(style){
     return;
   }
   ensureAudio();
-  const from=automixPickSource();
-  if(!from){toast('Start playing a deck first','error');return;}
-  const to=automixPickTarget(from);
-  if(!to){toast('No idle deck available','error');return;}
+  const pair=aiResolveDeckPair();
+  if(pair.err){toast(pair.err,'error');return;}
+  const from=pair.from,to=pair.to;
   const barsRaw=parseInt(document.getElementById('automixBars')?.value||16);
   const bars=Math.max(1,Math.round(barsRaw/4));
   automix.from=from;automix.to=to;automix.style=style;automix.bars=bars;
@@ -23096,7 +23303,27 @@ document.addEventListener('DOMContentLoaded',()=>{
     const sync=document.getElementById('automixSync');if(sync)sync.addEventListener('click',manualSync);
     const pick=document.getElementById('automixPickBtn');if(pick)pick.addEventListener('click',manualPickNext);
     const cont=document.getElementById('automixContBtn');if(cont)cont.addEventListener('click',automixToggleContinuous);
-    setInterval(()=>{if(automix.phase==='idle')updateAutomixDirection();},1000);
+    // AI mix + set builder
+    const aiBtn=document.getElementById('aiMixBtn');if(aiBtn)aiBtn.addEventListener('click',aiAutoMix);
+    const setBtn=document.getElementById('aiSetBtn');if(setBtn)setBtn.addEventListener('click',aiBuildSet);
+    // FROM / TO deck picker — single-select per row, AUTO is the default
+    document.querySelectorAll('.amp-deck-pick').forEach(grp=>{
+      const which=grp.dataset.ampPick; // 'from' | 'to'
+      grp.querySelectorAll('button').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          grp.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+          const deck=btn.dataset.deck;
+          if(which==='from')automix.selectedFrom=deck;
+          else automix.selectedTo=deck;
+          refreshAiMixScoreDisplay();
+        });
+      });
+    });
+    setInterval(()=>{
+      if(automix.phase==='idle'){updateAutomixDirection();refreshAiMixScoreDisplay();}
+    },1000);
+    refreshAiMixScoreDisplay();
     document.addEventListener('keydown',e=>{
       if(e.key==='Escape'&&automix.phase!=='idle'){cancelAutoMix();e.preventDefault();}
     });
