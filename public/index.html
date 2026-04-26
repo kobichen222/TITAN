@@ -6119,16 +6119,45 @@ body.work-mode .automix-sync{
 }
 .mixer-toolbar.mixer-toolbar-top .mtb-automix{min-height:auto}
 .mixer-toolbar.mixer-toolbar-bottom{
-  grid-template-columns:minmax(260px,1.3fr) minmax(240px,1.1fr) minmax(220px,1fr);
+  grid-template-columns:minmax(520px,2.4fr) minmax(220px,1fr);
   margin:8px auto 0;
 }
 @media(max-width:980px){
-  .mixer-toolbar.mixer-toolbar-bottom{grid-template-columns:1fr 1fr;gap:6px}
-  .mixer-toolbar.mixer-toolbar-bottom .mtb-hp{grid-column:1/-1}
+  .mixer-toolbar.mixer-toolbar-bottom{grid-template-columns:1fr;gap:6px}
+  .mixer-toolbar.mixer-toolbar-bottom .mtb-hpmic{grid-column:1/-1}
 }
 @media(max-width:600px){
   .mixer-toolbar.mixer-toolbar-bottom{grid-template-columns:1fr;gap:5px}
   .mixer-toolbar.mixer-toolbar-bottom .mtb-section{grid-column:auto}
+  .mixer-toolbar.mixer-toolbar-bottom .mtb-hpmic-grid{grid-template-columns:1fr;gap:8px}
+  .mixer-toolbar.mixer-toolbar-bottom .mtb-hpmic-divider{display:none}
+}
+
+/* HEADPHONES + MIC merged section */
+.mixer-toolbar .mtb-hpmic .mtb-hpmic-grid{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  gap:10px;align-items:stretch;flex:1;min-height:0;
+}
+.mixer-toolbar .mtb-hpmic .mtb-hp,
+.mixer-toolbar .mtb-hpmic .mtb-mic{
+  display:flex;flex-direction:column;gap:6px;min-width:0;
+  padding:6px 8px;background:rgba(255,255,255,.015);
+  border:1px solid rgba(255,255,255,.04);border-radius:6px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
+}
+.mixer-toolbar .mtb-hpmic .mtb-hp .mtb-knobrow,
+.mixer-toolbar .mtb-hpmic .mtb-mic .mtb-knobrow{
+  background:transparent;border:none;box-shadow:none;padding:2px 0;
+}
+.mixer-toolbar .mtb-hpmic .mtb-sublabel{
+  font-family:'Orbitron',sans-serif;font-size:8.5px;letter-spacing:2px;
+  color:var(--text-dim);font-weight:700;text-align:center;
+  padding-bottom:2px;border-bottom:1px solid rgba(255,255,255,.05);
+}
+.mixer-toolbar .mtb-hpmic-divider{
+  width:1px;align-self:stretch;
+  background:linear-gradient(180deg,transparent,rgba(255,122,0,.18),transparent);
+  flex:0 0 auto;
 }
 
 /* ================================================================
@@ -12667,24 +12696,28 @@ function buildMixerToolbarTopHTML(){
 }
 
 function buildMixerToolbarBottomHTML(){
-  return `<div class="mtb-section mtb-hp">
-    <div class="mtb-head"><span class="mtb-label">HEADPHONES</span></div>
+  return `<div class="mtb-section mtb-hpmic">
+    <div class="mtb-head"><span class="mtb-label">HEADPHONES &amp; MIC</span></div>
     <div class="mtb-body">
-      <div class="mtb-knobrow">
-        <div class="knob-wrap"><div class="knob small" data-knob="hpMix"><div class="knob-indicator"></div></div><span class="knob-label">CUE MIX</span></div>
-        <div class="knob-wrap"><div class="knob small" data-knob="hpVol"><div class="knob-indicator"></div></div><span class="knob-label">HP VOL</span></div>
-      </div>
-      <div class="cue-hp-buttons" title="Pick decks to monitor in your headphones"><button class="cue-hp-btn" id="hpCue-A" title="Monitor Deck A">DECK A</button><button class="cue-hp-btn" id="hpCue-B" title="Monitor Deck B">DECK B</button><button class="cue-hp-btn" id="hpCue-C" title="Monitor Deck C">DECK C</button><button class="cue-hp-btn" id="hpCue-D" title="Monitor Deck D">DECK D</button></div>
-    </div>
-  </div>
-  <div class="mtb-section mtb-mic">
-    <div class="mtb-head"><span class="mtb-label">MIC</span></div>
-    <div class="mtb-body">
-      <div class="mtb-knobrow">
-        <div class="knob-wrap"><div class="knob small" data-knob="micVol"><div class="knob-indicator"></div></div><span class="knob-label">VOL</span></div>
-        <div class="knob-wrap"><div class="knob small" data-knob="micHi"><div class="knob-indicator"></div></div><span class="knob-label">HI</span></div>
-        <div class="knob-wrap"><div class="knob small" data-knob="micLow"><div class="knob-indicator"></div></div><span class="knob-label">LOW</span></div>
-        <button class="mic-btn" id="micOnBtn">ON</button>
+      <div class="mtb-hpmic-grid">
+        <div class="mtb-hp">
+          <div class="mtb-sublabel">HEADPHONES</div>
+          <div class="mtb-knobrow">
+            <div class="knob-wrap"><div class="knob small" data-knob="hpMix"><div class="knob-indicator"></div></div><span class="knob-label">CUE MIX</span></div>
+            <div class="knob-wrap"><div class="knob small" data-knob="hpVol"><div class="knob-indicator"></div></div><span class="knob-label">HP VOL</span></div>
+          </div>
+          <div class="cue-hp-buttons" title="Pick decks to monitor in your headphones"><button class="cue-hp-btn" id="hpCue-A" title="Monitor Deck A">DECK A</button><button class="cue-hp-btn" id="hpCue-B" title="Monitor Deck B">DECK B</button><button class="cue-hp-btn" id="hpCue-C" title="Monitor Deck C">DECK C</button><button class="cue-hp-btn" id="hpCue-D" title="Monitor Deck D">DECK D</button></div>
+        </div>
+        <div class="mtb-hpmic-divider" aria-hidden="true"></div>
+        <div class="mtb-mic">
+          <div class="mtb-sublabel">MIC</div>
+          <div class="mtb-knobrow">
+            <div class="knob-wrap"><div class="knob small" data-knob="micVol"><div class="knob-indicator"></div></div><span class="knob-label">VOL</span></div>
+            <div class="knob-wrap"><div class="knob small" data-knob="micHi"><div class="knob-indicator"></div></div><span class="knob-label">HI</span></div>
+            <div class="knob-wrap"><div class="knob small" data-knob="micLow"><div class="knob-indicator"></div></div><span class="knob-label">LOW</span></div>
+            <button class="mic-btn" id="micOnBtn">ON</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
