@@ -12707,6 +12707,15 @@ function buildMixerToolbarTopHTML(){
         <button class="automix-sync" id="automixSync" title="Sync incoming deck"><span class="asy-txt">SYNC</span><span class="asy-arrow" aria-hidden="true"></span></button>
         <button class="automix-sync automix-cont" id="automixContBtn" title="Auto-chain transitions forever">CONT</button>
       </div>
+      <div class="automix-nextup" id="automixNextUp" title="Top 3 candidates for the next track — tap to pin one and override the auto-pick">
+        <div class="automix-nextup-head">
+          <span class="automix-nextup-label">NEXT&nbsp;UP</span>
+          <span class="automix-nextup-hint">tap a card to pin · ranked by BPM · KEY · ENERGY</span>
+        </div>
+        <div class="automix-nextup-grid" id="automixNextUpGrid">
+          <div class="automix-nextup-empty">Load a track and analyze your library to see suggestions</div>
+        </div>
+      </div>
     </div>
   </div>`;
 }
@@ -22895,6 +22904,26 @@ document.addEventListener('DOMContentLoaded',()=>{
       d.playing=false;d.source=null;d.offset=0;d._playToken=null;
       _updatePlayUI(id,false);
     };
+    // SYNC d.volume FROM THE VISUAL FADER. The mixer fader handle
+    // is the source of truth — if any prior code path left d.volume
+    // out of sync (DJ-FOCUS, MIDI, AUTOMIX restore, compact slider,
+    // legacy formula, …) the user sees the fader at the bottom and
+    // expects silence regardless of internal state. Reading the
+    // computed bottom of the fader handle and dividing by the
+    // available travel gives us the user's true visual intent.
+    try{
+      const w=document.querySelector(`.fader-wrap[data-fader="${id}"]`);
+      const h=document.getElementById(`fader-${id}`);
+      if(w&&h){
+        const wrapH=w.getBoundingClientRect().height;
+        const handleH=h.offsetHeight||24;
+        const travel=Math.max(1,wrapH-handleH);
+        const cs=getComputedStyle(h);
+        const bottomPx=parseFloat(cs.bottom)||0;
+        const visualV=Math.max(0,Math.min(1,bottomPx/travel));
+        d.volume=visualV;
+      }
+    }catch(_){}
     // CRITICAL: zero volumeGain BEFORE src.start. WebAudio renders
     // audio in 128-sample chunks (~2.7 ms); if the source is started
     // before the gain has been forced to 0, the very first chunk plays
@@ -23091,6 +23120,14 @@ function energyScore(e1,e2,direction){
 
 const _recentlyPlayed=[];
 function smartPickNextTrack(){
+  // NEXT-UP pinned override: if the user tapped a candidate in the
+  // Next-Up preview strip, honor that pick once and clear the pin.
+  if(window.automix&&automix.pinnedNext){
+    const pinned=library.find(t=>t.id===automix.pinnedNext&&t.buffer&&t.source!=='yt');
+    automix.pinnedNext=null;
+    try{updateNextUpStrip&&updateNextUpStrip();}catch(_){}
+    if(pinned)return pinned;
+  }
   const cands=library.filter(t=>t.source!=='yt'&&t.buffer);
   if(!cands.length)return null;
   const cur=decks.A.playing?decks.A:decks.B.playing?decks.B:null;
@@ -23115,6 +23152,36 @@ function smartPickNextTrack(){
     if(s>bestScore){bestScore=s;best=t;}
   });
   return best||cands[Math.floor(Math.random()*cands.length)];
+}
+
+/* Next-Up Preview: rank ALL eligible candidates against the
+   currently-playing reference track and return the top N with a
+   detailed score breakdown so the UI can show 'why' each track is
+   suggested (BPM-match, key-match, energy direction). */
+function automixCandidateRanking(n){
+  const limit=n||3;
+  const cands=library.filter(t=>t.source!=='yt'&&t.buffer);
+  if(!cands.length)return [];
+  const cur=decks.A.playing?decks.A:decks.B.playing?decks.B:(decks.C.playing?decks.C:(decks.D.playing?decks.D:null));
+  const order=document.getElementById('aiOrder')?.value||'energy-flow';
+  const tolPct=(parseFloat(document.getElementById('aiBpmTol')?.value||6))/100;
+  const dir=(order==='energy-flow')?'build':'match';
+  const ref=cur&&cur.track?cur.track:null;
+  const loadedIds=new Set(['A','B','C','D'].map(id=>decks[id]?.track?.id).filter(Boolean));
+  const scored=cands
+    .filter(t=>!ref||t.id!==ref.id)
+    .filter(t=>!loadedIds.has(t.id))
+    .filter(t=>!_recentlyPlayed.includes(t.id))
+    .map(t=>{
+      const bs=ref?bpmScore(ref.bpm,t.bpm,tolPct):0.5;
+      const ks=ref?harmonicScore(ref.key,t.key):0.5;
+      const es=ref?energyScore(ref.energy,t.energy,dir):0.5;
+      const total=bs*0.45+ks*0.35+es*0.20;
+      return {track:t,total,bpm:bs,key:ks,energy:es,bpmDelta:ref?(t.bpm-ref.bpm):0,keyMatch:ks>=0.85,energyDir:ref&&ref.energy!=null&&t.energy!=null?(t.energy-ref.energy):0};
+    })
+    .sort((a,b)=>b.total-a.total)
+    .slice(0,limit);
+  return scored;
 }
 
 function autoGainMatch(deckId){
@@ -23254,7 +23321,8 @@ const automix={
   phase:'idle',from:null,to:null,style:null,bars:4,
   startAt:0,endAt:0,progress:0,continuous:false,
   timers:[],rafId:0,preVol:{},preXf:0.5,usedCrossfader:false,
-  enabledDecks:{A:true,B:true,C:true,D:true}
+  enabledDecks:{A:true,B:true,C:true,D:true},
+  pinnedNext:null
 };
 window.automix=automix;
 let _automixRunning=false; // legacy watchdog hook
