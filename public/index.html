@@ -14731,9 +14731,16 @@ function setupSceneFx(){
      v=0.9 → 0.78 (~ -2 dB)
      v=1.0 → 1   (0 dB / unity) */
 function _djFaderTaper(v){
+  // Single source of truth for every fader path (mixer channel faders,
+  // DJ-focus slider, MIDI CC, stop-fade restore). The previous curve was
+  // v²·(0.3 + 0.7v): fader at 50 % gave 0.16 gain (-16 dB) and only the
+  // top quarter did anything audible — the user heard that as "raising
+  // and lowering doesn't work".  Math.pow(v, 1.5) is the classic DJ-style
+  // audio taper: smooth, monotonic, perceptually even across 0-100 with
+  // no dead zones at either end.
   if(v<=0)return 0;
   if(v>=1)return 1;
-  return v*v*(0.3+v*0.7);
+  return Math.pow(v,1.5);
 }
 /* Short smoothing time constant for all fader / xfader writes. 12 ms
    is slow enough to kill zipper noise, fast enough to still feel
@@ -20190,7 +20197,11 @@ function renderMixerCompactDecks(){
   container.querySelectorAll('[data-compact="tempo-reset"]').forEach(b=>b.addEventListener('click',()=>setTempo(b.dataset.deck,0)));
   container.querySelectorAll('[data-compact-vol]').forEach(r=>r.addEventListener('input',e=>{
     const d=r.dataset.compactVol,v=parseInt(e.target.value)/100;decks[d].volume=v;
-    if(decks[d].volumeGain&&decks[d].playing)decks[d].volumeGain.gain.setTargetAtTime(v,audioCtx.currentTime,0.02);
+    if(decks[d].volumeGain&&decks[d].playing){
+      const target=(typeof _djFaderTaper==='function')?_djFaderTaper(v):v;
+      decks[d].volumeGain.gain.setTargetAtTime(target,audioCtx.currentTime,0.012);
+    }
+    try{if(typeof applyCrossfader==='function')applyCrossfader();}catch(e){}
   }));
 }
 function updateDsbMonitor(){
@@ -20401,9 +20412,11 @@ function handleControllerMsg(ctrlName,msg){
     const v=data2/127;
     if(b.type==='volume'&&decks[b.deck]&&decks[b.deck].volumeGain){
       decks[b.deck].volume=v;
-      try{decks[b.deck].volumeGain.gain.setTargetAtTime(v,audioCtx.currentTime,0.02);}catch(e){}
+      const target=(typeof _djFaderTaper==='function')?_djFaderTaper(v):v;
+      try{decks[b.deck].volumeGain.gain.setTargetAtTime(target,audioCtx.currentTime,0.012);}catch(e){}
       const h=document.getElementById('fader-'+b.deck);
       if(h){const bottom=v*90;h.style.bottom=bottom+'%';}
+      try{if(typeof applyCrossfader==='function')applyCrossfader();}catch(e){}
     }else if(b.type==='crossfader'){
       mixerState.crossfader=v;
       const h=document.getElementById('xfaderHandle');if(h)h.style.left=(v*100)+'%';
