@@ -1009,8 +1009,12 @@ button:active:not(:disabled),.big-btn:active,.loop-btn:active,.jump-btn:active,
   box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 28px rgba(255,138,26,.75);
 }
 .beat-btn.active{
-  background:linear-gradient(180deg,#7ff0ff 0%,var(--screen-glow) 55%,#0e88a6 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 12px rgba(46,224,255,.7);
+  background:linear-gradient(180deg,#d6faff 0%,#7ff0ff 50%,#2ee0ff 100%) !important;
+  color:#00131a !important;
+  border:1px solid #d6faff !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 16px rgba(46,224,255,.95) !important;
+  text-shadow:0 1px 0 rgba(255,255,255,.5);
+  font-weight:900;
 }
 
 /* ACTIVE UTIL BUTTONS — uniform soft glow */
@@ -3910,9 +3914,57 @@ body.work-mode{
 }
 body.work-mode .console,body.work-mode .library,
 body.work-mode .beat-fx-panel,body.work-mode .scene-fx-panel,
-body.work-mode .mixer-toolbar,body.work-mode .rgb-ambient{
+body.work-mode .mixer-toolbar,body.work-mode .top-fx-row,body.work-mode .rgb-ambient{
   max-width:none !important;width:calc(100vw - 12px) !important;
 }
+/* When the FX panels live inside the top-fx-row grid, they must fill
+   their grid column (100%), not the whole viewport (100vw) — otherwise
+   each child claims the full screen and they overlap. The row itself
+   gets 100vw above; the cells inside it get 100% of the cell. */
+body.work-mode .top-fx-row > .mixer-toolbar,
+body.work-mode .top-fx-row > .beat-fx-panel,
+body.work-mode .top-fx-row > .scene-fx-panel{
+  width:100% !important;max-width:none !important;min-width:0 !important;margin:0 !important;
+}
+/* Larger work-mode padding/font-size on the FX buttons can overflow a
+   grid cell on narrower screens. Allow buttons to wrap and the
+   selectors to shrink so the AUTO MIX / BEAT FX / SCENE FX columns
+   stay inside their share of the row. */
+body.work-mode .top-fx-row{
+  grid-template-columns:minmax(0,1.4fr) minmax(0,1.8fr) minmax(0,1.5fr) !important;
+  gap:14px !important;
+}
+body.work-mode .top-fx-row .beat-fx-panel,
+body.work-mode .top-fx-row .scene-fx-panel{
+  padding:10px 14px !important;
+}
+body.work-mode .top-fx-row .beat-fx-panel .beat-buttons{
+  display:flex !important;flex-wrap:wrap !important;gap:6px !important;flex:1 1 100%;
+}
+body.work-mode .top-fx-row .beat-btn{
+  flex:1 1 auto;min-width:48px !important;padding:8px 6px !important;font-size:11px !important;letter-spacing:1px !important;
+}
+body.work-mode .top-fx-row .scene-fx-panel .scene-fx-buttons{
+  display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:6px !important;
+}
+body.work-mode .top-fx-row .scene-btn{
+  padding:8px 4px !important;font-size:10.5px !important;letter-spacing:1.2px !important;min-width:0;
+}
+body.work-mode .top-fx-row .fx-selector{
+  min-width:80px !important;font-size:11px !important;padding:5px 8px !important;
+}
+body.work-mode .top-fx-row .mtb-automix .automix-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:5px !important;
+}
+body.work-mode .top-fx-row .mtb-automix .automix-btn{
+  padding:8px 4px !important;font-size:10px !important;letter-spacing:1px !important;min-height:32px;
+}
+body.work-mode .top-fx-row .mtb-automix .automix-btn .amx-txt{font-size:10px}
+body.work-mode .top-fx-row .mtb-automix .automix-decks{padding:4px 2px !important;gap:4px !important}
+body.work-mode .top-fx-row .mtb-automix .automix-deck-btn{height:26px;font-size:10.5px !important;padding:0 4px 0 14px !important}
+body.work-mode .top-fx-row .mtb-automix .automix-sub{gap:6px !important}
+body.work-mode .top-fx-row .mtb-automix .automix-bars{padding:4px 8px !important;font-size:10px !important;min-width:54px}
+body.work-mode .top-fx-row .mtb-automix .automix-sync{padding:6px 12px !important;font-size:10px !important}
 /* Keep the floating deck-switch-bar pinned (the full-width rule above does
    not apply to it because it's not in the list). */
 body.work-mode .console{grid-template-columns:1fr 420px 1fr}
@@ -5948,7 +6000,7 @@ body.work-mode .automix-sync{
   margin-right:2px;
 }
 .automix-deck-btn{
-  flex:1 1 0;min-width:0;height:24px;padding:0 6px;
+  flex:1 1 0;min-width:0;height:24px;padding:0 6px 0 16px;
   font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1.2px;font-weight:800;
   background:linear-gradient(180deg,#1a1a20 0%,#0d0d12 100%);
   border:1px solid #2a2a32;color:var(--text-dim);
@@ -5961,16 +6013,28 @@ body.work-mode .automix-sync{
   border-color:rgba(255,138,26,.55);color:var(--orange-glow);
   box-shadow:0 0 8px rgba(255,138,26,.25);
 }
-.automix-deck-btn.active{
-  background:linear-gradient(180deg,var(--orange) 0%,#a64500 100%);
-  color:#0a0a0a;border-color:var(--orange-glow);
-  box-shadow:0 0 10px rgba(255,138,26,.45),inset 0 1px 0 rgba(255,255,255,.25);
-  text-shadow:0 0 1px rgba(0,0,0,.6);
+/* Small LED pip on the left identifies the deck (per-deck color),
+   while the body stays uniform with the rest of the UI. */
+.automix-deck-btn::before{
+  content:'';position:absolute;left:6px;top:50%;transform:translateY(-50%);
+  width:6px;height:6px;border-radius:50%;
+  background:#2a2a30;box-shadow:inset 0 0 0 1px rgba(0,0,0,.5);
+  transition:background .12s,box-shadow .12s;
 }
-.automix-deck-btn[data-amx-deck="A"].active{background:linear-gradient(180deg,#ff8a3c 0%,#a64500 100%)}
-.automix-deck-btn[data-amx-deck="B"].active{background:linear-gradient(180deg,#3cd2ff 0%,#0070a0 100%);border-color:#7feaff;box-shadow:0 0 10px rgba(46,224,255,.45),inset 0 1px 0 rgba(255,255,255,.25)}
-.automix-deck-btn[data-amx-deck="C"].active{background:linear-gradient(180deg,#5dff8a 0%,#1a8a3a 100%);border-color:#a0ffba;box-shadow:0 0 10px rgba(46,255,140,.45),inset 0 1px 0 rgba(255,255,255,.25)}
-.automix-deck-btn[data-amx-deck="D"].active{background:linear-gradient(180deg,#d685ff 0%,#7000c0 100%);border-color:#e8b5ff;box-shadow:0 0 10px rgba(200,80,255,.45),inset 0 1px 0 rgba(255,255,255,.25)}
+.automix-deck-btn[data-amx-deck="A"]::before{background:#3a2418}
+.automix-deck-btn[data-amx-deck="B"]::before{background:#1a2c34}
+.automix-deck-btn[data-amx-deck="C"]::before{background:#1a3324}
+.automix-deck-btn[data-amx-deck="D"]::before{background:#2a1a34}
+.automix-deck-btn.active{
+  background:linear-gradient(180deg,#221912 0%,#15100b 100%);
+  color:var(--orange-glow);
+  border-color:rgba(255,138,26,.45);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 8px rgba(255,138,26,.2);
+}
+.automix-deck-btn[data-amx-deck="A"].active::before{background:#ff8a3c;box-shadow:0 0 6px #ff8a3c}
+.automix-deck-btn[data-amx-deck="B"].active::before{background:#3cd2ff;box-shadow:0 0 6px #3cd2ff}
+.automix-deck-btn[data-amx-deck="C"].active::before{background:#5dff8a;box-shadow:0 0 6px #5dff8a}
+.automix-deck-btn[data-amx-deck="D"].active::before{background:#d685ff;box-shadow:0 0 6px #d685ff}
 
 /* AUTO MIX engaged state — pulsing border on the section */
 .mtb-section.mtb-automix.is-running{
@@ -6059,11 +6123,16 @@ body.work-mode .automix-sync{
 }
 .top-fx-row .scene-fx-panel .scene-fx-label{
   flex:0 0 100%;font-size:11px;letter-spacing:2.5px;
-  padding:0 0 5px 8px;border-bottom:1px solid rgba(255,138,26,.22);margin-bottom:2px;
+  padding:0 0 5px 0;border-bottom:1px solid rgba(255,138,26,.22);margin-bottom:2px;
   position:relative;
 }
+/* Bar sits just to the LEFT of the text — matches BEAT FX exactly.
+   Removing the label's padding-left (was 8px) lets the text start
+   flush with the label box, so left:-4px puts the accent in the
+   panel's padding zone right next to the text instead of leaving a
+   12px visible gap between bar and text. */
 .top-fx-row .scene-fx-panel .scene-fx-label::before{
-  content:'';position:absolute;left:0;top:1px;
+  content:'';position:absolute;left:-4px;top:50%;transform:translateY(-50%);
   width:3px;height:14px;border-radius:2px;
   background:linear-gradient(180deg,var(--orange-glow),var(--orange));
   box-shadow:0 0 6px rgba(255,138,26,.6);
@@ -12204,15 +12273,20 @@ Two options — both work completely offline:<br/>
   <div class="setting-label">Supabase anon key</div>
   <input type="password" id="supabaseAnon" class="url-input" placeholder="eyJhbGciOiJIUzI1NiIs…" style="padding:8px 12px;" />
 </div>
-<div class="settings-row">
-  <button class="tool-btn" id="saveSupabase">SAVE & CONNECT</button>
+<div class="settings-row" style="gap:8px;flex-wrap:wrap">
+  <button class="tool-btn" id="saveSupabase">SAVE &amp; CONNECT</button>
+  <button class="tool-btn" id="authDiagnoseBtn" style="border-color:var(--screen-glow);color:var(--screen-glow)">🔍 RUN AUTH DIAGNOSTIC</button>
   <a href="./auth.sql" download class="setting-desc" style="color:var(--screen-glow);cursor:pointer;">⬇ Download SQL schema</a>
 </div>
-<div class="setting-desc" style="padding-top:4px;line-height:1.6;">
-  1. Create a free project at <strong>supabase.com</strong><br/>
-  2. SQL Editor → paste <code>auth.sql</code> → Run<br/>
-  3. Authentication → Providers → enable <strong>Google</strong> + <strong>Phone (WhatsApp via Twilio)</strong><br/>
-  4. Settings → API → copy URL + anon key here → SAVE & CONNECT
+<div id="authDiagnoseOut" class="setting-desc" style="display:none;margin-top:8px;padding:10px 12px;background:rgba(0,0,0,.35);border-radius:6px;border:1px solid rgba(255,138,26,.18);font-family:'Share Tech Mono',monospace;font-size:11px;line-height:1.7;white-space:pre-wrap;color:#cfd6dd;max-height:280px;overflow:auto"></div>
+<div class="setting-desc" style="padding-top:6px;line-height:1.6;">
+  <b>Quick setup (3 places must agree)</b><br/>
+  <b>1.</b> <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" style="color:var(--screen-glow)">Google Cloud → Credentials</a> → OAuth Client → <i>Authorized redirect URIs</i> include:<br/>
+  &nbsp;&nbsp;&nbsp;<code id="authRedirectHint">https://eliimbfzegwcepbljdwp.supabase.co/auth/v1/callback</code> <button class="tool-btn" id="copyAuthRedirect" style="padding:2px 6px;font-size:9px">COPY</button><br/>
+  <b>2.</b> <a href="https://supabase.com/dashboard/project/_/auth/providers" target="_blank" rel="noopener" style="color:var(--screen-glow)">Supabase → Auth → Providers → Google</a> → ENABLE + paste Google Client ID + Client Secret<br/>
+  <b>3.</b> <a href="https://supabase.com/dashboard/project/_/auth/url-configuration" target="_blank" rel="noopener" style="color:var(--screen-glow)">Supabase → Auth → URL Configuration</a> → add this app's origin: <code id="authOriginHint">—</code> <button class="tool-btn" id="copyAuthOrigin" style="padding:2px 6px;font-size:9px">COPY</button><br/>
+  <b>4.</b> SQL Editor → paste <code>auth.sql</code> → Run<br/>
+  <b>5.</b> Settings → API → copy URL + anon key here → <b>SAVE &amp; CONNECT</b>
 </div>
 </div>
 
@@ -12690,6 +12764,15 @@ function buildMixerToolbarTopHTML(){
         <span class="automix-sep" aria-hidden="true"></span>
         <button class="automix-sync" id="automixSync" title="Sync incoming deck"><span class="asy-txt">SYNC</span><span class="asy-arrow" aria-hidden="true"></span></button>
         <button class="automix-sync automix-cont" id="automixContBtn" title="Auto-chain transitions forever">CONT</button>
+      </div>
+      <div class="automix-nextup" id="automixNextUp" title="Top 3 candidates for the next track — tap to pin one and override the auto-pick">
+        <div class="automix-nextup-head">
+          <span class="automix-nextup-label">NEXT&nbsp;UP</span>
+          <span class="automix-nextup-hint">tap a card to pin · ranked by BPM · KEY · ENERGY</span>
+        </div>
+        <div class="automix-nextup-grid" id="automixNextUpGrid">
+          <div class="automix-nextup-empty">Load a track and analyze your library to see suggestions</div>
+        </div>
       </div>
     </div>
   </div>`;
@@ -13649,17 +13732,31 @@ function playDeck(deckId){
   }else{
     d.source.connect(d.trimGain);
   }
+  // CRITICAL: zero the gain BEFORE starting the source. WebAudio
+  // processes audio in 128-sample chunks; if the source starts even a
+  // single chunk before the gain reset takes effect, that chunk plays
+  // at whatever gain stopDeck restored on the previous stop — this is
+  // exactly the "burst on PLAY" the user heard at fader=0.
+  if(d.volumeGain){
+    const now0=audioCtx.currentTime;
+    d.volumeGain.gain.cancelScheduledValues(now0);
+    try{d.volumeGain.gain.value=0;}catch(_){}
+    d.volumeGain.gain.setValueAtTime(0,now0);
+  }
   d.source.start(0,d.offset);d.startTime=audioCtx.currentTime;d.playing=true;
   if(d.volumeGain){
     // Apply the perceptual taper so play-in matches the fader's current
-    // audible position. A linear ramp to raw d.volume sounded louder than
-    // whatever the fader was actually showing.
+    // audible position. Up-ramp over 25 ms — long enough to avoid any
+    // click/transient when audio comes in, short enough to feel instant.
     const rawV=(d.volume!==undefined)?d.volume:0;
     const target=(typeof _djFaderTaper==='function')?_djFaderTaper(rawV):rawV;
     const now=audioCtx.currentTime;
-    d.volumeGain.gain.cancelScheduledValues(now);
-    d.volumeGain.gain.setValueAtTime(0,now);
-    d.volumeGain.gain.linearRampToValueAtTime(target,now+0.008);
+    if(target<=0){
+      d.volumeGain.gain.setValueAtTime(0,now+0.025);
+    }else{
+      d.volumeGain.gain.setValueAtTime(0,now);
+      d.volumeGain.gain.linearRampToValueAtTime(target,now+0.025);
+    }
   }
   if(deckId==='A'||deckId==='B'){
     document.getElementById(`jog-${deckId}`)?.classList.add('playing');
@@ -15066,30 +15163,51 @@ function setupSceneFx(){
 }
 
 /* CROSSFADER */
-/* Perceptual audio-taper for DJ channel faders.
+/* Perceptual audio-taper for DJ channel faders — Pioneer DJM-style.
    Linear fader movement feels wrong on ears — the human loudness response
-   is logarithmic. Classic DJ mixer law: quadratic-ish curve that gives
-   fine control near unity and a long quiet tail near zero.
-     v=0   → 0   (mute)
-     v=0.5 → 0.22 (~ -13 dB)
-     v=0.7 → 0.45 (~ -7 dB)
-     v=0.9 → 0.78 (~ -2 dB)
-     v=1.0 → 1   (0 dB / unity) */
+   is logarithmic. Pioneer DJM faders use a gentle power curve (~v^1.8)
+   that gives a long quiet tail near zero, predictable mid-travel, and
+   fine control approaching unity:
+     v=0   → 0    (mute — hard zero, no residue)
+     v=0.3 → 0.12 (~ -18 dB)
+     v=0.5 → 0.29 (~ -10.8 dB)
+     v=0.7 → 0.53 (~ -5.4 dB)
+     v=0.9 → 0.82 (~ -1.7 dB)
+     v=1.0 → 1    (0 dB / unity) */
 function _djFaderTaper(v){
   if(v<=0)return 0;
   if(v>=1)return 1;
-  return v*v*(0.3+v*0.7);
+  return Math.pow(v,1.8);
 }
 /* Short smoothing time constant for all fader / xfader writes. 12 ms
    is slow enough to kill zipper noise, fast enough to still feel
    instant under the finger.  The pre-existing `.gain.value = …` made
    every fader movement a discontinuity and that's what the user heard
-   as "not smooth". */
+   as "not smooth".
+
+   setTargetAtTime exponentially approaches the target — perfect for
+   moving between non-zero values, but it asymptotes and never exactly
+   reaches 0. That left a barely-audible residue at "fader at 0", so
+   target<=0 takes a guaranteed-zero linear ramp instead. Coming UP
+   from a current value of 0 also needs an explicit setValueAtTime
+   anchor before the ramp, otherwise the curve restarts from whatever
+   was scheduled before. */
 function _rampGain(param,target,ctx,tau){
   if(!param||!ctx)return;
+  const t=tau||0.012;
   try{
-    param.cancelScheduledValues(ctx.currentTime);
-    param.setTargetAtTime(target,ctx.currentTime,tau||0.012);
+    const now=ctx.currentTime;
+    const cur=param.value;
+    param.cancelScheduledValues(now);
+    if(target<=0){
+      param.setValueAtTime(cur,now);
+      param.linearRampToValueAtTime(0,now+t);
+    }else if(cur<=0.0001){
+      param.setValueAtTime(cur,now);
+      param.linearRampToValueAtTime(target,now+t);
+    }else{
+      param.setTargetAtTime(target,now,t);
+    }
   }catch(_){param.value=target;}
 }
 
@@ -15257,15 +15375,25 @@ function attachEvents(){
     const w=document.querySelector(`.fader-wrap[data-fader="${d}"]`);
     if(!w)return;
     const h=document.getElementById(`fader-${d}`);let drag=false;let pendingCy=null,rafId=null;
+    /* Click → volume mapping. Full range, no dead zones:
+         click at top of wrap        → v=1 (max)
+         click at bottom of wrap     → v=0 (silent)
+       Visual handle position is computed against the available travel
+       (wrap height − handle height) so the handle's edges align with
+       the wrap's edges at the extremes — no overflow at the top, no
+       gap at the bottom. */
     function setY(cy){
-      const r=w.getBoundingClientRect();let y=(cy-r.top)/r.height;
-      y=Math.max(0,Math.min(0.9,y));
-      h.style.bottom=`${(1-y-0.1)*100}%`;
-      const v=1-y/0.9;
+      const r=w.getBoundingClientRect();
+      const handleH=h.offsetHeight||24;
+      const travel=Math.max(1,r.height-handleH);
+      // Center-of-handle is what the user expects under the cursor.
+      const raw=(cy-r.top-handleH/2)/travel;
+      const y=Math.max(0,Math.min(1,raw));
+      h.style.bottom=`${(1-y)*travel}px`;
+      const v=1-y;
       decks[d].volume=v;
-      // Smooth 12 ms ramp on both gain stages — no zipper noise. The taper
-      // is applied once, on volumeGain. applyCrossfader composes the
-      // crossfader position into channelGain using the same taper.
+      // Smooth 12 ms ramp. _rampGain force-zeros at v<=0 so "fader at 0"
+      // is genuinely silent (setTargetAtTime alone never quite hits 0).
       if(decks[d].volumeGain)_rampGain(decks[d].volumeGain.gain,_djFaderTaper(v),audioCtx,0.012);
       applyCrossfader();
     }
@@ -20615,7 +20743,10 @@ function renderMixerCompactDecks(){
   container.querySelectorAll('[data-compact="tempo-reset"]').forEach(b=>b.addEventListener('click',()=>setTempo(b.dataset.deck,0)));
   container.querySelectorAll('[data-compact-vol]').forEach(r=>r.addEventListener('input',e=>{
     const d=r.dataset.compactVol,v=parseInt(e.target.value)/100;decks[d].volume=v;
-    if(decks[d].volumeGain&&decks[d].playing)decks[d].volumeGain.gain.setTargetAtTime(v,audioCtx.currentTime,0.02);
+    // Apply the perceptual taper (matches the main mixer fader) and
+    // route through _rampGain so v=0 is genuinely silent.
+    if(decks[d].volumeGain)_rampGain(decks[d].volumeGain.gain,_djFaderTaper(v),audioCtx,0.012);
+    applyCrossfader();
   }));
 }
 function updateDsbMonitor(){
@@ -20655,12 +20786,19 @@ function setDjFocusVolume(d,v){
   decks[d].volume=v;
   if(decks[d].volumeGain&&typeof audioCtx!=='undefined'&&audioCtx){
     const target=(typeof _djFaderTaper==='function')?_djFaderTaper(v):v;
-    try{decks[d].volumeGain.gain.setTargetAtTime(target,audioCtx.currentTime,0.012);}
-    catch(e){decks[d].volumeGain.gain.value=target;}
+    // _rampGain hard-zeros at v<=0 (setTargetAtTime alone asymptotes
+    // and never quite reaches 0, leaving an audible residue).
+    _rampGain(decks[d].volumeGain.gain,target,audioCtx,0.012);
   }
   refreshDjFocusVolumeUI(d);
   const fader=document.getElementById('fader-'+d);
-  if(fader)fader.style.bottom=(v*90)+'%';
+  const wrap=document.querySelector(`.fader-wrap[data-fader="${d}"]`);
+  if(fader&&wrap){
+    const wrapH=wrap.getBoundingClientRect().height;
+    const handleH=fader.offsetHeight||24;
+    const travel=Math.max(1,wrapH-handleH);
+    fader.style.bottom=(v*travel)+'px';
+  }
   try{if(typeof applyCrossfader==='function')applyCrossfader();}catch(e){}
 }
 function refreshDjFocusVolumeUI(d){
@@ -21101,6 +21239,91 @@ function saveSupaCfg(){
     else toast&&toast('Could not connect — check the anon key','error');});
 }
 
+/* ====================================================================
+   AUTH DIAGNOSTIC — end-to-end self-test of the Google OAuth pipe.
+   Walks the user through 6 checks and surfaces the EXACT step that
+   needs fixing in Google Cloud / Supabase / Vercel. No secrets are
+   logged; only public values (project ref, current origin) appear.
+   ==================================================================== */
+async function runAuthDiagnostic(){
+  const out=document.getElementById('authDiagnoseOut');
+  if(!out)return;
+  out.style.display='block';
+  const lines=[];
+  const log=(ok,msg,hint)=>{
+    const mark=ok===true?'✓':ok===false?'✗':'•';
+    const color=ok===true?'#9affb0':ok===false?'#ff9f9f':'#cfd6dd';
+    lines.push(`<span style="color:${color}">${mark}</span> ${msg}${hint?`\n   <span style="color:#a8b8c8">↳ ${hint}</span>`:''}`);
+    out.innerHTML=lines.join('\n');
+  };
+  out.innerHTML='Running…';
+  await new Promise(r=>setTimeout(r,30));
+
+  // 1. URL format
+  const url=(supaCfg.url||'').trim();
+  if(/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(url)){
+    log(true,`Supabase URL valid (${url.replace(/^https:\/\//,'')})`);
+  }else{
+    log(false,'Supabase URL not set or malformed','Paste your project URL in the field above and SAVE.');
+    return;
+  }
+
+  // 2. Anon key shape
+  const anon=(supaCfg.anon||'').trim();
+  if(!anon){log(false,'Anon key is empty','Supabase → Settings → API → copy the anon public key.');return;}
+  if(!anon.startsWith('eyJ')){log(false,'Anon key shape wrong (must start with eyJ)','Did you paste the service_role by mistake? Use the ANON public key.');return;}
+  log(true,`Anon key shape OK (${anon.slice(0,12)}…)`);
+
+  // 3. SDK loaded
+  try{await loadSupabaseLib();log(true,'Supabase JS SDK loaded');}
+  catch(e){log(false,'SDK failed to load','Network blocked CDN? '+e.message);return;}
+
+  // 4. Client connects (REST ping)
+  let client;
+  try{
+    client=window.supabase.createClient(url,anon,{auth:{persistSession:false}});
+    log(true,'Client created');
+  }catch(e){log(false,'Client init failed',e.message);return;}
+
+  // 5. Auth REST reachable + provider list
+  try{
+    const r=await fetch(url+'/auth/v1/settings',{headers:{apikey:anon,Authorization:'Bearer '+anon}});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const cfg=await r.json();
+    const providers=cfg?.external||{};
+    if(providers.google){
+      log(true,'Google provider ENABLED in Supabase');
+    }else{
+      log(false,'Google provider NOT enabled','Supabase → Authentication → Providers → Google → toggle ENABLED + paste Client ID/Secret from Google Cloud.');
+    }
+    log(null,`External providers detected: ${Object.keys(providers).filter(k=>providers[k]).join(', ')||'(none)'}`);
+  }catch(e){
+    log(false,'Could not reach /auth/v1/settings — '+e.message,'Anon key wrong, project paused, or RLS blocking auth.settings.');
+    return;
+  }
+
+  // 6. profiles table reachable (RLS-friendly anon read of the table's existence)
+  try{
+    const{error}=await client.from('profiles').select('id',{head:true,count:'exact'}).limit(0);
+    if(error){
+      if(/relation .* does not exist/i.test(error.message)){
+        log(false,'profiles table missing','SQL Editor → paste auth.sql → Run.');
+      }else{
+        log(true,`profiles table reachable (RLS active: ${error.message.slice(0,80)})`);
+      }
+    }else{
+      log(true,'profiles table reachable');
+    }
+  }catch(e){log(null,'profiles probe inconclusive: '+e.message);}
+
+  // 7. Origin / redirect-URL hints — what the user must add to Supabase URL Config
+  log(null,`This app's origin: ${location.origin}`);
+  log(null,`Required redirect URI in Google Cloud: ${url.replace(/\/$/,'')}/auth/v1/callback`);
+  log(null,`Required Site URL / Redirect URLs in Supabase URL Config: ${location.origin}/**`);
+
+  log(true,'\nDIAGNOSTIC COMPLETE — fix any ✗ rows above, then click SAVE & CONNECT and try Sign In With Google.');
+}
+
 /* ADMIN: list/edit users via profiles table (RLS restricts to admins) */
 async function loadAdminUsers(){
   const body=document.getElementById('adminUsersBody');
@@ -21154,6 +21377,30 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('supabaseUrl')&&(document.getElementById('supabaseUrl').value=supaCfg.url||'');
     document.getElementById('supabaseAnon')&&(document.getElementById('supabaseAnon').value=supaCfg.anon||'');
     document.getElementById('saveSupabase')?.addEventListener('click',saveSupaCfg);
+    document.getElementById('authDiagnoseBtn')?.addEventListener('click',()=>{
+      try{runAuthDiagnostic();}catch(e){
+        const out=document.getElementById('authDiagnoseOut');
+        if(out){out.style.display='block';out.textContent='Diagnostic crashed: '+(e.message||e);}
+      }
+    });
+    // Populate the dynamic redirect/origin hints + COPY buttons
+    (function fillAuthHints(){
+      const redirHint=document.getElementById('authRedirectHint');
+      const originHint=document.getElementById('authOriginHint');
+      if(redirHint)redirHint.textContent=(supaCfg.url||SUPA_DEFAULTS.url).replace(/\/$/,'')+'/auth/v1/callback';
+      if(originHint)originHint.textContent=location.origin+'/**';
+      const copyTo=(btnId,txtFn)=>{
+        const b=document.getElementById(btnId);
+        if(!b)return;
+        b.addEventListener('click',()=>{
+          const t=txtFn();
+          try{navigator.clipboard.writeText(t);toast&&toast('Copied · '+t.slice(0,40)+'…','success');}
+          catch(_){toast&&toast(t,'success');}
+        });
+      };
+      copyTo('copyAuthRedirect',()=>(supaCfg.url||SUPA_DEFAULTS.url).replace(/\/$/,'')+'/auth/v1/callback');
+      copyTo('copyAuthOrigin',()=>location.origin+'/**');
+    })();
     initSupabase();
     const modal=document.getElementById('authModal');
     const openAuth=()=>{
@@ -22824,6 +23071,39 @@ document.addEventListener('DOMContentLoaded',()=>{
       d.playing=false;d.source=null;d.offset=0;d._playToken=null;
       _updatePlayUI(id,false);
     };
+    // SYNC d.volume FROM THE VISUAL FADER. The mixer fader handle
+    // is the source of truth — if any prior code path left d.volume
+    // out of sync (DJ-FOCUS, MIDI, AUTOMIX restore, compact slider,
+    // legacy formula, …) the user sees the fader at the bottom and
+    // expects silence regardless of internal state. Reading the
+    // computed bottom of the fader handle and dividing by the
+    // available travel gives us the user's true visual intent.
+    try{
+      const w=document.querySelector(`.fader-wrap[data-fader="${id}"]`);
+      const h=document.getElementById(`fader-${id}`);
+      if(w&&h){
+        const wrapH=w.getBoundingClientRect().height;
+        const handleH=h.offsetHeight||24;
+        const travel=Math.max(1,wrapH-handleH);
+        const cs=getComputedStyle(h);
+        const bottomPx=parseFloat(cs.bottom)||0;
+        const visualV=Math.max(0,Math.min(1,bottomPx/travel));
+        d.volume=visualV;
+      }
+    }catch(_){}
+    // CRITICAL: zero volumeGain BEFORE src.start. WebAudio renders
+    // audio in 128-sample chunks (~2.7 ms); if the source is started
+    // before the gain has been forced to 0, the very first chunk plays
+    // through at whatever pauseDeck restored on the previous stop —
+    // that's the "PLAY burst at fader=0" the user reported.
+    if(d.volumeGain&&audioCtx){
+      try{
+        const now0=audioCtx.currentTime;
+        d.volumeGain.gain.cancelScheduledValues(now0);
+        d.volumeGain.gain.value=0;
+        d.volumeGain.gain.setValueAtTime(0,now0);
+      }catch(_){try{d.volumeGain.gain.value=0;}catch(__){}}
+    }
     const startOffset=Math.max(0,Math.min((d.offset||0),Math.max(0,d.buffer.duration-0.02)));
     try{src.start(0,startOffset);}
     catch(e){
@@ -22838,15 +23118,22 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(d.volumeGain){
       // Apply the perceptual taper so play-in matches what the mixer
       // fader is actually showing.  d.volume === 0 → target = 0 → the
-      // deck stays silent until the user brings the fader up.  No more
-      // "fader at bottom but deck makes sound on play".
+      // deck stays silent until the user brings the fader up.
       const rawV=(d.volume!=null)?d.volume:0;
       const target=(typeof _djFaderTaper==='function')?_djFaderTaper(rawV):rawV;
       const now=audioCtx.currentTime;
       try{
-        d.volumeGain.gain.cancelScheduledValues(now);
-        d.volumeGain.gain.setValueAtTime(0,now);
-        d.volumeGain.gain.linearRampToValueAtTime(target,now+0.008);
+        if(target<=0){
+          // Hold at 0. No up-ramp at all — fader at the bottom means
+          // mathematically silent until the user moves the fader.
+          d.volumeGain.gain.setValueAtTime(0,now+0.025);
+        }else{
+          // 25 ms up-ramp from 0 → tapered target. Long enough to kill
+          // any click/transient when audio comes in, short enough to
+          // feel instant under the finger.
+          d.volumeGain.gain.setValueAtTime(0,now);
+          d.volumeGain.gain.linearRampToValueAtTime(target,now+0.025);
+        }
       }catch(e){d.volumeGain.gain.value=target;}
     }
     _updatePlayUI(id,true);
@@ -22884,6 +23171,58 @@ document.addEventListener('DOMContentLoaded',()=>{
     playDeck(id);
   };
   window.stopDeck=function(id){const d=decks[id];if(!d)return;pauseDeck(id);d.offset=0;};
+
+  /* 9.5) FADER SAFETY GATE — last line of defense.
+         If the visual mixer fader is parked at the bottom (within 0.5%),
+         force-zero the deck's volumeGain regardless of whatever d.volume
+         /  scheduled gain ramps say it should be. Also mute the YouTube
+         player if this deck happens to hold a YT track (YT audio
+         bypasses our WebAudio chain entirely). Runs every 50 ms — not
+         expensive (4 reads of getComputedStyle + maybe 4 gain writes)
+         and bulletproof against any rogue code path that leaves the
+         deck audible while the user thinks it's silent.
+         When the fader is above 0, the safety loop does NOTHING — it
+         only intervenes at the bottom, so normal playback isn't
+         affected. */
+  function _faderSafetyTick(){
+    if(!audioCtx)return;
+    ['A','B','C','D'].forEach(id=>{
+      const d=decks[id];if(!d)return;
+      const w=document.querySelector(`.fader-wrap[data-fader="${id}"]`);
+      const h=document.getElementById(`fader-${id}`);
+      if(!w||!h)return;
+      const wrapH=w.getBoundingClientRect().height||0;
+      if(wrapH<=0)return;
+      const handleH=h.offsetHeight||24;
+      const travel=Math.max(1,wrapH-handleH);
+      const cs=getComputedStyle(h);
+      const bottomPx=parseFloat(cs.bottom)||0;
+      const visualV=Math.max(0,Math.min(1,bottomPx/travel));
+      if(visualV<=0.005){
+        // Fader effectively at the bottom — guarantee silence
+        if(d.volumeGain){
+          try{
+            const cur=d.volumeGain.gain.value;
+            if(cur>0.0001){
+              d.volumeGain.gain.cancelScheduledValues(audioCtx.currentTime);
+              d.volumeGain.gain.setValueAtTime(0,audioCtx.currentTime);
+            }
+          }catch(_){}
+        }
+        // YouTube audio doesn't go through volumeGain at all
+        if(window.ytPlayers&&ytPlayers[id]&&d.track&&d.track.source==='yt'){
+          try{
+            if(typeof ytPlayers[id].getVolume==='function'){
+              if(ytPlayers[id].getVolume()>0)ytPlayers[id].setVolume(0);
+            }
+          }catch(_){}
+        }
+        // Keep d.volume in sync so subsequent code paths see 0
+        d.volume=0;
+      }
+    });
+  }
+  setInterval(_faderSafetyTick,50);
 
   /* 10) Tick override: update elapsed/remain/waveform for ALL four
          decks (was A/B only), and use native source loop instead of
@@ -23000,6 +23339,14 @@ function energyScore(e1,e2,direction){
 
 const _recentlyPlayed=[];
 function smartPickNextTrack(){
+  // NEXT-UP pinned override: if the user tapped a candidate in the
+  // Next-Up preview strip, honor that pick once and clear the pin.
+  if(window.automix&&automix.pinnedNext){
+    const pinned=library.find(t=>t.id===automix.pinnedNext&&t.buffer&&t.source!=='yt');
+    automix.pinnedNext=null;
+    try{updateNextUpStrip&&updateNextUpStrip();}catch(_){}
+    if(pinned)return pinned;
+  }
   const cands=library.filter(t=>t.source!=='yt'&&t.buffer);
   if(!cands.length)return null;
   const cur=decks.A.playing?decks.A:decks.B.playing?decks.B:null;
@@ -23024,6 +23371,36 @@ function smartPickNextTrack(){
     if(s>bestScore){bestScore=s;best=t;}
   });
   return best||cands[Math.floor(Math.random()*cands.length)];
+}
+
+/* Next-Up Preview: rank ALL eligible candidates against the
+   currently-playing reference track and return the top N with a
+   detailed score breakdown so the UI can show 'why' each track is
+   suggested (BPM-match, key-match, energy direction). */
+function automixCandidateRanking(n){
+  const limit=n||3;
+  const cands=library.filter(t=>t.source!=='yt'&&t.buffer);
+  if(!cands.length)return [];
+  const cur=decks.A.playing?decks.A:decks.B.playing?decks.B:(decks.C.playing?decks.C:(decks.D.playing?decks.D:null));
+  const order=document.getElementById('aiOrder')?.value||'energy-flow';
+  const tolPct=(parseFloat(document.getElementById('aiBpmTol')?.value||6))/100;
+  const dir=(order==='energy-flow')?'build':'match';
+  const ref=cur&&cur.track?cur.track:null;
+  const loadedIds=new Set(['A','B','C','D'].map(id=>decks[id]?.track?.id).filter(Boolean));
+  const scored=cands
+    .filter(t=>!ref||t.id!==ref.id)
+    .filter(t=>!loadedIds.has(t.id))
+    .filter(t=>!_recentlyPlayed.includes(t.id))
+    .map(t=>{
+      const bs=ref?bpmScore(ref.bpm,t.bpm,tolPct):0.5;
+      const ks=ref?harmonicScore(ref.key,t.key):0.5;
+      const es=ref?energyScore(ref.energy,t.energy,dir):0.5;
+      const total=bs*0.45+ks*0.35+es*0.20;
+      return {track:t,total,bpm:bs,key:ks,energy:es,bpmDelta:ref?(t.bpm-ref.bpm):0,keyMatch:ks>=0.85,energyDir:ref&&ref.energy!=null&&t.energy!=null?(t.energy-ref.energy):0};
+    })
+    .sort((a,b)=>b.total-a.total)
+    .slice(0,limit);
+  return scored;
 }
 
 function autoGainMatch(deckId){
@@ -23163,7 +23540,8 @@ const automix={
   phase:'idle',from:null,to:null,style:null,bars:4,
   startAt:0,endAt:0,progress:0,continuous:false,
   timers:[],rafId:0,preVol:{},preXf:0.5,usedCrossfader:false,
-  enabledDecks:{A:true,B:true,C:true,D:true}
+  enabledDecks:{A:true,B:true,C:true,D:true},
+  pinnedNext:null
 };
 window.automix=automix;
 let _automixRunning=false; // legacy watchdog hook
