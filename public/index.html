@@ -23655,6 +23655,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   function _faderSafetyTick(){
     if(!audioCtx)return;
     ['A','B','C','D'].forEach(id=>{
+      // AutoMix is driving this deck's fader+gain in lockstep — back off
+      // so we don't cancel the scheduled ramp during the transition.
+      if(window.automix&&automix.fading&&automix.fading[id])return;
       const d=decks[id];if(!d)return;
       const w=document.querySelector(`.fader-wrap[data-fader="${id}"]`);
       const h=document.getElementById(`fader-${id}`);
@@ -24009,7 +24012,11 @@ const automix={
   startAt:0,endAt:0,progress:0,continuous:false,
   timers:[],rafId:0,preVol:{},preXf:0.5,usedCrossfader:false,
   enabledDecks:{A:true,B:true,C:true,D:true},
-  pinnedNext:null
+  pinnedNext:null,
+  // Per-deck flag set true while fadeChannelVolume() is animating.
+  // _faderSafetyTick reads this and skips the deck so the safety
+  // gate does not fight a scheduled ramp during AutoMix.
+  fading:{A:false,B:false,C:false,D:false}
 };
 window.automix=automix;
 let _automixRunning=false; // legacy watchdog hook
@@ -24097,25 +24104,39 @@ function automixProgressLoop(){
 
 function fadeChannelVolume(deckId,target,durSec){
   const d=decks[deckId];if(!d||!d.volumeGain||!audioCtx)return;
-  const t0=audioCtx.currentTime,t1=t0+durSec;
+  // Mark this deck as actively fading so _faderSafetyTick stops force-zeroing
+  // the gain when the visual handle starts at (or passes through) the bottom.
+  automix.fading[deckId]=true;
+  const taper=(typeof _djFaderTaper==='function')?_djFaderTaper:(v=>v);
+  const t0=audioCtx.currentTime,t1=t0+Math.max(0.001,durSec);
   const start=d.volume;
+  // Audio: ramp via the same DJ taper the user fader uses, so the audible
+  // curve matches the visual handle position throughout the transition.
   d.volumeGain.gain.cancelScheduledValues(t0);
-  d.volumeGain.gain.setValueAtTime(start,t0);
-  d.volumeGain.gain.linearRampToValueAtTime(target,t1);
+  d.volumeGain.gain.setValueAtTime(taper(start),t0);
+  d.volumeGain.gain.linearRampToValueAtTime(taper(target),t1);
+  // Visual: animate handle bottom in pixels, mirroring the user-driven
+  // fader code (bottom = v * travel). The previous percent-based formula
+  // produced negative values for v<0.19, leaving the handle off-screen.
+  const w=document.querySelector(`.fader-wrap[data-fader="${deckId}"]`);
   const h=document.getElementById(`fader-${deckId}`);
-  if(h){
+  function done(){automix.fading[deckId]=false;}
+  if(h&&w){
+    const wrapH=w.getBoundingClientRect().height||170;
+    const handleH=h.offsetHeight||24;
+    const travel=Math.max(1,wrapH-handleH);
     const t0p=performance.now();
     function step(){
       const el=(performance.now()-t0p)/(durSec*1000);
-      if(el>=1){d.volume=target;h.style.bottom=`${(1-(1-target)/0.9-0.1)*100}%`;return;}
+      if(el>=1){d.volume=target;h.style.bottom=(target*travel)+'px';done();return;}
       const v=start+(target-start)*el;
       d.volume=v;
-      h.style.bottom=`${(1-(1-v)/0.9-0.1)*100}%`;
+      h.style.bottom=(v*travel)+'px';
       requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
   }else{
-    d.volume=target;
+    d.volume=target;done();
   }
 }
 
