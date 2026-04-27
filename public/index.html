@@ -16451,7 +16451,7 @@ function setupOfflineDownload(){
     if(!_supa){loginErr.textContent='Sign-in not configured yet. Owner must add Supabase URL + Anon Key in SETTINGS → SUPABASE.';return;}
     loginErr.textContent='Redirecting to Google…';
     try{
-      const{error}=await _supa.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+'/'}});
+      const{error}=await _supa.auth.signInWithOAuth({provider:'google',options:{redirectTo:_oauthRedirectTo()}});
       if(error)loginErr.textContent='Error: '+error.message;
     }catch(e){loginErr.textContent='Error: '+(e.message||e);}
   });
@@ -21598,6 +21598,25 @@ try{const raw=localStorage.getItem(SUPA_CFG_KEY);if(raw){const saved=JSON.parse(
   }catch(e){/* ignore */}
 })();
 
+/* OAuth redirect target.
+   Vercel auto-generates a fresh preview URL per commit (e.g. djkobikobi-
+   actesee40-…vercel.app) which is impossible to keep in sync with
+   Supabase's "Redirect URLs" allow-list. When the redirectTo we pass is
+   not in the allow-list, Supabase silently falls back to the configured
+   Site URL — landing the user on whatever stale preview was last saved
+   there.  Force the canonical production origin for any deploy whose
+   hostname is not titandj.pro so OAuth always lands back on the real
+   site, regardless of which preview the user started from. */
+const _OAUTH_PROD_ORIGIN='https://titandj.pro';
+function _oauthRedirectTo(){
+  try{
+    const h=location.hostname||'';
+    if(h==='titandj.pro'||h==='localhost'||h==='127.0.0.1')return location.origin+'/';
+  }catch(_){}
+  return _OAUTH_PROD_ORIGIN+'/';
+}
+window._oauthRedirectTo=_oauthRedirectTo;
+
 function loadSupabaseLib(){
   return new Promise((resolve,reject)=>{
     if(window.supabase){resolve(window.supabase);return;}
@@ -21867,7 +21886,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('authGoogleBtn')?.addEventListener('click',async()=>{
       if(!_supa){setStatus('Not connected','error');return;}
       setStatus('Redirecting to Google…');
-      const{error}=await _supa.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+'/'}});
+      const{error}=await _supa.auth.signInWithOAuth({provider:'google',options:{redirectTo:_oauthRedirectTo()}});
       if(error)setStatus('Error: '+error.message,'error');
     });
     document.getElementById('authEmailBtn')?.addEventListener('click',async()=>{
