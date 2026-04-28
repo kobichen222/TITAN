@@ -10212,6 +10212,147 @@ body.tl-locked{overflow:hidden}
   #titan-landing .tl-cta::before{display:none}
 }
 
+/* ===== TITAN PRICING ===== */
+#titan-landing .tl-pricing{margin-bottom:clamp(40px,6vw,72px);scroll-margin-top:24px}
+#titan-landing .tl-pricing-head{text-align:center;margin-bottom:clamp(24px,3vw,36px)}
+#titan-landing .tl-pricing-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:4px;color:#00d4ff;border:1px solid rgba(0,212,255,.4);padding:7px 14px;border-radius:99px;margin-bottom:18px;background:rgba(0,212,255,.06);text-transform:uppercase}
+#titan-landing .tl-pricing-eyebrow::before{content:'';width:7px;height:7px;border-radius:50%;background:#00d4ff;box-shadow:0 0 8px #00d4ff;animation:tlPulseRing 2s infinite}
+#titan-landing .tl-pricing-head h2{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(28px,4.4vw,46px);line-height:1.05;letter-spacing:1px;color:#fff;margin-bottom:10px;text-transform:uppercase}
+#titan-landing .tl-pricing-head h2 em{font-style:normal;background:linear-gradient(135deg,#ff7a00,#ffb347 60%,#ffd49a);-webkit-background-clip:text;background-clip:text;color:transparent}
+#titan-landing .tl-pricing-head p{font-size:clamp(14px,1.3vw,16px);color:#9a9a9e;max-width:560px;margin:0 auto;line-height:1.55}
+#titan-landing .tl-plans{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(18px,2.4vw,28px);align-items:stretch}
+#titan-landing .tl-plan{position:relative;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0));border:1px solid #1f1f23;border-radius:18px;padding:clamp(22px,2.6vw,32px);transition:border-color .25s ease, transform .25s ease, box-shadow .25s ease, background .25s ease;overflow:hidden}
+#titan-landing .tl-plan::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(255,122,0,.12) 0%,transparent 60%);opacity:0;transition:opacity .25s ease;pointer-events:none}
+#titan-landing .tl-plan:hover{transform:translateY(-4px);border-color:#ff7a00;box-shadow:0 24px 50px rgba(0,0,0,.45),0 0 36px rgba(255,122,0,.08)}
+#titan-landing .tl-plan:hover::before{opacity:1}
+#titan-landing .tl-plan.tl-plan-featured{border-color:rgba(255,122,0,.55);background:linear-gradient(180deg,rgba(255,122,0,.06),rgba(255,255,255,0));box-shadow:0 18px 40px rgba(0,0,0,.45),0 0 30px rgba(255,122,0,.1)}
+#titan-landing .tl-plan-tag{position:absolute;top:14px;right:14px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2.5px;color:#000;background:linear-gradient(135deg,#ff7a00,#ffb347);padding:5px 10px;border-radius:99px;text-transform:uppercase;box-shadow:0 6px 18px rgba(255,122,0,.4)}
+#titan-landing .tl-plan-ico{font-size:30px;margin-bottom:14px;display:block;filter:drop-shadow(0 4px 10px rgba(255,122,0,.25))}
+#titan-landing .tl-plan h3{font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:3px;color:#fff;margin-bottom:6px;text-transform:uppercase}
+#titan-landing .tl-plan-sub{font-family:'Share Tech Mono',monospace;font-size:11px;color:#7a7a7e;letter-spacing:2px;text-transform:uppercase;margin-bottom:18px}
+#titan-landing .tl-plan-price{display:flex;align-items:flex-end;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+#titan-landing .tl-plan-price .tl-price-amt{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(38px,5vw,56px);line-height:1;background:linear-gradient(135deg,#ff7a00,#ffb347);-webkit-background-clip:text;background-clip:text;color:transparent}
+#titan-landing .tl-plan-price .tl-price-cur{font-family:'Orbitron',sans-serif;font-weight:700;font-size:18px;color:#9a9a9e;margin-bottom:8px}
+#titan-landing .tl-plan-price .tl-price-per{font-family:'Share Tech Mono',monospace;font-size:12px;color:#9a9a9e;letter-spacing:2px;margin-bottom:10px;text-transform:uppercase}
+#titan-landing .tl-plan-bill{font-family:'Share Tech Mono',monospace;font-size:11px;color:#6a6a6e;letter-spacing:1.5px;margin-bottom:18px;text-transform:uppercase}
+#titan-landing .tl-plan ul{list-style:none;padding:0;margin:0 0 22px;display:flex;flex-direction:column;gap:9px;flex:1}
+#titan-landing .tl-plan li{font-size:14px;color:#cfcfd2;display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+#titan-landing .tl-plan li::before{content:'';flex:0 0 16px;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffb347,#ff5a00);box-shadow:0 0 8px rgba(255,122,0,.45);margin-top:3px;position:relative}
+#titan-landing .tl-plan li small{display:block;color:#7a7a7e;font-size:11.5px;font-family:'Share Tech Mono',monospace;letter-spacing:1px;margin-top:2px}
+#titan-landing .tl-plan-cta{font-family:'Orbitron',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;padding:14px 22px;border-radius:8px;cursor:pointer;border:1px solid #3a3a3e;text-transform:uppercase;transition:transform .15s ease, box-shadow .25s ease, background .2s ease, color .2s ease, border-color .2s ease;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;background:rgba(255,255,255,.02);color:#e8e8ea;width:100%}
+#titan-landing .tl-plan-cta:hover{border-color:#00d4ff;color:#00d4ff;background:rgba(0,212,255,.06);box-shadow:0 0 24px rgba(0,212,255,.2)}
+#titan-landing .tl-plan-featured .tl-plan-cta{background:linear-gradient(135deg,#ff7a00,#ff5a00);color:#000;border-color:transparent;box-shadow:0 8px 26px rgba(255,122,0,.35),inset 0 1px 0 rgba(255,255,255,.25)}
+#titan-landing .tl-plan-featured .tl-plan-cta:hover{transform:translateY(-2px);color:#000;background:linear-gradient(135deg,#ff8a18,#ff6a18);box-shadow:0 14px 40px rgba(255,122,0,.55),inset 0 1px 0 rgba(255,255,255,.35)}
+#titan-landing .tl-plan-cta.tl-in-cart{background:linear-gradient(135deg,#00ff7a,#00b85a);color:#000;border-color:transparent;box-shadow:0 6px 20px rgba(0,255,122,.35)}
+#titan-landing .tl-plan-cta:focus-visible{outline:2px solid #00d4ff;outline-offset:3px}
+#titan-landing .tl-plan-foot{font-family:'Share Tech Mono',monospace;font-size:10.5px;color:#6a6a6e;letter-spacing:1.5px;margin-top:12px;text-align:center;text-transform:uppercase}
+
+/* Cart launcher pill (floats top-right of nav) */
+#titan-landing .tl-cart-pill{display:inline-flex;align-items:center;gap:8px;font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;color:#fff;background:rgba(255,122,0,.12);border:1px solid rgba(255,122,0,.4);padding:7px 12px;border-radius:99px;cursor:pointer;text-transform:uppercase;transition:background .2s ease, border-color .2s ease, transform .15s ease}
+#titan-landing .tl-cart-pill:hover{background:rgba(255,122,0,.22);border-color:#ff7a00;transform:translateY(-1px)}
+#titan-landing .tl-cart-pill .tl-cart-count{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 6px;border-radius:99px;background:#ff7a00;color:#000;font-size:10px;font-weight:900}
+#titan-landing .tl-cart-pill[data-empty="1"] .tl-cart-count{display:none}
+
+/* Cart drawer (slides from right) */
+#titan-landing .tl-cart{position:fixed;top:0;right:0;width:min(420px,92vw);height:100%;background:linear-gradient(180deg,#111114 0%,#070708 100%);border-left:1px solid #2a2a2e;box-shadow:-30px 0 80px rgba(0,0,0,.6);transform:translateX(110%);transition:transform .35s cubic-bezier(.2,.8,.2,1);z-index:100001;display:flex;flex-direction:column}
+#titan-landing .tl-cart.tl-open{transform:translateX(0)}
+#titan-landing .tl-cart-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid #1f1f23}
+#titan-landing .tl-cart-head h3{font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:3px;color:#fff;text-transform:uppercase}
+#titan-landing .tl-cart-close{background:none;border:none;color:#9a9a9e;font-size:22px;cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1}
+#titan-landing .tl-cart-close:hover{color:#ff7a00;background:rgba(255,122,0,.08)}
+#titan-landing .tl-cart-body{flex:1;overflow-y:auto;padding:18px 22px;display:flex;flex-direction:column;gap:12px}
+#titan-landing .tl-cart-empty{text-align:center;color:#6a6a6e;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;margin:auto 0;text-transform:uppercase}
+#titan-landing .tl-cart-empty span{display:block;font-size:42px;margin-bottom:14px;opacity:.5}
+#titan-landing .tl-cart-item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:14px;background:rgba(255,255,255,.025);border:1px solid #1f1f23;border-radius:12px}
+#titan-landing .tl-cart-item-ico{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,rgba(255,122,0,.18),rgba(0,212,255,.12));display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid #2a2a2e}
+#titan-landing .tl-cart-item-info{min-width:0}
+#titan-landing .tl-cart-item-info b{display:block;font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:1.5px;color:#fff;text-transform:uppercase;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#titan-landing .tl-cart-item-info span{font-family:'Share Tech Mono',monospace;font-size:11px;color:#7a7a7e;letter-spacing:1.2px;text-transform:uppercase}
+#titan-landing .tl-cart-item-price{font-family:'Orbitron',sans-serif;font-weight:800;font-size:14px;color:#ff7a00;text-align:right}
+#titan-landing .tl-cart-item-price small{display:block;font-size:9.5px;color:#6a6a6e;font-weight:400;letter-spacing:1.5px;font-family:'Share Tech Mono',monospace;margin-top:2px;text-transform:uppercase}
+#titan-landing .tl-cart-item-rm{grid-column:3;background:none;border:none;color:#5a5a5e;cursor:pointer;font-size:11px;font-family:'Share Tech Mono',monospace;letter-spacing:1.5px;padding:4px 0;text-transform:uppercase}
+#titan-landing .tl-cart-item-rm:hover{color:#ff5a5a}
+#titan-landing .tl-cart-item-row{display:flex;justify-content:flex-end;grid-column:1/-1;margin-top:-2px}
+#titan-landing .tl-cart-foot{padding:18px 22px;border-top:1px solid #1f1f23;background:rgba(0,0,0,.35);display:flex;flex-direction:column;gap:14px}
+#titan-landing .tl-cart-totals{display:flex;flex-direction:column;gap:6px;font-family:'Share Tech Mono',monospace;font-size:12px;color:#9a9a9e;letter-spacing:1.5px;text-transform:uppercase}
+#titan-landing .tl-cart-totals > div{display:flex;justify-content:space-between}
+#titan-landing .tl-cart-totals .tl-total{font-family:'Orbitron',sans-serif;font-size:18px;color:#fff;letter-spacing:2px;border-top:1px dashed #2a2a2e;padding-top:8px;margin-top:4px}
+#titan-landing .tl-cart-totals .tl-total b{color:#ff7a00}
+#titan-landing .tl-cart-checkout{font-family:'Orbitron',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;padding:14px 22px;border-radius:8px;cursor:pointer;border:none;text-transform:uppercase;background:linear-gradient(135deg,#ff7a00,#ff5a00);color:#000;box-shadow:0 8px 26px rgba(255,122,0,.35),inset 0 1px 0 rgba(255,255,255,.25);transition:transform .15s ease, box-shadow .25s ease}
+#titan-landing .tl-cart-checkout:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(255,122,0,.55)}
+#titan-landing .tl-cart-checkout:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* Backdrop shared by cart + checkout */
+#titan-landing .tl-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:100000}
+#titan-landing .tl-backdrop.tl-open{opacity:1;pointer-events:auto}
+
+/* Checkout modal */
+#titan-landing .tl-checkout{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;z-index:100002;opacity:0;pointer-events:none;transition:opacity .25s ease}
+#titan-landing .tl-checkout.tl-open{opacity:1;pointer-events:auto}
+#titan-landing .tl-checkout-card{width:min(880px,100%);max-height:calc(100vh - 48px);overflow:auto;background:linear-gradient(180deg,#16161a 0%,#0a0a0b 100%);border:1px solid #2a2a2e;border-radius:18px;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 60px rgba(255,122,0,.08);display:grid;grid-template-columns:1fr 1.1fr;transform:translateY(20px) scale(.98);transition:transform .25s ease}
+#titan-landing .tl-checkout.tl-open .tl-checkout-card{transform:translateY(0) scale(1)}
+#titan-landing .tl-checkout-summary{padding:28px;background:linear-gradient(180deg,rgba(255,122,0,.05),rgba(255,255,255,0));border-right:1px solid #1f1f23;display:flex;flex-direction:column;gap:16px}
+#titan-landing .tl-checkout-summary h4{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:3px;color:#ff7a00;text-transform:uppercase;margin-bottom:4px}
+#titan-landing .tl-checkout-summary .tl-co-list{display:flex;flex-direction:column;gap:10px}
+#titan-landing .tl-checkout-summary .tl-co-item{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:12px;background:rgba(255,255,255,.025);border:1px solid #1f1f23;border-radius:10px}
+#titan-landing .tl-checkout-summary .tl-co-item b{font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:1.5px;color:#fff;text-transform:uppercase;display:block;margin-bottom:3px}
+#titan-landing .tl-checkout-summary .tl-co-item span{font-family:'Share Tech Mono',monospace;font-size:11px;color:#7a7a7e;letter-spacing:1.2px;text-transform:uppercase}
+#titan-landing .tl-checkout-summary .tl-co-item strong{font-family:'Orbitron',sans-serif;font-weight:800;font-size:14px;color:#ff7a00;white-space:nowrap}
+#titan-landing .tl-checkout-summary .tl-co-totals{margin-top:auto;padding-top:14px;border-top:1px dashed #2a2a2e;font-family:'Share Tech Mono',monospace;font-size:12px;color:#9a9a9e;letter-spacing:1.5px;text-transform:uppercase;display:flex;flex-direction:column;gap:6px}
+#titan-landing .tl-checkout-summary .tl-co-totals > div{display:flex;justify-content:space-between}
+#titan-landing .tl-checkout-summary .tl-co-totals .tl-total{font-family:'Orbitron',sans-serif;font-size:20px;color:#fff;letter-spacing:2px;border-top:1px solid #2a2a2e;padding-top:10px;margin-top:6px}
+#titan-landing .tl-checkout-summary .tl-co-totals .tl-total b{color:#ff7a00}
+#titan-landing .tl-checkout-form{padding:28px;display:flex;flex-direction:column;gap:14px}
+#titan-landing .tl-checkout-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+#titan-landing .tl-checkout-head h3{font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:3px;color:#fff;text-transform:uppercase}
+#titan-landing .tl-checkout-close{background:none;border:none;color:#9a9a9e;font-size:22px;cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1}
+#titan-landing .tl-checkout-close:hover{color:#ff7a00;background:rgba(255,122,0,.08)}
+#titan-landing .tl-form-row{display:grid;gap:6px}
+#titan-landing .tl-form-row.tl-form-2{grid-template-columns:1fr 1fr;gap:10px}
+#titan-landing .tl-form-row.tl-form-3{grid-template-columns:2fr 1fr 1fr;gap:10px}
+#titan-landing .tl-form-row label{font-family:'Share Tech Mono',monospace;font-size:10.5px;letter-spacing:2px;color:#9a9a9e;text-transform:uppercase}
+#titan-landing .tl-form-row input,
+#titan-landing .tl-form-row select{font-family:'Share Tech Mono',monospace;font-size:13px;color:#e8e8ea;background:#08080a;border:1px solid #2a2a2e;border-radius:8px;padding:11px 12px;outline:none;letter-spacing:1px;transition:border-color .15s ease, box-shadow .15s ease;width:100%}
+#titan-landing .tl-form-row input:focus,
+#titan-landing .tl-form-row select:focus{border-color:#ff7a00;box-shadow:0 0 0 3px rgba(255,122,0,.15)}
+#titan-landing .tl-form-row input::placeholder{color:#4a4a4e}
+#titan-landing .tl-form-row.tl-form-grid-2{grid-template-columns:1fr 1fr;gap:10px}
+#titan-landing .tl-pay-method{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
+#titan-landing .tl-pay-method label{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border:1px solid #2a2a2e;border-radius:10px;background:rgba(255,255,255,.02);cursor:pointer;font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;color:#9a9a9e;text-transform:uppercase;transition:border-color .15s ease, color .15s ease, background .15s ease}
+#titan-landing .tl-pay-method input{display:none}
+#titan-landing .tl-pay-method label:hover{color:#fff;border-color:#3a3a3e}
+#titan-landing .tl-pay-method input:checked + label{border-color:#ff7a00;color:#fff;background:rgba(255,122,0,.08);box-shadow:inset 0 0 14px rgba(255,122,0,.1)}
+#titan-landing .tl-checkout-pay{margin-top:6px;font-family:'Orbitron',sans-serif;font-weight:800;font-size:13px;letter-spacing:3px;padding:16px 22px;border-radius:10px;cursor:pointer;border:none;text-transform:uppercase;background:linear-gradient(135deg,#ff7a00,#ff5a00);color:#000;box-shadow:0 8px 26px rgba(255,122,0,.35),inset 0 1px 0 rgba(255,255,255,.25);transition:transform .15s ease, box-shadow .25s ease}
+#titan-landing .tl-checkout-pay:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 40px rgba(255,122,0,.55)}
+#titan-landing .tl-checkout-pay:disabled{opacity:.55;cursor:not-allowed;transform:none}
+#titan-landing .tl-checkout-secure{font-family:'Share Tech Mono',monospace;font-size:10.5px;letter-spacing:1.5px;color:#6a6a6e;text-align:center;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:8px}
+#titan-landing .tl-checkout-secure::before{content:'';width:6px;height:6px;border-radius:50%;background:#00ff7a;box-shadow:0 0 6px #00ff7a}
+#titan-landing .tl-checkout-error{font-family:'Share Tech Mono',monospace;font-size:11px;color:#ff5a5a;letter-spacing:1px;background:rgba(255,90,90,.08);border:1px solid rgba(255,90,90,.25);border-radius:8px;padding:10px;display:none}
+#titan-landing .tl-checkout-error.tl-show{display:block}
+
+/* Success state replaces the form */
+#titan-landing .tl-success{padding:34px 28px;text-align:center;display:none}
+#titan-landing .tl-success.tl-show{display:block}
+#titan-landing .tl-success-ico{width:72px;height:72px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#00ff7a,#00b85a);box-shadow:0 0 30px rgba(0,255,122,.45);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:34px;color:#000;font-weight:900}
+#titan-landing .tl-success h3{font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:3px;color:#fff;text-transform:uppercase;margin-bottom:10px}
+#titan-landing .tl-success p{color:#9a9a9e;line-height:1.55;font-size:14px;margin-bottom:8px}
+#titan-landing .tl-success .tl-success-id{font-family:'Share Tech Mono',monospace;font-size:11.5px;color:#ff7a00;letter-spacing:2px;background:rgba(255,122,0,.08);border:1px solid rgba(255,122,0,.25);border-radius:6px;padding:8px 12px;display:inline-block;margin:6px 0 18px;text-transform:uppercase}
+#titan-landing .tl-success .tl-success-cta{margin-top:10px;font-family:'Orbitron',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;padding:12px 22px;border-radius:8px;cursor:pointer;border:1px solid #3a3a3e;background:rgba(255,255,255,.02);color:#e8e8ea;text-transform:uppercase;transition:border-color .15s ease, color .15s ease, background .15s ease}
+#titan-landing .tl-success .tl-success-cta:hover{border-color:#ff7a00;color:#ff7a00;background:rgba(255,122,0,.06)}
+
+/* Pricing responsiveness */
+@media (max-width:780px){
+  #titan-landing .tl-plans{grid-template-columns:1fr}
+  #titan-landing .tl-checkout-card{grid-template-columns:1fr}
+  #titan-landing .tl-checkout-summary{border-right:none;border-bottom:1px solid #1f1f23}
+}
+@media (max-width:480px){
+  #titan-landing .tl-form-row.tl-form-2,
+  #titan-landing .tl-form-row.tl-form-3,
+  #titan-landing .tl-form-row.tl-form-grid-2{grid-template-columns:1fr}
+  #titan-landing .tl-pay-method{grid-template-columns:1fr}
+}
+
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion:reduce){
   #titan-landing,
@@ -10230,8 +10371,14 @@ body.tl-locked{overflow:hidden}
       <div class="tl-brand"><span class="tl-tag">DJ</span><b>TITAN</b></div>
       <div class="tl-navlinks">
         <a id="tlNavFeat">Features</a>
+        <a id="tlNavPricing">Pricing</a>
         <a id="tlNavLearn">Academy</a>
         <a href="https://github.com/kobichen222/TITAN/releases/latest" target="_blank" rel="noopener">Download</a>
+        <button type="button" class="tl-cart-pill" id="tlCartPill" data-empty="1" aria-label="Open cart">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.5L21.6 8H6"/><circle cx="9.5" cy="20" r="1.4"/><circle cx="17.5" cy="20" r="1.4"/></svg>
+          <span>Cart</span>
+          <span class="tl-cart-count" id="tlCartCount">0</span>
+        </button>
       </div>
     </nav>
 
@@ -10313,12 +10460,178 @@ body.tl-locked{overflow:hidden}
       <div class="tl-stat"><b>0</b><span>Install</span></div>
     </section>
 
+    <section class="tl-pricing" id="tlPricing">
+      <div class="tl-pricing-head">
+        <span class="tl-pricing-eyebrow">Pricing · One studio, two ways to play</span>
+        <h2>Pick your <em>weapon of choice.</em></h2>
+        <p>Own the desktop edition outright with a year of updates and support, or stream the browser edition every month — cancel any time.</p>
+      </div>
+
+      <div class="tl-plans">
+        <article class="tl-plan tl-plan-featured" data-plan="desktop">
+          <span class="tl-plan-tag">Best value</span>
+          <span class="tl-plan-ico">💻</span>
+          <h3>TITAN Desktop</h3>
+          <div class="tl-plan-sub">Windows · macOS · Linux</div>
+          <div class="tl-plan-price">
+            <span class="tl-price-cur">$</span>
+            <span class="tl-price-amt">250</span>
+            <span class="tl-price-per">/ year</span>
+          </div>
+          <div class="tl-plan-bill">One-time purchase · Includes 12 months of updates &amp; support</div>
+          <ul>
+            <li>Full offline studio installer for Windows &amp; macOS<small>Native app, full Web Audio engine, MIDI &amp; ASIO drivers</small></li>
+            <li>1 year of priority updates &amp; new features</li>
+            <li>1 year of email support — replies within 24h</li>
+            <li>Unlimited projects, RENDER full mix &amp; STEMS export</li>
+            <li>Use on up to 2 personal computers</li>
+            <li>Lifetime use of the version you bought</li>
+          </ul>
+          <button type="button" class="tl-plan-cta" data-add-plan="desktop" aria-label="Add TITAN Desktop to cart">Add to Cart · $250</button>
+          <div class="tl-plan-foot">Renew yearly for updates · Single secure download</div>
+        </article>
+
+        <article class="tl-plan" data-plan="browser">
+          <span class="tl-plan-ico">🌐</span>
+          <h3>TITAN Browser</h3>
+          <div class="tl-plan-sub">Web · No install</div>
+          <div class="tl-plan-price">
+            <span class="tl-price-cur">$</span>
+            <span class="tl-price-amt">20</span>
+            <span class="tl-price-per">/ month</span>
+          </div>
+          <div class="tl-plan-bill">Subscription · Cancel anytime</div>
+          <ul>
+            <li>Full browser studio — open the URL and play<small>Chrome, Edge, Safari, Firefox</small></li>
+            <li>Always on the latest version</li>
+            <li>Cloud sync for projects, library &amp; sessions</li>
+            <li>Standard support — replies within 48h</li>
+            <li>RENDER full mix &amp; STEMS export</li>
+            <li>Use on any device, sign in anywhere</li>
+          </ul>
+          <button type="button" class="tl-plan-cta" data-add-plan="browser" aria-label="Add TITAN Browser to cart">Add to Cart · $20/mo</button>
+          <div class="tl-plan-foot">Billed monthly · Cancel from your account</div>
+        </article>
+      </div>
+    </section>
+
     <div class="tl-foot">
       <div>© DJ TITAN — Professional DJ Studio</div>
       <div>
         <a href="?home=1">Home</a> ·
+        <a href="?pricing=1">Pricing</a> ·
         <a href="https://github.com/kobichen222/TITAN/releases/latest" target="_blank" rel="noopener">Windows installer</a>
       </div>
+    </div>
+  </div>
+
+  <!-- Cart drawer + checkout overlays -->
+  <div class="tl-backdrop" id="tlBackdrop" aria-hidden="true"></div>
+
+  <aside class="tl-cart" id="tlCart" role="dialog" aria-label="Shopping cart" aria-hidden="true">
+    <div class="tl-cart-head">
+      <h3>Your Cart</h3>
+      <button type="button" class="tl-cart-close" id="tlCartClose" aria-label="Close cart">×</button>
+    </div>
+    <div class="tl-cart-body" id="tlCartBody">
+      <div class="tl-cart-empty" id="tlCartEmpty">
+        <span>🛒</span>
+        Your cart is empty.<br/>Pick a plan to get started.
+      </div>
+    </div>
+    <div class="tl-cart-foot">
+      <div class="tl-cart-totals">
+        <div><span>Subtotal</span><span id="tlCartSubtotal">$0.00</span></div>
+        <div><span>VAT (est.)</span><span id="tlCartTax">$0.00</span></div>
+        <div class="tl-total"><span>Total</span><b id="tlCartTotal">$0.00</b></div>
+      </div>
+      <button type="button" class="tl-cart-checkout" id="tlCartCheckout" disabled>Proceed to Checkout</button>
+    </div>
+  </aside>
+
+  <div class="tl-checkout" id="tlCheckout" role="dialog" aria-label="Checkout" aria-hidden="true">
+    <div class="tl-checkout-card">
+      <div class="tl-checkout-summary">
+        <h4>Order Summary</h4>
+        <div class="tl-co-list" id="tlCoList"></div>
+        <div class="tl-co-totals">
+          <div><span>Subtotal</span><span id="tlCoSubtotal">$0.00</span></div>
+          <div><span>VAT (est.)</span><span id="tlCoTax">$0.00</span></div>
+          <div class="tl-total"><span>Total</span><b id="tlCoTotal">$0.00</b></div>
+        </div>
+      </div>
+      <form class="tl-checkout-form" id="tlCheckoutForm" novalidate>
+        <div class="tl-checkout-head">
+          <h3>Checkout</h3>
+          <button type="button" class="tl-checkout-close" id="tlCheckoutClose" aria-label="Close checkout">×</button>
+        </div>
+
+        <div class="tl-form-row">
+          <label for="tlCoName">Full name</label>
+          <input id="tlCoName" name="name" type="text" autocomplete="name" placeholder="Jane DJ" required/>
+        </div>
+        <div class="tl-form-row">
+          <label for="tlCoEmail">Email (license delivery)</label>
+          <input id="tlCoEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" required/>
+        </div>
+        <div class="tl-form-row tl-form-2">
+          <div>
+            <label for="tlCoCountry">Country</label>
+            <select id="tlCoCountry" name="country" required>
+              <option value="">Select…</option>
+              <option>Israel</option><option>United States</option><option>United Kingdom</option>
+              <option>Germany</option><option>France</option><option>Spain</option><option>Italy</option>
+              <option>Netherlands</option><option>Canada</option><option>Australia</option><option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="tlCoZip">Postal code</label>
+            <input id="tlCoZip" name="zip" type="text" autocomplete="postal-code" placeholder="0000000" required/>
+          </div>
+        </div>
+
+        <div class="tl-pay-method" role="radiogroup" aria-label="Payment method">
+          <input type="radio" id="tlPayCard" name="paymethod" value="card" checked/>
+          <label for="tlPayCard">💳 Card</label>
+          <input type="radio" id="tlPayPaypal" name="paymethod" value="paypal"/>
+          <label for="tlPayPaypal">🅿️ PayPal</label>
+        </div>
+
+        <div id="tlPayCardFields">
+          <div class="tl-form-row">
+            <label for="tlCoCard">Card number</label>
+            <input id="tlCoCard" name="card" type="text" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" maxlength="23" required/>
+          </div>
+          <div class="tl-form-row tl-form-3">
+            <div>
+              <label for="tlCoCardName">Name on card</label>
+              <input id="tlCoCardName" name="cardname" type="text" autocomplete="cc-name" placeholder="JANE DJ" required/>
+            </div>
+            <div>
+              <label for="tlCoExp">Expiry</label>
+              <input id="tlCoExp" name="exp" type="text" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/YY" maxlength="5" required/>
+            </div>
+            <div>
+              <label for="tlCoCvc">CVC</label>
+              <input id="tlCoCvc" name="cvc" type="text" inputmode="numeric" autocomplete="cc-csc" placeholder="123" maxlength="4" required/>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-checkout-error" id="tlCoError" role="alert"></div>
+
+        <button type="submit" class="tl-checkout-pay" id="tlCoPay">Pay <span id="tlCoPayAmt">$0.00</span></button>
+        <div class="tl-checkout-secure">Secure checkout · 256-bit encryption · Demo environment</div>
+
+        <div class="tl-success" id="tlCoSuccess" aria-live="polite">
+          <div class="tl-success-ico">✓</div>
+          <h3>Payment received</h3>
+          <p>Thanks for supporting DJ TITAN! A receipt and your license details are on the way to <b id="tlSuccessEmail">you</b>.</p>
+          <div class="tl-success-id" id="tlSuccessOrder">ORDER #—</div>
+          <p style="font-size:12px;color:#7a7a7e">You can close this window and continue to the studio.</p>
+          <button type="button" class="tl-success-cta" id="tlSuccessClose">Enter Studio →</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -10327,12 +10640,15 @@ body.tl-locked{overflow:hidden}
   var KEY='titan_landing_seen_v1';
   var el=document.getElementById('titan-landing');
   if(!el) return;
-  var force=/[?&]home=1\b/.test(location.search);
+  var forceHome=/[?&]home=1\b/.test(location.search);
+  var forcePricing=/[?&]pricing=1\b/.test(location.search);
   var seen=false;
   try{seen=localStorage.getItem(KEY)==='1'}catch(_){}
-  if(seen && !force){el.parentNode.removeChild(el);return}
+  if(seen && !forceHome && !forcePricing){el.parentNode.removeChild(el);return}
   document.body.classList.add('tl-locked');
+
   function dismiss(goLearn){
+    if(isOverlayOpen()){closeOverlays();return;}
     try{localStorage.setItem(KEY,'1')}catch(_){}
     el.classList.add('tl-out');
     document.body.classList.remove('tl-locked');
@@ -10344,17 +10660,249 @@ body.tl-locked{overflow:hidden}
       }
     },360);
   }
+
+  /* ── PRICING / CART / CHECKOUT ─────────────────────────────────── */
+  var PLANS={
+    desktop:{id:'desktop',name:'TITAN Desktop',sub:'Windows · macOS · Linux',price:250,unit:'/yr'},
+    browser:{id:'browser',name:'TITAN Browser',sub:'Web · No install',price:20,unit:'/mo'}
+  };
+  var CART_KEY='titan_cart_v1';
+  var TAX_RATE=0; // demo store, no tax applied (display-only field)
+  var cart=loadCart();
+
+  function loadCart(){try{return JSON.parse(localStorage.getItem(CART_KEY))||[]}catch(_){return[]}}
+  function saveCart(){try{localStorage.setItem(CART_KEY,JSON.stringify(cart))}catch(_){}}
+  function fmt(n){return '$'+n.toFixed(2)}
+  function subtotal(){return cart.reduce(function(s,it){return s+(PLANS[it.id]?PLANS[it.id].price:0)},0)}
+
+  var pill=document.getElementById('tlCartPill');
+  var pillCount=document.getElementById('tlCartCount');
+  var cartEl=document.getElementById('tlCart');
+  var cartBody=document.getElementById('tlCartBody');
+  var cartEmpty=document.getElementById('tlCartEmpty');
+  var cartCheckoutBtn=document.getElementById('tlCartCheckout');
+  var backdrop=document.getElementById('tlBackdrop');
+  var checkoutEl=document.getElementById('tlCheckout');
+  var coList=document.getElementById('tlCoList');
+  var coForm=document.getElementById('tlCheckoutForm');
+  var coSuccess=document.getElementById('tlCoSuccess');
+  var coError=document.getElementById('tlCoError');
+  var payBtn=document.getElementById('tlCoPay');
+  var payAmt=document.getElementById('tlCoPayAmt');
+  var payCardFields=document.getElementById('tlPayCardFields');
+
+  function isOverlayOpen(){return cartEl.classList.contains('tl-open')||checkoutEl.classList.contains('tl-open')}
+  function openCart(){
+    cartEl.classList.add('tl-open');backdrop.classList.add('tl-open');
+    cartEl.setAttribute('aria-hidden','false');
+  }
+  function closeCart(){
+    cartEl.classList.remove('tl-open');
+    cartEl.setAttribute('aria-hidden','true');
+    if(!checkoutEl.classList.contains('tl-open')) backdrop.classList.remove('tl-open');
+  }
+  function openCheckout(){
+    if(!cart.length) return;
+    closeCart();
+    renderCheckoutSummary();
+    resetCheckoutState();
+    checkoutEl.classList.add('tl-open');backdrop.classList.add('tl-open');
+    checkoutEl.setAttribute('aria-hidden','false');
+    setTimeout(function(){var f=document.getElementById('tlCoName');if(f)f.focus()},50);
+  }
+  function closeCheckout(){
+    checkoutEl.classList.remove('tl-open');
+    checkoutEl.setAttribute('aria-hidden','true');
+    backdrop.classList.remove('tl-open');
+  }
+  function closeOverlays(){closeCart();closeCheckout();}
+
+  function renderCart(){
+    var sub=subtotal();
+    var tax=sub*TAX_RATE;
+    var tot=sub+tax;
+
+    pill.setAttribute('data-empty',cart.length?'0':'1');
+    pillCount.textContent=String(cart.length);
+
+    document.getElementById('tlCartSubtotal').textContent=fmt(sub);
+    document.getElementById('tlCartTax').textContent=fmt(tax);
+    document.getElementById('tlCartTotal').textContent=fmt(tot);
+    cartCheckoutBtn.disabled=!cart.length;
+
+    // CTA buttons reflect "in cart" state
+    document.querySelectorAll('[data-add-plan]').forEach(function(btn){
+      var id=btn.getAttribute('data-add-plan');
+      var inCart=cart.some(function(it){return it.id===id});
+      var p=PLANS[id];
+      if(inCart){
+        btn.classList.add('tl-in-cart');
+        btn.textContent='✓ Added · View Cart';
+      }else{
+        btn.classList.remove('tl-in-cart');
+        btn.textContent='Add to Cart · '+fmt(p.price).replace('.00','')+(p.unit==='/mo'?'/mo':'');
+      }
+    });
+
+    if(!cart.length){cartEmpty.style.display='';
+      // remove any rendered items
+      Array.prototype.slice.call(cartBody.querySelectorAll('.tl-cart-item')).forEach(function(n){n.remove()});
+      return;
+    }
+    cartEmpty.style.display='none';
+    Array.prototype.slice.call(cartBody.querySelectorAll('.tl-cart-item')).forEach(function(n){n.remove()});
+    cart.forEach(function(it){
+      var p=PLANS[it.id];if(!p) return;
+      var row=document.createElement('div');
+      row.className='tl-cart-item';
+      row.innerHTML=
+        '<div class="tl-cart-item-ico">'+(it.id==='desktop'?'💻':'🌐')+'</div>'+
+        '<div class="tl-cart-item-info"><b>'+p.name+'</b><span>'+p.sub+'</span></div>'+
+        '<div class="tl-cart-item-price">'+fmt(p.price)+'<small>'+(p.unit==='/mo'?'per month':'one-time / yr')+'</small></div>'+
+        '<div class="tl-cart-item-row"><button type="button" class="tl-cart-item-rm" data-rm-plan="'+p.id+'">Remove</button></div>';
+      cartBody.appendChild(row);
+    });
+  }
+
+  function renderCheckoutSummary(){
+    coList.innerHTML='';
+    cart.forEach(function(it){
+      var p=PLANS[it.id];if(!p) return;
+      var row=document.createElement('div');
+      row.className='tl-co-item';
+      row.innerHTML='<div><b>'+p.name+'</b><span>'+p.sub+(p.unit==='/mo'?' · monthly':' · 1-year licence')+'</span></div>'+
+        '<strong>'+fmt(p.price)+'</strong>';
+      coList.appendChild(row);
+    });
+    var sub=subtotal(),tax=sub*TAX_RATE,tot=sub+tax;
+    document.getElementById('tlCoSubtotal').textContent=fmt(sub);
+    document.getElementById('tlCoTax').textContent=fmt(tax);
+    document.getElementById('tlCoTotal').textContent=fmt(tot);
+    payAmt.textContent=fmt(tot);
+  }
+
+  function resetCheckoutState(){
+    coError.classList.remove('tl-show');coError.textContent='';
+    coSuccess.classList.remove('tl-show');
+    coForm.querySelectorAll('input,select,button.tl-checkout-pay,.tl-pay-method').forEach(function(n){n.style.display=''});
+    payBtn.disabled=false;payBtn.textContent='Pay ';
+    payBtn.appendChild(payAmt);
+    document.querySelector('.tl-checkout-secure').style.display='';
+  }
+
+  function addToCart(id){
+    if(!PLANS[id]) return;
+    if(cart.some(function(it){return it.id===id})){openCart();return}
+    cart.push({id:id});saveCart();renderCart();openCart();
+  }
+  function removeFromCart(id){
+    cart=cart.filter(function(it){return it.id!==id});saveCart();renderCart();
+  }
+
+  // Event wiring
+  document.querySelectorAll('[data-add-plan]').forEach(function(btn){
+    btn.addEventListener('click',function(){addToCart(btn.getAttribute('data-add-plan'))});
+  });
+  cartBody.addEventListener('click',function(e){
+    var t=e.target.closest('[data-rm-plan]');if(!t) return;
+    removeFromCart(t.getAttribute('data-rm-plan'));
+  });
+  if(pill) pill.addEventListener('click',openCart);
+  document.getElementById('tlCartClose').addEventListener('click',closeCart);
+  cartCheckoutBtn.addEventListener('click',openCheckout);
+  document.getElementById('tlCheckoutClose').addEventListener('click',closeCheckout);
+  backdrop.addEventListener('click',closeOverlays);
+
+  // Payment method toggle
+  Array.prototype.slice.call(document.querySelectorAll('input[name="paymethod"]')).forEach(function(r){
+    r.addEventListener('change',function(){
+      payCardFields.style.display=(r.value==='card'&&r.checked)?'':'none';
+    });
+  });
+
+  // Card formatting niceties
+  var cardEl=document.getElementById('tlCoCard');
+  cardEl.addEventListener('input',function(){
+    var v=cardEl.value.replace(/\D/g,'').slice(0,19);
+    cardEl.value=v.replace(/(\d{4})(?=\d)/g,'$1 ').trim();
+  });
+  var expEl=document.getElementById('tlCoExp');
+  expEl.addEventListener('input',function(){
+    var v=expEl.value.replace(/\D/g,'').slice(0,4);
+    expEl.value=v.length>2?v.slice(0,2)+'/'+v.slice(2):v;
+  });
+
+  function showErr(msg){coError.textContent=msg;coError.classList.add('tl-show')}
+
+  coForm.addEventListener('submit',function(e){
+    e.preventDefault();
+    coError.classList.remove('tl-show');coError.textContent='';
+    var name=document.getElementById('tlCoName').value.trim();
+    var email=document.getElementById('tlCoEmail').value.trim();
+    var country=document.getElementById('tlCoCountry').value.trim();
+    var zip=document.getElementById('tlCoZip').value.trim();
+    var method=document.querySelector('input[name="paymethod"]:checked').value;
+    if(!name) return showErr('Please enter your full name.');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showErr('Please enter a valid email address.');
+    if(!country) return showErr('Please select your country.');
+    if(!zip) return showErr('Please enter your postal code.');
+    if(method==='card'){
+      var card=document.getElementById('tlCoCard').value.replace(/\s/g,'');
+      var exp=document.getElementById('tlCoExp').value.trim();
+      var cvc=document.getElementById('tlCoCvc').value.trim();
+      var cardName=document.getElementById('tlCoCardName').value.trim();
+      if(!cardName) return showErr('Please enter the cardholder name.');
+      if(!/^\d{13,19}$/.test(card)) return showErr('Card number looks incomplete.');
+      if(!/^\d{2}\/\d{2}$/.test(exp)) return showErr('Expiry must be in MM/YY format.');
+      if(!/^\d{3,4}$/.test(cvc)) return showErr('CVC must be 3 or 4 digits.');
+    }
+    payBtn.disabled=true;payBtn.textContent='Processing…';
+    setTimeout(function(){
+      var orderId='TITAN-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+      try{localStorage.setItem('titan_last_order_v1',JSON.stringify({id:orderId,email:email,items:cart,total:subtotal(),at:Date.now()}))}catch(_){}
+      // hide form, show success
+      coForm.querySelectorAll('.tl-form-row,.tl-pay-method,#tlPayCardFields,.tl-checkout-pay,.tl-checkout-secure,.tl-checkout-error').forEach(function(n){n.style.display='none'});
+      document.getElementById('tlSuccessEmail').textContent=email;
+      document.getElementById('tlSuccessOrder').textContent='ORDER #'+orderId;
+      coSuccess.classList.add('tl-show');
+      cart=[];saveCart();renderCart();
+    },900);
+  });
+
+  document.getElementById('tlSuccessClose').addEventListener('click',function(){
+    closeCheckout();dismiss(false);
+  });
+
+  // Initial render
+  renderCart();
+
+  // Landing nav / hero buttons
   var enter=document.getElementById('tlEnter');
   var learn=document.getElementById('tlLearn');
   var nf=document.getElementById('tlNavFeat');
+  var np=document.getElementById('tlNavPricing');
   var nl=document.getElementById('tlNavLearn');
   if(enter) enter.addEventListener('click',function(){dismiss(false)});
   if(learn) learn.addEventListener('click',function(){dismiss(true)});
   if(nf) nf.addEventListener('click',function(){var f=el.querySelector('.tl-features');if(f) f.scrollIntoView({behavior:'smooth'})});
+  if(np) np.addEventListener('click',function(){var f=el.querySelector('#tlPricing');if(f) f.scrollIntoView({behavior:'smooth'})});
   if(nl) nl.addEventListener('click',function(){dismiss(true)});
+
   document.addEventListener('keydown',function(e){
-    if(e.key==='Escape' && document.getElementById('titan-landing')) dismiss(false);
+    if(e.key!=='Escape') return;
+    if(!document.getElementById('titan-landing')) return;
+    if(checkoutEl.classList.contains('tl-open')){closeCheckout();return}
+    if(cartEl.classList.contains('tl-open')){closeCart();return}
+    dismiss(false);
   });
+
+  // Auto-scroll to pricing when forced via URL
+  if(forcePricing){
+    setTimeout(function(){
+      var f=el.querySelector('#tlPricing');
+      if(f) f.scrollIntoView({behavior:'smooth',block:'start'});
+    },200);
+  }
 })();
 </script>
 <div class="header-bar">
