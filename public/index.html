@@ -570,6 +570,20 @@ body.show-all .console.show-all{max-width:none;width:calc(100vw - 16px)}
 .toggle-switch::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:#666;border-radius:50%;transition:all .2s}
 .toggle-switch.on{background:var(--orange)}
 .toggle-switch.on::after{left:26px;background:#fff}
+/* Deck + Mixer layout picker */
+.layout-picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;width:100%;padding:8px 0}
+.layout-card{position:relative;background:linear-gradient(180deg,#15151a 0%,#08080b 100%);border:1px solid #2a2a30;border-radius:10px;padding:10px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.layout-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(255,144,32,.06) 0%,transparent 60%);pointer-events:none;opacity:0;transition:opacity .2s}
+.layout-card:hover{border-color:rgba(255,144,32,.5);transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.6)}
+.layout-card:hover::before{opacity:1}
+.layout-card.selected{border-color:var(--orange);box-shadow:0 0 0 1px var(--orange),0 0 18px rgba(255,144,32,.45),inset 0 0 18px rgba(255,144,32,.08)}
+.layout-card.selected::after{content:'✓';position:absolute;top:6px;right:8px;width:20px;height:20px;background:var(--orange);color:#1a0800;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;box-shadow:0 0 10px rgba(255,144,32,.7)}
+.layout-card .lc-preview{width:100%;height:120px;background:radial-gradient(ellipse at center,#0c0c12 0%,#000 100%);border-radius:6px;border:1px solid #1a1a20;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.layout-card .lc-preview svg{width:100%;height:100%;display:block}
+.layout-card .lc-meta{display:flex;justify-content:space-between;align-items:flex-end;gap:6px}
+.layout-card .lc-name{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;color:#fff;font-weight:700}
+.layout-card .lc-model{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--orange);letter-spacing:1.5px}
+.layout-card .lc-desc{font-family:'Share Tech Mono',monospace;font-size:9.5px;color:var(--text-dim);line-height:1.4}
 .ai-dj-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .ai-dj-title{font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:4px;font-weight:900;background:linear-gradient(90deg,var(--purple),var(--screen-glow));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .ai-dj-status{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);display:flex;align-items:center;gap:6px}
@@ -12812,6 +12826,136 @@ No mappings yet. Pick a preset above or right-click any control → MIDI Learn.
 <option value="gold">TITAN GOLD</option>
 <option value="light">TITAN PORCELAIN</option>
 </select></div>
+<div class="settings-row" style="flex-direction:column;align-items:stretch;gap:6px">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:6px">
+<div><div class="setting-label">Deck &amp; Mixer Layout</div><div class="setting-desc">Pick your hardware-style deck + mixer surface</div></div>
+<div class="setting-desc" id="layoutPickerCurrent" style="color:var(--orange);letter-spacing:1.5px"></div>
+</div>
+<div class="layout-picker" id="layoutPicker">
+  <div class="layout-card" data-layout="rx3" role="button" tabindex="0" aria-label="TITAN XDJ-RX3 layout">
+    <div class="lc-preview">
+      <svg viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="rx3body" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#222226"/><stop offset="1" stop-color="#0a0a0c"/>
+          </linearGradient>
+          <radialGradient id="rx3jog" cx="50%" cy="40%" r="55%">
+            <stop offset="0" stop-color="#3a3a40"/><stop offset=".55" stop-color="#1a1a1e"/><stop offset="1" stop-color="#050507"/>
+          </radialGradient>
+          <linearGradient id="rx3screen" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#0a1a2a"/><stop offset="1" stop-color="#000"/>
+          </linearGradient>
+        </defs>
+        <rect x="2" y="14" width="316" height="100" rx="8" fill="url(#rx3body)" stroke="#2a2a30"/>
+        <rect x="118" y="2" width="84" height="22" rx="3" fill="url(#rx3screen)" stroke="#1a1a22"/>
+        <rect x="124" y="7" width="72" height="12" rx="1" fill="#0a0a10"/>
+        <path d="M126 13 L138 9 L150 14 L162 8 L174 15 L186 10 L194 13" stroke="#ff9020" stroke-width="1.2" fill="none" opacity=".9"/>
+        <circle cx="52" cy="68" r="34" fill="url(#rx3jog)" stroke="#050507" stroke-width="1.5"/>
+        <circle cx="52" cy="68" r="22" fill="#050507"/>
+        <circle cx="52" cy="68" r="3" fill="#ff5a5a"/>
+        <circle cx="52" cy="40" r="2" fill="#ff9020"/>
+        <circle cx="268" cy="68" r="34" fill="url(#rx3jog)" stroke="#050507" stroke-width="1.5"/>
+        <circle cx="268" cy="68" r="22" fill="#050507"/>
+        <circle cx="268" cy="68" r="3" fill="#5addff"/>
+        <circle cx="268" cy="40" r="2" fill="#ff9020"/>
+        <rect x="128" y="32" width="64" height="56" rx="3" fill="#08080a" stroke="#1a1a20"/>
+        <circle cx="138" cy="42" r="3" fill="#2a2a30" stroke="#404048"/>
+        <circle cx="160" cy="42" r="3" fill="#2a2a30" stroke="#404048"/>
+        <circle cx="182" cy="42" r="3" fill="#2a2a30" stroke="#404048"/>
+        <circle cx="138" cy="54" r="3" fill="#2a2a30" stroke="#404048"/>
+        <circle cx="160" cy="54" r="3" fill="#2a2a30" stroke="#404048"/>
+        <circle cx="182" cy="54" r="3" fill="#2a2a30" stroke="#404048"/>
+        <rect x="135" y="62" width="6" height="20" rx="1" fill="#1a1a1e"/><rect x="136" y="68" width="4" height="3" fill="#ddd"/>
+        <rect x="157" y="62" width="6" height="20" rx="1" fill="#1a1a1e"/><rect x="158" y="66" width="4" height="3" fill="#ddd"/>
+        <rect x="179" y="62" width="6" height="20" rx="1" fill="#1a1a1e"/><rect x="180" y="70" width="4" height="3" fill="#ddd"/>
+        <rect x="130" y="86" width="60" height="3" rx="1" fill="#1a1a1e"/><rect x="155" y="85.5" width="6" height="4" fill="#ddd"/>
+        <g transform="translate(14,100)">
+          <rect width="10" height="8" fill="#ff3344"/><rect x="12" width="10" height="8" fill="#ffaa22"/><rect x="24" width="10" height="8" fill="#22dd55"/><rect x="36" width="10" height="8" fill="#22aaff"/>
+          <rect y="9" width="10" height="8" fill="#cc22cc"/><rect x="12" y="9" width="10" height="8" fill="#ff3344"/><rect x="24" y="9" width="10" height="8" fill="#ffaa22"/><rect x="36" y="9" width="10" height="8" fill="#22dd55"/>
+        </g>
+        <g transform="translate(260,100)">
+          <rect width="10" height="8" fill="#22dd55"/><rect x="12" width="10" height="8" fill="#22aaff"/><rect x="24" width="10" height="8" fill="#cc22cc"/><rect x="36" width="10" height="8" fill="#ff3344"/>
+          <rect y="9" width="10" height="8" fill="#ffaa22"/><rect x="12" y="9" width="10" height="8" fill="#22dd55"/><rect x="24" y="9" width="10" height="8" fill="#22aaff"/><rect x="36" y="9" width="10" height="8" fill="#cc22cc"/>
+        </g>
+      </svg>
+    </div>
+    <div class="lc-meta"><span class="lc-name">TITAN XDJ-RX3</span><span class="lc-model">ALL-IN-ONE</span></div>
+    <div class="lc-desc">Two decks + center mixer with screen — Pioneer XDJ-RX3 inspired.</div>
+  </div>
+  <div class="layout-card" data-layout="cdj" role="button" tabindex="0" aria-label="TITAN-3K classic layout">
+    <div class="lc-preview">
+      <svg viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg">
+        <defs><radialGradient id="cdjjog" cx="50%" cy="40%" r="55%"><stop offset="0" stop-color="#3a3a40"/><stop offset=".55" stop-color="#1a1a1e"/><stop offset="1" stop-color="#050507"/></radialGradient></defs>
+        <rect x="2" y="6" width="92" height="108" rx="6" fill="#161618" stroke="#2a2a30"/>
+        <rect x="226" y="6" width="92" height="108" rx="6" fill="#161618" stroke="#2a2a30"/>
+        <rect x="100" y="6" width="120" height="108" rx="6" fill="#101012" stroke="#2a2a30"/>
+        <rect x="10" y="12" width="76" height="14" rx="2" fill="#0a0a10"/>
+        <rect x="234" y="12" width="76" height="14" rx="2" fill="#0a0a10"/>
+        <circle cx="48" cy="68" r="32" fill="url(#cdjjog)" stroke="#050507"/>
+        <circle cx="48" cy="68" r="20" fill="#050507"/><circle cx="48" cy="68" r="3" fill="#ff5a5a"/>
+        <circle cx="272" cy="68" r="32" fill="url(#cdjjog)" stroke="#050507"/>
+        <circle cx="272" cy="68" r="20" fill="#050507"/><circle cx="272" cy="68" r="3" fill="#5addff"/>
+        <g transform="translate(112,18)">
+          <circle cx="6" cy="6" r="4" fill="#2a2a30" stroke="#404048"/><circle cx="24" cy="6" r="4" fill="#2a2a30" stroke="#404048"/><circle cx="42" cy="6" r="4" fill="#2a2a30" stroke="#404048"/><circle cx="60" cy="6" r="4" fill="#2a2a30" stroke="#404048"/>
+          <circle cx="6" cy="22" r="4" fill="#2a2a30" stroke="#404048"/><circle cx="24" cy="22" r="4" fill="#2a2a30" stroke="#404048"/><circle cx="42" cy="22" r="4" fill="#2a2a30" stroke="#404048"/><circle cx="60" cy="22" r="4" fill="#2a2a30" stroke="#404048"/>
+          <circle cx="6" cy="38" r="4" fill="#2a2a30" stroke="#404048"/><circle cx="24" cy="38" r="4" fill="#2a2a30" stroke="#404048"/><circle cx="42" cy="38" r="4" fill="#2a2a30" stroke="#404048"/><circle cx="60" cy="38" r="4" fill="#2a2a30" stroke="#404048"/>
+        </g>
+        <rect x="116" y="64" width="6" height="34" rx="1" fill="#1a1a1e"/><rect x="117" y="78" width="4" height="3" fill="#ddd"/>
+        <rect x="134" y="64" width="6" height="34" rx="1" fill="#1a1a1e"/><rect x="135" y="74" width="4" height="3" fill="#ddd"/>
+        <rect x="152" y="64" width="6" height="34" rx="1" fill="#1a1a1e"/><rect x="153" y="80" width="4" height="3" fill="#ddd"/>
+        <rect x="170" y="64" width="6" height="34" rx="1" fill="#1a1a1e"/><rect x="171" y="76" width="4" height="3" fill="#ddd"/>
+        <rect x="106" y="104" width="108" height="4" rx="1" fill="#1a1a1e"/><rect x="156" y="103" width="6" height="6" fill="#ddd"/>
+      </svg>
+    </div>
+    <div class="lc-meta"><span class="lc-name">TITAN-3K PRO</span><span class="lc-model">CDJ + DJM</span></div>
+    <div class="lc-desc">Separate CDJ-3000 style decks flanking a 4-channel DJM mixer.</div>
+  </div>
+  <div class="layout-card" data-layout="xz" role="button" tabindex="0" aria-label="TITAN XDJ-XZ layout">
+    <div class="lc-preview">
+      <svg viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg">
+        <defs><radialGradient id="xzjog" cx="50%" cy="40%" r="55%"><stop offset="0" stop-color="#3a3a40"/><stop offset=".55" stop-color="#1a1a1e"/><stop offset="1" stop-color="#050507"/></radialGradient></defs>
+        <rect x="2" y="8" width="316" height="106" rx="8" fill="#161618" stroke="#2a2a30"/>
+        <circle cx="46" cy="62" r="36" fill="url(#xzjog)" stroke="#050507"/>
+        <circle cx="46" cy="62" r="22" fill="#050507"/><circle cx="46" cy="62" r="3" fill="#ff5a5a"/>
+        <circle cx="274" cy="62" r="36" fill="url(#xzjog)" stroke="#050507"/>
+        <circle cx="274" cy="62" r="22" fill="#050507"/><circle cx="274" cy="62" r="3" fill="#5addff"/>
+        <rect x="100" y="14" width="120" height="20" rx="2" fill="#0a1424" stroke="#1a1a22"/>
+        <path d="M104 24 L116 19 L128 26 L142 18 L156 25 L170 20 L184 26 L198 19 L214 24" stroke="#ff9020" stroke-width="1.2" fill="none"/>
+        <g transform="translate(98,40)">
+          <rect width="124" height="48" rx="3" fill="#08080a" stroke="#1a1a20"/>
+          <circle cx="14" cy="10" r="3" fill="#2a2a30"/><circle cx="38" cy="10" r="3" fill="#2a2a30"/><circle cx="62" cy="10" r="3" fill="#2a2a30"/><circle cx="86" cy="10" r="3" fill="#2a2a30"/><circle cx="110" cy="10" r="3" fill="#2a2a30"/>
+          <circle cx="14" cy="22" r="3" fill="#2a2a30"/><circle cx="38" cy="22" r="3" fill="#2a2a30"/><circle cx="62" cy="22" r="3" fill="#2a2a30"/><circle cx="86" cy="22" r="3" fill="#2a2a30"/><circle cx="110" cy="22" r="3" fill="#2a2a30"/>
+          <rect x="11" y="30" width="6" height="14" fill="#1a1a1e"/><rect x="12" y="36" width="4" height="3" fill="#ddd"/>
+          <rect x="35" y="30" width="6" height="14" fill="#1a1a1e"/><rect x="36" y="34" width="4" height="3" fill="#ddd"/>
+          <rect x="59" y="30" width="6" height="14" fill="#1a1a1e"/><rect x="60" y="38" width="4" height="3" fill="#ddd"/>
+          <rect x="83" y="30" width="6" height="14" fill="#1a1a1e"/><rect x="84" y="35" width="4" height="3" fill="#ddd"/>
+          <rect x="107" y="30" width="6" height="14" fill="#1a1a1e"/><rect x="108" y="37" width="4" height="3" fill="#ddd"/>
+        </g>
+        <rect x="98" y="92" width="124" height="4" rx="1" fill="#1a1a1e"/><rect x="156" y="91" width="6" height="6" fill="#ddd"/>
+        <g transform="translate(8,98)"><rect width="8" height="6" fill="#ff3344"/><rect x="10" width="8" height="6" fill="#ffaa22"/><rect x="20" width="8" height="6" fill="#22dd55"/><rect x="30" width="8" height="6" fill="#22aaff"/></g>
+        <g transform="translate(278,98)"><rect width="8" height="6" fill="#22dd55"/><rect x="10" width="8" height="6" fill="#22aaff"/><rect x="20" width="8" height="6" fill="#cc22cc"/><rect x="30" width="8" height="6" fill="#ff3344"/></g>
+      </svg>
+    </div>
+    <div class="lc-meta"><span class="lc-name">TITAN XDJ-XZ</span><span class="lc-model">4-CH PRO</span></div>
+    <div class="lc-desc">Wide all-in-one with 4-channel mixer and dual jog wheels.</div>
+  </div>
+  <div class="layout-card" data-layout="compact" role="button" tabindex="0" aria-label="Compact 2-deck layout">
+    <div class="lc-preview">
+      <svg viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg">
+        <defs><radialGradient id="cpjog" cx="50%" cy="40%" r="55%"><stop offset="0" stop-color="#3a3a40"/><stop offset=".55" stop-color="#1a1a1e"/><stop offset="1" stop-color="#050507"/></radialGradient></defs>
+        <rect x="2" y="14" width="150" height="92" rx="6" fill="#161618" stroke="#2a2a30"/>
+        <rect x="168" y="14" width="150" height="92" rx="6" fill="#161618" stroke="#2a2a30"/>
+        <rect x="10" y="22" width="134" height="16" rx="2" fill="#0a0a10"/>
+        <rect x="176" y="22" width="134" height="16" rx="2" fill="#0a0a10"/>
+        <circle cx="78" cy="72" r="26" fill="url(#cpjog)" stroke="#050507"/><circle cx="78" cy="72" r="16" fill="#050507"/><circle cx="78" cy="72" r="3" fill="#ff5a5a"/>
+        <circle cx="244" cy="72" r="26" fill="url(#cpjog)" stroke="#050507"/><circle cx="244" cy="72" r="16" fill="#050507"/><circle cx="244" cy="72" r="3" fill="#5addff"/>
+      </svg>
+    </div>
+    <div class="lc-meta"><span class="lc-name">TITAN COMPACT</span><span class="lc-model">2-DECK MINI</span></div>
+    <div class="lc-desc">Two minimal decks side-by-side, no central mixer.</div>
+  </div>
+</div>
+</div>
 <div class="settings-row">
 <div><div class="setting-label">RGB Ambient Light</div><div class="setting-desc">Color strip above</div></div>
 <div class="toggle-switch on" id="toggleRgb"></div></div>
@@ -16369,10 +16513,34 @@ function applyTheme(name){
   settings.theme=name;saveToDB();
 }
 
+const DECK_LAYOUTS={
+  rx3:{name:'TITAN XDJ-RX3',model:'ALL-IN-ONE'},
+  cdj:{name:'TITAN-3K PRO',model:'CDJ + DJM'},
+  xz:{name:'TITAN XDJ-XZ',model:'4-CH PRO'},
+  compact:{name:'TITAN COMPACT',model:'2-DECK MINI'}
+};
+function applyDeckLayout(layout){
+  if(!DECK_LAYOUTS[layout])layout='rx3';
+  document.body.classList.remove('layout-rx3','layout-cdj','layout-xz','layout-compact');
+  document.body.classList.add(`layout-${layout}`);
+  document.querySelectorAll('#layoutPicker .layout-card').forEach(c=>{
+    c.classList.toggle('selected',c.dataset.layout===layout);
+    c.setAttribute('aria-pressed',c.dataset.layout===layout?'true':'false');
+  });
+  const cur=document.getElementById('layoutPickerCurrent');
+  if(cur)cur.textContent=`▸ ${DECK_LAYOUTS[layout].name}`;
+  settings.deckLayout=layout;saveToDB();
+}
+
 function setupSettings(){
   // Set initial state from loaded settings
   const themeSel=document.getElementById('settingTheme');
   if(themeSel)themeSel.value=settings.theme||'dark';
+  applyDeckLayout(settings.deckLayout||'rx3');
+  document.querySelectorAll('#layoutPicker .layout-card').forEach(c=>{
+    c.addEventListener('click',()=>applyDeckLayout(c.dataset.layout));
+    c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();applyDeckLayout(c.dataset.layout);}});
+  });
   [['Rgb','rgbAmbient'],['Phrase','phraseMarkers'],['Limiter','limiter'],['AutoGain','autoGain'],['AutoSave','autoSave']].forEach(([s,key])=>{
     const t=document.getElementById(`toggle${s}`);
     if(t)t.classList.toggle('on',!!settings[key]);
