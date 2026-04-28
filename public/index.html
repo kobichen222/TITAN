@@ -13,8 +13,9 @@ body.theme-neon{--orange:#ff00ff;--screen-glow:#00ffff;--play-green:#00ff00}
 body.theme-gold{--orange:#3a2a0a;--orange-glow:#5a3f12;--cue-orange:#6b4a18;--play-green:#2a3a1a;--screen-glow:#2a1a08;--yellow:#c8a848;--red:#8a2020;--purple:#5a4020;--pink:#a8886a;--text:#1a1208;--text-dim:#4a3a1a;--bg:#0a0806;--deck-bg:#c8a656;--deck-panel:#d4b468;--deck-border:#8a6a2e}
 body.theme-euphonia{--orange:#c77848;--orange-glow:#e8a778;--cue-orange:#ffb347;--play-green:#7fffa3;--screen-glow:#9ee5ff;--yellow:#ffd966;--red:#ff5050;--purple:#b087e8;--pink:#ff8ab3;--text:#eaeaec;--text-dim:#8a8a90;--bg:#050507;--deck-bg:#0d0d0f;--deck-panel:#141416;--deck-border:#2a2a2e}
 body.theme-blade{--orange:#00f0ff;--orange-glow:#7ff7ff;--cue-orange:#00f0ff;--play-green:#00f0ff;--screen-glow:#00f0ff;--yellow:#00f0ff;--red:#ff3344;--purple:#00f0ff;--pink:#00f0ff;--text:#e8f5fa;--text-dim:#6a7a88;--bg:#060810;--deck-bg:#0c0e14;--deck-panel:#12141a;--deck-border:#1e2028}
-html,body{background:radial-gradient(ellipse at center,#222 0%,var(--bg) 70%);min-height:100vh;font-family:'Barlow Condensed',sans-serif;color:var(--text)}
-body{padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:10px}
+html{background-color:#0a0a0a;color-scheme:dark}
+html,body{background:radial-gradient(ellipse at center,#222 0%,var(--bg) 70%);background-color:var(--bg);min-height:100vh;font-family:'Barlow Condensed',sans-serif;color:var(--text)}
+body{padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:10px;overscroll-behavior-y:none}
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:#0a0a0b}
 ::-webkit-scrollbar-thumb{background:var(--orange);border-radius:3px}
@@ -659,6 +660,7 @@ html,body{
     radial-gradient(ellipse at 20% 0%,rgba(255,138,26,.06) 0%,transparent 45%),
     radial-gradient(ellipse at 80% 100%,rgba(46,224,255,.05) 0%,transparent 45%),
     radial-gradient(ellipse at center,#1a1a1e 0%,var(--bg) 70%);
+  background-color:var(--bg);
 }
 body::after{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
