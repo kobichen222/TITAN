@@ -5931,6 +5931,11 @@ body.dj-focus-mode .step-btn{padding:8px 10px;font-size:11px}
   .dsb-btn{flex:1 1 100%;font-size:10px}
   .dsb-dj-focus{font-size:11px}
   .cue-btn{font-size:9px}
+  /* Tiny phone — collapse DECK FOCUS grid to 2 columns */
+  .deck-switch-bar.header-dsb{grid-template-columns:repeat(2,1fr) !important}
+  .deck-switch-bar.header-dsb .dsb-btn[data-pair="ALL"]{grid-column:span 2 !important}
+  .deck-switch-bar.header-dsb .dsb-btn.dsb-dj-focus{grid-column:span 2 !important;font-size:9px !important}
+  .deck-switch-bar.header-dsb .dsb-btn{font-size:9.5px !important;padding:8px 2px !important;letter-spacing:.6px !important}
 }
 
 /* ================================================================
@@ -8988,6 +8993,16 @@ body.dj-focus-mode .cdj .hot-cues .cue-btn{
   /* Library / forms */
   .library-actions{flex-wrap:wrap !important;gap:4px !important}
   .search-wrap{flex:1 1 100% !important}
+
+  /* DECK FOCUS bar — let buttons wrap onto multiple rows on tablets */
+  .deck-switch-bar.header-dsb{
+    flex:1 1 100% !important;flex-wrap:wrap !important;
+    justify-content:center !important;gap:5px !important;padding:5px 6px !important;
+  }
+  .deck-switch-bar.header-dsb .dsb-btn{
+    padding:7px 10px !important;font-size:10px !important;
+    letter-spacing:1.4px !important;min-height:34px !important;
+  }
 }
 
 /* ---------- Phone (≤720px) ---------- */
@@ -8999,8 +9014,34 @@ body.dj-focus-mode .cdj .hot-cues .cue-btn{
   .header-bar{padding:2px 4px !important;flex-wrap:wrap;gap:4px}
   .brand{font-size:13px !important;letter-spacing:1.4px !important;flex:1 1 100%;text-align:center}
   .header-right{justify-content:center !important;gap:5px !important;width:100%;flex-wrap:wrap}
-  .deck-switch-bar.header-dsb{flex:1 1 100% !important;justify-content:center !important;padding:2px 4px !important}
-  .deck-switch-bar.header-dsb .dsb-btn{padding:3px 6px !important;font-size:8.5px !important;letter-spacing:.8px !important;min-height:22px !important}
+
+  /* DECK FOCUS bar — grid layout with comfortable touch targets on phones */
+  .deck-switch-bar.header-dsb{
+    flex:1 1 100% !important;display:grid !important;
+    grid-template-columns:repeat(4,1fr) !important;
+    gap:4px !important;padding:6px 4px !important;
+    justify-content:stretch !important;
+  }
+  .deck-switch-bar.header-dsb .dsb-label{
+    grid-column:1 / -1 !important;text-align:center !important;
+    margin:0 0 2px !important;width:auto !important;
+  }
+  .deck-switch-bar.header-dsb .dsb-btn{
+    flex:none !important;padding:9px 4px !important;
+    font-size:10px !important;letter-spacing:1px !important;
+    min-height:40px !important;white-space:nowrap !important;
+  }
+  .deck-switch-bar.header-dsb .dsb-btn[data-pair="ALL"]{grid-column:span 4 !important}
+  .deck-switch-bar.header-dsb .dsb-btn.dsb-dj-focus{
+    grid-column:span 2 !important;font-size:9.5px !important;letter-spacing:.5px !important;
+  }
+  .deck-switch-bar.header-dsb .dsb-btn.dsb-work,
+  .deck-switch-bar.header-dsb .dsb-btn.dsb-wmlib,
+  .deck-switch-bar.header-dsb .dsb-btn.dsb-wmexit{grid-column:1 / -1 !important}
+  .deck-switch-bar.header-dsb .dsb-monitor{
+    grid-column:1 / -1 !important;flex-wrap:wrap !important;
+    margin:2px 0 0 !important;justify-content:center !important;
+  }
   .master-bpm{font-size:11px !important;padding:2px 6px !important}
   .rec-btn{padding:4px 8px !important;font-size:8.5px !important;letter-spacing:1px !important}
   .auth-btn{padding:4px 8px !important;font-size:8.5px !important;letter-spacing:1px !important;min-width:0 !important}
