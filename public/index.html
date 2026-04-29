@@ -241,7 +241,7 @@ body.show-all .console.show-all{max-width:none;width:calc(100vw - 16px)}
 .phrase-mark{position:absolute;top:0;width:2px;height:5px;background:var(--yellow);box-shadow:0 0 3px var(--yellow)}
 .time-row{display:flex;justify-content:space-between;align-items:center;padding-top:4px;border-top:1px dashed rgba(0,212,255,.2)}
 .time-label{font-size:8px;color:var(--text-dim);letter-spacing:2px}
-.time-value{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;color:#fff;letter-spacing:1px;direction:ltr}
+.time-value{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;color:#fff;letter-spacing:1px;direction:ltr;font-variant-numeric:tabular-nums}
 .time-value.remain{color:var(--orange)}
 .loop-section,.beat-jump,.deck-utils{display:grid;gap:4px;margin-bottom:6px}
 .loop-section{grid-template-columns:repeat(4,1fr)}
@@ -13381,7 +13381,7 @@ function buildDeckHTML(d){
   return `<div class="deck-header"><div class="deck-label"><span class="model">TITAN-3K</span><span class="suffix">DECK</span></div><button class="deck-upload-btn" data-deck-upload="${d}" title="Upload audio files and load to deck ${d}"><span class="btn-icon">⬆</span><span class="btn-text">⬆ UPLOAD</span></button><button class="deck-lib-btn" data-deck-lib="${d}" title="Browse library and load to deck ${d}"><span class="btn-icon" aria-hidden="true"><svg class="lib-svg" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><ellipse cx="11" cy="4.5" rx="7" ry="2.2"/><path d="M4 4.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 10.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 15.5v2.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-2.5"/></svg></span><span class="btn-text">LIBRARY</span></button><div class="deck-number">${d}</div></div>
   <div class="screen"><div class="screen-top"><div><div class="track-title" id="title-${d}">— NO TRACK LOADED —</div><div class="track-artist" id="artist-${d}">LOAD A TRACK</div></div><div class="screen-right"><div class="screen-bpm" id="bpm-${d}">---.--</div><div class="screen-bpm-label">BPM</div><div class="screen-key" id="key-${d}">--</div></div></div>
   <div class="waveform"><canvas class="waveform-canvas" id="wave-${d}" width="600" height="48"></canvas><div class="phrase-markers" id="phrase-${d}"></div><div class="playhead"></div></div>
-  <div class="time-row"><div><div class="time-label">ELAPSED</div><div class="time-value" id="elapsed-${d}">00:00.0</div></div><div style="text-align:right;"><div class="time-label">REMAIN</div><div class="time-value remain" id="remain-${d}">-00:00.0</div></div></div></div>
+  <div class="time-row"><div><div class="time-label">ELAPSED</div><div class="time-value" id="elapsed-${d}">00:00</div></div><div style="text-align:right;"><div class="time-label">REMAIN</div><div class="time-value remain" id="remain-${d}">-00:00</div></div></div></div>
   <div class="loop-section">
     <button class="loop-btn" data-action="loopIn" data-deck="${d}">LOOP IN</button>
     <button class="loop-btn" data-action="loopOut" data-deck="${d}">LOOP OUT</button>
@@ -16565,8 +16565,11 @@ function toast(msg,type){
 })();
 
 function fmtTime(sec){
-  sec=Math.max(0,sec);const m=Math.floor(sec/60),s=Math.floor(sec%60),ds=Math.floor((sec-Math.floor(sec))*10);
-  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${ds}`;
+  // MM:SS — matches real CDJs / Serato / rekordbox. Tenths-of-a-second
+  // resolution updated at frame rate read as "racing" digits, not as
+  // a professional time readout, so we drop the decimal.
+  sec=Math.max(0,sec);const m=Math.floor(sec/60),s=Math.floor(sec%60);
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
 
 /* MAIN TICK — rAF-driven deck / waveform / VU / spectrum refresh.
