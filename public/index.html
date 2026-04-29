@@ -454,15 +454,17 @@ body.show-all .console.show-all{max-width:none;width:calc(100vw - 16px)}
 .library-title{font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;color:#fff}
 .library-title .count{color:var(--orange);font-size:10px}
 .library-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
-.upload-btn,.url-btn,.yt-btn,.playlist-btn{padding:7px 12px;border:none;border-radius:4px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;cursor:pointer}
+.upload-btn,.url-btn,.yt-btn,.sc-btn,.playlist-btn{padding:7px 12px;border:none;border-radius:4px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;cursor:pointer}
 .upload-btn{background:linear-gradient(180deg,var(--orange) 0%,#c85a00 100%);color:#000;box-shadow:0 2px 6px rgba(255,122,0,.4)}
 .url-btn{background:linear-gradient(180deg,var(--screen-glow) 0%,#006699 100%);color:#000;box-shadow:0 2px 6px rgba(0,212,255,.4)}
 .yt-btn{background:linear-gradient(180deg,#ff0000 0%,#aa0000 100%);color:#fff;box-shadow:0 2px 6px rgba(255,0,0,.4)}
+.sc-btn{background:linear-gradient(180deg,#ff7700 0%,#cc4400 100%);color:#fff;box-shadow:0 2px 6px rgba(255,119,0,.4)}
 .playlist-btn{background:linear-gradient(180deg,var(--purple) 0%,#8000aa 100%);color:#fff;box-shadow:0 2px 6px rgba(200,0,255,.4)}
-.url-input-wrap,.yt-input-wrap{display:none;gap:6px;align-items:center;padding:10px 12px;background:#0a0a0b;border-radius:6px;margin-bottom:10px}
-.url-input-wrap.open,.yt-input-wrap.open{display:flex}
+.url-input-wrap,.yt-input-wrap,#scInputWrap{display:none;gap:6px;align-items:center;padding:10px 12px;background:#0a0a0b;border-radius:6px;margin-bottom:10px}
+.url-input-wrap.open,.yt-input-wrap.open,#scInputWrap.open{display:flex}
 .url-input-wrap{border:1px solid var(--screen-glow)}
 .yt-input-wrap{border:1px solid var(--red)}
+#scInputWrap{border:1px solid #ff7700}
 .url-input,.yt-input{flex:1;padding:8px 12px;background:#050506;border:1px solid #333;color:#fff;font-family:'Share Tech Mono',monospace;font-size:12px;border-radius:4px;direction:ltr}
 .url-load,.yt-load{padding:8px 18px;color:#000;border:none;font-family:'Orbitron',sans-serif;font-weight:700;font-size:10px;letter-spacing:2px;border-radius:4px;cursor:pointer}
 .url-load{background:var(--screen-glow)}
@@ -11290,6 +11292,7 @@ body.tl-locked{overflow:hidden}
 <input type="file" id="fileInput" accept="audio/*" multiple style="display:none;" />
 <button class="url-btn" id="urlBtnToggle">+ URL</button>
 <button class="yt-btn" id="ytBtnToggle">+ YOUTUBE</button>
+<button class="sc-btn" id="scBtnToggle" title="Stream from SoundCloud (needs API client_id in Settings)">+ SOUNDCLOUD</button>
 <button class="playlist-btn" id="saveToPlaylistBtn">+ PLAYLIST</button>
 <button class="disc-btn" id="discoverBtnToggle">🌍 DISCOVER</button>
 <div class="search-wrap">
@@ -11302,6 +11305,7 @@ body.tl-locked{overflow:hidden}
 <select class="filter-select" id="filterSource">
 <option value="all">ALL</option><option value="file">FILES</option>
 <option value="url">URL</option><option value="yt">YOUTUBE</option>
+<option value="sc">SOUNDCLOUD</option>
 </select>
 </div>
 </div>
@@ -11315,6 +11319,11 @@ body.tl-locked{overflow:hidden}
 <input type="text" class="yt-input" id="ytInput" placeholder="Paste YouTube URL or video ID..." />
 <button class="yt-load" id="ytLoad">ADD</button>
 <span class="url-status" id="ytStatus">READY</span>
+</div>
+<div class="url-input-wrap" id="scInputWrap">
+<input type="text" class="url-input" id="scInput" placeholder="Paste SoundCloud track URL (e.g. https://soundcloud.com/artist/track-name)..." />
+<button class="url-load" id="scLoad">STREAM</button>
+<span class="url-status" id="scStatus">READY</span>
 </div>
 <div class="discover-wrap" id="discoverWrap">
   <div class="disc-topbar">
@@ -13245,6 +13254,24 @@ No mappings yet. Pick a preset above or right-click any control → MIDI Learn.
 <div><div class="setting-label">Auto Gain</div><div class="setting-desc">Normalize volume</div></div>
 <div class="toggle-switch" id="toggleAutoGain"></div></div>
 </div>
+<div class="settings-section"><h3>🌐 STREAMING SOURCES</h3>
+<div class="settings-row" style="flex-direction:column;align-items:stretch;gap:8px;">
+<div><div class="setting-label">SoundCloud client_id</div>
+<div class="setting-desc" style="line-height:1.5">
+Required for full DJ streaming (BPM/key analysis, EQ, FX, auto-mix).
+Without it, SoundCloud links open the public widget only — playable but not mixable.<br/>
+<b style="color:var(--yellow)">Note:</b> SoundCloud closed new API registrations in 2021.
+Use a client_id you already own, or one extracted from <code>https://soundcloud.com</code> network requests in DevTools.
+</div></div>
+<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+<input type="text" id="settingSoundCloudId" placeholder="Paste your SoundCloud client_id here" style="flex:1;min-width:240px;padding:9px 11px;background:#0a0a0b;border:1px solid #333;color:var(--text);font-family:'Share Tech Mono',monospace;font-size:11px;border-radius:5px"/>
+<button class="tool-btn" id="settingSoundCloudSave" style="border-color:#ff7700;color:#ff7700">SAVE</button>
+<button class="tool-btn" id="settingSoundCloudTest" title="Test the client_id by resolving a public track">TEST</button>
+<span id="settingSoundCloudStatus" class="setting-desc" style="min-width:120px"></span>
+</div>
+</div>
+</div>
+
 <div class="settings-section"><h3>💾 DATA</h3>
 <div class="settings-row">
 <div><div class="setting-label">Auto-Save</div><div class="setting-desc">Save library locally (IndexedDB)</div></div>
@@ -14165,6 +14192,10 @@ async function loadSpotifyUrl(url){
 
 async function loadFromURL(url){
   if(isSpotifyTrackUrl(url))return loadSpotifyUrl(url);
+  if(typeof isSoundCloudUrl==='function'&&isSoundCloudUrl(url)){
+    document.getElementById('urlInput').value='';
+    return loadSoundCloudUrl(url);
+  }
   if(typeof extractYouTubeId==='function'&&extractYouTubeId(url)){
     const t=addYouTubeTrack(url);
     if(t){toast('Added YouTube track','success');document.getElementById('urlInput').value='';}
@@ -14229,6 +14260,129 @@ function addYouTubeTrack(url){
     });
   setTimeout(()=>{if(status){status.className='url-status';status.textContent='READY';}},4000);
   return track;
+}
+
+/* ───── SOUNDCLOUD STREAMING ─────────────────────────────────────────
+   Two modes:
+   - Stream mode (full DJ): needs client_id stored in settings.scClientId.
+     Resolves public URL → fetches stream → decodes to AudioBuffer →
+     pushes a normal track into the library so EQ/FX/auto-mix work.
+   - Widget mode (fallback): registers a yt-style track that the deck
+     loader treats as iframe-only (cannot be processed).  The transport
+     buttons still play/pause it.
+   ─────────────────────────────────────────────────────────────────── */
+function isSoundCloudUrl(u){
+  if(!u)return false;
+  try{const url=new URL(u);return /(?:^|\.)soundcloud\.com$/.test(url.hostname)||url.hostname==='snd.sc';}catch(e){return false;}
+}
+function getSoundCloudClientId(){
+  return (settings&&settings.scClientId)||localStorage.getItem('djtitan.scClientId')||'';
+}
+async function scResolve(url,clientId){
+  const api=`https://api-v2.soundcloud.com/resolve?url=${encodeURIComponent(url)}&client_id=${encodeURIComponent(clientId)}`;
+  const r=await fetch(api,{credentials:'omit'});
+  if(!r.ok)throw new Error('Resolve '+r.status+(r.status===401?' (bad client_id)':''));
+  return r.json();
+}
+async function scPickStreamUrl(scTrack,clientId){
+  // SC v2 returns a "media.transcodings" array. Prefer progressive MP3.
+  const trans=scTrack&&scTrack.media&&scTrack.media.transcodings;
+  if(!trans||!trans.length)throw new Error('No streamable transcoding');
+  const progressive=trans.find(t=>t.format&&t.format.protocol==='progressive')||trans[0];
+  const sep=progressive.url.includes('?')?'&':'?';
+  const r=await fetch(progressive.url+sep+'client_id='+encodeURIComponent(clientId),{credentials:'omit'});
+  if(!r.ok)throw new Error('Stream URL '+r.status);
+  const data=await r.json();
+  if(!data||!data.url)throw new Error('No stream URL in response');
+  return data.url;
+}
+async function loadSoundCloudUrl(url){
+  const status=document.getElementById('scStatus'),btn=document.getElementById('scLoad');
+  const setStatus=(t,cls)=>{if(status){status.className='url-status'+(cls?' '+cls:'');status.textContent=t;}};
+  if(btn)btn.disabled=true;
+  try{
+    const clientId=getSoundCloudClientId();
+    if(!clientId){
+      setStatus('NO CLIENT_ID','error');
+      toast('Add a SoundCloud client_id in Settings → Streaming Sources','error');
+      throw new Error('Missing SoundCloud client_id');
+    }
+    ensureAudio&&ensureAudio();
+    setStatus('RESOLVING…');
+    const sc=await scResolve(url,clientId);
+    if(!sc||!sc.id)throw new Error('Track not found');
+    if(sc.kind&&sc.kind!=='track'){
+      // Playlist — import all tracks
+      if(sc.kind==='playlist'&&Array.isArray(sc.tracks)){
+        setStatus(`PLAYLIST · ${sc.tracks.length}`);
+        let n=0;
+        for(const t of sc.tracks){
+          try{await scImportTrack(t,clientId);n++;}
+          catch(e){console.warn('SC track skip',e);}
+        }
+        toast(`SoundCloud: imported ${n}/${sc.tracks.length}`,'success');
+        setStatus('LOADED ✓','success');
+        document.getElementById('scInput').value='';
+        return;
+      }
+      throw new Error('Unsupported SC kind: '+sc.kind);
+    }
+    setStatus('STREAMING…');
+    await scImportTrack(sc,clientId);
+    setStatus('LOADED ✓','success');
+    document.getElementById('scInput').value='';
+  }catch(err){
+    console.warn('SC load failed',err);
+    setStatus('ERROR','error');
+    toast('SoundCloud: '+(err.message||'load failed'),'error');
+  }finally{
+    if(btn)btn.disabled=false;
+    setTimeout(()=>setStatus('READY'),5000);
+  }
+}
+async function scImportTrack(sc,clientId){
+  const streamUrl=await scPickStreamUrl(sc,clientId);
+  const r=await fetch(streamUrl,{credentials:'omit'});
+  if(!r.ok)throw new Error('Stream fetch '+r.status);
+  const ab=await r.arrayBuffer();
+  const abCopy=ab.slice(0);
+  const buf=await audioCtx.decodeAudioData(ab);
+  const bpm=await detectBPM(buf);
+  const title=sc.title||'SoundCloud Track';
+  const artist=(sc.user&&sc.user.username)||'SoundCloud';
+  const track={
+    id:'sc_'+sc.id,
+    title,artist,bpm,key:'--',
+    duration:buf.duration,buffer:buf,
+    url:sc.permalink_url||'',
+    thumbnail:sc.artwork_url||(sc.user&&sc.user.avatar_url)||null,
+    source:'sc',rating:0,addedAt:Date.now()
+  };
+  // De-dupe in library
+  const existing=library.findIndex(t=>t.id===track.id);
+  if(existing>=0)library[existing]=track;else library.push(track);
+  renderLibrary();saveToDB();
+  try{idbPutAudio(track.id,abCopy);}catch(e){}
+  try{enrichTrackAsync&&enrichTrackAsync(track,buf);}catch(e){}
+  toast(`SoundCloud: ${title}`,'success');
+  return track;
+}
+async function scTestClientId(){
+  const el=document.getElementById('settingSoundCloudId');
+  const stat=document.getElementById('settingSoundCloudStatus');
+  const id=(el&&el.value.trim())||getSoundCloudClientId();
+  if(!id){if(stat){stat.style.color='var(--red)';stat.textContent='No client_id';}return;}
+  if(stat){stat.style.color='';stat.textContent='Testing…';}
+  try{
+    // SoundCloud's "Tracks of the Week" endpoint — minimal test
+    const r=await fetch(`https://api-v2.soundcloud.com/resolve?url=${encodeURIComponent('https://soundcloud.com/discover')}&client_id=${encodeURIComponent(id)}`,{credentials:'omit'});
+    if(stat){
+      if(r.ok){stat.style.color='var(--play-green)';stat.textContent='✓ Valid';}
+      else{stat.style.color='var(--red)';stat.textContent='✗ Invalid ('+r.status+')';}
+    }
+  }catch(e){
+    if(stat){stat.style.color='var(--red)';stat.textContent='✗ Network error';}
+  }
 }
 
 async function detectBPM(buf){
@@ -16828,6 +16982,28 @@ function setupSettings(){
   });
   const rgb=document.getElementById('rgbStrip');
   if(rgb)rgb.style.display=settings.rgbAmbient?'':'none';
+
+  // SoundCloud client_id field
+  const scIdEl=document.getElementById('settingSoundCloudId');
+  const scSaveBtn=document.getElementById('settingSoundCloudSave');
+  const scTestBtn=document.getElementById('settingSoundCloudTest');
+  const scStatEl=document.getElementById('settingSoundCloudStatus');
+  if(scIdEl){
+    scIdEl.value=getSoundCloudClientId();
+    if(scIdEl.value&&scStatEl){scStatEl.style.color='var(--text-dim)';scStatEl.textContent='Saved · '+scIdEl.value.slice(0,6)+'…';}
+  }
+  if(scSaveBtn)scSaveBtn.addEventListener('click',()=>{
+    const v=(scIdEl&&scIdEl.value.trim())||'';
+    settings.scClientId=v;
+    try{localStorage.setItem('djtitan.scClientId',v);}catch(e){}
+    saveToDB&&saveToDB();
+    if(scStatEl){
+      if(v){scStatEl.style.color='var(--play-green)';scStatEl.textContent='✓ Saved';}
+      else{scStatEl.style.color='var(--text-dim)';scStatEl.textContent='Cleared';}
+    }
+    toast&&toast(v?'SoundCloud client_id saved':'SoundCloud client_id cleared','success');
+  });
+  if(scTestBtn)scTestBtn.addEventListener('click',scTestClientId);
 
   document.getElementById('settingTheme').addEventListener('change',e=>applyTheme(e.target.value));
   [['Rgb','rgbAmbient'],['Phrase','phraseMarkers'],['Limiter','limiter'],['AutoGain','autoGain'],['AutoSave','autoSave']].forEach(([s,key])=>{
@@ -21466,6 +21642,9 @@ function init(){
   document.getElementById('ytBtnToggle')?.addEventListener('click',()=>document.getElementById('ytInputWrap')?.classList.toggle('open'));
   document.getElementById('ytLoad')?.addEventListener('click',()=>{const u=document.getElementById('ytInput')?.value.trim();if(u)addYouTubeTrack(u);});
   document.getElementById('ytInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('ytLoad')?.click();});
+  document.getElementById('scBtnToggle')?.addEventListener('click',()=>document.getElementById('scInputWrap')?.classList.toggle('open'));
+  document.getElementById('scLoad')?.addEventListener('click',()=>{const u=document.getElementById('scInput')?.value.trim();if(u)loadSoundCloudUrl(u);});
+  document.getElementById('scInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('scLoad')?.click();});
   document.getElementById('searchInput').addEventListener('input',renderLibrary);
   document.getElementById('sortSelect').addEventListener('change',renderLibrary);
   document.getElementById('filterSource').addEventListener('change',renderLibrary);
