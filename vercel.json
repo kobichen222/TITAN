@@ -1,8 +1,8 @@
 {
-  "framework": null,
-  "buildCommand": null,
-  "installCommand": null,
-  "outputDirectory": "public",
+  "framework": "nextjs",
+  "buildCommand": "next build",
+  "installCommand": "npm ci",
+  "outputDirectory": "out",
   "cleanUrls": true,
   "headers": [
     {

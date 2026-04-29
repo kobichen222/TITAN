@@ -1,7 +1,5 @@
-app/
-next.config.ts
-tsconfig.json
 .next/
+out/
 node_modules/
 electron/
 dist-electron/
