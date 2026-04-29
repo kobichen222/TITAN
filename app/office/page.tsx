@@ -99,7 +99,13 @@ export default function OfficePage() {
 
   useEffect(() => {
     setMounted(true);
-    if (sessionStorage.getItem(UNLOCK_KEY) === "1") setUnlocked(true);
+    if (
+      sessionStorage.getItem(UNLOCK_KEY) === "1" ||
+      localStorage.getItem(UNLOCK_KEY) === "1"
+    ) {
+      sessionStorage.setItem(UNLOCK_KEY, "1");
+      setUnlocked(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -142,6 +148,7 @@ export default function OfficePage() {
 
   function lock() {
     sessionStorage.removeItem(UNLOCK_KEY);
+    localStorage.removeItem(UNLOCK_KEY);
     setUnlocked(false);
     setCode("");
     setTab("users");

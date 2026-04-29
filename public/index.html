@@ -13412,6 +13412,18 @@ Two options — both work completely offline:<br/>
   <span class="setting-desc">iTunes works without credentials. Jamendo gives <b>full tracks</b>.</span>
 </div>
 </div>
+
+<div class="settings-section"><h3>🕵 SECRET OFFICE</h3>
+<div class="settings-row" style="flex-direction:column;align-items:stretch;gap:8px;padding:12px;border:1px solid rgba(255,122,0,.35);border-radius:8px;background:rgba(255,122,0,.04)">
+  <div class="setting-label" style="color:#ff7a00">🔐 Restricted access</div>
+  <div class="setting-desc" style="line-height:1.5">Enter the secret office code to open the admin control panel.</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <input type="password" id="secretOfficeCode" class="url-input" placeholder="Secret code" autocomplete="off" style="padding:8px 12px;flex:1;min-width:160px" />
+    <button class="tool-btn" id="secretOfficeBtn" style="color:#ff7a00;border-color:#ff7a00">🔓 OPEN OFFICE</button>
+  </div>
+  <div id="secretOfficeErr" class="setting-desc" style="color:var(--red);min-height:14px"></div>
+</div>
+</div>
 </div>
 </div>
 
@@ -17296,6 +17308,35 @@ function setupAdminDownload(){
       unlock();
     }
   }catch(e){}
+}
+
+/* ====================================================================
+   SECRET OFFICE — settings shortcut: type the secret code to open the
+   /office admin panel. Validates locally, persists the unlock flag in
+   localStorage so the new tab skips the gate, and opens /office.
+   ==================================================================== */
+function setupSecretOffice(){
+  const SECRET='kobi!@#£';
+  const UNLOCK_KEY='titan_office_unlocked_v1';
+  const input=document.getElementById('secretOfficeCode');
+  const btn=document.getElementById('secretOfficeBtn');
+  const errEl=document.getElementById('secretOfficeErr');
+  if(!input||!btn)return;
+  function go(){
+    const v=input.value||'';
+    if(v===SECRET){
+      errEl.textContent='';
+      try{localStorage.setItem(UNLOCK_KEY,'1');}catch(e){}
+      try{sessionStorage.setItem(UNLOCK_KEY,'1');}catch(e){}
+      input.value='';
+      if(typeof toast==='function')toast('Office unlocked','success');
+      window.open('/office','_blank','noopener');
+    }else{
+      errEl.textContent='Wrong secret code';
+    }
+  }
+  btn.addEventListener('click',go);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go();}});
 }
 
 /* ====================================================================
@@ -21462,7 +21503,7 @@ function init(){
   const mtbBot=document.getElementById('mixer-toolbar-bottom');if(mtbBot)mtbBot.innerHTML=buildMixerToolbarBottomHTML();
   setupVU('vu-A',20);setupVU('vu-B',20);setupVU('vu-C',20);setupVU('vu-D',20);
   setupVU('masterHVuL',20);setupVU('masterHVuR',20);
-  attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();setupOfflineDownload();setupDesktopDownloads();setupAdminDownload();setupDiscover();setupTitanClock();setupSupport();setupStudioPro();
+  attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();setupOfflineDownload();setupDesktopDownloads();setupAdminDownload();setupSecretOffice();setupDiscover();setupTitanClock();setupSupport();setupStudioPro();
   // Restart-tour button + first-run auto-tour
   document.getElementById('restartTourBtn')?.addEventListener('click',()=>spStartTour(true));
   setTimeout(()=>{try{spStartTour(false);}catch(e){console.warn('tour failed',e);}},1100);
