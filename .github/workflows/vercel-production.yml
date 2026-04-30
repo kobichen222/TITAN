@@ -4,6 +4,12 @@ name: Deploy to Vercel (Production)
 # which never inherits the project's production domain. This workflow forces
 # every push to main through `vercel deploy --prod` so the production domain
 # (configured under Project → Settings → Domains) is always assigned.
+#
+# It also drives the domain end-to-end: if `VERCEL_PRODUCTION_DOMAIN` is set
+# (comma-separated for multiple), the workflow ensures each domain is added
+# to the project and explicitly aliases the deployment to it. That way the
+# "No custom domains have been assigned" hint goes away even on first deploy
+# before the dashboard has been touched.
 
 on:
   push:
@@ -47,4 +53,62 @@ jobs:
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy prebuilt artifact to production
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        id: deploy
+        run: |
+          set -euo pipefail
+          url="$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})"
+          echo "Deployment URL: $url"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Ensure custom domains are attached and aliased
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          DOMAINS: ${{ vars.VERCEL_PRODUCTION_DOMAIN || secrets.VERCEL_PRODUCTION_DOMAIN }}
+          DEPLOY_URL: ${{ steps.deploy.outputs.url }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DOMAINS:-}" ]; then
+            echo "No VERCEL_PRODUCTION_DOMAIN set; relying on Project Settings → Domains."
+            echo "If you see Vercel's \"No custom domains have been assigned\" hint, add"
+            echo "either a repo variable or secret named VERCEL_PRODUCTION_DOMAIN with the"
+            echo "domain you want (e.g. titan.example.com) and re-run the workflow."
+            exit 0
+          fi
+          if [ -z "${DEPLOY_URL:-}" ]; then
+            echo "::error::Deployment URL was empty; cannot alias domains."
+            exit 1
+          fi
+          IFS=',' read -ra DOMAIN_LIST <<< "$DOMAINS"
+          for raw in "${DOMAIN_LIST[@]}"; do
+            domain="$(echo "$raw" | xargs)"
+            [ -z "$domain" ] && continue
+            echo "→ Ensuring $domain is attached to the project"
+            if ! vercel domains add "$domain" --token="$VERCEL_TOKEN" --yes >/tmp/domain.log 2>&1; then
+              if grep -qi "already" /tmp/domain.log; then
+                echo "  (already attached)"
+              else
+                cat /tmp/domain.log
+                echo "::error::Failed to add $domain. Check that it's owned by this Vercel team."
+                exit 1
+              fi
+            fi
+            echo "→ Aliasing $DEPLOY_URL to $domain"
+            vercel alias set "$DEPLOY_URL" "$domain" --token="$VERCEL_TOKEN"
+          done
+
+      - name: Summarise deployment
+        if: always()
+        env:
+          DEPLOY_URL: ${{ steps.deploy.outputs.url }}
+          DOMAINS: ${{ vars.VERCEL_PRODUCTION_DOMAIN || secrets.VERCEL_PRODUCTION_DOMAIN }}
+        run: |
+          {
+            echo "### Vercel production deploy"
+            echo ""
+            echo "- Deployment URL: ${DEPLOY_URL:-(unknown)}"
+            if [ -n "${DOMAINS:-}" ]; then
+              echo "- Aliased to: ${DOMAINS}"
+            else
+              echo "- No \`VERCEL_PRODUCTION_DOMAIN\` set; relying on Project Settings → Domains for auto-alias."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

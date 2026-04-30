@@ -147,10 +147,31 @@ your CI secrets and enable the matching `electron-builder` fields.
 1. Buy a short domain (Namecheap / Google Domains / Route 53).
 2. Point it at your web host:
    - Vercel: add the domain under **Project → Settings → Domains**
-     → follow the CNAME / A-record instructions.
+     → follow the CNAME / A-record instructions. Or skip the dashboard
+     and let CI do it (see below).
    - Cloudflare Pages: same pattern, plus you get the Cloudflare CDN.
 3. Add the domain to Supabase → **Authentication → URL Configuration**
    → **Site URL** + **Redirect URLs** so OAuth callbacks succeed.
+
+### Letting the production workflow attach the domain for you
+
+If you'd rather not touch the Vercel dashboard, the
+`vercel-production.yml` workflow will attach + alias the domain on
+every push to `main`. Set one of these in **Repo → Settings → Secrets
+and variables → Actions**:
+
+- **Variable** `VERCEL_PRODUCTION_DOMAIN` (recommended — domains aren't
+  secret), or
+- **Secret** `VERCEL_PRODUCTION_DOMAIN` (works too).
+
+Value is the bare hostname, e.g. `titan.example.com`. Comma-separate to
+attach more than one (`titan.example.com, www.titan.example.com`). On
+the next deploy the workflow runs `vercel domains add` (idempotent —
+"already attached" is treated as success) followed by `vercel alias
+set <deployment> <domain>` so the production deployment is reachable
+at the custom hostname even on the very first run. DNS still has to
+point at Vercel before the domain serves traffic; the workflow logs
+the records to add if Vercel reports them missing.
 
 ---
 
@@ -226,3 +247,10 @@ more when you do.
   under **Project → Settings → Domains** and assigned to the
   Production environment. Required GitHub secrets for the workflow:
   `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`.
+- **"No custom domains have been assigned"** → the project has no
+  domain in **Settings → Domains** and no `VERCEL_PRODUCTION_DOMAIN`
+  is configured for the workflow. Either add the domain in the Vercel
+  dashboard, or set the `VERCEL_PRODUCTION_DOMAIN` repo variable (see
+  §4) and re-run **Deploy to Vercel (Production)** from the Actions
+  tab. The same hint also appears if a deploy was made locally with
+  `vercel deploy --skip-domain` — drop that flag.
