@@ -10620,26 +10620,119 @@ body.tl-locked{overflow:hidden}
 /* ===== TITAN ALL 6 — real 3 decks + 6-ch mixer + 3 decks lineup ===== */
 .cdj[data-deck="E"]{--deck-accent:#00ff7a;--deck-accent-rgb:0,255,122}
 .cdj[data-deck="F"]{--deck-accent:#ffd400;--deck-accent-rgb:255,212,0}
-.console.show-all-6{grid-template-columns:repeat(3,minmax(0,1fr)) 360px repeat(3,minmax(0,1fr));gap:8px;max-width:none}
-.console.show-all-6 .cdj{padding:10px 8px}
-.console.show-all-6 .cdj .track-title{font-size:11px}
-.console.show-all-6 .cdj .track-artist{font-size:9px}
-.console.show-all-6 .cdj .screen-bpm{font-size:14px}
-.console.show-all-6 .cdj .time-value{font-size:13px}
-.console.show-all-6 .cdj .hot-cues{gap:3px}
-.console.show-all-6 .cdj .cue-btn{font-size:10px;padding:4px 2px}
-.console.show-all-6 .cdj .big-btn{padding:8px 4px !important;font-size:10px;letter-spacing:2px}
-.console.show-all-6 .cdj .loop-btn,.console.show-all-6 .cdj .jump-btn,.console.show-all-6 .cdj .util-btn{font-size:8px;padding:4px 1px}
-.console.show-all-6 .cdj .jog-wrapper{margin:2px 0}
-.console.show-all-6 .cdj .jog-wheel{width:170px;height:170px}
-.console.show-all-6 .cdj .jog-center-screen{width:54px;height:54px}
-.console.show-all-6 .cdj .jog-center-screen .bpm-display{font-size:14px}
-.console.show-all-6 .cdj .deck-number{font-size:16px;padding:2px 8px;letter-spacing:.5px}
-.console.show-all-6 .cdj .tempo-btn-row{gap:2px;padding:4px}
+/* (older show-all-6 rules removed — superseded by the comprehensive block below) */
 .dsb-all6.active{background:linear-gradient(180deg,#2ee0ff,#1a8aa8) !important;color:#001020 !important;border-color:#7ee8ff !important;box-shadow:0 0 14px rgba(46,224,255,.55) !important}
 .mixer .channel.channel-extra{display:none}
-.mixer.mixer-6 .channel.channel-extra{display:flex}
-.mixer.mixer-6 .channels{grid-template-columns:repeat(6,minmax(0,1fr))}
+.mixer.mixer-6 .channel.channel-extra,
+.mixer.mixer-6 .channel{display:flex !important;flex-direction:column !important;align-items:center !important;gap:6px !important}
+.mixer.mixer-6 .channels{grid-template-columns:repeat(6,minmax(0,1fr)) !important;gap:6px !important;align-items:end !important}
+.mixer.mixer-6 .channel-body{display:flex !important;gap:5px !important;align-items:flex-start !important}
+.mixer.mixer-6 .channel .vu-meter{display:flex !important;flex-direction:column-reverse !important;width:10px !important;min-width:10px !important;height:150px !important;background:#000 !important;padding:2px !important;gap:1px !important}
+.mixer.mixer-6 .channel .vu-led{display:block !important;flex:1 1 0 !important;min-height:2px !important;border-radius:1px !important}
+.mixer.mixer-6 .channel .fader-wrap{width:20px !important;min-width:20px !important;height:150px !important}
+.mixer.mixer-6 .channel .knob.small{width:26px !important;height:26px !important}
+.mixer.mixer-6 .channel .channel-label{font-size:9px !important;letter-spacing:1.4px !important}
+.mixer.mixer-6 .channel .knob-label{font-size:7.5px !important;letter-spacing:.8px !important}
+.mixer.mixer-6 .channel .xfader-assign{gap:1px !important}
+.mixer.mixer-6 .channel .xfader-assign .assign-btn{padding:2px 4px !important;font-size:7px !important;letter-spacing:.5px !important}
+.mixer.mixer-6 .channel .knob-wrap{gap:2px !important}
+
+/* ALL 6 — refined console grid + responsive jog/BPM scaling */
+.console.show-all-6{
+  grid-template-columns:repeat(3,minmax(0,1fr)) minmax(320px,360px) repeat(3,minmax(0,1fr)) !important;
+  gap:6px !important;max-width:none !important;width:calc(100vw - 12px) !important;
+}
+.console.show-all-6 .cdj{padding:8px 6px}
+.console.show-all-6 .cdj .deck-header{margin-bottom:4px}
+.console.show-all-6 .cdj .track-title{font-size:10px;letter-spacing:.5px}
+.console.show-all-6 .cdj .track-artist{font-size:8.5px}
+.console.show-all-6 .cdj .screen-bpm{font-size:13px}
+.console.show-all-6 .cdj .time-value{font-size:12px}
+.console.show-all-6 .cdj .hot-cues{gap:2px}
+.console.show-all-6 .cdj .cue-btn{font-size:9px;padding:3px 1px}
+.console.show-all-6 .cdj .big-btn{padding:7px 3px !important;font-size:9px !important;letter-spacing:1.5px !important}
+.console.show-all-6 .cdj .big-btn .icon{font-size:11px}
+.console.show-all-6 .cdj .loop-btn,.console.show-all-6 .cdj .jump-btn,.console.show-all-6 .cdj .util-btn,.console.show-all-6 .cdj .pad-mode-btn{font-size:7.5px !important;padding:3px 1px !important;letter-spacing:.6px !important}
+.console.show-all-6 .cdj .jog-wrapper{margin:2px 0}
+.console.show-all-6 .cdj .jog-wheel{width:170px !important;height:170px !important}
+.console.show-all-6 .cdj .jog-center-screen{width:62px !important;height:62px !important}
+.console.show-all-6 .cdj .jog-center-screen .bpm-display{font-size:15px !important;line-height:1 !important;letter-spacing:0 !important}
+.console.show-all-6 .cdj .jog-center-screen .bpm-sub{font-size:7px !important;letter-spacing:1px !important}
+.console.show-all-6 .cdj .jdial-text{gap:0 !important}
+.console.show-all-6 .cdj .deck-number{font-size:14px;padding:2px 6px;letter-spacing:.5px}
+.console.show-all-6 .cdj .tempo-btn-row{gap:2px;padding:3px}
+.console.show-all-6 .cdj .tempo-btn{padding:6px 3px;font-size:11px}
+.console.show-all-6 .cdj .tempo-display-big{font-size:14px;padding:4px}
+.console.show-all-6 .cdj .step-btn{padding:3px 4px;font-size:8px}
+.console.show-all-6 .cdj .waveform{height:36px}
+.console.show-all-6 .cdj .dj-focus-vol{display:none}
+
+/* Larger jogs on bigger screens */
+@media(min-width:1600px){
+  .console.show-all-6 .cdj .jog-wheel{width:200px !important;height:200px !important}
+  .console.show-all-6 .cdj .jog-center-screen{width:72px !important;height:72px !important}
+  .console.show-all-6 .cdj .jog-center-screen .bpm-display{font-size:17px !important}
+}
+@media(min-width:1920px){
+  .console.show-all-6 .cdj .jog-wheel{width:230px !important;height:230px !important}
+  .console.show-all-6 .cdj .jog-center-screen{width:82px !important;height:82px !important}
+  .console.show-all-6 .cdj .jog-center-screen .bpm-display{font-size:20px !important}
+}
+@media(min-width:2400px){
+  .console.show-all-6 .cdj .jog-wheel{width:280px !important;height:280px !important}
+  .console.show-all-6 .cdj .jog-center-screen{width:100px !important;height:100px !important}
+  .console.show-all-6 .cdj .jog-center-screen .bpm-display{font-size:24px !important}
+}
+@media(max-width:1400px){
+  .console.show-all-6 .cdj .jog-wheel{width:150px !important;height:150px !important}
+  .console.show-all-6 .cdj .jog-center-screen{width:54px !important;height:54px !important}
+  .console.show-all-6 .cdj .jog-center-screen .bpm-display{font-size:13px !important}
+}
+@media(max-width:1100px){
+  .console.show-all-6{grid-template-columns:repeat(3,minmax(0,1fr)) minmax(260px,300px) repeat(3,minmax(0,1fr)) !important}
+  .console.show-all-6 .cdj .jog-wheel{width:130px !important;height:130px !important}
+  .console.show-all-6 .cdj .jog-center-screen{width:48px !important;height:48px !important}
+  .console.show-all-6 .cdj .jog-center-screen .bpm-display{font-size:11px !important}
+}
+
+/* WORK MODE × ALL 6 — full-width premium 6-deck stage */
+body.work-mode .console.show-all-6{
+  grid-template-columns:repeat(3,minmax(0,1fr)) minmax(360px,420px) repeat(3,minmax(0,1fr)) !important;
+  gap:10px !important;width:calc(100vw - 16px) !important;max-width:none !important;padding:14px;
+}
+body.work-mode .console.show-all-6 .cdj{padding:14px 10px}
+body.work-mode .console.show-all-6 .cdj .jog-wheel{width:220px !important;height:220px !important}
+body.work-mode .console.show-all-6 .cdj .jog-center-screen{width:78px !important;height:78px !important}
+body.work-mode .console.show-all-6 .cdj .jog-center-screen .bpm-display{font-size:20px !important}
+body.work-mode .console.show-all-6 .cdj .deck-number{font-size:20px;padding:3px 10px}
+body.work-mode .console.show-all-6 .cdj .screen-bpm{font-size:20px}
+body.work-mode .console.show-all-6 .cdj .time-value{font-size:16px}
+body.work-mode .console.show-all-6 .cdj .big-btn{padding:14px 6px !important;font-size:13px !important;letter-spacing:2px !important}
+body.work-mode .console.show-all-6 .cdj .cue-btn{height:38px;font-size:12px}
+body.work-mode .console.show-all-6 .cdj .loop-btn,body.work-mode .console.show-all-6 .cdj .jump-btn,body.work-mode .console.show-all-6 .cdj .util-btn{font-size:10px !important;padding:8px 2px !important}
+body.work-mode .console.show-all-6 .cdj .pad-mode-btn{font-size:9px !important;padding:7px 2px !important}
+body.work-mode .console.show-all-6 .cdj .tempo-btn{padding:11px 4px;font-size:16px}
+body.work-mode .console.show-all-6 .cdj .tempo-display-big{font-size:20px;padding:6px}
+body.work-mode .console.show-all-6 .cdj .waveform{height:48px}
+@media(min-width:1900px){
+  body.work-mode .console.show-all-6{grid-template-columns:repeat(3,minmax(0,1fr)) minmax(440px,480px) repeat(3,minmax(0,1fr)) !important;gap:14px !important;padding:18px}
+  body.work-mode .console.show-all-6 .cdj .jog-wheel{width:260px !important;height:260px !important}
+  body.work-mode .console.show-all-6 .cdj .jog-center-screen{width:92px !important;height:92px !important}
+  body.work-mode .console.show-all-6 .cdj .jog-center-screen .bpm-display{font-size:23px !important}
+  body.work-mode .console.show-all-6 .cdj .waveform{height:56px}
+}
+@media(min-width:2400px){
+  body.work-mode .console.show-all-6{grid-template-columns:repeat(3,minmax(0,1fr)) minmax(520px,580px) repeat(3,minmax(0,1fr)) !important;gap:18px !important;padding:24px}
+  body.work-mode .console.show-all-6 .cdj .jog-wheel{width:320px !important;height:320px !important}
+  body.work-mode .console.show-all-6 .cdj .jog-center-screen{width:112px !important;height:112px !important}
+  body.work-mode .console.show-all-6 .cdj .jog-center-screen .bpm-display{font-size:28px !important}
+}
+@media(max-width:1400px){
+  body.work-mode .console.show-all-6{grid-template-columns:repeat(3,minmax(0,1fr)) minmax(300px,360px) repeat(3,minmax(0,1fr)) !important}
+  body.work-mode .console.show-all-6 .cdj .jog-wheel{width:170px !important;height:170px !important}
+  body.work-mode .console.show-all-6 .cdj .jog-center-screen{width:62px !important;height:62px !important}
+  body.work-mode .console.show-all-6 .cdj .jog-center-screen .bpm-display{font-size:15px !important}
+}
 
 /* ===== AUTO MIX — pro studio polish (final) ===== */
 .mixer-toolbar .mtb-automix{
