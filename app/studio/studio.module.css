@@ -93,6 +93,31 @@
   color: #6a6a6e;
 }
 
+.cardActions {
+  margin-top: 4px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cardBtn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  padding: 6px 10px;
+  background: linear-gradient(180deg, #26262c, #16161a);
+  border: 1px solid #3a3a42;
+  color: #c8c8cc;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 120ms, color 120ms, background 120ms;
+}
+
+.cardBtn:hover {
+  border-color: #ff7a00;
+  color: #ff9020;
+}
+
 .actions {
   width: 100%;
   max-width: 1100px;

@@ -23,6 +23,7 @@ const APP_PATH = resolve(ROOT, 'public/legacy/app.js');
 const INIT_PATH = resolve(ROOT, 'public/legacy/init.js');
 
 const HTML = readFileSync(HTML_PATH, 'utf8');
+const CSS = readFileSync(CSS_PATH, 'utf8');
 const APP = readFileSync(APP_PATH, 'utf8');
 const BOOT = readFileSync(BOOT_PATH, 'utf8');
 const INIT = readFileSync(INIT_PATH, 'utf8');
@@ -101,5 +102,74 @@ describe('public/legacy/*.js — parse & content checks', () => {
     expect(APP).toMatch(/midiAccess\.onstatechange/);
     expect(APP).toMatch(/MIDI_PRESETS/);
     expect(APP).toMatch(/applyMidiPreset/);
+  });
+});
+
+/**
+ * Regression guards for the deck-pair selector + 6-DECK LINEUP overlay —
+ * the screens the user reported looked broken after the Phase 1 split.
+ * Mechanical-split bugs would show up as missing buttons, missing CSS
+ * rules, or missing wiring; if any of these go red, an update has
+ * dropped a piece of the deck switch bar / lineup view by mistake.
+ */
+describe('deck-pair selector — every focus button survives the split', () => {
+  const PAIRS = ['AB', 'CD', 'AC', 'BD', 'ALL', 'DJAB', 'DJCD'] as const;
+  it.each(PAIRS)('shell carries data-pair="%s" button', (pair) => {
+    expect(HTML).toContain(`data-pair="${pair}"`);
+  });
+
+  it('applyDeckPair handles the ALL branch (full-console layout)', () => {
+    expect(APP).toMatch(/function applyDeckPair/);
+    expect(APP).toMatch(/show-all['"]\s*,\s*pair\s*===\s*['"]ALL['"]/);
+  });
+
+  it('CSS still defines body.show-all layout for the 4-deck console', () => {
+    expect(CSS).toMatch(/body\.show-all/);
+  });
+});
+
+describe('TITAN 6-DECK LINEUP overlay — DOM, CSS, and init wiring', () => {
+  it('shell carries the open button and the lineup overlay', () => {
+    expect(HTML).toMatch(/id="t3dOpenBtn"/);
+    expect(HTML).toMatch(/id="t3dOverlay"/);
+    expect(HTML).toMatch(/id="t3dCloseBtn"/);
+    expect(HTML).toContain('6-DECK LINEUP');
+  });
+
+  it('lineup SVG renders all six deck slots + the central mixer', () => {
+    // The SVG mockup uses <use href="#t3dDeck"> six times and <use href="#t3dMix"> once.
+    const deckUses = HTML.match(/href="#t3dDeck"/g) || [];
+    const mixUses = HTML.match(/href="#t3dMix"/g) || [];
+    expect(deckUses.length).toBe(6);
+    expect(mixUses.length).toBe(1);
+  });
+
+  it('CSS defines .t3d-overlay and the open-state class', () => {
+    expect(CSS).toMatch(/\.t3d-overlay\s*\{/);
+    expect(CSS).toMatch(/\.t3d-overlay\.open/);
+    expect(CSS).toMatch(/\.t3d-rig/);
+  });
+
+  it('init.js wires open / close / Esc handlers for the overlay', () => {
+    expect(INIT).toMatch(/getElementById\('t3dOpenBtn'\)/);
+    expect(INIT).toMatch(/getElementById\('t3dOverlay'\)/);
+    expect(INIT).toMatch(/classList\.add\('open'\)/);
+    expect(INIT).toMatch(/key\s*===\s*'Escape'/);
+  });
+});
+
+describe('Service Worker shell precache covers the new external bundles', () => {
+  const SW = readFileSync(resolve(ROOT, 'public/sw.js'), 'utf8');
+
+  it('cache version was bumped past v127 so old clients re-precache', () => {
+    expect(SW).not.toMatch(/djtitan-shell-v127/);
+    expect(SW).toMatch(/djtitan-shell-v\d{3,}/);
+  });
+
+  it('SHELL precache includes every legacy bundle the new index.html links to', () => {
+    expect(SW).toMatch(/\.\/legacy\/styles\.css/);
+    expect(SW).toMatch(/\.\/legacy\/bootstrap\.js/);
+    expect(SW).toMatch(/\.\/legacy\/app\.js/);
+    expect(SW).toMatch(/\.\/legacy\/init\.js/);
   });
 });

@@ -5,10 +5,16 @@
    - CDN assets (Google Fonts, jsDelivr) → cache-first once seen
    - Everything cached stays reachable offline forever */
 
-const CACHE = 'djtitan-shell-v127-auth-diagnostic';
-const CDN_CACHE = 'djtitan-cdn-v127';
+// v128 — split index.html into shell + public/legacy/* (Phase 1 of refactor).
+// Existing clients will be holding the monolithic index.html in cache; the
+// version bump forces a clean re-precache that pulls in the new external
+// CSS/JS bundles so the 6-DECK LINEUP overlay, ALL-4 deck pair, and every
+// other surface keep working offline.
+const CACHE = 'djtitan-shell-v128-legacy-bundles';
+const CDN_CACHE = 'djtitan-cdn-v128';
 const SHELL = [
   './','./index.html',
+  './legacy/styles.css','./legacy/bootstrap.js','./legacy/app.js','./legacy/init.js',
   './analyzer.worker.js','./manifest.json','./icon.svg','./auth.sql'
 ];
 const CDN_HOSTS = [
