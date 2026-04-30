@@ -11143,3 +11143,179 @@ body.stadium-mode .main-tabs{
   .ts-crowd{height:46%}
   .ts-hud-row{font-size:11px}
 }
+
+/* ============================================================
+   TITAN BOOTH LAMP — gooseneck DJ-booth light
+   Designed to fit every view (default, work mode, stadium, every
+   theme). Off by default. Toggled by 💡 BOOTH LIGHT in DECK FOCUS.
+   ============================================================ */
+.booth-lamp{
+  position:fixed;
+  top:0;right:0;
+  width:240px;height:520px;
+  pointer-events:none;
+  display:none;
+  z-index:9998;
+  filter:drop-shadow(0 12px 28px rgba(0,0,0,.7));
+}
+body.booth-light .booth-lamp{display:block}
+
+/* The visible lamp graphic */
+.booth-lamp .bl-svg{
+  position:absolute;top:24px;right:14px;
+  width:240px;height:460px;
+  overflow:visible;
+}
+
+/* Soft warm pool of light hitting the deck + mixer.
+   Sits ABOVE the controls with screen blend so it adds warmth
+   without obscuring readouts. */
+.booth-lamp .bl-pool{
+  position:fixed;
+  top:120px;right:-220px;
+  width:1500px;height:1100px;
+  background:
+    radial-gradient(ellipse at 78% 18%,
+      rgba(255,222,160,.30) 0%,
+      rgba(255,190,110,.18) 18%,
+      rgba(255,160,80,.10) 38%,
+      rgba(255,140,60,.04) 58%,
+      transparent 78%);
+  mix-blend-mode:screen;
+  z-index:9997;
+  pointer-events:none;
+}
+
+/* Subtle vignette darkening the far corners — adds focus.
+   Multiply blend so it darkens without flattening. */
+.booth-lamp .bl-vignette{
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse at 78% 28%,
+      transparent 18%,
+      rgba(0,0,0,.20) 50%,
+      rgba(0,0,0,.42) 100%);
+  mix-blend-mode:multiply;
+  z-index:9996;
+  pointer-events:none;
+}
+
+/* Living bulb — gentle warm breathing, with stronger flicker on the core */
+.booth-lamp .bl-bulb-glow{
+  transform-origin:center;
+  animation:blBreathe 5.5s ease-in-out infinite;
+}
+.booth-lamp .bl-bulb-core{
+  transform-origin:center;
+  animation:blFlicker 7s ease-in-out infinite;
+}
+.booth-lamp .bl-led{
+  animation:blLedPulse 2.2s ease-in-out infinite;
+}
+@keyframes blBreathe{
+  0%,100%{filter:brightness(1) drop-shadow(0 0 14px rgba(255,170,80,.55));opacity:.95}
+  50%{filter:brightness(1.12) drop-shadow(0 0 22px rgba(255,190,100,.85));opacity:1}
+}
+@keyframes blFlicker{
+  0%,100%{opacity:1}
+  47%{opacity:1}
+  49%{opacity:.86}
+  51%{opacity:1}
+  72%{opacity:.94}
+  73%{opacity:1}
+}
+@keyframes blLedPulse{
+  0%,100%{filter:drop-shadow(0 0 5px rgba(124,255,122,.7));opacity:.9}
+  50%{filter:drop-shadow(0 0 9px rgba(124,255,122,1));opacity:1}
+}
+
+/* DSB toggle button styling */
+.dsb-boothlight{
+  background:linear-gradient(180deg,rgba(255,200,90,.16),rgba(255,180,60,.04)) !important;
+  color:#ffd28a !important;
+  border:1px solid rgba(255,200,100,.45) !important;
+}
+.dsb-boothlight.active{
+  background:linear-gradient(180deg,#ffe9b4,#ffb060 60%,#c8741a) !important;
+  color:#1a0c00 !important;
+  border-color:#ffe0a0 !important;
+  box-shadow:0 0 18px rgba(255,180,80,.65),inset 0 1px 0 rgba(255,255,255,.6) !important;
+  text-shadow:0 1px 0 rgba(255,255,255,.4);
+}
+
+/* In light theme the lamp body reads better in chrome silver,
+   and the warm pool needs to lift, not wash, the porcelain panels */
+body.theme-light.booth-light .bl-pool{
+  background:
+    radial-gradient(ellipse at 78% 18%,
+      rgba(255,210,140,.42) 0%,
+      rgba(255,180,100,.20) 22%,
+      rgba(255,150,70,.08) 45%,
+      transparent 75%);
+}
+body.theme-light.booth-light .bl-vignette{
+  background:
+    radial-gradient(ellipse at 78% 28%,
+      transparent 22%,
+      rgba(20,15,10,.10) 55%,
+      rgba(20,15,10,.22) 100%);
+}
+
+/* In stadium mode the lamp is the most visible object — boost its
+   pool and make the bulb glow much hotter in the dark venue. */
+body.stadium-mode.booth-light .booth-lamp{
+  filter:drop-shadow(0 16px 36px rgba(0,0,0,.85))
+         drop-shadow(0 0 30px rgba(255,170,70,.35));
+}
+body.stadium-mode.booth-light .bl-pool{
+  background:
+    radial-gradient(ellipse at 78% 18%,
+      rgba(255,220,150,.55) 0%,
+      rgba(255,180,90,.30) 18%,
+      rgba(255,150,60,.14) 40%,
+      rgba(255,130,40,.05) 65%,
+      transparent 85%);
+}
+body.stadium-mode.booth-light .bl-vignette{
+  background:
+    radial-gradient(ellipse at 78% 28%,
+      transparent 14%,
+      rgba(0,0,0,.30) 50%,
+      rgba(0,0,0,.55) 100%);
+}
+
+/* Mirror the lamp horizontally in DJ-FOCUS / 6-deck-lineup so the
+   booth light reaches the controls regardless of which side hosts
+   the deck. (Right-side mount is the default; this is just a
+   safety mirror that can be toggled by a user preference later.) */
+.booth-lamp.bl-mirror{transform:scaleX(-1);right:auto;left:0}
+.booth-lamp.bl-mirror .bl-pool{right:auto;left:-220px;
+  background:
+    radial-gradient(ellipse at 22% 18%,
+      rgba(255,222,160,.30) 0%,
+      rgba(255,190,110,.18) 18%,
+      rgba(255,160,80,.10) 38%,
+      rgba(255,140,60,.04) 58%,
+      transparent 78%);
+}
+.booth-lamp.bl-mirror .bl-vignette{
+  background:
+    radial-gradient(ellipse at 22% 28%,
+      transparent 18%,
+      rgba(0,0,0,.20) 50%,
+      rgba(0,0,0,.42) 100%);
+}
+
+/* Mobile — shrink the lamp + pool so it stays elegant on phones */
+@media (max-width:780px){
+  .booth-lamp{width:160px;height:340px}
+  .booth-lamp .bl-svg{width:160px;height:300px;top:14px;right:8px}
+  .booth-lamp .bl-pool{top:80px;right:-180px;width:1100px;height:800px}
+}
+
+/* Reduced motion — static bulb, no flicker/breathe/LED pulse */
+@media (prefers-reduced-motion:reduce){
+  .booth-lamp .bl-bulb-glow,
+  .booth-lamp .bl-bulb-core,
+  .booth-lamp .bl-led{animation:none !important}
+}

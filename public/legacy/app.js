@@ -11211,6 +11211,35 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 
 /* ========================================================
+   TITAN BOOTH LAMP — gooseneck booth light (any view, any theme)
+   ======================================================== */
+(function(){
+  const KEY = 'titanBoothLight';
+  function setLamp(on){
+    document.body.classList.toggle('booth-light', !!on);
+    document.getElementById('boothLightBtn')?.classList.toggle('active', !!on);
+    try{ localStorage.setItem(KEY, on ? '1' : '0'); }catch(_){}
+  }
+  function toggleLamp(){
+    setLamp(!document.body.classList.contains('booth-light'));
+  }
+  function init(){
+    const btn = document.getElementById('boothLightBtn');
+    if(btn) btn.addEventListener('click', toggleLamp);
+    // Restore last user preference
+    try{
+      if(localStorage.getItem(KEY) === '1') setLamp(true);
+    }catch(_){}
+    window.titanBoothLight = { on:()=>setLamp(true), off:()=>setLamp(false), toggle:toggleLamp };
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', ()=>setTimeout(init,300));
+  } else {
+    setTimeout(init, 300);
+  }
+})();
+
+/* ========================================================
    PRO MIX ENGINE — world-class DJ automation
    Camelot harmony, beat-phase sync, gain-matching, multi-stage
    transitions (bass-swap, echo-out, filter-sweep, hard cut).

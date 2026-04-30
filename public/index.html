@@ -33,6 +33,105 @@
   <button class="ts-exit" id="tsExitBtn" title="Exit stadium (Esc)">✕ EXIT STADIUM</button>
 </div>
 
+<!-- ===== TITAN BOOTH LAMP — gooseneck DJ-booth light (works in every view) ===== -->
+<div id="boothLamp" class="booth-lamp" aria-hidden="true">
+  <div class="bl-vignette"></div>
+  <div class="bl-pool"></div>
+  <svg class="bl-svg" viewBox="0 0 240 460" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="blMetal" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#0c0c10"/>
+        <stop offset=".18" stop-color="#3a3a44"/>
+        <stop offset=".48" stop-color="#a4a4ae"/>
+        <stop offset=".78" stop-color="#3a3a44"/>
+        <stop offset="1" stop-color="#0c0c10"/>
+      </linearGradient>
+      <linearGradient id="blShade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#3c3c46"/>
+        <stop offset=".55" stop-color="#1c1c22"/>
+        <stop offset="1" stop-color="#06060a"/>
+      </linearGradient>
+      <radialGradient id="blBulb" cx="50%" cy="50%" r="55%">
+        <stop offset="0" stop-color="#fffaef"/>
+        <stop offset=".25" stop-color="#ffe6b0"/>
+        <stop offset=".55" stop-color="#ffb060"/>
+        <stop offset=".85" stop-color="#ff7a1a" stop-opacity=".55"/>
+        <stop offset="1" stop-color="#ff7a1a" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="blCone" x1=".5" y1="0" x2=".5" y2="1">
+        <stop offset="0" stop-color="#ffd28a" stop-opacity=".55"/>
+        <stop offset=".35" stop-color="#ffb070" stop-opacity=".22"/>
+        <stop offset=".75" stop-color="#ff8a40" stop-opacity=".06"/>
+        <stop offset="1" stop-color="#ff7a1a" stop-opacity="0"/>
+      </linearGradient>
+      <filter id="blGlow" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="6"/>
+      </filter>
+      <filter id="blSoft" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="2"/>
+      </filter>
+    </defs>
+
+    <!-- Mounting clamp on the booth -->
+    <g>
+      <rect x="180" y="2" width="44" height="40" rx="5" fill="url(#blMetal)" stroke="#000" stroke-width=".6"/>
+      <rect x="184" y="6" width="36" height="3" rx="1" fill="rgba(255,255,255,.35)"/>
+      <rect x="184" y="32" width="36" height="2" rx="1" fill="rgba(0,0,0,.55)"/>
+      <circle cx="202" cy="22" r="4" fill="#0a0a0e" stroke="#000" stroke-width=".6"/>
+      <circle cx="202" cy="22" r="1.6" fill="#3a3a40"/>
+      <!-- ON LED on the clamp -->
+      <circle class="bl-led" cx="216" cy="34" r="2.4" fill="#7cff7a"/>
+    </g>
+
+    <!-- Gooseneck arm (curved) -->
+    <path class="bl-arm-shadow" d="M 202 42 C 202 130 130 150 110 200 C 95 240 90 270 100 300"
+          fill="none" stroke="#000" stroke-width="14" stroke-linecap="round" opacity=".55" filter="url(#blSoft)"/>
+    <path class="bl-arm" d="M 202 42 C 202 130 130 150 110 200 C 95 240 90 270 100 300"
+          fill="none" stroke="url(#blMetal)" stroke-width="12" stroke-linecap="round"/>
+    <path class="bl-arm-hi" d="M 202 42 C 202 130 130 150 110 200 C 95 240 90 270 100 300"
+          fill="none" stroke="rgba(255,255,255,.28)" stroke-width="3" stroke-linecap="round"/>
+    <!-- Gooseneck ribbing — short cross strokes -->
+    <g stroke="rgba(0,0,0,.55)" stroke-width="1" stroke-linecap="round" fill="none">
+      <line x1="200" y1="60"  x2="208" y2="60"/>
+      <line x1="198" y1="78"  x2="208" y2="78"/>
+      <line x1="195" y1="96"  x2="207" y2="96"/>
+      <line x1="187" y1="114" x2="201" y2="116"/>
+      <line x1="172" y1="130" x2="190" y2="134"/>
+      <line x1="155" y1="146" x2="178" y2="150"/>
+      <line x1="140" y1="162" x2="164" y2="166"/>
+      <line x1="128" y1="180" x2="148" y2="184"/>
+      <line x1="118" y1="200" x2="138" y2="204"/>
+      <line x1="108" y1="222" x2="128" y2="224"/>
+      <line x1="100" y1="246" x2="120" y2="246"/>
+      <line x1="96"  y1="270" x2="116" y2="270"/>
+      <line x1="96"  y1="290" x2="114" y2="288"/>
+    </g>
+
+    <!-- Lamp head (shade) — tilted toward the deck -->
+    <g transform="translate(100,300) rotate(-18)">
+      <!-- Outer shade -->
+      <path d="M -36 -8 L 36 -8 L 46 56 L -46 56 Z" fill="url(#blShade)" stroke="#000" stroke-width=".6"/>
+      <!-- Top rim ellipse -->
+      <ellipse cx="0" cy="-8" rx="36" ry="7" fill="#22222a" stroke="#000" stroke-width=".6"/>
+      <ellipse cx="0" cy="-9" rx="32" ry="4.5" fill="#0a0a10"/>
+      <!-- Chrome bottom rim -->
+      <ellipse cx="0" cy="56" rx="46" ry="9" fill="#1a1a20" stroke="#000" stroke-width=".6"/>
+      <ellipse cx="0" cy="55" rx="44" ry="6.5" fill="url(#blMetal)"/>
+      <!-- Inside warm glow -->
+      <ellipse cx="0" cy="56" rx="38" ry="6" fill="url(#blBulb)" filter="url(#blGlow)" opacity=".95"/>
+      <!-- Bulb -->
+      <circle class="bl-bulb-glow" cx="0" cy="48" r="22" fill="url(#blBulb)" filter="url(#blGlow)"/>
+      <circle class="bl-bulb-core" cx="0" cy="48" r="9" fill="#fff8d8"/>
+      <ellipse cx="-3" cy="44" rx="3" ry="1.6" fill="rgba(255,255,255,.85)"/>
+    </g>
+
+    <!-- Light cone projecting downward and to the left toward the controls -->
+    <g transform="translate(100,358) rotate(-18)">
+      <path d="M -46 0 L 46 0 L 110 100 L -110 100 Z" fill="url(#blCone)" filter="url(#blGlow)"/>
+    </g>
+  </svg>
+</div>
+
 <div id="titan-landing" lang="en" dir="ltr" role="dialog" aria-label="Welcome to DJ TITAN">
   <div class="tl-bg"></div>
   <div class="tl-grid"></div>
@@ -318,6 +417,7 @@
   <button class="dsb-btn dsb-3d" id="t3dOpenBtn" title="6-deck lineup — 3 decks · 6-ch mixer · 3 decks">🎛 6-DECK LINEUP</button>
   <button class="dsb-btn dsb-work" id="workModeBtn" title="Stage-ready performance view">🎆 WORK MODE</button>
   <button class="dsb-btn dsb-stadium" id="stadiumModeBtn" title="DJ-on-stage festival view — 50,000 fans, lasers, lights">🎪 STADIUM</button>
+  <button class="dsb-btn dsb-boothlight" id="boothLightBtn" title="Booth lamp — warm gooseneck light on the decks (works in any view)">💡 BOOTH LIGHT</button>
   <button class="dsb-btn dsb-wmlib" id="wmLibBtn" title="Show / hide the track library in work mode" style="display:none"><svg class="lib-svg" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><ellipse cx="11" cy="4.5" rx="7" ry="2.2"/><path d="M4 4.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 10.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 15.5v2.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-2.5"/></svg>LIBRARY</button>
   <button class="dsb-btn dsb-wmexit" id="wmExitInlineBtn" title="Exit work mode (Esc)" style="display:none">✕ EXIT WORK</button>
   <span class="dsb-monitor" id="dsbMonitor" style="display:none"></span>
