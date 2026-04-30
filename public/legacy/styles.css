@@ -2211,15 +2211,16 @@ body.work-mode .x-pad-labels{color:#ccc !important;opacity:.85;font-size:11px}
 body.work-mode .knob-label{color:#e8e8ea !important;font-size:10px;text-shadow:0 0 4px rgba(255,255,255,.3)}
 
 /* ============================================================
-   LIGHT THEME v2 — 'Porcelain Studio' premium light mode
-   Bright panels, warm cream background, real-hardware LED displays
-   (kept dark with orange/cyan glow, like a real CDJ-3000 in a lit room)
+   LIGHT THEME v3 — 'Pioneer White' (CDJ-3000-W / DJM-900NXS2-W)
+   Clean cool-white body matching the real Pioneer DJ hardware in
+   white finish: porcelain panels, dark charcoal control buttons,
+   chrome jog ring, dark LED-style screens with cyan/orange glow.
    ============================================================ */
 body.theme-light{
-  --deck-bg:#e8e8ec;
-  --deck-panel:#f4f4f7;
-  --deck-border:#c8c8ce;
-  --screen-glow:#0088b4;
+  --deck-bg:#eeeef2;
+  --deck-panel:#f5f5f7;
+  --deck-border:#bdbdc4;
+  --screen-glow:#00b4dc;
   --orange:#ff7a1a;
   --orange-glow:#c85a00;
   --cue-orange:#ff5a00;
@@ -2230,15 +2231,15 @@ body.theme-light{
   --pink:#c82e5a;
   --text:#1a1a1c;
   --text-dim:#5a5a60;
-  --bg:#f6f3ee;
-  --panel-edge:rgba(0,0,0,.06);
-  --panel-edge-strong:rgba(0,0,0,.12);
+  --bg:#e9e9ed;
+  --panel-edge:rgba(0,0,0,.08);
+  --panel-edge-strong:rgba(0,0,0,.16);
 }
 body.theme-light,body.theme-light html{
   background:
-    radial-gradient(ellipse at 20% 0%,rgba(255,138,26,.06) 0%,transparent 45%),
-    radial-gradient(ellipse at 80% 100%,rgba(0,180,220,.05) 0%,transparent 45%),
-    radial-gradient(ellipse at center,#fbf8f1 0%,var(--bg) 70%);
+    radial-gradient(ellipse at 20% 0%,rgba(0,180,220,.05) 0%,transparent 45%),
+    radial-gradient(ellipse at 80% 100%,rgba(255,138,26,.05) 0%,transparent 45%),
+    radial-gradient(ellipse at center,#f4f4f8 0%,var(--bg) 70%);
 }
 body.theme-light::after{background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.08) 100%)}
 body.theme-light ::-webkit-scrollbar-track{background:#e0ddd6}
@@ -10636,4 +10637,509 @@ body.tl-locked{overflow:hidden}
 @media (max-width:560px){
   .t3d-overlay{padding:14px 8px}
   .t3d-actions .t3d-btn{padding:6px 10px;font-size:9px}
+}
+
+/* ============================================================
+   LIGHT THEME — Pioneer White hardware match
+   Override pass that re-skins controls so the white theme reads
+   like a CDJ-3000-W deck and DJM-900NXS2-W mixer:
+   white body panels + dark charcoal control buttons + chrome
+   knob caps with orange indicator + chrome fader handles.
+   ============================================================ */
+
+/* Body + main panels: cool porcelain white (replaces warm cream) */
+body.theme-light .cdj,body.theme-light .mixer,body.theme-light .library,
+body.theme-light .sampler-panel,body.theme-light .youtube-panel,body.theme-light .playlists-panel,
+body.theme-light .ai-dj-panel,body.theme-light .analytics-panel,body.theme-light .midi-panel,
+body.theme-light .settings-panel,body.theme-light .deck-switch-bar{
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.02) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,.05) 100%),
+    linear-gradient(180deg,#fafafc 0%,#e6e6ea 100%) !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.95),
+    inset 0 -1px 0 rgba(0,0,0,.06),
+    0 14px 32px -10px rgba(40,40,55,.28),
+    0 2px 6px rgba(0,0,0,.07) !important;
+}
+
+/* All control buttons → dark charcoal with light label, like real hardware */
+body.theme-light .big-btn,body.theme-light .loop-btn,body.theme-light .jump-btn,body.theme-light .util-btn,
+body.theme-light .beat-btn,body.theme-light .pad-mode-btn,
+body.theme-light .tempo-btn,body.theme-light .step-btn,body.theme-light .mic-btn,
+body.theme-light .cue-btn,body.theme-light .compact-btn,body.theme-light .cue-hp-btn,
+body.theme-light .dsb-btn,body.theme-light .search-src-btn,
+body.theme-light .tool-btn,body.theme-light .assign-btn,body.theme-light .curve-btn{
+  background:linear-gradient(180deg,#3a3a40 0%,#1d1d22 100%) !important;
+  border:1px solid #0a0a0c !important;
+  color:#e8e8ec !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    inset 0 -1px 0 rgba(0,0,0,.6),
+    0 1px 2px rgba(0,0,0,.25) !important;
+  text-shadow:0 1px 0 rgba(0,0,0,.55) !important;
+}
+body.theme-light .big-btn:hover,body.theme-light .loop-btn:hover,body.theme-light .jump-btn:hover,
+body.theme-light .util-btn:hover,body.theme-light .beat-btn:hover,
+body.theme-light .pad-mode-btn:hover,body.theme-light .tool-btn:hover,
+body.theme-light .dsb-btn:hover{
+  filter:brightness(1.15);
+  border-color:rgba(255,138,26,.55) !important;
+}
+
+/* Hardware-correct accent buttons keep their LED color */
+body.theme-light .big-btn.cue.active{
+  background:linear-gradient(180deg,#ffb060 0%,var(--cue-orange) 55%,#8a2a00 100%) !important;
+  color:#fff !important;border-color:#5a1a00 !important;
+}
+body.theme-light .big-btn.play.active{
+  background:linear-gradient(180deg,#5cffa8 0%,var(--play-green) 55%,#005a30 100%) !important;
+  color:#0a0a0a !important;border-color:#003e22 !important;
+}
+
+/* Knobs: brushed silver cap with orange indicator (Pioneer mixer caps) */
+body.theme-light .knob{
+  background:
+    radial-gradient(circle at 30% 26%,rgba(255,255,255,.95) 0%,transparent 32%),
+    conic-gradient(from 0deg,#dcdce2 0deg,#a8a8b0 60deg,#7a7a82 130deg,#c8c8d0 200deg,#90909a 280deg,#dcdce2 360deg),
+    radial-gradient(circle at 30% 30%,#e0e0e6 0%,#888890 65%,#3e3e44 100%) !important;
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,.85),
+    inset 0 -3px 6px rgba(0,0,0,.4),
+    0 2px 5px rgba(0,0,0,.28),
+    0 0 0 1px rgba(0,0,0,.22) !important;
+}
+body.theme-light .knob-indicator{
+  background:linear-gradient(180deg,#fff 0%,var(--cue-orange) 65%,#8a2a00 100%) !important;
+  box-shadow:0 0 4px rgba(0,0,0,.5),0 0 6px rgba(255,90,0,.5) !important;
+}
+body.theme-light .knob-label{color:#1a1a1c;font-weight:700;text-shadow:0 1px 0 rgba(255,255,255,.8)}
+
+/* Channel labels (1, 2, 3, 4) — bold dark, like printed hardware */
+body.theme-light .channel-label,body.theme-light .channel-num{
+  color:#1a1a1c !important;
+  font-weight:800;
+  text-shadow:0 1px 0 rgba(255,255,255,.8);
+}
+
+/* Faders: dark track with chrome handle (matches DJM-900NXS2-W) */
+body.theme-light .fader-wrap,body.theme-light .crossfader-track,body.theme-light .tempo-slider{
+  background:linear-gradient(180deg,#1a1a1e 0%,#0a0a0c 100%) !important;
+  box-shadow:
+    inset 0 2px 5px rgba(0,0,0,.7),
+    0 0 0 1px rgba(0,0,0,.25),
+    0 0 0 2px rgba(255,255,255,.5) !important;
+}
+body.theme-light .fader-handle,body.theme-light .tempo-handle,body.theme-light .crossfader-handle{
+  background:linear-gradient(180deg,#fff 0%,#d8d8de 28%,#8c8c94 70%,#3a3a40 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.95),
+    inset 0 -2px 3px rgba(0,0,0,.4),
+    0 3px 8px rgba(0,0,0,.35),
+    0 0 0 1px rgba(0,0,0,.22) !important;
+}
+
+/* Sample / performance pads: dark like real CDJ-3000-W performance pads */
+body.theme-light .sample-pad{
+  background:linear-gradient(180deg,#2e2e34 0%,#16161a 100%) !important;
+  border:1px solid #050507 !important;
+  color:#e8e8ec !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    inset 0 -1px 0 rgba(0,0,0,.5),
+    0 3px 6px rgba(0,0,0,.18) !important;
+}
+body.theme-light .sample-pad .pad-num{color:#fff !important}
+body.theme-light .sample-pad .pad-name{color:#a8a8b0 !important}
+
+/* Jog wheel: chrome ring stays, but inner platter slightly cleaner */
+body.theme-light .jog-outer{
+  background:
+    radial-gradient(circle at 32% 26%,rgba(255,255,255,.9) 0%,transparent 38%),
+    radial-gradient(circle at 30% 30%,#e4e4e8 0%,#9c9ca4 55%,#4e4e56 100%) !important;
+  box-shadow:
+    0 0 0 2px #888,
+    0 0 0 3px rgba(255,255,255,.5),
+    0 0 0 5px #b4b4ba,
+    inset 0 3px 10px rgba(255,255,255,.55),
+    inset 0 -6px 14px rgba(0,0,0,.4),
+    0 14px 32px rgba(40,40,60,.32) !important;
+}
+
+/* Tempo slider area: white background with bold dark tempo readout */
+body.theme-light .tempo-display-big{
+  background:#0a0a0e !important;
+  color:#ffb366 !important;
+  border:1px solid #0a0a0e !important;
+  box-shadow:inset 0 0 8px rgba(0,0,0,.7),0 1px 2px rgba(0,0,0,.2) !important;
+}
+
+/* Headphone / master / crossfader sections: subtle white panel */
+body.theme-light .master-section,body.theme-light .crossfader-section,
+body.theme-light .headphone-section,body.theme-light .mic-section,
+body.theme-light .color-fx-row,body.theme-light .color-fx-grid{
+  background:linear-gradient(180deg,#f4f4f6 0%,#e2e2e6 100%) !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 1px 2px rgba(0,0,0,.06) !important;
+}
+
+/* COLOR FX selectors keep dark LED look on white body */
+body.theme-light .fx-onoff{
+  background:linear-gradient(180deg,#3a3a40 0%,#1d1d22 100%) !important;
+  border:2px solid #0a0a0c !important;
+  color:#e8e8ec !important;
+}
+body.theme-light .fx-onoff.active{
+  background:linear-gradient(180deg,#ffa84a 0%,var(--orange) 55%,#aa3a00 100%) !important;
+  color:#fff !important;border-color:#5a1a00 !important;
+  box-shadow:0 0 18px rgba(255,138,26,.55) !important;
+}
+
+/* Mixer brand label printed on white panel */
+body.theme-light .mixer-brand,body.theme-light .deck-label{
+  color:#1a1a1c !important;
+  text-shadow:0 1px 0 rgba(255,255,255,.85);
+}
+body.theme-light .mixer-brand .model,body.theme-light .deck-label .model{color:var(--orange) !important}
+
+/* Crisp dark border around big surfaces so panels look molded */
+body.theme-light .cdj,body.theme-light .mixer{
+  border:1px solid rgba(0,0,0,.18) !important;
+}
+
+/* ============================================================
+   TITAN STADIUM — DJ-on-stage festival view
+   Full-screen immersive scene behind a still-usable deck + mixer.
+   Lighting truss · moving heads · twin laser fans · LED wall ·
+   drifting fog · ~280 BPM-synced jumping silhouettes.
+   ============================================================ */
+.titan-stadium{
+  display:none;
+  position:fixed;inset:0;
+  z-index:0;                       /* sits behind UI (which is positioned/z>0) */
+  pointer-events:none;
+  perspective:1400px;
+  perspective-origin:50% 75%;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 50% 65%,#0d0820 0%,#020108 55%,#000 100%);
+  --ts-bpm:128;
+  --ts-beat:calc(60s / var(--ts-bpm));     /* one beat duration */
+  --ts-bar:calc(var(--ts-beat) * 4);
+  --ts-accent-a:#ff7a1a;
+  --ts-accent-b:#00d4ff;
+  --ts-accent-c:#ff2e8a;
+  --ts-accent-d:#9c55ff;
+}
+body.stadium-mode .titan-stadium{display:block}
+body.stadium-mode{
+  /* Page background fades to black so the stadium reads as the world */
+  background:#000 !important;
+}
+body.stadium-mode html,body.stadium-mode{
+  background:#000 !important;
+}
+body.stadium-mode .titan-landing,body.stadium-mode #titan-landing{display:none !important}
+
+/* Pull the main UI forward and frame it like a DJ booth monitor cockpit */
+body.stadium-mode .header-bar,
+body.stadium-mode .main-tabs,
+body.stadium-mode .tab-content{position:relative;z-index:5}
+
+body.stadium-mode .tab-content.active{
+  filter:drop-shadow(0 30px 80px rgba(0,0,0,.85)) drop-shadow(0 0 50px rgba(255,138,26,.18));
+}
+body.stadium-mode .cdj,body.stadium-mode .mixer{
+  background:linear-gradient(180deg,rgba(20,20,26,.96) 0%,rgba(8,8,12,.98) 100%) !important;
+  border:1px solid #2a2a32 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    0 0 0 1px rgba(255,138,26,.1),
+    0 30px 90px -10px rgba(0,0,0,.95),
+    0 0 60px rgba(255,138,26,.18) !important;
+}
+
+/* Sky gradient + faint stars pinhole layer */
+.ts-sky{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(80,30,140,.55) 0%,rgba(20,8,40,.5) 30%,transparent 65%),
+    radial-gradient(ellipse at 50% 100%,rgba(255,90,30,.18) 0%,transparent 50%),
+    linear-gradient(180deg,#070414 0%,#020108 65%,#000 100%);
+}
+.ts-stars{position:absolute;inset:0 0 35% 0;pointer-events:none}
+.ts-stars i{
+  position:absolute;width:2px;height:2px;border-radius:50%;
+  background:#fff;box-shadow:0 0 4px rgba(255,255,255,.85);
+  opacity:.85;animation:tsTwinkle 4s infinite ease-in-out;
+}
+@keyframes tsTwinkle{0%,100%{opacity:.25}50%{opacity:1}}
+
+/* Distant city skyline silhouette */
+.ts-skyline{
+  position:absolute;left:0;right:0;bottom:38%;height:14%;
+  background:
+    linear-gradient(180deg,transparent 0%,#000 100%),
+    repeating-linear-gradient(90deg,
+      #050308 0 22px,#0a0612 22px 26px,#050308 26px 70px,
+      #0a0612 70px 76px,#050308 76px 140px,#0a0612 140px 148px);
+  mask:linear-gradient(180deg,transparent 0%,#000 30%);
+  opacity:.7;
+}
+
+/* Giant LED screen wall behind the stage */
+.ts-ledwall{
+  position:absolute;left:50%;top:14%;transform:translateX(-50%);
+  width:78vw;max-width:1700px;height:30vh;
+  border:2px solid #1a1a22;border-radius:6px;
+  background:#000;
+  box-shadow:
+    inset 0 0 0 2px #050507,
+    0 0 60px rgba(0,212,255,.25),
+    0 0 120px rgba(255,138,26,.18);
+  overflow:hidden;
+}
+.ts-ledwall-inner{
+  position:absolute;inset:0;
+  background:
+    /* TITAN logo wash */
+    radial-gradient(ellipse at 50% 50%,rgba(255,138,26,.55) 0%,transparent 50%),
+    /* scanning bars */
+    repeating-linear-gradient(0deg,rgba(0,0,0,.55) 0 2px,transparent 2px 4px),
+    /* color cycle */
+    linear-gradient(135deg,var(--ts-accent-c) 0%,var(--ts-accent-d) 30%,var(--ts-accent-b) 60%,var(--ts-accent-a) 100%);
+  background-size:100% 100%,100% 4px,200% 200%;
+  animation:tsLedWash var(--ts-bar) linear infinite;
+  filter:saturate(1.3) brightness(1.05);
+  opacity:.95;
+}
+.ts-ledwall::after{
+  content:"TITAN";
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:14vh;letter-spacing:14px;
+  color:rgba(255,255,255,.85);
+  text-shadow:0 0 40px rgba(255,255,255,.7),0 0 80px rgba(255,138,26,.6);
+  mix-blend-mode:screen;
+}
+@keyframes tsLedWash{
+  0%{background-position:0% 0%,0 0,0% 50%}
+  50%{background-position:0% 0%,0 -2px,100% 50%}
+  100%{background-position:0% 0%,0 0,0% 50%}
+}
+
+/* Lighting truss across the top */
+.ts-truss{
+  position:absolute;left:0;right:0;top:6%;height:3.5%;
+  background:
+    linear-gradient(180deg,#1a1a22 0%,#0a0a0e 100%),
+    repeating-linear-gradient(45deg,#2a2a32 0 6px,#14141a 6px 12px);
+  border-top:1px solid #3a3a44;border-bottom:1px solid #050508;
+  box-shadow:0 6px 24px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.04);
+}
+.ts-truss::before,.ts-truss::after{
+  content:"";position:absolute;left:0;right:0;height:6px;
+  background:repeating-linear-gradient(90deg,#222 0 12px,#0a0a0e 12px 18px);
+}
+.ts-truss::before{top:-6px}
+.ts-truss::after{bottom:-6px}
+
+/* Moving-head spotlight cones — generated as cones via clip-path */
+.ts-lights{position:absolute;left:0;right:0;top:9%;height:75%;pointer-events:none}
+.ts-lights .ts-light{
+  position:absolute;top:0;width:18vw;height:80vh;
+  transform-origin:50% 0;
+  background:linear-gradient(180deg,
+    color-mix(in oklab,var(--ts-c,#fff) 70%,transparent) 0%,
+    color-mix(in oklab,var(--ts-c,#fff) 35%,transparent) 18%,
+    color-mix(in oklab,var(--ts-c,#fff) 12%,transparent) 45%,
+    transparent 80%);
+  clip-path:polygon(48% 0,52% 0,80% 100%,20% 100%);
+  filter:blur(8px);
+  mix-blend-mode:screen;
+  opacity:.7;
+  animation:tsLightSweep var(--ts-sweep,8s) ease-in-out infinite;
+}
+.ts-lights .ts-light::after{
+  content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:14px;height:14px;border-radius:50%;
+  background:var(--ts-c,#fff);
+  box-shadow:0 0 18px var(--ts-c,#fff),0 0 38px var(--ts-c,#fff);
+}
+@keyframes tsLightSweep{
+  0%{transform:rotate(-32deg);opacity:.6}
+  25%{transform:rotate(8deg);opacity:.85}
+  50%{transform:rotate(28deg);opacity:.7}
+  75%{transform:rotate(-12deg);opacity:.95}
+  100%{transform:rotate(-32deg);opacity:.6}
+}
+
+/* Twin laser fans (left + right of stage) */
+.ts-lasers{position:absolute;left:0;right:0;top:8%;height:75%;pointer-events:none;mix-blend-mode:screen}
+.ts-lasers .ts-laser-fan{
+  position:absolute;top:0;width:60vw;height:80vh;
+  transform-origin:50% 0;
+  animation:tsLaserSweep var(--ts-bar) linear infinite;
+}
+.ts-lasers .ts-laser-fan.left{left:-30vw;animation-direction:alternate}
+.ts-lasers .ts-laser-fan.right{right:-30vw;animation-direction:alternate-reverse}
+.ts-lasers .ts-laser{
+  position:absolute;top:0;left:50%;width:2px;height:100%;
+  background:linear-gradient(180deg,
+    color-mix(in oklab,var(--ts-lc,#ff2e8a) 95%,#fff) 0%,
+    color-mix(in oklab,var(--ts-lc,#ff2e8a) 60%,transparent) 70%,
+    transparent 100%);
+  filter:drop-shadow(0 0 6px var(--ts-lc,#ff2e8a)) drop-shadow(0 0 14px var(--ts-lc,#ff2e8a));
+  transform-origin:50% 0;
+  opacity:.9;
+}
+@keyframes tsLaserSweep{
+  0%{transform:rotate(-22deg)}
+  100%{transform:rotate(22deg)}
+}
+
+/* Strobes — fast white flashes synced to the beat */
+.ts-strobes{position:absolute;inset:0 0 35% 0;pointer-events:none;mix-blend-mode:screen}
+.ts-strobes::before,.ts-strobes::after{
+  content:"";position:absolute;inset:0;background:#fff;opacity:0;
+  animation:tsStrobeFlash var(--ts-beat) steps(1,end) infinite;
+}
+.ts-strobes::after{animation-delay:calc(var(--ts-beat) / 2)}
+@keyframes tsStrobeFlash{
+  0%,3%{opacity:.25}
+  4%,100%{opacity:0}
+}
+
+/* Crowd — Canvas-rendered, ~12,000 dancing silhouettes in 4 depth bands */
+.ts-crowd{
+  position:absolute;left:0;right:0;bottom:0;height:48%;
+  pointer-events:none;
+  background:
+    /* atmospheric haze fading the back of the crowd */
+    linear-gradient(180deg,rgba(20,8,40,.35) 0%,rgba(0,0,0,.0) 18%,rgba(0,0,0,.0) 65%,rgba(0,0,0,.6) 95%,#000 100%);
+}
+.ts-crowd-canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  display:block;
+  image-rendering:pixelated;
+}
+/* Phones canvas sits on top with screen blend so the lights pop */
+.ts-phones-canvas{mix-blend-mode:screen;filter:drop-shadow(0 0 6px rgba(255,255,255,.6))}
+
+/* Drifting fog / haze layers */
+.ts-fog{
+  position:absolute;left:-10%;right:-10%;
+  height:38%;pointer-events:none;mix-blend-mode:screen;
+  background:
+    radial-gradient(ellipse at 30% 60%,rgba(255,255,255,.10) 0%,transparent 55%),
+    radial-gradient(ellipse at 70% 40%,rgba(255,180,140,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 50% 80%,rgba(180,210,255,.08) 0%,transparent 55%);
+  filter:blur(40px);
+}
+.ts-fog-1{bottom:30%;animation:tsFogDrift 22s linear infinite}
+.ts-fog-2{bottom:38%;height:30%;opacity:.6;animation:tsFogDrift 32s linear infinite reverse}
+@keyframes tsFogDrift{
+  0%{transform:translateX(-8%) scaleX(1)}
+  50%{transform:translateX(8%) scaleX(1.06)}
+  100%{transform:translateX(-8%) scaleX(1)}
+}
+
+/* Pyro / confetti — subtle accent on every drop */
+.ts-pyro{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen}
+.ts-pyro i{
+  position:absolute;width:3px;height:14px;border-radius:2px;
+  background:linear-gradient(180deg,var(--c,#ffd400),transparent);
+  filter:drop-shadow(0 0 4px var(--c,#ffd400));
+  animation:tsPyroFall var(--td,6s) linear infinite;
+  animation-delay:var(--dl,0s);
+  top:-20px;
+}
+@keyframes tsPyroFall{
+  0%{transform:translateY(-20px) rotate(0);opacity:0}
+  10%{opacity:1}
+  100%{transform:translateY(120vh) rotate(360deg);opacity:0}
+}
+
+/* Stage edge — thin chrome line in front of the booth */
+.ts-stage-edge{
+  position:absolute;left:0;right:0;bottom:46%;height:6px;
+  background:linear-gradient(180deg,rgba(255,255,255,.55) 0%,rgba(255,138,26,.45) 50%,rgba(0,0,0,.6) 100%);
+  box-shadow:0 0 24px rgba(255,138,26,.35),0 -2px 12px rgba(255,255,255,.25);
+  filter:blur(.4px);
+}
+
+/* Subtle warm rim glow under the booth (front-facing booth lighting) */
+.ts-monitor-glow{
+  position:absolute;left:0;right:0;bottom:0;height:48%;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(255,138,26,.18) 0%,transparent 55%),
+    radial-gradient(ellipse at 50% 0%,rgba(0,212,255,.10) 0%,transparent 65%);
+  mix-blend-mode:screen;
+}
+
+/* HUD overlay — tour-poster vibe in the top corner */
+.ts-hud{
+  position:absolute;top:14px;left:50%;transform:translateX(-50%);
+  font-family:'Orbitron',sans-serif;text-align:center;letter-spacing:4px;
+  text-shadow:0 0 14px rgba(255,138,26,.6),0 1px 0 rgba(0,0,0,.7);
+  z-index:6;pointer-events:none;
+  animation:tsHudPulse var(--ts-beat) ease-in-out infinite;
+}
+.ts-hud-row{font-size:13px;color:#fff}
+.ts-hud-row b{color:var(--ts-accent-a)}
+.ts-hud-sub{font-size:11px;color:var(--ts-accent-b);margin-top:3px;letter-spacing:3px}
+@keyframes tsHudPulse{
+  0%,100%{opacity:.85;transform:translateX(-50%) scale(1)}
+  50%{opacity:1;transform:translateX(-50%) scale(1.02)}
+}
+
+/* Exit button — bottom-right, only inside stadium */
+.ts-exit{
+  position:fixed;right:18px;bottom:18px;z-index:9999;
+  padding:10px 16px;
+  background:linear-gradient(180deg,#3a1010,#200808);
+  border:1px solid var(--red,#ff3344);color:#ff8a8a;
+  font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:3px;font-weight:700;
+  border-radius:6px;cursor:pointer;
+  box-shadow:0 0 18px rgba(255,46,46,.45),0 12px 30px rgba(0,0,0,.6);
+  display:none;pointer-events:auto;
+}
+.ts-exit:hover{background:var(--red,#ff3344);color:#fff}
+body.stadium-mode .ts-exit{display:inline-block}
+
+/* DSB stadium button styling */
+.dsb-stadium{
+  background:linear-gradient(180deg,rgba(255,46,138,.18),rgba(255,46,138,.04)) !important;
+  color:#ffa3c8 !important;
+  border:1px solid rgba(255,46,138,.45) !important;
+}
+.dsb-stadium.active{
+  background:linear-gradient(180deg,#ff2e8a,#a0185a) !important;
+  color:#fff !important;border-color:#ff2e8a !important;
+  box-shadow:0 0 14px rgba(255,46,138,.55) !important;
+}
+
+/* When stadium is on, hide some marketing/landing chrome cleanly */
+body.stadium-mode .deck-switch-bar,
+body.stadium-mode .header-bar,
+body.stadium-mode .main-tabs{
+  background:rgba(8,8,12,.55) !important;
+  backdrop-filter:blur(8px);
+}
+
+/* Reduced motion — keep ambience but cut animation cost */
+@media (prefers-reduced-motion:reduce){
+  .ts-lights .ts-light,.ts-lasers .ts-laser-fan,
+  .ts-fog,.ts-strobes::before,.ts-strobes::after,
+  .ts-crowd .ts-person,.ts-pyro i,.ts-hud,.ts-ledwall-inner{
+    animation:none !important;
+  }
+}
+
+/* Mobile — keep readable but lighter on GPU */
+@media (max-width:780px){
+  .ts-ledwall{width:92vw;height:22vh;top:11%}
+  .ts-ledwall::after{font-size:10vh;letter-spacing:8px}
+  .ts-crowd{height:46%}
+  .ts-hud-row{font-size:11px}
 }
