@@ -14551,6 +14551,7 @@ async function loadTrackToDeck(deckId,track){
   const d=decks[deckId];stopDeck(deckId);
   d.track=track;d.offset=0;d.cuePoint=0;d.hotCues={};
   d.loop={active:false,start:null,end:null,loopInSet:false};
+  _libTouch(track);
   if(!track.buffer&&track.source!=='yt'){
     const cached=await idbGetAudio(track.id);
     if(cached){
@@ -16805,6 +16806,68 @@ function updateStats(){
   document.getElementById('statAvgBpm').textContent=bpms.length?Math.round(bpms.reduce((a,b)=>a+b,0)/bpms.length):'---';
   document.getElementById('statFxCount').textContent=stats.fxCount;
   document.getElementById('statCueCount').textContent=stats.cueCount;
+}
+
+/* ============ LONG-UPTIME HYGIENE ============
+   Two mechanisms for sessions that run for days/weeks (festival booth,
+   24/7 streaming): (a) cap the number of decoded AudioBuffers held in the
+   library, evicting cold ones; (b) watchdog the AudioContext and recycle
+   the audio graph during an idle moment after a long-uptime threshold. */
+const _LIB_MAX_DECODED=200;
+function _libTouch(track){if(track)track.lastUsedAt=Date.now();}
+function _libProtectedIds(){
+  const s=new Set();
+  ['A','B','C','D'].forEach(k=>{const t=decks[k]&&decks[k].track;if(t&&t.id)s.add(t.id);});
+  return s;
+}
+function _libReleaseColdBuffers(){
+  let loaded=0;for(const t of library)if(t&&t.buffer)loaded++;
+  if(loaded<=_LIB_MAX_DECODED)return 0;
+  const protect=_libProtectedIds();
+  const candidates=library.filter(t=>t&&t.buffer&&!protect.has(t.id));
+  candidates.sort((a,b)=>(a.lastUsedAt||a.addedAt||0)-(b.lastUsedAt||b.addedAt||0));
+  const toFree=loaded-_LIB_MAX_DECODED;let freed=0;
+  for(const t of candidates){if(freed>=toFree)break;t.buffer=null;freed++;}
+  if(freed)console.info(`[library] released ${freed} cold buffer(s)`);
+  return freed;
+}
+
+const _AUDIO_RECYCLE_MS=7*24*60*60*1000;
+const _audioWatchdog={lastTime:0,sessionStart:Date.now(),lastRecycle:0};
+function _decksAreIdle(){
+  if(mixerState&&mixerState.isRecording)return false;
+  return!['A','B','C','D'].some(k=>decks[k]&&decks[k].playing);
+}
+function _recycleAudioGraph(){
+  if(!audioCtx||!_decksAreIdle())return false;
+  ['A','B','C','D'].forEach(k=>{
+    const d=decks[k];if(!d)return;
+    try{if(d.source){d.source.stop();d.source.disconnect();}}catch(_){}
+    d.source=null;d.trimGain=null;d.eqLow=null;d.eqLoMid=null;d.eqHiMid=null;
+    d.eqHigh=null;d.compressor=null;d.saturation=null;d.colorFilter=null;
+    d.volumeGain=null;d.channelGain=null;d.analyser=null;d.keylockNode=null;
+    d.playing=false;
+  });
+  try{audioCtx.close();}catch(_){}
+  audioCtx=null;masterGain=null;masterLimiter=null;recordDestination=null;
+  masterAnalyserL=null;masterAnalyserR=null;
+  ensureAudio();
+  _audioWatchdog.sessionStart=Date.now();
+  _audioWatchdog.lastRecycle=Date.now();
+  console.info('[watchdog] audio graph recycled');
+  try{toast('Audio graph refreshed','success');}catch(_){}
+  return true;
+}
+function _audioWatchdogTick(){
+  if(!audioCtx)return;
+  if(audioCtx.state==='suspended'){audioCtx.resume().catch(()=>{});}
+  const now=audioCtx.currentTime;
+  if(_audioWatchdog.lastTime&&now+0.001<_audioWatchdog.lastTime){
+    console.warn('[watchdog] non-monotonic audioCtx.currentTime',_audioWatchdog.lastTime,'→',now);
+  }
+  _audioWatchdog.lastTime=now;
+  const uptime=Date.now()-(_audioWatchdog.sessionStart||Date.now());
+  if(uptime>_AUDIO_RECYCLE_MS&&_decksAreIdle())_recycleAudioGraph();
 }
 
 function logMix(action){
@@ -25365,6 +25428,10 @@ window.renderAIQueuePreview=renderAIQueuePreview;
 window.renderAIHistory=renderAIHistory;
 
 document.addEventListener('DOMContentLoaded',init);
+
+/* Long-uptime hygiene timers — see _libReleaseColdBuffers / _audioWatchdogTick. */
+setInterval(_libReleaseColdBuffers,5*60*1000);
+setInterval(_audioWatchdogTick,60*1000);
 
 /* ========================================================
    PERFORMANCE LAYER — cache hot-path DOM lookups, reuse

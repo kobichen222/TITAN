@@ -9,6 +9,11 @@ const fs = require('fs');
 let autoUpdater = null;
 try { autoUpdater = require('electron-updater').autoUpdater; } catch (_) { /* optional in dev */ }
 
+// Kiosk mode disables auto-updates so a long-running install (festival booth,
+// 24/7 venue) is never interrupted by a silent download + restart prompt.
+// Enable via DJTITAN_KIOSK=1 env or the --kiosk argv flag.
+const KIOSK_MODE = !!process.env.DJTITAN_KIOSK || process.argv.includes('--kiosk');
+
 let mainWindow = null;
 
 function findAssetPath(relPath) {
@@ -69,7 +74,17 @@ function createWindow() {
       submenu: [
         {
           label: 'Check for Updates',
-          click: () => { if (autoUpdater) autoUpdater.checkForUpdatesAndNotify(); },
+          click: () => {
+            if (KIOSK_MODE) {
+              dialog.showMessageBox(mainWindow, {
+                type: 'info',
+                title: 'Updates disabled',
+                message: 'Auto-updates are disabled in kiosk mode.',
+              });
+              return;
+            }
+            if (autoUpdater) autoUpdater.checkForUpdatesAndNotify();
+          },
         },
         { type: 'separator' },
         { role: 'quit', label: 'Quit' },
@@ -137,6 +152,10 @@ function createWindow() {
 /* ------------- Auto-update lifecycle ------------- */
 function initAutoUpdates() {
   if (!autoUpdater) return;
+  if (KIOSK_MODE) {
+    console.info('[updater] kiosk mode active — auto-updates disabled');
+    return;
+  }
 
   // Silent download; user is prompted only when an update is ready to install
   autoUpdater.autoDownload = true;
