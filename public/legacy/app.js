@@ -11206,15 +11206,69 @@ document.addEventListener('DOMContentLoaded',()=>{
     else enterStadium();
   }
 
+  /* ---- EMPTY STAGE — bare arena: only the LED wall + DJ name ---- */
+  function enterEmptyStage(){
+    buildScene();                          // ensures the LED wall exists
+    exitStadium();                         // mutually exclusive with full stadium
+    document.body.classList.add('empty-stage-mode');
+    document.getElementById('emptyStageBtn')?.classList.add('active');
+  }
+  function exitEmptyStage(){
+    document.body.classList.remove('empty-stage-mode');
+    document.getElementById('emptyStageBtn')?.classList.remove('active');
+  }
+  function toggleEmptyStage(){
+    if(document.body.classList.contains('empty-stage-mode')) exitEmptyStage();
+    else enterEmptyStage();
+  }
+
+  /* ---- DJ name — drives --dj-led-name in CSS, persisted ---- */
+  const DJ_NAME_KEY = 'titanDjName';
+  function setDjName(raw){
+    const name = (raw || '').toString().trim().toUpperCase().slice(0,24);
+    const display = name || 'TITAN';
+    // Quote the value because content: var() needs a string token
+    document.documentElement.style.setProperty('--dj-led-name', `"${display}"`);
+    try{ localStorage.setItem(DJ_NAME_KEY, name); }catch(_){}
+    const inp = document.getElementById('settingDjName');
+    if(inp && document.activeElement !== inp) inp.value = name;
+  }
+
   function init(){
     const btn = document.getElementById('stadiumModeBtn');
     if(btn) btn.addEventListener('click', toggleStadium);
+    const eBtn = document.getElementById('emptyStageBtn');
+    if(eBtn) eBtn.addEventListener('click', toggleEmptyStage);
+
+    // Esc exits whichever scene is active
     window.addEventListener('keydown',(e)=>{
-      if(e.key==='Escape' && document.body.classList.contains('stadium-mode')){
+      if(e.key !== 'Escape') return;
+      if(document.body.classList.contains('stadium-mode')){
         e.preventDefault(); exitStadium();
+      } else if(document.body.classList.contains('empty-stage-mode')){
+        e.preventDefault(); exitEmptyStage();
       }
     });
+
+    // Wire the EXIT button to leave whichever scene is active
+    document.getElementById('tsExitBtn')?.addEventListener('click',()=>{
+      if(document.body.classList.contains('empty-stage-mode')) exitEmptyStage();
+      else exitStadium();
+    });
+
+    // DJ name — load saved value into the input + the CSS var
+    let saved = '';
+    try{ saved = localStorage.getItem(DJ_NAME_KEY) || ''; }catch(_){}
+    const inp = document.getElementById('settingDjName');
+    if(inp){
+      inp.value = saved;
+      inp.addEventListener('input', e => setDjName(e.target.value));
+    }
+    setDjName(saved);
+
     window.titanStadium = { enter:enterStadium, exit:exitStadium, toggle:toggleStadium };
+    window.titanEmptyStage = { enter:enterEmptyStage, exit:exitEmptyStage, toggle:toggleEmptyStage };
+    window.titanDjName = setDjName;
   }
 
   if(document.readyState === 'loading'){

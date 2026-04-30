@@ -10914,12 +10914,14 @@ body.stadium-mode .cdj,body.stadium-mode .mixer{
   opacity:.95;
 }
 .ts-ledwall::after{
-  content:"TITAN";
+  content:var(--dj-led-name,"TITAN");
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   font-family:'Orbitron',sans-serif;font-weight:900;font-size:14vh;letter-spacing:14px;
   color:rgba(255,255,255,.85);
   text-shadow:0 0 40px rgba(255,255,255,.7),0 0 80px rgba(255,138,26,.6);
   mix-blend-mode:screen;
+  text-transform:uppercase;
+  white-space:nowrap;
 }
 @keyframes tsLedWash{
   0%{background-position:0% 0%,0 0,0% 50%}
@@ -11142,6 +11144,111 @@ body.stadium-mode .main-tabs{
   .ts-ledwall::after{font-size:10vh;letter-spacing:8px}
   .ts-crowd{height:46%}
   .ts-hud-row{font-size:11px}
+}
+
+/* ============================================================
+   EMPTY STAGE mode — bare arena, just the LED wall + DJ name
+   Hides every UI panel, crowd, laser, light, fog, etc. The
+   page is replaced with a tall LED wall lit by an ambient glow
+   and a clean stage horizon line. Esc exits.
+   ============================================================ */
+body.empty-stage-mode{background:#000 !important}
+body.empty-stage-mode html,body.empty-stage-mode{background:#000 !important}
+body.empty-stage-mode #titan-landing,
+body.empty-stage-mode .titan-landing{display:none !important}
+
+/* Show the stadium scaffolding so we can reuse the LED wall + sky,
+   but hide everything except the wall + ambient glow. */
+body.empty-stage-mode .titan-stadium{display:block}
+
+/* Hide ALL the regular UI */
+body.empty-stage-mode .header-bar,
+body.empty-stage-mode .main-tabs,
+body.empty-stage-mode .tab-content,
+body.empty-stage-mode .deck-switch-bar,
+body.empty-stage-mode .booth-lamps{display:none !important}
+
+/* Hide every stadium element except: ledwall, sky, monitor glow */
+body.empty-stage-mode .ts-crowd,
+body.empty-stage-mode .ts-lights,
+body.empty-stage-mode .ts-lasers,
+body.empty-stage-mode .ts-strobes,
+body.empty-stage-mode .ts-fog,
+body.empty-stage-mode .ts-pyro,
+body.empty-stage-mode .ts-truss,
+body.empty-stage-mode .ts-skyline,
+body.empty-stage-mode .ts-stars,
+body.empty-stage-mode .ts-stage-edge,
+body.empty-stage-mode .ts-hud{display:none !important}
+
+/* Sky stays as a soft venue ambience */
+body.empty-stage-mode .ts-sky{
+  background:radial-gradient(ellipse at 50% 60%,#0a0512 0%,#020108 50%,#000 100%);
+}
+
+/* Bigger, taller LED wall — fills the upper half */
+body.empty-stage-mode .ts-ledwall{
+  top:8vh;
+  width:88vw;max-width:none;
+  height:54vh;
+  border-radius:8px;
+  box-shadow:
+    inset 0 0 0 2px #050507,
+    0 0 80px rgba(0,212,255,.30),
+    0 0 180px rgba(255,138,26,.22);
+}
+
+/* The wash inside the wall stays alive but slower / cleaner */
+body.empty-stage-mode .ts-ledwall-inner{
+  background:
+    radial-gradient(ellipse at 50% 50%,rgba(255,138,26,.45) 0%,transparent 55%),
+    repeating-linear-gradient(0deg,rgba(0,0,0,.55) 0 2px,transparent 2px 4px),
+    linear-gradient(135deg,#5a00aa 0%,#0088cc 60%,#ff7a1a 100%);
+  background-size:100% 100%,100% 4px,200% 200%;
+  animation:tsLedWash 6s linear infinite;
+}
+
+/* DJ NAME on the wall — huge, sharp, glowing */
+body.empty-stage-mode .ts-ledwall::after{
+  font-size:clamp(48px,18vh,260px);
+  letter-spacing:clamp(8px,2vw,28px);
+  color:#fff;
+  text-shadow:
+    0 0 24px rgba(255,255,255,.95),
+    0 0 60px rgba(255,200,140,.85),
+    0 0 120px rgba(255,138,26,.70),
+    0 0 200px rgba(255,80,160,.55);
+  filter:drop-shadow(0 0 12px rgba(0,0,0,.8));
+}
+
+/* Glow under the wall — venue floor wash */
+body.empty-stage-mode .ts-monitor-glow{
+  height:55vh;bottom:0;
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(255,138,26,.30) 0%,transparent 55%),
+    radial-gradient(ellipse at 50% 0%,rgba(0,212,255,.18) 0%,transparent 70%),
+    radial-gradient(ellipse at 50% 100%,rgba(0,0,0,.85) 0%,transparent 60%);
+  mix-blend-mode:screen;
+}
+
+/* Exit button mirrors the stadium one */
+body.empty-stage-mode .ts-exit{display:inline-block !important}
+
+/* DSB toggle button styling */
+.dsb-emptystage{
+  background:linear-gradient(180deg,rgba(140,80,255,.18),rgba(140,80,255,.04)) !important;
+  color:#caa8ff !important;
+  border:1px solid rgba(140,80,255,.45) !important;
+}
+.dsb-emptystage.active{
+  background:linear-gradient(180deg,#a878ff,#5a2aa0) !important;
+  color:#fff !important;border-color:#caa8ff !important;
+  box-shadow:0 0 16px rgba(140,80,255,.55) !important;
+}
+
+@media (max-width:780px){
+  body.empty-stage-mode .ts-ledwall{width:96vw;height:38vh;top:14vh}
+  body.empty-stage-mode .ts-ledwall::after{font-size:clamp(36px,12vh,140px);letter-spacing:6px}
 }
 
 /* ============================================================
