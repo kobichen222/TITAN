@@ -10,7 +10,7 @@ let stats={totalTime:0,tracksPlayed:0,fxCount:0,cueCount:0,mixHistory:[],session
 let settings={theme:'dark',rgbAmbient:true,phraseMarkers:true,limiter:true,autoGain:false,autoSave:true};
 let aiDJ={active:false,style:'smooth',transLen:16,bpmTol:6,order:'energy-flow',transitionTimer:null};
 
-function createDeck(id){return{id,track:null,playing:false,startTime:0,offset:0,tempo:0,playbackRate:1,tempoRange:8,cuePoint:0,hotCues:{},savedLoops:{},loop:{active:false,start:null,end:null,loopInSet:false},keylock:false,quantize:false,slip:false,slipReturn:null,reverse:false,sync:false,source:null,volumeGain:null,trimGain:null,channelGain:null,eqLow:null,eqLoMid:null,eqHiMid:null,eqHigh:null,killLow:false,killMid:false,killHi:false,compressor:null,saturation:null,colorFilter:null,buffer:null,volume:0,eq:{low:0,loMid:0,hiMid:0,high:0},trim:1,analyser:null,padMode:'cue',waveZoom:1,energy:0,beatgrid:null,phraseOffset:0};}
+function createDeck(id){return{id,track:null,playing:false,startTime:0,offset:0,tempo:0,playbackRate:1,tempoRange:8,cuePoint:0,hotCues:{},savedLoops:{},loop:{active:false,start:null,end:null,loopInSet:false},keylock:false,quantize:false,slip:false,slipReturn:null,reverse:false,sync:false,source:null,volumeGain:null,trimGain:null,channelGain:null,eqLow:null,eqLoMid:null,eqHiMid:null,eqHigh:null,killLow:false,killMid:false,killHi:false,compressor:null,saturation:null,colorFilter:null,buffer:null,volume:1,eq:{low:0,loMid:0,hiMid:0,high:0},trim:1,analyser:null,padMode:'cue',waveZoom:1,energy:0,beatgrid:null,phraseOffset:0};}
 const decks={A:createDeck('A'),B:createDeck('B'),C:createDeck('C'),D:createDeck('D')};
 const mixerState={crossfader:0.5,xfaderCurve:'smooth',master:0.9,booth:0.7,balance:0,hpMix:0.5,hpVol:0.7,hpCue:{A:false,B:false,C:false,D:false},micOn:false,micVol:0,micHi:0,micLow:0,fx:{type:'delay',channel:'master',beat:1,level:0.5,on:false},colorFx:{type:'filter',A:0,B:0,C:0,D:0},xfaderAssign:{A:'A',B:'B',C:'THRU',D:'THRU'},isRecording:false,sceneFx:{type:null,depth:0.5,xpadX:0.5,xpadY:0.5,xpadActive:false},isolator:{low:0,mid:0,hi:0}};
 
@@ -300,10 +300,11 @@ function setupDeck(id){
   d.saturation.curve=curve;d.saturation.oversample='2x';
   // Color FX
   d.colorFilter=audioCtx.createBiquadFilter();d.colorFilter.type='allpass';d.colorFilter.frequency.value=1000;
-  // Volume + channel + analyser — volumeGain starts at 0 to match the
-  // mixer fader's bottom-default position. setY + playDeck ramp it to
-  // the tapered target on first user input.
-  d.volumeGain=audioCtx.createGain();d.volumeGain.gain.value=0;
+  // Volume + channel + analyser — decks start at unity gain so they
+  // play independently of the mixer's channel fader (the deck has its
+  // own internal output level). The channel fader still works; it
+  // just starts at the top instead of the bottom.
+  d.volumeGain=audioCtx.createGain();d.volumeGain.gain.value=1;
   d.channelGain=audioCtx.createGain();d.channelGain.gain.value=1;
   d.analyser=audioCtx.createAnalyser();d.analyser.fftSize=512;
   // Chain: trim → low → loMid → hiMid → high → compressor → saturation → color → volume → channel → master
@@ -2735,6 +2736,19 @@ function attachEvents(){
     const w=document.querySelector(`.fader-wrap[data-fader="${d}"]`);
     if(!w)return;
     const h=document.getElementById(`fader-${d}`);let drag=false;let pendingCy=null,rafId=null;
+    // Initial handle position — top of travel — to match the new
+    // unity-gain default. The deck plays at full level out of the box;
+    // dragging this fader DOWN now attenuates instead of enables.
+    if(h){
+      const _placeAtTop=()=>{
+        const r=w.getBoundingClientRect();
+        const handleH=h.offsetHeight||24;
+        const travel=Math.max(1,r.height-handleH);
+        h.style.bottom=`${travel}px`;
+      };
+      // Defer one frame so the wrap has its final layout height
+      requestAnimationFrame(_placeAtTop);
+    }
     /* Click → volume mapping. Full range, no dead zones:
          click at top of wrap        → v=1 (max)
          click at bottom of wrap     → v=0 (silent)
