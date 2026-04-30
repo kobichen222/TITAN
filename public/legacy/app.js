@@ -11243,19 +11243,32 @@ document.addEventListener('DOMContentLoaded',()=>{
   function defaultHeadPos(side){
     const saved = savedPos[side];
     if(saved && typeof saved.x === 'number' && typeof saved.y === 'number'){
-      // Constrain to current viewport
-      return constrain(saved.x, saved.y);
+      return constrain(saved.x, saved.y, side);
     }
     const W = window.innerWidth;
     const H = window.innerHeight;
     if(side === 'right') return { x: Math.min(W - 140, W - 220), y: Math.min(H - 220, 360) };
     return { x: Math.max(140, 220), y: Math.min(H - 220, 360) };
   }
-  function constrain(x, y){
+
+  // Each lamp stays on its own half of the viewport (with a small
+  // gap on either side of the centerline so they never overlap).
+  function constrain(x, y, side){
     const W = window.innerWidth, H = window.innerHeight;
+    const margin = 70;
+    const centerGap = 60;       // dead-zone around the centerline
+    const center = W * 0.5;
+    let xMin, xMax;
+    if(side === 'right'){
+      xMin = Math.min(W - margin, center + centerGap);
+      xMax = W - margin;
+    } else {
+      xMin = margin;
+      xMax = Math.max(margin, center - centerGap);
+    }
     return {
-      x: Math.max(70, Math.min(W - 70, x)),
-      y: Math.max(70, Math.min(H - 70, y)),
+      x: Math.max(xMin, Math.min(xMax, x)),
+      y: Math.max(margin, Math.min(H - margin, y)),
     };
   }
 
@@ -11299,7 +11312,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     let pos = defaultHeadPos(side);
 
     function relayout(){
-      pos = constrain(pos.x, pos.y);
+      pos = constrain(pos.x, pos.y, side);
       const clamp = clampAnchor(side);
       const {d, cp2} = buildPath(side, clamp, pos);
       armS.setAttribute('d', d);
@@ -11333,43 +11346,50 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
     lamp.__blRelayout = relayout;
 
-    // Drag handling
+    // Drag handling — uses the logical head center (pos) rather than
+    // the rotated bounding box, and document-level listeners so the
+    // pointer never escapes during fast drags.
     let dragging = false;
     let dragOff = {x:0, y:0};
+    let dragPid = null;
     function onDown(e){
-      // Only primary button / first touch
       if(e.button !== undefined && e.button !== 0) return;
       dragging = true;
+      dragPid = e.pointerId;
       head.classList.add('bl-dragging');
-      head.setPointerCapture(e.pointerId);
-      const r = head.getBoundingClientRect();
-      const cx = r.left + r.width/2;
-      const cy = r.top  + r.height/2;
-      dragOff.x = e.clientX - cx;
-      dragOff.y = e.clientY - cy;
+      // Offset between pointer and the head's logical center
+      dragOff.x = e.clientX - pos.x;
+      dragOff.y = e.clientY - pos.y;
+      try{ head.setPointerCapture(dragPid); }catch(_){}
+      document.addEventListener('pointermove', onMove, true);
+      document.addEventListener('pointerup', onUp, true);
+      document.addEventListener('pointercancel', onUp, true);
       e.preventDefault();
+      e.stopPropagation();
     }
     function onMove(e){
       if(!dragging) return;
-      pos = constrain(e.clientX - dragOff.x, e.clientY - dragOff.y);
+      if(dragPid !== null && e.pointerId !== dragPid) return;
+      pos = constrain(e.clientX - dragOff.x, e.clientY - dragOff.y, side);
       relayout();
       e.preventDefault();
     }
     function onUp(e){
       if(!dragging) return;
+      if(dragPid !== null && e.pointerId !== dragPid) return;
       dragging = false;
       head.classList.remove('bl-dragging');
-      try{ head.releasePointerCapture(e.pointerId); }catch(_){}
-      // Persist position
+      try{ head.releasePointerCapture(dragPid); }catch(_){}
+      dragPid = null;
+      document.removeEventListener('pointermove', onMove, true);
+      document.removeEventListener('pointerup', onUp, true);
+      document.removeEventListener('pointercancel', onUp, true);
       try{
         savedPos[side] = { x: pos.x, y: pos.y };
         localStorage.setItem(POS_KEY, JSON.stringify(savedPos));
       }catch(_){}
     }
     head.addEventListener('pointerdown', onDown);
-    head.addEventListener('pointermove', onMove);
-    head.addEventListener('pointerup', onUp);
-    head.addEventListener('pointercancel', onUp);
 
     // Keyboard fine-positioning when focused
     head.addEventListener('keydown',(e)=>{
@@ -11385,7 +11405,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       }
       if(used){
         e.preventDefault();
-        pos = constrain(pos.x, pos.y);
+        pos = constrain(pos.x, pos.y, side);
         relayout();
         try{
           savedPos[side] = { x: pos.x, y: pos.y };
