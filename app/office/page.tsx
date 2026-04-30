@@ -2,16 +2,15 @@
 
 import { useEffect, useMemo, useState } from "react";
 import "./office.css";
+import { fmtDate } from "@/src/lib/format";
+import { STORAGE_KEYS, readJSON } from "@/src/lib/storage";
+import {
+  type SignedLicense,
+  verifySignedLicense,
+} from "@/src/lib/license-verify";
 
 /* ---------- constants ---------- */
 const OFFICE_CODE = "KOBI2100";
-const UNLOCK_KEY = "titan_office_unlocked_v1";
-const SUPA_KEY = "djmaxai_supa_v1";
-// Ed25519 public key (32 bytes, hex) — must match SP_LICENSE_PUBKEY_HEX in
-// public/index.html.  The matching private key lives only on the operator's
-// machine (tools/titan-private.pem); licenses are signed offline via
-// `node tools/gen-license.js` and pasted into this panel for registration.
-const SP_LICENSE_PUBKEY_HEX = "a1263d3bdc8c59791c47c017a4f7e2b34580d61d4a3b97fa12a9fd744e1b60af";
 const SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js";
 
 /* ---------- types ---------- */
@@ -37,51 +36,12 @@ async function loadSupabaseUmd(): Promise<any> {
 
 function readSupaCfg(): { url: string; anon: string } | null {
   if (typeof window === "undefined") return null;
-  try {
-    const raw = localStorage.getItem(SUPA_KEY);
-    if (!raw) return null;
-    const cfg = JSON.parse(raw);
-    if (cfg?.url && cfg?.anon) return { url: cfg.url, anon: cfg.anon };
-  } catch {}
+  const cfg = readJSON<{ url?: string; anon?: string } | null>(
+    STORAGE_KEYS.supabaseConfig,
+    null,
+  );
+  if (cfg?.url && cfg?.anon) return { url: cfg.url, anon: cfg.anon };
   return null;
-}
-
-/* ---------- Ed25519 verify (paired with tools/gen-license.js) ---------- */
-type SignedLicense = {
-  payload: { tier: string; email: string; expiresAt: number | null; issuedAt?: number };
-  sig: string;
-  alg?: string;
-};
-
-let _pubkeyPromise: Promise<CryptoKey> | null = null;
-function importPubkey(): Promise<CryptoKey> {
-  if (_pubkeyPromise) return _pubkeyPromise;
-  const raw = new Uint8Array(
-    (SP_LICENSE_PUBKEY_HEX.match(/.{2}/g) || []).map((h) => parseInt(h, 16))
-  );
-  _pubkeyPromise = crypto.subtle.importKey(
-    "raw",
-    raw,
-    { name: "Ed25519" },
-    false,
-    ["verify"]
-  );
-  return _pubkeyPromise;
-}
-
-async function verifySignedLicense(lic: SignedLicense): Promise<boolean> {
-  try {
-    if (!lic || !lic.payload || !lic.sig) return false;
-    if (lic.alg && lic.alg !== "ed25519") return false;
-    const pubkey = await importPubkey();
-    const text = new TextEncoder().encode(JSON.stringify(lic.payload));
-    const sig = new Uint8Array(
-      (lic.sig.match(/.{2}/g) || []).map((h) => parseInt(h, 16))
-    );
-    return await crypto.subtle.verify({ name: "Ed25519" }, pubkey, sig, text);
-  } catch {
-    return false;
-  }
 }
 
 /* =============================================================
@@ -100,10 +60,10 @@ export default function OfficePage() {
   useEffect(() => {
     setMounted(true);
     if (
-      sessionStorage.getItem(UNLOCK_KEY) === "1" ||
-      localStorage.getItem(UNLOCK_KEY) === "1"
+      sessionStorage.getItem(STORAGE_KEYS.officeUnlocked) === "1" ||
+      localStorage.getItem(STORAGE_KEYS.officeUnlocked) === "1"
     ) {
-      sessionStorage.setItem(UNLOCK_KEY, "1");
+      sessionStorage.setItem(STORAGE_KEYS.officeUnlocked, "1");
       setUnlocked(true);
     }
   }, []);
@@ -137,7 +97,7 @@ export default function OfficePage() {
   function submitCode(e?: React.FormEvent) {
     e?.preventDefault();
     if (code.trim() === OFFICE_CODE) {
-      sessionStorage.setItem(UNLOCK_KEY, "1");
+      sessionStorage.setItem(STORAGE_KEYS.officeUnlocked, "1");
       setUnlocked(true);
       setCodeErr("");
     } else {
@@ -147,8 +107,8 @@ export default function OfficePage() {
   }
 
   function lock() {
-    sessionStorage.removeItem(UNLOCK_KEY);
-    localStorage.removeItem(UNLOCK_KEY);
+    sessionStorage.removeItem(STORAGE_KEYS.officeUnlocked);
+    localStorage.removeItem(STORAGE_KEYS.officeUnlocked);
     setUnlocked(false);
     setCode("");
     setTab("users");
@@ -767,12 +727,4 @@ function AuditPanel({ supa }: { supa: any }) {
       )}
     </section>
   );
-}
-
-/* ---------- util ---------- */
-function fmtDate(iso: string | null, withTime = false): string {
-  if (!iso) return "—";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "—";
-  return withTime ? d.toLocaleString() : d.toLocaleDateString();
 }
