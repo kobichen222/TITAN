@@ -4,6 +4,11 @@
   "installCommand": null,
   "outputDirectory": "public",
   "cleanUrls": true,
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  },
   "headers": [
     {
       "source": "/",

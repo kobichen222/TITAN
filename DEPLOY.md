@@ -98,7 +98,7 @@ host it literally anywhere:
 
 | Host | One-line command / setting |
 | --- | --- |
-| **Vercel** | `vercel --prod` from the repo root (already has `vercel.json`) |
+| **Vercel** | `vercel --prod` from the repo root (already has `vercel.json`). Plain `vercel` creates a *preview* — preview deployments do **not** inherit the production domain, which is why you'll see Vercel's "Assign Domain" hint. Push to `main` or run with `--prod` to get the production domain auto-assigned. |
 | **Netlify** | drag-drop the `public/` folder onto the dashboard |
 | **GitHub Pages** | enable Pages on the `main` branch, root = `/public` |
 | **Cloudflare Pages** | connect the repo, publish directory = `public` |
@@ -219,3 +219,10 @@ more when you do.
 - **Installer panel stays locked after signing in** → the user row
   was created but `banned` is true, or the `profiles` trigger didn't
   run. Check the row directly in the SQL editor.
+- **Vercel deploy doesn't get the production domain** → the deployment
+  is a preview, not a production deploy. Either run `vercel --prod`
+  locally, push to `main` (the `vercel-production.yml` workflow runs
+  `vercel deploy --prod` for you), or check that the domain is added
+  under **Project → Settings → Domains** and assigned to the
+  Production environment. Required GitHub secrets for the workflow:
+  `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`.
