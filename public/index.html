@@ -10615,27 +10615,29 @@ body.tl-locked{overflow:hidden}
   #titan-landing *::after{animation:none !important;transition:none !important}
 }
 
-/* ===== TITAN ALL 6 — inline 3-decks · 6-ch mixer · 3-decks ===== */
-.t3d-inline{width:100%;max-width:1700px;margin:0 auto;padding:14px;background:linear-gradient(180deg,#1c1c20 0%,#0a0a0c 100%);border:1px solid var(--deck-border);border-radius:14px;box-shadow:0 18px 40px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05);position:relative}
-.t3d-inline[hidden]{display:none}
-.t3d-inline::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,122,0,.4) 30%,rgba(46,224,255,.35) 50%,rgba(255,122,0,.4) 70%,transparent);border-radius:14px 14px 0 0;pointer-events:none}
-.t3d-inline-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.06)}
-.t3d-title{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:3px;color:#fff;text-shadow:0 0 10px rgba(255,122,0,.45)}
-.t3d-title b{color:var(--orange)}
-.t3d-sub{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--text-dim)}
-.t3d-stage{width:100%;display:flex;align-items:center;justify-content:center}
-.t3d-rig{width:100%;filter:drop-shadow(0 10px 18px rgba(0,0,0,.55))}
-.t3d-rig svg{width:100%;height:auto;display:block}
-.t3d-legend{width:100%;margin-top:12px;display:grid;grid-template-columns:repeat(7,1fr);gap:6px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.4px}
-.t3d-leg-cell{padding:8px 6px;background:linear-gradient(180deg,rgba(20,20,24,.85),rgba(8,8,10,.85));border:1px solid #2a2a30;border-radius:6px;text-align:center;color:var(--text-dim)}
-.t3d-leg-cell b{display:block;color:var(--orange);font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;margin-bottom:3px}
-.t3d-leg-cell.mid b{color:#2ee0ff}
-body.dsb-all6 #console{display:none !important}
+/* ===== TITAN ALL 6 — real 3 decks + 6-ch mixer + 3 decks lineup ===== */
+.cdj[data-deck="E"]{--deck-accent:#00ff7a;--deck-accent-rgb:0,255,122}
+.cdj[data-deck="F"]{--deck-accent:#ffd400;--deck-accent-rgb:255,212,0}
+.console.show-all-6{grid-template-columns:repeat(3,minmax(0,1fr)) 360px repeat(3,minmax(0,1fr));gap:8px;max-width:none}
+.console.show-all-6 .cdj{padding:10px 8px}
+.console.show-all-6 .cdj .track-title{font-size:11px}
+.console.show-all-6 .cdj .track-artist{font-size:9px}
+.console.show-all-6 .cdj .screen-bpm{font-size:14px}
+.console.show-all-6 .cdj .time-value{font-size:13px}
+.console.show-all-6 .cdj .hot-cues{gap:3px}
+.console.show-all-6 .cdj .cue-btn{font-size:10px;padding:4px 2px}
+.console.show-all-6 .cdj .big-btn{padding:8px 4px !important;font-size:10px;letter-spacing:2px}
+.console.show-all-6 .cdj .loop-btn,.console.show-all-6 .cdj .jump-btn,.console.show-all-6 .cdj .util-btn{font-size:8px;padding:4px 1px}
+.console.show-all-6 .cdj .jog-wrapper{margin:2px 0}
+.console.show-all-6 .cdj .jog-wheel{width:170px;height:170px}
+.console.show-all-6 .cdj .jog-center-screen{width:54px;height:54px}
+.console.show-all-6 .cdj .jog-center-screen .bpm-display{font-size:14px}
+.console.show-all-6 .cdj .deck-number{font-size:16px;padding:2px 8px;letter-spacing:.5px}
+.console.show-all-6 .cdj .tempo-btn-row{gap:2px;padding:4px}
 .dsb-all6.active{background:linear-gradient(180deg,#2ee0ff,#1a8aa8) !important;color:#001020 !important;border-color:#7ee8ff !important;box-shadow:0 0 14px rgba(46,224,255,.55) !important}
-@media (max-width:900px){
-  .t3d-legend{grid-template-columns:repeat(2,1fr)}
-  .t3d-title{font-size:11px;letter-spacing:2px}
-}
+.mixer .channel.channel-extra{display:none}
+.mixer.mixer-6 .channel.channel-extra{display:flex}
+.mixer.mixer-6 .channels{grid-template-columns:repeat(6,minmax(0,1fr))}
 </style>
 </head>
 <body>
@@ -11294,7 +11296,8 @@ body.dsb-all6 #console{display:none !important}
 <select class="fx-selector" id="fxChannel">
 <option value="master">MASTER</option><option value="A">CH 1</option>
 <option value="B">CH 2</option><option value="C">CH 3</option>
-<option value="D">CH 4</option><option value="mic">MIC</option>
+<option value="D">CH 4</option><option value="E">CH 5</option>
+<option value="F">CH 6</option><option value="mic">MIC</option>
 </select>
 <div class="beat-buttons" id="beatButtons">
 <button class="beat-btn" data-beat="0.0625">1/16</button>
@@ -11339,9 +11342,11 @@ body.dsb-all6 #console{display:none !important}
 <div class="console" id="console">
 <div class="cdj" data-deck="A" id="deckA-container"></div>
 <div class="cdj" data-deck="C" id="deckC-container" style="display:none"></div>
+<div class="cdj" data-deck="E" id="deckE-container" style="display:none"></div>
 <div class="mixer" id="mixer-container"></div>
 <div class="cdj" data-deck="B" id="deckB-container"></div>
 <div class="cdj" data-deck="D" id="deckD-container" style="display:none"></div>
+<div class="cdj" data-deck="F" id="deckF-container" style="display:none"></div>
 </div>
 
 <div class="mixer-toolbar mixer-toolbar-bottom" id="mixer-toolbar-bottom"></div>
@@ -13783,8 +13788,8 @@ let settings={theme:'dark',rgbAmbient:true,phraseMarkers:true,limiter:true,autoG
 let aiDJ={active:false,style:'smooth',transLen:16,bpmTol:6,order:'energy-flow',transitionTimer:null};
 
 function createDeck(id){return{id,track:null,playing:false,startTime:0,offset:0,tempo:0,playbackRate:1,tempoRange:8,cuePoint:0,hotCues:{},savedLoops:{},loop:{active:false,start:null,end:null,loopInSet:false},keylock:false,quantize:false,slip:false,slipReturn:null,reverse:false,sync:false,source:null,volumeGain:null,trimGain:null,channelGain:null,eqLow:null,eqLoMid:null,eqHiMid:null,eqHigh:null,killLow:false,killMid:false,killHi:false,compressor:null,saturation:null,colorFilter:null,buffer:null,volume:0,eq:{low:0,loMid:0,hiMid:0,high:0},trim:1,analyser:null,padMode:'cue',waveZoom:1,energy:0,beatgrid:null,phraseOffset:0};}
-const decks={A:createDeck('A'),B:createDeck('B'),C:createDeck('C'),D:createDeck('D')};
-const mixerState={crossfader:0.5,xfaderCurve:'smooth',master:0.9,booth:0.7,balance:0,hpMix:0.5,hpVol:0.7,hpCue:{A:false,B:false,C:false,D:false},micOn:false,micVol:0,micHi:0,micLow:0,fx:{type:'delay',channel:'master',beat:1,level:0.5,on:false},colorFx:{type:'filter',A:0,B:0,C:0,D:0},xfaderAssign:{A:'A',B:'B',C:'THRU',D:'THRU'},isRecording:false,sceneFx:{type:null,depth:0.5,xpadX:0.5,xpadY:0.5,xpadActive:false},isolator:{low:0,mid:0,hi:0}};
+const decks={A:createDeck('A'),B:createDeck('B'),C:createDeck('C'),D:createDeck('D'),E:createDeck('E'),F:createDeck('F')};
+const mixerState={crossfader:0.5,xfaderCurve:'smooth',master:0.9,booth:0.7,balance:0,hpMix:0.5,hpVol:0.7,hpCue:{A:false,B:false,C:false,D:false,E:false,F:false},micOn:false,micVol:0,micHi:0,micLow:0,fx:{type:'delay',channel:'master',beat:1,level:0.5,on:false},colorFx:{type:'filter',A:0,B:0,C:0,D:0,E:0,F:0},xfaderAssign:{A:'A',B:'B',C:'THRU',D:'THRU',E:'THRU',F:'THRU'},isRecording:false,sceneFx:{type:null,depth:0.5,xpadX:0.5,xpadY:0.5,xpadActive:false},isolator:{low:0,mid:0,hi:0}};
 
 const DEMO_TRACKS=[
 {title:"Midnight Drive",artist:"Synthwave Collective",bpm:124,key:"8A",duration:180},
@@ -13977,8 +13982,8 @@ function buildMixerHTML(){
     <button class="curve-btn color-fx-select" data-colorfx="space">SPACE</button>
     <button class="curve-btn color-fx-select" data-colorfx="crush">CRUSH</button>
   </div>
-  <div class="channels">${['A','B','C','D'].map((d,i)=>`
-    <div class="channel">
+  <div class="channels">${['A','B','C','D','E','F'].map((d,i)=>`
+    <div class="channel ${i>=4?'channel-extra':''}">
       <div class="channel-label">CH ${i+1}</div>
       <div class="knob-wrap"><div class="knob small" data-knob="trim-${d}"><div class="knob-indicator"></div></div><span class="knob-label">TRIM</span></div>
       <div class="knob-wrap"><div class="knob small" data-knob="hi-${d}"><div class="knob-indicator"></div></div><span class="knob-label">HI</span></div>
@@ -13986,9 +13991,9 @@ function buildMixerHTML(){
       <div class="knob-wrap"><div class="knob small" data-knob="low-${d}"><div class="knob-indicator"></div></div><span class="knob-label">LOW</span></div>
       <div class="channel-body"><div class="vu-meter" id="vu-${d}"></div><div class="fader-wrap" data-fader="${d}"><div class="fader-handle" id="fader-${d}"></div></div></div>
       <div class="xfader-assign" data-deck="${d}">
-        <button class="assign-btn ${d==='A'||d==='C'?'active':''}" data-assign="A">A</button>
+        <button class="assign-btn ${d==='A'||d==='C'||d==='E'?'active':''}" data-assign="A">A</button>
         <button class="assign-btn" data-assign="THRU">∥</button>
-        <button class="assign-btn ${d==='B'||d==='D'?'active':''}" data-assign="B">B</button>
+        <button class="assign-btn ${d==='B'||d==='D'||d==='F'?'active':''}" data-assign="B">B</button>
       </div>
     </div>`).join('')}
   </div>
@@ -14049,7 +14054,7 @@ function ensureAudio(){
   splitter.connect(masterAnalyserL,0);splitter.connect(masterAnalyserR,1);
   if(settings.limiter){sceneFxOut.connect(masterLimiter);masterLimiter.connect(audioCtx.destination);masterLimiter.connect(recordDestination);}
   else{sceneFxOut.connect(audioCtx.destination);sceneFxOut.connect(recordDestination);}
-  ['A','B','C','D'].forEach(d=>setupDeck(d));
+  ['A','B','C','D','E','F'].forEach(d=>setupDeck(d));
   setupMic();
 }
 
@@ -14766,7 +14771,7 @@ function drawWaveform(deckId,track){
 }
 
 function setupWaveformInteraction(){
-  ['A','B','C','D'].forEach(deckId=>{
+  ['A','B','C','D','E','F'].forEach(deckId=>{
     const wave=document.querySelector(`.waveform:has(#wave-${deckId})`)||document.getElementById(`wave-${deckId}`).parentElement;
     if(!wave)return;
     let wDown=false;
@@ -15022,7 +15027,7 @@ function updateKeylockWet(deckId){
 }
 
 /* Tempo step state per deck */
-const tempoStep={A:0.1,B:0.1,C:0.1,D:0.1};
+const tempoStep={A:0.1,B:0.1,C:0.1,D:0.1,E:0.1,F:0.1};
 function adjustTempo(deckId,direction,big){
   const d=decks[deckId];
   const step=big?1.0:tempoStep[deckId];
@@ -16167,7 +16172,7 @@ function resetKnob(id){
 function applyKnob(id,val){
   ensureAudio();if(!id)return;
   const[type,deck]=id.split('-');
-  if(['A','B','C','D'].includes(deck)){
+  if(['A','B','C','D','E','F'].includes(deck)){
     const d=decks[deck];if(!d)return;
     if(type==='trim'){d.trim=1+val*0.5;if(d.trimGain)d.trimGain.gain.value=d.trim;}
     else if(type==='low'){d.eq.low=val;if(d.eqLow&&!d.killLow)d.eqLow.gain.value=val<=-0.95?-80:val<0?val*40:val*12;}
@@ -16347,7 +16352,7 @@ function applyCrossfader(){
   const x=mixerState.crossfader,curve=mixerState.xfaderCurve;
   ensureAudio();
   const ctx=audioCtx;
-  ['A','B','C','D'].forEach(deckId=>{
+  ['A','B','C','D','E','F'].forEach(deckId=>{
     const d=decks[deckId],a=mixerState.xfaderAssign[deckId];let xgain=1;
     if(a==='THRU'){xgain=1;}
     else{
@@ -16455,7 +16460,7 @@ function attachEvents(){
   document.querySelectorAll('.pad-mode-btn').forEach(btn=>{
     btn.addEventListener('click',()=>setPadMode(btn.dataset.deck,btn.dataset.padMode));
   });
-  ['A','B','C','D'].forEach(d=>{
+  ['A','B','C','D','E','F'].forEach(d=>{
     // Tempo buttons replace the slider
     const deckEl=document.getElementById(`deck${d}-container`);
     if(!deckEl)return;
@@ -16503,7 +16508,7 @@ function attachEvents(){
       });
     });
   });
-  ['A','B','C','D'].forEach(d=>{
+  ['A','B','C','D','E','F'].forEach(d=>{
     const w=document.querySelector(`.fader-wrap[data-fader="${d}"]`);
     if(!w)return;
     const h=document.getElementById(`fader-${d}`);let drag=false;let pendingCy=null,rafId=null;
@@ -16541,10 +16546,10 @@ function attachEvents(){
       document.querySelectorAll('.color-fx-select').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       mixerState.colorFx.type=btn.dataset.colorfx;
-      applyColorFx('A');applyColorFx('B');applyColorFx('C');applyColorFx('D');
+      applyColorFx('A');applyColorFx('B');applyColorFx('C');applyColorFx('D');applyColorFx('E');applyColorFx('F');
     });
   });
-  ['A','B','C','D'].forEach(d=>{
+  ['A','B','C','D','E','F'].forEach(d=>{
     const hpBtn=document.getElementById(`hpCue-${d}`);
     if(hpBtn)hpBtn.addEventListener('click',e=>{
       mixerState.hpCue[d]=!mixerState.hpCue[d];
@@ -16707,7 +16712,7 @@ function setupVU(id,segs){
 }
 
 function animateVU(){
-  ['A','B','C','D'].forEach(d=>{
+  ['A','B','C','D','E','F'].forEach(d=>{
     const dk=decks[d],vu=document.getElementById(`vu-${d}`);
     if(!vu)return;
     const leds=vu.querySelectorAll('.vu-led');
@@ -16732,7 +16737,7 @@ function animateVU(){
   // meters use) so L/R LEDs animate identically with whatever plays.
   (function paintMaster(){
     const now=performance.now();
-    const anyPlaying=['A','B','C','D'].some(k=>decks[k]&&decks[k].playing);
+    const anyPlaying=['A','B','C','D','E','F'].some(k=>decks[k]&&decks[k].playing);
     const SEGS=20;
     // Compute the master level by reading each playing deck's analyser
     // (same path as animateVU) and taking the loudest. Crossfader + channel
@@ -16740,7 +16745,7 @@ function animateVU(){
     // is what the user expects the lights to follow.
     let masterLevel=0;
     if(anyPlaying){
-      ['A','B','C','D'].forEach(d=>{
+      ['A','B','C','D','E','F'].forEach(d=>{
         const dk=decks[d];
         if(!dk||!dk.playing||!dk.analyser)return;
         try{
@@ -16840,7 +16845,7 @@ const _LIB_MAX_DECODED=200;
 function _libTouch(track){if(track)track.lastUsedAt=Date.now();}
 function _libProtectedIds(){
   const s=new Set();
-  ['A','B','C','D'].forEach(k=>{const t=decks[k]&&decks[k].track;if(t&&t.id)s.add(t.id);});
+  ['A','B','C','D','E','F'].forEach(k=>{const t=decks[k]&&decks[k].track;if(t&&t.id)s.add(t.id);});
   return s;
 }
 function _libReleaseColdBuffers(){
@@ -16859,11 +16864,11 @@ const _AUDIO_RECYCLE_MS=7*24*60*60*1000;
 const _audioWatchdog={lastTime:0,sessionStart:Date.now(),lastRecycle:0};
 function _decksAreIdle(){
   if(mixerState&&mixerState.isRecording)return false;
-  return!['A','B','C','D'].some(k=>decks[k]&&decks[k].playing);
+  return!['A','B','C','D','E','F'].some(k=>decks[k]&&decks[k].playing);
 }
 function _recycleAudioGraph(){
   if(!audioCtx||!_decksAreIdle())return false;
-  ['A','B','C','D'].forEach(k=>{
+  ['A','B','C','D','E','F'].forEach(k=>{
     const d=decks[k];if(!d)return;
     try{if(d.source){d.source.stop();d.source.disconnect();}}catch(_){}
     d.source=null;d.trimGain=null;d.eqLow=null;d.eqLoMid=null;d.eqHiMid=null;
@@ -17070,14 +17075,14 @@ function fmtTime(sec){
 function tick(){
   if(document.hidden){requestAnimationFrame(tick);return;}
   const decksTabActive=document.getElementById('tab-deck')?.classList.contains('active');
-  ['A','B','C','D'].forEach(d=>{
+  ['A','B','C','D','E','F'].forEach(d=>{
     const dk=decks[d];if(!dk.track)return;
     const t=dk.playing?getCurrentTime(d):dk.offset;
     const dur=dk.track.duration;
     // Loop punch runs unconditionally — audio correctness, not visual
     if(dk.loop.active&&dk.loop.end&&t>=dk.loop.end)seekDeck(d,dk.loop.start);
     // Text + waveform transform only when user can actually see it
-    if(decksTabActive&&(d==='A'||d==='B')){
+    if(decksTabActive&&(d==='A'||d==='B'||d==='E'||d==='F')){
       const el=document.getElementById(`elapsed-${d}`),rm=document.getElementById(`remain-${d}`);
       if(el)el.textContent=fmtTime(t);
       if(rm)rm.textContent='-'+fmtTime(dur-t);
@@ -21584,10 +21589,12 @@ function init(){
   document.getElementById('deckB-container').innerHTML=buildDeckHTML('B');
   document.getElementById('deckC-container').innerHTML=buildDeckHTML('C');
   document.getElementById('deckD-container').innerHTML=buildDeckHTML('D');
+  document.getElementById('deckE-container').innerHTML=buildDeckHTML('E');
+  document.getElementById('deckF-container').innerHTML=buildDeckHTML('F');
   document.getElementById('mixer-container').innerHTML=buildMixerHTML();
   const mtbTop=document.getElementById('mixer-toolbar-top');if(mtbTop)mtbTop.innerHTML=buildMixerToolbarTopHTML();
   const mtbBot=document.getElementById('mixer-toolbar-bottom');if(mtbBot)mtbBot.innerHTML=buildMixerToolbarBottomHTML();
-  setupVU('vu-A',20);setupVU('vu-B',20);setupVU('vu-C',20);setupVU('vu-D',20);
+  setupVU('vu-A',20);setupVU('vu-B',20);setupVU('vu-C',20);setupVU('vu-D',20);setupVU('vu-E',20);setupVU('vu-F',20);
   setupVU('masterHVuL',20);setupVU('masterHVuR',20);
   attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();setupOfflineDownload();setupDesktopDownloads();setupAdminDownload();setupSecretOffice();setupDiscover();setupTitanClock();setupSupport();setupStudioPro();
   // Restart-tour button + first-run auto-tour
@@ -21923,28 +21930,31 @@ function setupJogWheel(deckId){
     d.cuePoint=d.offset;toast(`Deck ${deckId}: CUE set at ${fmtTime(d.offset)}`,'success');
   });
 }
-document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{['A','B','C','D'].forEach(setupJogWheel);},100);});
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{['A','B','C','D','E','F'].forEach(setupJogWheel);},100);});
 
 /* ========================================================
    Deck focus toggle — show any pair (AB/CD/AC/BD) or ALL 4
    ======================================================== */
-const DSB_PAIRS={AB:['A','B'],CD:['C','D'],AC:['A','C'],BD:['B','D'],ALL:['A','B','C','D'],ALL6:[],DJAB:['A','B'],DJCD:['C','D']};
+const DSB_PAIRS={AB:['A','B'],CD:['C','D'],AC:['A','C'],BD:['B','D'],ALL:['A','B','C','D'],ALL6:['A','B','C','D','E','F'],DJAB:['A','B'],DJCD:['C','D']};
 let dsbPair='ALL';
 function applyDeckPair(pair){
   dsbPair=pair;
   const visible=new Set(DSB_PAIRS[pair]||DSB_PAIRS.AB);
-  ['A','B','C','D'].forEach(d=>{
+  ['A','B','C','D','E','F'].forEach(d=>{
     const c=document.getElementById('deck'+d+'-container');
     if(c)c.style.display=visible.has(d)?'':'none';
   });
   document.querySelectorAll('.dsb-btn').forEach(b=>b.classList.toggle('active',b.dataset.pair===pair));
   const console=document.getElementById('console');
-  if(console)console.classList.toggle('show-all',pair==='ALL');
-  document.body.classList.toggle('show-all',pair==='ALL');
   const all6=(pair==='ALL6');
+  if(console){
+    console.classList.toggle('show-all',pair==='ALL');
+    console.classList.toggle('show-all-6',all6);
+  }
+  document.body.classList.toggle('show-all',pair==='ALL');
   document.body.classList.toggle('dsb-all6',all6);
-  const lineup=document.getElementById('t3dInline');
-  if(lineup)lineup.hidden=!all6;
+  const mixer=document.getElementById('mixer-container');
+  if(mixer)mixer.classList.toggle('mixer-6',all6);
   const djFocus=(pair==='DJAB'||pair==='DJCD');
   document.body.classList.toggle('dj-focus-mode',djFocus);
   // DJ FOCUS and WORK MODE are mutually exclusive — leaving work-mode when entering DJ focus
@@ -22120,11 +22130,11 @@ document.documentElement.dir='ltr';
    user never sees a frozen deck.
    ======================================================== */
 (function(){
-  const stuckCount={A:0,B:0,C:0,D:0};
-  const lastPos={A:0,B:0,C:0,D:0};
+  const stuckCount={A:0,B:0,C:0,D:0,E:0,F:0};
+  const lastPos={A:0,B:0,C:0,D:0,E:0,F:0};
   setInterval(()=>{
     if(!audioCtx||audioCtx.state!=='running')return;
-    ['A','B','C','D'].forEach(id=>{
+    ['A','B','C','D','E','F'].forEach(id=>{
       const d=decks[id];if(!d||!d.track)return;
       if(!d.playing){stuckCount[id]=0;return;}
       if(!d.source){
@@ -24193,7 +24203,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         visibility change so decks don't stay in a preview loop
         when the user switches apps. */
   function cleanupPreviews(){
-    ['A','B','C','D'].forEach(id=>{
+    ['A','B','C','D','E','F'].forEach(id=>{
       const d=decks&&decks[id];if(!d)return;
       if(d._cuePreview){d._cuePreview=false;try{pauseDeck(id);if(d.cuePoint!=null)seekDeck(id,d.cuePoint);}catch(e){}}
     });
@@ -24238,7 +24248,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     let t=null;
     const arm=()=>{t=setTimeout(()=>{
       clearTransientState('manual reset');
-      ['A','B','C','D'].forEach(id=>{
+      ['A','B','C','D','E','F'].forEach(id=>{
         const d=decks[id];if(!d)return;
         try{if(d.playing)pauseDeck(id);}catch(e){}
         if(d.eqLow&&audioCtx){d.eqLow.gain.cancelScheduledValues(audioCtx.currentTime);d.eqLow.gain.setValueAtTime(0,audioCtx.currentTime);}
@@ -24437,7 +24447,7 @@ document.addEventListener('DOMContentLoaded',()=>{
          affected. */
   function _faderSafetyTick(){
     if(!audioCtx)return;
-    ['A','B','C','D'].forEach(id=>{
+    ['A','B','C','D','E','F'].forEach(id=>{
       const d=decks[id];if(!d)return;
       const w=document.querySelector(`.fader-wrap[data-fader="${id}"]`);
       const h=document.getElementById(`fader-${id}`);
@@ -24481,7 +24491,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const _origTick=window.tick;
   if(_origTick){
     window.tick=function(){
-      ['A','B','C','D'].forEach(d=>{
+      ['A','B','C','D','E','F'].forEach(d=>{
         const dk=decks[d];if(!dk.track)return;
         const t=dk.playing?getCurrentTime(d):(dk.offset||0);
         const dur=dk.track.duration||0;
@@ -26326,178 +26336,6 @@ setInterval(_audioWatchdogTick,60*1000);
     }
   }
   document.addEventListener('visibilitychange',onVis);
-})();
-</script>
-
-<!-- ========================================================
-     TITAN ALL 6 — full-width 3 decks + 6-channel mixer + 3 decks
-     ======================================================== -->
-<div class="t3d-inline" id="t3dInline" hidden aria-label="ALL 6 lineup">
-  <div class="t3d-inline-head">
-    <div class="t3d-title"><b>TITAN</b> ALL 6 — 3 DECKS · 6-CH MIXER · 3 DECKS</div>
-    <div class="t3d-sub">FULL-WIDTH LINEUP</div>
-  </div>
-  <div class="t3d-stage">
-    <div class="t3d-rig" id="t3dRig">
-      <svg viewBox="0 0 2120 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <defs>
-          <linearGradient id="t3dDeckBody" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stop-color="#2c2c30"/><stop offset=".55" stop-color="#16161a"/><stop offset="1" stop-color="#070708"/>
-          </linearGradient>
-          <linearGradient id="t3dMixBody" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stop-color="#262629"/><stop offset=".55" stop-color="#131316"/><stop offset="1" stop-color="#050507"/>
-          </linearGradient>
-          <radialGradient id="t3dJog" cx="48%" cy="40%" r="60%">
-            <stop offset="0" stop-color="#46464c"/><stop offset=".5" stop-color="#202024"/><stop offset="1" stop-color="#040405"/>
-          </radialGradient>
-          <linearGradient id="t3dScreen" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stop-color="#0a1a2e"/><stop offset="1" stop-color="#000408"/>
-          </linearGradient>
-          <linearGradient id="t3dPlate" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stop-color="#9a9a9e"/><stop offset=".5" stop-color="#5a5a60"/><stop offset="1" stop-color="#2a2a2e"/>
-          </linearGradient>
-          <linearGradient id="t3dFader" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stop-color="#1a1a1e"/><stop offset="1" stop-color="#080809"/>
-          </linearGradient>
-          <symbol id="t3dDeck" viewBox="0 0 250 320" overflow="visible">
-            <rect x="2" y="6" width="246" height="306" rx="14" fill="url(#t3dDeckBody)" stroke="#2a2a30" stroke-width="1.5"/>
-            <rect x="2" y="6" width="246" height="6" rx="3" fill="rgba(255,255,255,.06)"/>
-            <rect x="14" y="20" width="222" height="58" rx="4" fill="url(#t3dScreen)" stroke="#1a1a22"/>
-            <path d="M22 56 L42 40 L62 58 L84 36 L106 60 L128 38 L152 58 L176 40 L200 56 L222 44" stroke="#ff9020" stroke-width="1.6" fill="none" opacity=".95"/>
-            <path d="M22 66 L42 50 L62 68 L84 46 L106 70 L128 48 L152 68 L176 50 L200 66 L222 54" stroke="#2ee0ff" stroke-width="1.2" fill="none" opacity=".7"/>
-            <rect x="14" y="22" width="60" height="10" rx="1.5" fill="#040408"/>
-            <rect x="180" y="22" width="56" height="10" rx="1.5" fill="#040408"/>
-            <text x="20" y="30" font-family="Orbitron,sans-serif" font-size="7" fill="#ff9020" letter-spacing="1.2">TITAN-3K</text>
-            <text x="186" y="30" font-family="Share Tech Mono,monospace" font-size="7" fill="#2ee0ff" letter-spacing="1">128.0</text>
-            <g transform="translate(125,180)">
-              <circle r="78" fill="url(#t3dJog)" stroke="#000" stroke-width="2"/>
-              <circle r="78" fill="none" stroke="rgba(255,122,0,.45)" stroke-width="1.5"/>
-              <circle r="62" fill="#0a0a0c" stroke="#222226"/>
-              <circle r="42" fill="#050507" stroke="#1a1a1e"/>
-              <circle r="22" fill="url(#t3dPlate)" stroke="#000"/>
-              <circle r="6" fill="#ff3434" stroke="#400" stroke-width="1"/>
-              <line x1="0" y1="-22" x2="0" y2="-62" stroke="#ff7a00" stroke-width="2.2"/>
-              <circle cx="0" cy="-72" r="3" fill="#ff7a00"/>
-              <circle cx="0" cy="-86" r="2.5" fill="#ffd400"/>
-            </g>
-            <g transform="translate(20,86)">
-              <rect width="22" height="22" rx="3" fill="#ff7a00" opacity=".95"/>
-              <rect y="26" width="22" height="22" rx="3" fill="#2ee0ff" opacity=".9"/>
-              <rect y="52" width="22" height="22" rx="3" fill="#ff3c78" opacity=".9"/>
-              <rect y="78" width="22" height="22" rx="3" fill="#c800ff" opacity=".9"/>
-            </g>
-            <g transform="translate(208,86)">
-              <rect width="22" height="22" rx="3" fill="#00ff7a" opacity=".9"/>
-              <rect y="26" width="22" height="22" rx="3" fill="#ffd400" opacity=".9"/>
-              <rect y="52" width="22" height="22" rx="3" fill="#ff7a00" opacity=".9"/>
-              <rect y="78" width="22" height="22" rx="3" fill="#2ee0ff" opacity=".9"/>
-            </g>
-            <g transform="translate(56,90)">
-              <circle cx="10" cy="10" r="7" fill="#1a1a1e" stroke="#404048"/>
-              <circle cx="46" cy="10" r="7" fill="#1a1a1e" stroke="#404048"/>
-              <circle cx="82" cy="10" r="7" fill="#1a1a1e" stroke="#404048"/>
-              <circle cx="118" cy="10" r="7" fill="#1a1a1e" stroke="#404048"/>
-              <line x1="10" y1="3" x2="10" y2="0" stroke="#ff9020" stroke-width="2"/>
-              <line x1="46" y1="3" x2="48" y2="1" stroke="#ff9020" stroke-width="2"/>
-              <line x1="82" y1="3" x2="80" y2="1" stroke="#ff9020" stroke-width="2"/>
-              <line x1="118" y1="3" x2="118" y2="0" stroke="#ff9020" stroke-width="2"/>
-            </g>
-            <rect x="56" y="278" width="138" height="6" rx="2" fill="#1a1a1e"/>
-            <rect x="118" y="276" width="14" height="10" rx="1" fill="url(#t3dPlate)"/>
-            <rect x="14" y="290" width="222" height="3" rx="1" fill="rgba(255,255,255,.04)"/>
-          </symbol>
-          <symbol id="t3dMix" viewBox="0 0 540 320" overflow="visible">
-            <rect x="2" y="6" width="536" height="306" rx="14" fill="url(#t3dMixBody)" stroke="#2a2a30" stroke-width="1.5"/>
-            <rect x="2" y="6" width="536" height="6" rx="3" fill="rgba(255,255,255,.06)"/>
-            <rect x="180" y="20" width="180" height="36" rx="4" fill="url(#t3dScreen)" stroke="#1a1a22"/>
-            <text x="206" y="42" font-family="Orbitron,sans-serif" font-size="14" fill="#ff9020" letter-spacing="3" font-weight="800">TITAN CORE V6</text>
-            <text x="240" y="52" font-family="Share Tech Mono,monospace" font-size="6" fill="#2ee0ff" letter-spacing="1.5">6-CH PRO MIXER</text>
-            <g id="t3dCh" font-family="Orbitron,sans-serif" font-size="7" fill="#ff9020" letter-spacing="1.4" text-anchor="middle">
-              <g transform="translate(40,72)"><text>CH 1</text></g>
-              <g transform="translate(120,72)"><text>CH 2</text></g>
-              <g transform="translate(200,72)"><text>CH 3</text></g>
-              <g transform="translate(340,72)"><text>CH 4</text></g>
-              <g transform="translate(420,72)"><text>CH 5</text></g>
-              <g transform="translate(500,72)"><text>CH 6</text></g>
-            </g>
-            <g id="t3dKnobs">
-              <g transform="translate(40,98)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="0" y2="-9" stroke="#ff9020" stroke-width="2"/></g>
-              <g transform="translate(120,98)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="3" y2="-9" stroke="#ff9020" stroke-width="2"/></g>
-              <g transform="translate(200,98)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="-3" y2="-9" stroke="#ff9020" stroke-width="2"/></g>
-              <g transform="translate(340,98)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="0" y2="-9" stroke="#ff9020" stroke-width="2"/></g>
-              <g transform="translate(420,98)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="-2" y2="-9" stroke="#ff9020" stroke-width="2"/></g>
-              <g transform="translate(500,98)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="2" y2="-9" stroke="#ff9020" stroke-width="2"/></g>
-              <g transform="translate(40,128)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="-3" y2="-9" stroke="#ff3c78" stroke-width="2"/></g>
-              <g transform="translate(120,128)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="0" y2="-9" stroke="#ff3c78" stroke-width="2"/></g>
-              <g transform="translate(200,128)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="3" y2="-9" stroke="#ff3c78" stroke-width="2"/></g>
-              <g transform="translate(340,128)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="-2" y2="-9" stroke="#ff3c78" stroke-width="2"/></g>
-              <g transform="translate(420,128)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="0" y2="-9" stroke="#ff3c78" stroke-width="2"/></g>
-              <g transform="translate(500,128)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="3" y2="-9" stroke="#ff3c78" stroke-width="2"/></g>
-              <g transform="translate(40,158)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="2" y2="-9" stroke="#2ee0ff" stroke-width="2"/></g>
-              <g transform="translate(120,158)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="-2" y2="-9" stroke="#2ee0ff" stroke-width="2"/></g>
-              <g transform="translate(200,158)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="0" y2="-9" stroke="#2ee0ff" stroke-width="2"/></g>
-              <g transform="translate(340,158)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="2" y2="-9" stroke="#2ee0ff" stroke-width="2"/></g>
-              <g transform="translate(420,158)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="0" y2="-9" stroke="#2ee0ff" stroke-width="2"/></g>
-              <g transform="translate(500,158)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="-2" y2="-9" stroke="#2ee0ff" stroke-width="2"/></g>
-              <g transform="translate(40,186)"><circle r="9" fill="#0a0a10" stroke="#2a2a2e" stroke-width="1"/><line x1="0" y1="-1" x2="0" y2="-7" stroke="#9a9a9e" stroke-width="1.5"/></g>
-              <g transform="translate(120,186)"><circle r="9" fill="#0a0a10" stroke="#2a2a2e" stroke-width="1"/><line x1="0" y1="-1" x2="2" y2="-7" stroke="#9a9a9e" stroke-width="1.5"/></g>
-              <g transform="translate(200,186)"><circle r="9" fill="#0a0a10" stroke="#2a2a2e" stroke-width="1"/><line x1="0" y1="-1" x2="-2" y2="-7" stroke="#9a9a9e" stroke-width="1.5"/></g>
-              <g transform="translate(340,186)"><circle r="9" fill="#0a0a10" stroke="#2a2a2e" stroke-width="1"/><line x1="0" y1="-1" x2="0" y2="-7" stroke="#9a9a9e" stroke-width="1.5"/></g>
-              <g transform="translate(420,186)"><circle r="9" fill="#0a0a10" stroke="#2a2a2e" stroke-width="1"/><line x1="0" y1="-1" x2="2" y2="-7" stroke="#9a9a9e" stroke-width="1.5"/></g>
-              <g transform="translate(500,186)"><circle r="9" fill="#0a0a10" stroke="#2a2a2e" stroke-width="1"/><line x1="0" y1="-1" x2="-2" y2="-7" stroke="#9a9a9e" stroke-width="1.5"/></g>
-            </g>
-            <g id="t3dFaders">
-              <g transform="translate(30,210)"><rect width="20" height="80" rx="3" fill="url(#t3dFader)" stroke="#000"/><rect x="2" y="22" width="16" height="6" rx="1" fill="url(#t3dPlate)"/></g>
-              <g transform="translate(110,210)"><rect width="20" height="80" rx="3" fill="url(#t3dFader)" stroke="#000"/><rect x="2" y="14" width="16" height="6" rx="1" fill="url(#t3dPlate)"/></g>
-              <g transform="translate(190,210)"><rect width="20" height="80" rx="3" fill="url(#t3dFader)" stroke="#000"/><rect x="2" y="32" width="16" height="6" rx="1" fill="url(#t3dPlate)"/></g>
-              <g transform="translate(330,210)"><rect width="20" height="80" rx="3" fill="url(#t3dFader)" stroke="#000"/><rect x="2" y="18" width="16" height="6" rx="1" fill="url(#t3dPlate)"/></g>
-              <g transform="translate(410,210)"><rect width="20" height="80" rx="3" fill="url(#t3dFader)" stroke="#000"/><rect x="2" y="40" width="16" height="6" rx="1" fill="url(#t3dPlate)"/></g>
-              <g transform="translate(490,210)"><rect width="20" height="80" rx="3" fill="url(#t3dFader)" stroke="#000"/><rect x="2" y="26" width="16" height="6" rx="1" fill="url(#t3dPlate)"/></g>
-            </g>
-            <g transform="translate(60,294)">
-              <rect width="420" height="14" rx="3" fill="#0a0a0e" stroke="#1a1a20"/>
-              <rect x="200" y="2" width="22" height="10" rx="1.5" fill="url(#t3dPlate)"/>
-              <text x="210" y="-3" font-family="Orbitron,sans-serif" font-size="6" fill="#ff9020" text-anchor="middle" letter-spacing="2">CROSSFADER</text>
-            </g>
-            <rect x="240" y="170" width="60" height="22" rx="4" fill="#08080a" stroke="#1a1a22"/>
-            <text x="270" y="184" font-family="Orbitron,sans-serif" font-size="8" fill="#ff7a00" text-anchor="middle" letter-spacing="2">BEAT FX</text>
-            <circle cx="270" cy="206" r="11" fill="#1a1a1e" stroke="#ff7a00" stroke-width="1.2"/>
-            <line x1="270" y1="204" x2="270" y2="197" stroke="#ff7a00" stroke-width="2"/>
-            <rect x="252" y="226" width="36" height="8" rx="2" fill="#080809" stroke="#1a1a22"/>
-            <rect x="254" y="228" width="6" height="4" fill="#00ff7a"/><rect x="262" y="228" width="6" height="4" fill="#00ff7a"/>
-            <rect x="270" y="228" width="6" height="4" fill="#ffd400"/><rect x="278" y="228" width="6" height="4" fill="#ff3434"/>
-          </symbol>
-        </defs>
-        <rect x="0" y="346" width="2120" height="14" fill="url(#t3dDeckBody)" opacity=".55"/>
-        <use href="#t3dDeck" x="10"   y="20"/>
-        <use href="#t3dDeck" x="270"  y="20"/>
-        <use href="#t3dDeck" x="530"  y="20"/>
-        <use href="#t3dMix"  x="790"  y="20"/>
-        <use href="#t3dDeck" x="1340" y="20"/>
-        <use href="#t3dDeck" x="1600" y="20"/>
-        <use href="#t3dDeck" x="1860" y="20"/>
-      </svg>
-    </div>
-  </div>
-  <div class="t3d-legend" id="t3dLegend">
-    <div class="t3d-leg-cell"><b>DECK 1</b>TITAN-3K · CH 1</div>
-    <div class="t3d-leg-cell"><b>DECK 2</b>TITAN-3K · CH 2</div>
-    <div class="t3d-leg-cell"><b>DECK 3</b>TITAN-3K · CH 3</div>
-    <div class="t3d-leg-cell mid"><b>TITAN CORE V6</b>6-CH PRO MIXER</div>
-    <div class="t3d-leg-cell"><b>DECK 4</b>TITAN-3K · CH 4</div>
-    <div class="t3d-leg-cell"><b>DECK 5</b>TITAN-3K · CH 5</div>
-    <div class="t3d-leg-cell"><b>DECK 6</b>TITAN-3K · CH 6</div>
-  </div>
-</div>
-
-<script>
-/* ===== ALL 6 — relocate the inline lineup next to .console ===== */
-(function(){
-  var panel=document.getElementById('t3dInline');
-  var consoleEl=document.getElementById('console');
-  if(panel&&consoleEl&&consoleEl.parentNode){
-    consoleEl.parentNode.insertBefore(panel,consoleEl.nextSibling);
-  }
 })();
 </script>
 </body>
