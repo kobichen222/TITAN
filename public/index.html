@@ -10614,6 +10614,36 @@ body.tl-locked{overflow:hidden}
   #titan-landing *::before,
   #titan-landing *::after{animation:none !important;transition:none !important}
 }
+
+/* ===== TITAN LINEUP — full-width 3-decks · 6-ch mixer · 3-decks ===== */
+.t3d-overlay{position:fixed;inset:0;background:radial-gradient(ellipse at center,#0a0a10 0%,#000 75%);z-index:9999;display:none;flex-direction:column;align-items:stretch;justify-content:flex-start;padding:24px;overflow:auto}
+.t3d-overlay.open{display:flex}
+.t3d-head{width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+.t3d-title{font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:4px;color:#fff;text-shadow:0 0 12px rgba(255,122,0,.55)}
+.t3d-title b{color:var(--orange)}
+.t3d-sub{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1.5px;color:var(--text-dim)}
+.t3d-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.t3d-btn{padding:8px 14px;background:linear-gradient(180deg,#26262c,#16161a);border:1px solid #3a3a42;border-radius:6px;color:#e8e8ec;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;cursor:pointer;transition:all .18s}
+.t3d-btn:hover{border-color:var(--orange);color:var(--orange);box-shadow:0 0 12px rgba(255,122,0,.25)}
+.t3d-btn.t3d-close{border-color:#5a2020;color:#ff8a8a}
+.t3d-btn.t3d-close:hover{background:linear-gradient(180deg,#3a1010,#200808);color:#ff5a5a;box-shadow:0 0 14px rgba(255,46,46,.35)}
+.t3d-stage{width:100%;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.t3d-rig{width:100%;filter:drop-shadow(0 18px 30px rgba(0,0,0,.7))}
+.t3d-rig svg{width:100%;height:auto;display:block}
+.t3d-legend{width:100%;margin-top:14px;display:grid;grid-template-columns:repeat(7,1fr);gap:6px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.4px}
+.t3d-leg-cell{padding:8px 6px;background:linear-gradient(180deg,rgba(20,20,24,.85),rgba(8,8,10,.85));border:1px solid #2a2a30;border-radius:6px;text-align:center;color:var(--text-dim)}
+.t3d-leg-cell b{display:block;color:var(--orange);font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;margin-bottom:3px}
+.t3d-leg-cell.mid b{color:#2ee0ff}
+.dsb-3d{background:linear-gradient(180deg,rgba(46,224,255,.16),rgba(46,224,255,.04)) !important;color:#7ee8ff !important;border:1px solid rgba(46,224,255,.45) !important}
+.dsb-3d.active{background:linear-gradient(180deg,#2ee0ff,#1a8aa8) !important;color:#001020 !important;border-color:#7ee8ff !important;box-shadow:0 0 14px rgba(46,224,255,.55) !important}
+@media (max-width:900px){
+  .t3d-legend{grid-template-columns:repeat(2,1fr)}
+  .t3d-title{font-size:14px;letter-spacing:2.5px}
+}
+@media (max-width:560px){
+  .t3d-overlay{padding:14px 8px}
+  .t3d-actions .t3d-btn{padding:6px 10px;font-size:9px}
+}
 </style>
 </head>
 <body>
@@ -11168,6 +11198,7 @@ body.tl-locked{overflow:hidden}
   <button class="dsb-btn dsb-all" data-pair="ALL">ALL 4</button>
   <button class="dsb-btn dsb-dj-focus" data-pair="DJAB" title="2 big decks (1·2) — internal mixer hidden, use your external DJ mixer">🎛 DJ FOCUS 1·2</button>
   <button class="dsb-btn dsb-dj-focus" data-pair="DJCD" title="2 big decks (3·4) — internal mixer hidden, use your external DJ mixer">🎛 DJ FOCUS 3·4</button>
+  <button class="dsb-btn dsb-3d" id="t3dOpenBtn" title="6-deck lineup — 3 decks · 6-ch mixer · 3 decks">🎛 6-DECK LINEUP</button>
   <button class="dsb-btn dsb-work" id="workModeBtn" title="Stage-ready performance view">🎆 WORK MODE</button>
   <button class="dsb-btn dsb-wmlib" id="wmLibBtn" title="Show / hide the track library in work mode" style="display:none"><svg class="lib-svg" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><ellipse cx="11" cy="4.5" rx="7" ry="2.2"/><path d="M4 4.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 10.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 15.5v2.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-2.5"/></svg>LIBRARY</button>
   <button class="dsb-btn dsb-wmexit" id="wmExitInlineBtn" title="Exit work mode (Esc)" style="display:none">✕ EXIT WORK</button>
@@ -26299,6 +26330,200 @@ setInterval(_audioWatchdogTick,60*1000);
     }
   }
   document.addEventListener('visibilitychange',onVis);
+})();
+</script>
+
+<!-- ========================================================
+     TITAN LINEUP — full-width 3 decks + 6-channel mixer + 3 decks
+     ======================================================== -->
+<div class="t3d-overlay" id="t3dOverlay" role="dialog" aria-modal="true" aria-label="6-deck lineup view">
+  <div class="t3d-head">
+    <div>
+      <div class="t3d-title"><b>TITAN</b> 6-DECK LINEUP</div>
+      <div class="t3d-sub">3 DECKS · 6-CHANNEL MIXER · 3 DECKS — FULL WIDTH</div>
+    </div>
+    <div class="t3d-actions">
+      <button class="t3d-btn t3d-close" id="t3dCloseBtn" type="button" title="Close (Esc)">✕ CLOSE</button>
+    </div>
+  </div>
+  <div class="t3d-stage">
+    <div class="t3d-rig" id="t3dRig">
+      <svg viewBox="0 0 2120 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="t3dDeckBody" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#2c2c30"/><stop offset=".55" stop-color="#16161a"/><stop offset="1" stop-color="#070708"/>
+          </linearGradient>
+          <linearGradient id="t3dMixBody" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#262629"/><stop offset=".55" stop-color="#131316"/><stop offset="1" stop-color="#050507"/>
+          </linearGradient>
+          <radialGradient id="t3dJog" cx="48%" cy="40%" r="60%">
+            <stop offset="0" stop-color="#46464c"/><stop offset=".5" stop-color="#202024"/><stop offset="1" stop-color="#040405"/>
+          </radialGradient>
+          <linearGradient id="t3dScreen" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#0a1a2e"/><stop offset="1" stop-color="#000408"/>
+          </linearGradient>
+          <linearGradient id="t3dPlate" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#9a9a9e"/><stop offset=".5" stop-color="#5a5a60"/><stop offset="1" stop-color="#2a2a2e"/>
+          </linearGradient>
+          <linearGradient id="t3dFader" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#1a1a1e"/><stop offset="1" stop-color="#080809"/>
+          </linearGradient>
+          <symbol id="t3dDeck" viewBox="0 0 250 320" overflow="visible">
+            <rect x="2" y="6" width="246" height="306" rx="14" fill="url(#t3dDeckBody)" stroke="#2a2a30" stroke-width="1.5"/>
+            <rect x="2" y="6" width="246" height="6" rx="3" fill="rgba(255,255,255,.06)"/>
+            <rect x="14" y="20" width="222" height="58" rx="4" fill="url(#t3dScreen)" stroke="#1a1a22"/>
+            <path d="M22 56 L42 40 L62 58 L84 36 L106 60 L128 38 L152 58 L176 40 L200 56 L222 44" stroke="#ff9020" stroke-width="1.6" fill="none" opacity=".95"/>
+            <path d="M22 66 L42 50 L62 68 L84 46 L106 70 L128 48 L152 68 L176 50 L200 66 L222 54" stroke="#2ee0ff" stroke-width="1.2" fill="none" opacity=".7"/>
+            <rect x="14" y="22" width="60" height="10" rx="1.5" fill="#040408"/>
+            <rect x="180" y="22" width="56" height="10" rx="1.5" fill="#040408"/>
+            <text x="20" y="30" font-family="Orbitron,sans-serif" font-size="7" fill="#ff9020" letter-spacing="1.2">TITAN-3K</text>
+            <text x="186" y="30" font-family="Share Tech Mono,monospace" font-size="7" fill="#2ee0ff" letter-spacing="1">128.0</text>
+            <g transform="translate(125,180)">
+              <circle r="78" fill="url(#t3dJog)" stroke="#000" stroke-width="2"/>
+              <circle r="78" fill="none" stroke="rgba(255,122,0,.45)" stroke-width="1.5"/>
+              <circle r="62" fill="#0a0a0c" stroke="#222226"/>
+              <circle r="42" fill="#050507" stroke="#1a1a1e"/>
+              <circle r="22" fill="url(#t3dPlate)" stroke="#000"/>
+              <circle r="6" fill="#ff3434" stroke="#400" stroke-width="1"/>
+              <line x1="0" y1="-22" x2="0" y2="-62" stroke="#ff7a00" stroke-width="2.2"/>
+              <circle cx="0" cy="-72" r="3" fill="#ff7a00"/>
+              <circle cx="0" cy="-86" r="2.5" fill="#ffd400"/>
+            </g>
+            <g transform="translate(20,86)">
+              <rect width="22" height="22" rx="3" fill="#ff7a00" opacity=".95"/>
+              <rect y="26" width="22" height="22" rx="3" fill="#2ee0ff" opacity=".9"/>
+              <rect y="52" width="22" height="22" rx="3" fill="#ff3c78" opacity=".9"/>
+              <rect y="78" width="22" height="22" rx="3" fill="#c800ff" opacity=".9"/>
+            </g>
+            <g transform="translate(208,86)">
+              <rect width="22" height="22" rx="3" fill="#00ff7a" opacity=".9"/>
+              <rect y="26" width="22" height="22" rx="3" fill="#ffd400" opacity=".9"/>
+              <rect y="52" width="22" height="22" rx="3" fill="#ff7a00" opacity=".9"/>
+              <rect y="78" width="22" height="22" rx="3" fill="#2ee0ff" opacity=".9"/>
+            </g>
+            <g transform="translate(56,90)">
+              <circle cx="10" cy="10" r="7" fill="#1a1a1e" stroke="#404048"/>
+              <circle cx="46" cy="10" r="7" fill="#1a1a1e" stroke="#404048"/>
+              <circle cx="82" cy="10" r="7" fill="#1a1a1e" stroke="#404048"/>
+              <circle cx="118" cy="10" r="7" fill="#1a1a1e" stroke="#404048"/>
+              <line x1="10" y1="3" x2="10" y2="0" stroke="#ff9020" stroke-width="2"/>
+              <line x1="46" y1="3" x2="48" y2="1" stroke="#ff9020" stroke-width="2"/>
+              <line x1="82" y1="3" x2="80" y2="1" stroke="#ff9020" stroke-width="2"/>
+              <line x1="118" y1="3" x2="118" y2="0" stroke="#ff9020" stroke-width="2"/>
+            </g>
+            <rect x="56" y="278" width="138" height="6" rx="2" fill="#1a1a1e"/>
+            <rect x="118" y="276" width="14" height="10" rx="1" fill="url(#t3dPlate)"/>
+            <rect x="14" y="290" width="222" height="3" rx="1" fill="rgba(255,255,255,.04)"/>
+          </symbol>
+          <symbol id="t3dMix" viewBox="0 0 540 320" overflow="visible">
+            <rect x="2" y="6" width="536" height="306" rx="14" fill="url(#t3dMixBody)" stroke="#2a2a30" stroke-width="1.5"/>
+            <rect x="2" y="6" width="536" height="6" rx="3" fill="rgba(255,255,255,.06)"/>
+            <rect x="180" y="20" width="180" height="36" rx="4" fill="url(#t3dScreen)" stroke="#1a1a22"/>
+            <text x="206" y="42" font-family="Orbitron,sans-serif" font-size="14" fill="#ff9020" letter-spacing="3" font-weight="800">TITAN CORE V6</text>
+            <text x="240" y="52" font-family="Share Tech Mono,monospace" font-size="6" fill="#2ee0ff" letter-spacing="1.5">6-CH PRO MIXER</text>
+            <g id="t3dCh" font-family="Orbitron,sans-serif" font-size="7" fill="#ff9020" letter-spacing="1.4" text-anchor="middle">
+              <g transform="translate(40,72)"><text>CH 1</text></g>
+              <g transform="translate(120,72)"><text>CH 2</text></g>
+              <g transform="translate(200,72)"><text>CH 3</text></g>
+              <g transform="translate(340,72)"><text>CH 4</text></g>
+              <g transform="translate(420,72)"><text>CH 5</text></g>
+              <g transform="translate(500,72)"><text>CH 6</text></g>
+            </g>
+            <g id="t3dKnobs">
+              <g transform="translate(40,98)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="0" y2="-9" stroke="#ff9020" stroke-width="2"/></g>
+              <g transform="translate(120,98)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="3" y2="-9" stroke="#ff9020" stroke-width="2"/></g>
+              <g transform="translate(200,98)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="-3" y2="-9" stroke="#ff9020" stroke-width="2"/></g>
+              <g transform="translate(340,98)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="0" y2="-9" stroke="#ff9020" stroke-width="2"/></g>
+              <g transform="translate(420,98)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="-2" y2="-9" stroke="#ff9020" stroke-width="2"/></g>
+              <g transform="translate(500,98)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="2" y2="-9" stroke="#ff9020" stroke-width="2"/></g>
+              <g transform="translate(40,128)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="-3" y2="-9" stroke="#ff3c78" stroke-width="2"/></g>
+              <g transform="translate(120,128)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="0" y2="-9" stroke="#ff3c78" stroke-width="2"/></g>
+              <g transform="translate(200,128)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="3" y2="-9" stroke="#ff3c78" stroke-width="2"/></g>
+              <g transform="translate(340,128)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="-2" y2="-9" stroke="#ff3c78" stroke-width="2"/></g>
+              <g transform="translate(420,128)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="0" y2="-9" stroke="#ff3c78" stroke-width="2"/></g>
+              <g transform="translate(500,128)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="3" y2="-9" stroke="#ff3c78" stroke-width="2"/></g>
+              <g transform="translate(40,158)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="2" y2="-9" stroke="#2ee0ff" stroke-width="2"/></g>
+              <g transform="translate(120,158)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="-2" y2="-9" stroke="#2ee0ff" stroke-width="2"/></g>
+              <g transform="translate(200,158)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="0" y2="-9" stroke="#2ee0ff" stroke-width="2"/></g>
+              <g transform="translate(340,158)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="2" y2="-9" stroke="#2ee0ff" stroke-width="2"/></g>
+              <g transform="translate(420,158)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="0" y2="-9" stroke="#2ee0ff" stroke-width="2"/></g>
+              <g transform="translate(500,158)"><circle r="11" fill="#1a1a1e" stroke="#404048" stroke-width="1.2"/><line x1="0" y1="-2" x2="-2" y2="-9" stroke="#2ee0ff" stroke-width="2"/></g>
+              <g transform="translate(40,186)"><circle r="9" fill="#0a0a10" stroke="#2a2a2e" stroke-width="1"/><line x1="0" y1="-1" x2="0" y2="-7" stroke="#9a9a9e" stroke-width="1.5"/></g>
+              <g transform="translate(120,186)"><circle r="9" fill="#0a0a10" stroke="#2a2a2e" stroke-width="1"/><line x1="0" y1="-1" x2="2" y2="-7" stroke="#9a9a9e" stroke-width="1.5"/></g>
+              <g transform="translate(200,186)"><circle r="9" fill="#0a0a10" stroke="#2a2a2e" stroke-width="1"/><line x1="0" y1="-1" x2="-2" y2="-7" stroke="#9a9a9e" stroke-width="1.5"/></g>
+              <g transform="translate(340,186)"><circle r="9" fill="#0a0a10" stroke="#2a2a2e" stroke-width="1"/><line x1="0" y1="-1" x2="0" y2="-7" stroke="#9a9a9e" stroke-width="1.5"/></g>
+              <g transform="translate(420,186)"><circle r="9" fill="#0a0a10" stroke="#2a2a2e" stroke-width="1"/><line x1="0" y1="-1" x2="2" y2="-7" stroke="#9a9a9e" stroke-width="1.5"/></g>
+              <g transform="translate(500,186)"><circle r="9" fill="#0a0a10" stroke="#2a2a2e" stroke-width="1"/><line x1="0" y1="-1" x2="-2" y2="-7" stroke="#9a9a9e" stroke-width="1.5"/></g>
+            </g>
+            <g id="t3dFaders">
+              <g transform="translate(30,210)"><rect width="20" height="80" rx="3" fill="url(#t3dFader)" stroke="#000"/><rect x="2" y="22" width="16" height="6" rx="1" fill="url(#t3dPlate)"/></g>
+              <g transform="translate(110,210)"><rect width="20" height="80" rx="3" fill="url(#t3dFader)" stroke="#000"/><rect x="2" y="14" width="16" height="6" rx="1" fill="url(#t3dPlate)"/></g>
+              <g transform="translate(190,210)"><rect width="20" height="80" rx="3" fill="url(#t3dFader)" stroke="#000"/><rect x="2" y="32" width="16" height="6" rx="1" fill="url(#t3dPlate)"/></g>
+              <g transform="translate(330,210)"><rect width="20" height="80" rx="3" fill="url(#t3dFader)" stroke="#000"/><rect x="2" y="18" width="16" height="6" rx="1" fill="url(#t3dPlate)"/></g>
+              <g transform="translate(410,210)"><rect width="20" height="80" rx="3" fill="url(#t3dFader)" stroke="#000"/><rect x="2" y="40" width="16" height="6" rx="1" fill="url(#t3dPlate)"/></g>
+              <g transform="translate(490,210)"><rect width="20" height="80" rx="3" fill="url(#t3dFader)" stroke="#000"/><rect x="2" y="26" width="16" height="6" rx="1" fill="url(#t3dPlate)"/></g>
+            </g>
+            <g transform="translate(60,294)">
+              <rect width="420" height="14" rx="3" fill="#0a0a0e" stroke="#1a1a20"/>
+              <rect x="200" y="2" width="22" height="10" rx="1.5" fill="url(#t3dPlate)"/>
+              <text x="210" y="-3" font-family="Orbitron,sans-serif" font-size="6" fill="#ff9020" text-anchor="middle" letter-spacing="2">CROSSFADER</text>
+            </g>
+            <rect x="240" y="170" width="60" height="22" rx="4" fill="#08080a" stroke="#1a1a22"/>
+            <text x="270" y="184" font-family="Orbitron,sans-serif" font-size="8" fill="#ff7a00" text-anchor="middle" letter-spacing="2">BEAT FX</text>
+            <circle cx="270" cy="206" r="11" fill="#1a1a1e" stroke="#ff7a00" stroke-width="1.2"/>
+            <line x1="270" y1="204" x2="270" y2="197" stroke="#ff7a00" stroke-width="2"/>
+            <rect x="252" y="226" width="36" height="8" rx="2" fill="#080809" stroke="#1a1a22"/>
+            <rect x="254" y="228" width="6" height="4" fill="#00ff7a"/><rect x="262" y="228" width="6" height="4" fill="#00ff7a"/>
+            <rect x="270" y="228" width="6" height="4" fill="#ffd400"/><rect x="278" y="228" width="6" height="4" fill="#ff3434"/>
+          </symbol>
+        </defs>
+        <rect x="0" y="346" width="2120" height="14" fill="url(#t3dDeckBody)" opacity=".55"/>
+        <use href="#t3dDeck" x="10"   y="20"/>
+        <use href="#t3dDeck" x="270"  y="20"/>
+        <use href="#t3dDeck" x="530"  y="20"/>
+        <use href="#t3dMix"  x="790"  y="20"/>
+        <use href="#t3dDeck" x="1340" y="20"/>
+        <use href="#t3dDeck" x="1600" y="20"/>
+        <use href="#t3dDeck" x="1860" y="20"/>
+      </svg>
+    </div>
+  </div>
+  <div class="t3d-legend" id="t3dLegend">
+    <div class="t3d-leg-cell"><b>DECK 1</b>TITAN-3K · CH 1</div>
+    <div class="t3d-leg-cell"><b>DECK 2</b>TITAN-3K · CH 2</div>
+    <div class="t3d-leg-cell"><b>DECK 3</b>TITAN-3K · CH 3</div>
+    <div class="t3d-leg-cell mid"><b>TITAN CORE V6</b>6-CH PRO MIXER</div>
+    <div class="t3d-leg-cell"><b>DECK 4</b>TITAN-3K · CH 4</div>
+    <div class="t3d-leg-cell"><b>DECK 5</b>TITAN-3K · CH 5</div>
+    <div class="t3d-leg-cell"><b>DECK 6</b>TITAN-3K · CH 6</div>
+  </div>
+</div>
+
+<script>
+/* ===== TITAN LINEUP — toggle, Esc ===== */
+(function(){
+  var openBtn=document.getElementById('t3dOpenBtn');
+  var closeBtn=document.getElementById('t3dCloseBtn');
+  var overlay=document.getElementById('t3dOverlay');
+  if(!openBtn||!overlay) return;
+  function open(){
+    overlay.classList.add('open');
+    openBtn.classList.add('active');
+    document.body.style.overflow='hidden';
+  }
+  function close(){
+    overlay.classList.remove('open');
+    openBtn.classList.remove('active');
+    document.body.style.overflow='';
+  }
+  openBtn.addEventListener('click',function(){
+    overlay.classList.contains('open')?close():open();
+  });
+  if(closeBtn) closeBtn.addEventListener('click',close);
+  overlay.addEventListener('click',function(e){if(e.target===overlay)close();});
+  window.addEventListener('keydown',function(e){
+    if(e.key==='Escape'&&overlay.classList.contains('open')){e.preventDefault();close();}
+  });
 })();
 </script>
 </body>
