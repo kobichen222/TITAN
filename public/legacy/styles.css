@@ -11009,46 +11009,21 @@ body.stadium-mode .cdj,body.stadium-mode .mixer{
   4%,100%{opacity:0}
 }
 
-/* Crowd — silhouettes, three depth bands, BPM-synced jumping */
+/* Crowd — Canvas-rendered, ~12,000 dancing silhouettes in 4 depth bands */
 .ts-crowd{
-  position:absolute;left:0;right:0;bottom:0;height:42%;
+  position:absolute;left:0;right:0;bottom:0;height:48%;
   pointer-events:none;
-  background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.45) 25%,rgba(0,0,0,.85) 70%,#000 100%);
-}
-.ts-crowd .ts-person{
-  position:absolute;bottom:var(--py,12%);
-  width:var(--pw,12px);height:var(--ph,32px);
   background:
-    radial-gradient(ellipse at 50% 8%,#000 0 38%,transparent 42%),  /* head */
-    linear-gradient(180deg,#000 0 100%);                              /* body */
-  background-size:90% 30%,100% 80%;
-  background-position:50% 0,50% 30%;
-  background-repeat:no-repeat;
-  filter:drop-shadow(0 -2px 4px rgba(255,90,30,.3));
-  animation:tsBob var(--ts-beat) ease-in-out infinite;
-  animation-delay:var(--pd,0s);
-  opacity:var(--po,1);
-  transform-origin:50% 100%;
+    /* atmospheric haze fading the back of the crowd */
+    linear-gradient(180deg,rgba(20,8,40,.35) 0%,rgba(0,0,0,.0) 18%,rgba(0,0,0,.0) 65%,rgba(0,0,0,.6) 95%,#000 100%);
 }
-/* Outstretched arms — every 4th person */
-.ts-crowd .ts-person.arms::before,
-.ts-crowd .ts-person.arms::after{
-  content:"";position:absolute;top:30%;width:46%;height:55%;
-  background:#000;
-  border-radius:30% 30% 8% 8%;
+.ts-crowd-canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  display:block;
+  image-rendering:pixelated;
 }
-.ts-crowd .ts-person.arms::before{left:-30%;transform:rotate(-32deg);transform-origin:90% 0}
-.ts-crowd .ts-person.arms::after{right:-30%;transform:rotate(32deg);transform-origin:10% 0}
-.ts-crowd .ts-person.glow{
-  background:
-    radial-gradient(ellipse at 50% 8%,#0a0a0a 0 38%,transparent 42%),
-    linear-gradient(180deg,#0a0a0a 0 100%);
-  filter:drop-shadow(0 -3px 6px var(--ts-glow,rgba(255,138,26,.65)));
-}
-@keyframes tsBob{
-  0%,100%{transform:translateY(0) scaleY(1)}
-  50%{transform:translateY(-14%) scaleY(1.05)}
-}
+/* Phones canvas sits on top with screen blend so the lights pop */
+.ts-phones-canvas{mix-blend-mode:screen;filter:drop-shadow(0 0 6px rgba(255,255,255,.6))}
 
 /* Drifting fog / haze layers */
 .ts-fog{
