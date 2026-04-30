@@ -7,6 +7,29 @@
 <link rel="stylesheet" href="legacy/styles.css" />
 </head>
 <body>
+<!-- ===== TITAN STADIUM — DJ-on-stage immersive view ===== -->
+<div id="titanStadium" class="titan-stadium" aria-hidden="true">
+  <div class="ts-sky"></div>
+  <div class="ts-stars" id="tsStars"></div>
+  <div class="ts-skyline"></div>
+  <div class="ts-ledwall"><div class="ts-ledwall-inner" id="tsLedwall"></div></div>
+  <div class="ts-truss"></div>
+  <div class="ts-lights" id="tsLights"></div>
+  <div class="ts-lasers" id="tsLasers"></div>
+  <div class="ts-strobes" id="tsStrobes"></div>
+  <div class="ts-crowd" id="tsCrowd"></div>
+  <div class="ts-fog ts-fog-1"></div>
+  <div class="ts-fog ts-fog-2"></div>
+  <div class="ts-pyro" id="tsPyro"></div>
+  <div class="ts-stage-edge"></div>
+  <div class="ts-monitor-glow"></div>
+  <div class="ts-hud" id="tsHud">
+    <div class="ts-hud-row"><b>TITAN</b> · LIVE FROM THE MAINSTAGE</div>
+    <div class="ts-hud-sub"><span id="tsHudCrowd">50,000</span> · <span id="tsHudBpm">---.--</span> BPM</div>
+  </div>
+  <button class="ts-exit" id="tsExitBtn" title="Exit stadium (Esc)">✕ EXIT STADIUM</button>
+</div>
+
 <div id="titan-landing" lang="en" dir="ltr" role="dialog" aria-label="Welcome to DJ TITAN">
   <div class="tl-bg"></div>
   <div class="tl-grid"></div>
@@ -291,6 +314,7 @@
   <button class="dsb-btn dsb-dj-focus" data-pair="DJCD" title="2 big decks (3·4) — internal mixer hidden, use your external DJ mixer">🎛 DJ FOCUS 3·4</button>
   <button class="dsb-btn dsb-3d" id="t3dOpenBtn" title="6-deck lineup — 3 decks · 6-ch mixer · 3 decks">🎛 6-DECK LINEUP</button>
   <button class="dsb-btn dsb-work" id="workModeBtn" title="Stage-ready performance view">🎆 WORK MODE</button>
+  <button class="dsb-btn dsb-stadium" id="stadiumModeBtn" title="DJ-on-stage festival view — 50,000 fans, lasers, lights">🎪 STADIUM</button>
   <button class="dsb-btn dsb-wmlib" id="wmLibBtn" title="Show / hide the track library in work mode" style="display:none"><svg class="lib-svg" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><ellipse cx="11" cy="4.5" rx="7" ry="2.2"/><path d="M4 4.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 10.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 15.5v2.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-2.5"/></svg>LIBRARY</button>
   <button class="dsb-btn dsb-wmexit" id="wmExitInlineBtn" title="Exit work mode (Esc)" style="display:none">✕ EXIT WORK</button>
   <span class="dsb-monitor" id="dsbMonitor" style="display:none"></span>

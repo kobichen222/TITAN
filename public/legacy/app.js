@@ -10771,6 +10771,161 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 
 /* ========================================================
+   TITAN STADIUM — DJ-on-stage festival view
+   Generates the crowd, lights, lasers, stars + pyro and
+   keeps the scene BPM-locked to the master tempo.
+   ======================================================== */
+(function(){
+  const CROWD_COUNT = 280;
+  const LIGHT_COUNT = 14;
+  const LASER_COUNT = 24;
+  const STAR_COUNT  = 90;
+  const PYRO_COUNT  = 28;
+  const COLORS = ['#ff7a1a','#00d4ff','#ff2e8a','#9c55ff','#ffd400','#7cff7a'];
+
+  function buildScene(){
+    const stadium = document.getElementById('titanStadium');
+    if(!stadium || stadium.dataset.built === '1') return;
+    stadium.dataset.built = '1';
+
+    const stars = stadium.querySelector('#tsStars');
+    for(let i=0;i<STAR_COUNT;i++){
+      const s = document.createElement('i');
+      s.style.left = (Math.random()*100)+'%';
+      s.style.top  = (Math.random()*100)+'%';
+      s.style.animationDelay = (Math.random()*4)+'s';
+      s.style.opacity = (0.3 + Math.random()*0.7).toFixed(2);
+      stars.appendChild(s);
+    }
+
+    const lights = stadium.querySelector('#tsLights');
+    for(let i=0;i<LIGHT_COUNT;i++){
+      const L = document.createElement('div');
+      L.className = 'ts-light';
+      const xPct = (i/(LIGHT_COUNT-1))*100;
+      L.style.left = `calc(${xPct}% - 9vw)`;
+      L.style.setProperty('--ts-c', COLORS[i % COLORS.length]);
+      L.style.setProperty('--ts-sweep', (5 + (i%4))+'s');
+      L.style.animationDelay = ((i*0.18)%2.4)+'s';
+      lights.appendChild(L);
+    }
+
+    const lasers = stadium.querySelector('#tsLasers');
+    ['left','right'].forEach(side=>{
+      const fan = document.createElement('div');
+      fan.className = `ts-laser-fan ${side}`;
+      for(let i=0;i<LASER_COUNT;i++){
+        const beam = document.createElement('div');
+        beam.className = 'ts-laser';
+        const ang = -22 + (44 * (i/(LASER_COUNT-1)));
+        beam.style.transform = `rotate(${ang}deg)`;
+        beam.style.setProperty('--ts-lc', COLORS[(i + (side==='left'?0:3)) % COLORS.length]);
+        fan.appendChild(beam);
+      }
+      lasers.appendChild(fan);
+    });
+
+    const crowd = stadium.querySelector('#tsCrowd');
+    for(let i=0;i<CROWD_COUNT;i++){
+      const p = document.createElement('div');
+      p.className = 'ts-person' + (i%4===0 ? ' arms':'') + (i%9===0?' glow':'');
+      const xPct = Math.random()*100;
+      // Three depth bands — back row tiny, front row larger
+      let band = Math.random();
+      let bottomPct, scale, opacity;
+      if (band < 0.4)      { bottomPct = 30 + Math.random()*8;  scale = 0.55 + Math.random()*0.2; opacity = 0.6; }
+      else if (band < 0.75){ bottomPct = 14 + Math.random()*12; scale = 0.85 + Math.random()*0.25; opacity = 0.85; }
+      else                 { bottomPct = -2 + Math.random()*14; scale = 1.15 + Math.random()*0.35; opacity = 1;   }
+      p.style.left = xPct+'%';
+      p.style.setProperty('--py', bottomPct+'%');
+      p.style.setProperty('--pw', (10*scale).toFixed(1)+'px');
+      p.style.setProperty('--ph', (28*scale).toFixed(1)+'px');
+      p.style.setProperty('--pd', ((Math.random()*0.6).toFixed(2))+'s');
+      p.style.setProperty('--po', opacity);
+      p.style.setProperty('--ts-glow', `rgba(${(Math.random()*255)|0},${(Math.random()*255)|0},${(Math.random()*255)|0},.6)`);
+      crowd.appendChild(p);
+    }
+
+    const pyro = stadium.querySelector('#tsPyro');
+    for(let i=0;i<PYRO_COUNT;i++){
+      const c = document.createElement('i');
+      c.style.left = (Math.random()*100)+'%';
+      c.style.setProperty('--c', COLORS[i % COLORS.length]);
+      c.style.setProperty('--td', (4 + Math.random()*6).toFixed(1)+'s');
+      c.style.setProperty('--dl', (Math.random()*8).toFixed(1)+'s');
+      pyro.appendChild(c);
+    }
+
+    const exitBtn = document.getElementById('tsExitBtn');
+    if(exitBtn) exitBtn.addEventListener('click', exitStadium);
+  }
+
+  function syncBpm(){
+    const stadium = document.getElementById('titanStadium');
+    if(!stadium) return;
+    let bpm = 128;
+    try{
+      // Read master BPM from the on-screen readout (works for all engines)
+      const el = document.getElementById('masterBpm');
+      if(el){
+        const v = parseFloat(el.textContent);
+        if(!Number.isNaN(v) && v >= 60 && v <= 220) bpm = v;
+      }
+    }catch(_){}
+    stadium.style.setProperty('--ts-bpm', bpm.toFixed(2));
+    const hudBpm = document.getElementById('tsHudBpm');
+    if(hudBpm) hudBpm.textContent = bpm.toFixed(2);
+  }
+
+  function enterStadium(){
+    buildScene();
+    document.body.classList.add('stadium-mode');
+    document.getElementById('stadiumModeBtn')?.classList.add('active');
+    syncBpm();
+    if(!window.__tsBpmTimer) window.__tsBpmTimer = setInterval(syncBpm, 750);
+    // Animate crowd-count odometer for atmosphere
+    const hudC = document.getElementById('tsHudCrowd');
+    if(hudC){
+      let n = 12000;
+      clearInterval(window.__tsCrowdTimer);
+      window.__tsCrowdTimer = setInterval(()=>{
+        n = Math.min(50000, n + 500 + ((Math.random()*900)|0));
+        hudC.textContent = n.toLocaleString();
+        if(n>=50000) clearInterval(window.__tsCrowdTimer);
+      }, 60);
+    }
+  }
+  function exitStadium(){
+    document.body.classList.remove('stadium-mode');
+    document.getElementById('stadiumModeBtn')?.classList.remove('active');
+    if(window.__tsBpmTimer){clearInterval(window.__tsBpmTimer);window.__tsBpmTimer=null;}
+    if(window.__tsCrowdTimer){clearInterval(window.__tsCrowdTimer);window.__tsCrowdTimer=null;}
+  }
+  function toggleStadium(){
+    if(document.body.classList.contains('stadium-mode')) exitStadium();
+    else enterStadium();
+  }
+
+  function init(){
+    const btn = document.getElementById('stadiumModeBtn');
+    if(btn) btn.addEventListener('click', toggleStadium);
+    window.addEventListener('keydown',(e)=>{
+      if(e.key==='Escape' && document.body.classList.contains('stadium-mode')){
+        e.preventDefault(); exitStadium();
+      }
+    });
+    // Expose to console for debugging / shortcuts
+    window.titanStadium = { enter:enterStadium, exit:exitStadium, toggle:toggleStadium };
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', ()=>setTimeout(init,300));
+  } else {
+    setTimeout(init, 300);
+  }
+})();
+
+/* ========================================================
    PRO MIX ENGINE — world-class DJ automation
    Camelot harmony, beat-phase sync, gain-matching, multi-stage
    transitions (bass-swap, echo-out, filter-sweep, hard cut).
