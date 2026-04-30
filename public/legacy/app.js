@@ -11211,27 +11211,228 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 
 /* ========================================================
-   TITAN BOOTH LAMP — gooseneck booth light (any view, any theme)
+   TITAN BOOTH LAMPS — twin draggable gooseneck booth lights
+   The arm is a real cubic bezier from clamp anchor to head; as
+   you drag the head, control points are recomputed so the arm
+   bends like a flexible gooseneck. Position persists per side.
    ======================================================== */
 (function(){
-  const KEY = 'titanBoothLight';
+  const ON_KEY  = 'titanBoothLight';
+  const POS_KEY = 'titanBoothLampPos';   // {right:{x,y}, left:{x,y}}
+
+  let savedPos = {};
+  try{ savedPos = JSON.parse(localStorage.getItem(POS_KEY) || '{}') || {}; }catch(_){}
+
   function setLamp(on){
     document.body.classList.toggle('booth-light', !!on);
     document.getElementById('boothLightBtn')?.classList.toggle('active', !!on);
-    try{ localStorage.setItem(KEY, on ? '1' : '0'); }catch(_){}
+    try{ localStorage.setItem(ON_KEY, on ? '1' : '0'); }catch(_){}
+    if(on){
+      // Re-layout when turning on, in case the viewport changed while off
+      document.querySelectorAll('.booth-lamp').forEach(l=>l.__blRelayout && l.__blRelayout());
+    }
   }
-  function toggleLamp(){
-    setLamp(!document.body.classList.contains('booth-light'));
+  function toggleLamp(){ setLamp(!document.body.classList.contains('booth-light')); }
+
+  function clampAnchor(side){
+    // World coords (viewport pixels) of where the arm exits the clamp.
+    const W = window.innerWidth;
+    if(side === 'right') return { x: W - 18 - 30, y: 8 + 36 };  // bottom-center of right clamp
+    return { x: 18 + 30, y: 8 + 36 };
   }
+  function defaultHeadPos(side){
+    const saved = savedPos[side];
+    if(saved && typeof saved.x === 'number' && typeof saved.y === 'number'){
+      // Constrain to current viewport
+      return constrain(saved.x, saved.y);
+    }
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+    if(side === 'right') return { x: Math.min(W - 140, W - 220), y: Math.min(H - 220, 360) };
+    return { x: Math.max(140, 220), y: Math.min(H - 220, 360) };
+  }
+  function constrain(x, y){
+    const W = window.innerWidth, H = window.innerHeight;
+    return {
+      x: Math.max(70, Math.min(W - 70, x)),
+      y: Math.max(70, Math.min(H - 70, y)),
+    };
+  }
+
+  // Smooth bezier from clamp to head with a natural gooseneck droop.
+  // cp2 is pulled back TOWARD the clamp (same side of the head) so the
+  // tangent at the head points away from the clamp — like a real arm
+  // continuing through the lamp head and out the LED.
+  function buildPath(side, clamp, head){
+    const dx = head.x - clamp.x;
+    const dy = head.y - clamp.y;
+    // First control: drops mostly straight down from the clamp
+    const cp1 = {
+      x: clamp.x + dx*0.05,
+      y: clamp.y + Math.max(60, Math.abs(dy)*0.55),
+    };
+    // Second control: above the head, biased toward the clamp side
+    const cp2 = {
+      x: head.x - dx*0.12,
+      y: head.y - Math.max(20, Math.abs(dy)*0.22),
+    };
+    return {
+      d: `M ${clamp.x} ${clamp.y} C ${cp1.x} ${cp1.y}, ${cp2.x} ${cp2.y}, ${head.x} ${head.y}`,
+      cp1, cp2,
+    };
+  }
+
+  // Tangent of cubic bezier at t=1 (head end): direction = P3 - P2
+  function tangentAtHead(cp2, head){
+    return Math.atan2(head.y - cp2.y, head.x - cp2.x); // radians
+  }
+
+  function setupLamp(lamp){
+    const side = lamp.dataset.side;
+    const armS  = lamp.querySelector('.bl-arm-shadow');
+    const armM  = lamp.querySelector('.bl-arm');
+    const armH  = lamp.querySelector('.bl-arm-hi');
+    const armR  = lamp.querySelector('.bl-arm-rib');
+    const head  = lamp.querySelector('.bl-head');
+    const pool  = lamp.querySelector('.bl-pool');
+
+    let pos = defaultHeadPos(side);
+
+    function relayout(){
+      pos = constrain(pos.x, pos.y);
+      const clamp = clampAnchor(side);
+      const {d, cp2} = buildPath(side, clamp, pos);
+      armS.setAttribute('d', d);
+      armM.setAttribute('d', d);
+      armH.setAttribute('d', d);
+      armR.setAttribute('d', d);
+
+      // Head transform — translate to pos, rotate to follow arm tangent
+      const tan = tangentAtHead(cp2, pos);
+      // The head's "natural" forward direction (toward LED) for right
+      // lamp is +x; so we want tangent angle - 0 for right, and
+      // tangent + 180° for left so the LED still faces inward.
+      const baseDeg = side === 'right' ? 0 : 180;
+      let deg = (tan * 180 / Math.PI) + baseDeg;
+      // Add a small downward droop so the shade tilts toward the deck
+      // when the head is near horizontal.
+      const droop = side === 'right' ? 12 : -12;
+      deg += droop;
+      head.style.setProperty('--bl-x', pos.x + 'px');
+      head.style.setProperty('--bl-y', pos.y + 'px');
+      head.style.setProperty('--bl-rot', deg.toFixed(2) + 'deg');
+
+      // Pool projects in front of the LED, biased toward the deck
+      // (i.e. perpendicular-ish to the arm tangent, toward the screen
+      // center). We offset the pool a bit forward and downward.
+      const fwd = side === 'right' ? -1 : 1;     // pool drifts inward
+      const px = pos.x + Math.cos(tan) * 220 * fwd * 0.2 + (side==='right'? -180 : 180);
+      const py = pos.y + 240;
+      pool.style.setProperty('--bl-pool-x', px + 'px');
+      pool.style.setProperty('--bl-pool-y', py + 'px');
+    }
+    lamp.__blRelayout = relayout;
+
+    // Drag handling
+    let dragging = false;
+    let dragOff = {x:0, y:0};
+    function onDown(e){
+      // Only primary button / first touch
+      if(e.button !== undefined && e.button !== 0) return;
+      dragging = true;
+      head.classList.add('bl-dragging');
+      head.setPointerCapture(e.pointerId);
+      const r = head.getBoundingClientRect();
+      const cx = r.left + r.width/2;
+      const cy = r.top  + r.height/2;
+      dragOff.x = e.clientX - cx;
+      dragOff.y = e.clientY - cy;
+      e.preventDefault();
+    }
+    function onMove(e){
+      if(!dragging) return;
+      pos = constrain(e.clientX - dragOff.x, e.clientY - dragOff.y);
+      relayout();
+      e.preventDefault();
+    }
+    function onUp(e){
+      if(!dragging) return;
+      dragging = false;
+      head.classList.remove('bl-dragging');
+      try{ head.releasePointerCapture(e.pointerId); }catch(_){}
+      // Persist position
+      try{
+        savedPos[side] = { x: pos.x, y: pos.y };
+        localStorage.setItem(POS_KEY, JSON.stringify(savedPos));
+      }catch(_){}
+    }
+    head.addEventListener('pointerdown', onDown);
+    head.addEventListener('pointermove', onMove);
+    head.addEventListener('pointerup', onUp);
+    head.addEventListener('pointercancel', onUp);
+
+    // Keyboard fine-positioning when focused
+    head.addEventListener('keydown',(e)=>{
+      const step = e.shiftKey ? 24 : 6;
+      let used = true;
+      switch(e.key){
+        case 'ArrowLeft':  pos.x -= step; break;
+        case 'ArrowRight': pos.x += step; break;
+        case 'ArrowUp':    pos.y -= step; break;
+        case 'ArrowDown':  pos.y += step; break;
+        case 'Home':       pos = defaultHeadPos(side); break;
+        default: used = false;
+      }
+      if(used){
+        e.preventDefault();
+        pos = constrain(pos.x, pos.y);
+        relayout();
+        try{
+          savedPos[side] = { x: pos.x, y: pos.y };
+          localStorage.setItem(POS_KEY, JSON.stringify(savedPos));
+        }catch(_){}
+      }
+    });
+
+    // Double-click resets to default position
+    head.addEventListener('dblclick',()=>{
+      pos = defaultHeadPos(side);
+      // Drop saved override so future sessions also start from default
+      delete savedPos[side];
+      try{ localStorage.setItem(POS_KEY, JSON.stringify(savedPos)); }catch(_){}
+      relayout();
+    });
+
+    relayout();
+  }
+
   function init(){
     const btn = document.getElementById('boothLightBtn');
     if(btn) btn.addEventListener('click', toggleLamp);
-    // Restore last user preference
-    try{
-      if(localStorage.getItem(KEY) === '1') setLamp(true);
-    }catch(_){}
-    window.titanBoothLight = { on:()=>setLamp(true), off:()=>setLamp(false), toggle:toggleLamp };
+
+    document.querySelectorAll('#boothLamps .booth-lamp').forEach(setupLamp);
+
+    window.addEventListener('resize', ()=>{
+      document.querySelectorAll('.booth-lamp').forEach(l=>l.__blRelayout && l.__blRelayout());
+    });
+
+    // Restore on/off preference
+    try{ if(localStorage.getItem(ON_KEY) === '1') setLamp(true); }catch(_){}
+
+    window.titanBoothLight = {
+      on:()=>setLamp(true),
+      off:()=>setLamp(false),
+      toggle:toggleLamp,
+      reset(side){
+        const lamp = document.querySelector(`#boothLamps .booth-lamp[data-side="${side}"]`);
+        if(!lamp) return;
+        delete savedPos[side];
+        try{ localStorage.setItem(POS_KEY, JSON.stringify(savedPos)); }catch(_){}
+        lamp.__blRelayout && lamp.__blRelayout();
+      },
+    };
   }
+
   if(document.readyState === 'loading'){
     document.addEventListener('DOMContentLoaded', ()=>setTimeout(init,300));
   } else {

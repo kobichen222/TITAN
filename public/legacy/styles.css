@@ -11145,62 +11145,115 @@ body.stadium-mode .main-tabs{
 }
 
 /* ============================================================
-   TITAN BOOTH LAMP — gooseneck DJ-booth light
-   Designed to fit every view (default, work mode, stadium, every
-   theme). Off by default. Toggled by 💡 BOOTH LIGHT in DECK FOCUS.
+   TITAN BOOTH LAMPS v2 — twin gooseneck booth lights, draggable
+   Modern matte-aluminum design, real flexible gooseneck (cubic
+   bezier recomputed on drag), warm LED head, soft pool of light.
    ============================================================ */
-.booth-lamp{
-  position:fixed;
-  top:0;right:0;
-  width:240px;height:520px;
+.booth-lamps{
+  position:fixed;inset:0;
   pointer-events:none;
   display:none;
   z-index:9998;
-  filter:drop-shadow(0 12px 28px rgba(0,0,0,.7));
 }
-body.booth-light .booth-lamp{display:block}
+body.booth-light .booth-lamps{display:block}
+.bl-defs{position:absolute;width:0;height:0}
 
-/* The visible lamp graphic */
-.booth-lamp .bl-svg{
-  position:absolute;top:24px;right:14px;
-  width:240px;height:460px;
+/* Each lamp container fills the viewport so coordinates are simple */
+.booth-lamp{
+  position:absolute;inset:0;
+  pointer-events:none;
+}
+
+/* Mounting clamp — pinned to the corner */
+.booth-lamp .bl-clamp{
+  position:absolute;top:8px;width:60px;height:50px;
+  pointer-events:none;
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.7));
+}
+.booth-lamp[data-side="right"] .bl-clamp{right:18px}
+.booth-lamp[data-side="left"]  .bl-clamp{left:18px}
+.booth-lamp .bl-clamp svg{width:100%;height:100%;display:block;overflow:visible}
+
+/* Arm SVG — full viewport, path is updated by JS */
+.booth-lamp .bl-arm-svg{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;
   overflow:visible;
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.55));
 }
 
-/* Soft warm pool of light hitting the deck + mixer.
-   Sits ABOVE the controls with screen blend so it adds warmth
-   without obscuring readouts. */
-.booth-lamp .bl-pool{
-  position:fixed;
-  top:120px;right:-220px;
-  width:1500px;height:1100px;
-  background:
-    radial-gradient(ellipse at 78% 18%,
-      rgba(255,222,160,.30) 0%,
-      rgba(255,190,110,.18) 18%,
-      rgba(255,160,80,.10) 38%,
-      rgba(255,140,60,.04) 58%,
-      transparent 78%);
+/* Draggable head — modern minimal. position via inline transform */
+.booth-lamp .bl-head{
+  position:absolute;left:0;top:0;
+  width:130px;height:90px;
+  margin:-45px 0 0 -65px;          /* center on the head's anchor point */
+  background:transparent;border:0;padding:0;
+  pointer-events:auto;cursor:grab;
+  touch-action:none;
+  filter:drop-shadow(0 14px 26px rgba(0,0,0,.7));
+  transition:filter .2s ease;
+  /* JS sets --bl-x / --bl-y / --bl-rot */
+  transform:translate(var(--bl-x,0px),var(--bl-y,0px)) rotate(var(--bl-rot,0deg));
+  transform-origin:50% 50%;
+  outline:none;
+}
+.booth-lamp .bl-head:hover{filter:drop-shadow(0 16px 30px rgba(0,0,0,.8)) drop-shadow(0 0 12px rgba(255,180,80,.35))}
+.booth-lamp .bl-head:active,
+.booth-lamp .bl-head.bl-dragging{cursor:grabbing;filter:drop-shadow(0 18px 36px rgba(0,0,0,.85)) drop-shadow(0 0 18px rgba(255,180,80,.55))}
+.booth-lamp .bl-head:focus-visible{filter:drop-shadow(0 0 0 2px var(--orange,#ff7a1a))}
+.booth-lamp .bl-head svg{width:100%;height:100%;display:block;overflow:visible}
+
+/* Light cone — emanates from the head in its local frame */
+.booth-lamp .bl-cone{
+  position:absolute;left:50%;top:55%;
+  width:160px;height:280px;
+  transform:translate(-50%,0);
+  background:linear-gradient(180deg,
+    rgba(255,222,160,.55) 0%,
+    rgba(255,180,90,.22) 35%,
+    rgba(255,150,60,.06) 70%,
+    transparent 100%);
+  filter:blur(10px);
   mix-blend-mode:screen;
-  z-index:9997;
   pointer-events:none;
+  clip-path:polygon(40% 0,60% 0,100% 100%,0 100%);
+}
+.booth-lamp[data-side="left"] .bl-cone{
+  /* mirror the cone's narrow tip to match the LED on the left edge */
 }
 
-/* Subtle vignette darkening the far corners — adds focus.
-   Multiply blend so it darkens without flattening. */
-.booth-lamp .bl-vignette{
-  position:fixed;inset:0;
+/* Warm pool of light landing on the controls — JS positions this
+   under the head so it always lands where the lamp points. */
+.booth-lamp .bl-pool{
+  position:absolute;
+  left:0;top:0;
+  width:1400px;height:1000px;
+  margin:-500px 0 0 -700px;
+  background:radial-gradient(ellipse at 50% 50%,
+    rgba(255,222,160,.30) 0%,
+    rgba(255,190,110,.18) 18%,
+    rgba(255,160,80,.10) 38%,
+    rgba(255,140,60,.04) 58%,
+    transparent 78%);
+  mix-blend-mode:screen;
+  pointer-events:none;
+  transform:translate(var(--bl-pool-x,0px),var(--bl-pool-y,0px));
+  z-index:-1;
+}
+
+/* Shared vignette darkening the far corners */
+.booth-lamps .bl-vignette{
+  position:absolute;inset:0;
   background:
-    radial-gradient(ellipse at 78% 28%,
-      transparent 18%,
-      rgba(0,0,0,.20) 50%,
-      rgba(0,0,0,.42) 100%);
+    radial-gradient(ellipse at 50% 100%,
+      transparent 28%,
+      rgba(0,0,0,.20) 60%,
+      rgba(0,0,0,.40) 100%);
   mix-blend-mode:multiply;
-  z-index:9996;
   pointer-events:none;
 }
 
-/* Living bulb — gentle warm breathing, with stronger flicker on the core */
+/* Living bulb — gentle warm breathing + occasional flicker */
 .booth-lamp .bl-bulb-glow{
   transform-origin:center;
   animation:blBreathe 5.5s ease-in-out infinite;
@@ -11214,7 +11267,7 @@ body.booth-light .booth-lamp{display:block}
 }
 @keyframes blBreathe{
   0%,100%{filter:brightness(1) drop-shadow(0 0 14px rgba(255,170,80,.55));opacity:.95}
-  50%{filter:brightness(1.12) drop-shadow(0 0 22px rgba(255,190,100,.85));opacity:1}
+  50%{filter:brightness(1.12) drop-shadow(0 0 24px rgba(255,190,100,.9));opacity:1}
 }
 @keyframes blFlicker{
   0%,100%{opacity:1}
@@ -11243,74 +11296,46 @@ body.booth-light .booth-lamp{display:block}
   text-shadow:0 1px 0 rgba(255,255,255,.4);
 }
 
-/* In light theme the lamp body reads better in chrome silver,
-   and the warm pool needs to lift, not wash, the porcelain panels */
-body.theme-light.booth-light .bl-pool{
-  background:
-    radial-gradient(ellipse at 78% 18%,
-      rgba(255,210,140,.42) 0%,
-      rgba(255,180,100,.20) 22%,
-      rgba(255,150,70,.08) 45%,
-      transparent 75%);
+/* Light theme — gentle warm wash, very soft vignette */
+body.theme-light.booth-light .booth-lamp .bl-pool{
+  background:radial-gradient(ellipse at 50% 50%,
+    rgba(255,210,140,.42) 0%,
+    rgba(255,180,100,.20) 22%,
+    rgba(255,150,70,.08) 45%,
+    transparent 75%);
 }
-body.theme-light.booth-light .bl-vignette{
-  background:
-    radial-gradient(ellipse at 78% 28%,
-      transparent 22%,
-      rgba(20,15,10,.10) 55%,
-      rgba(20,15,10,.22) 100%);
+body.theme-light.booth-light .booth-lamps .bl-vignette{
+  background:radial-gradient(ellipse at 50% 100%,
+    transparent 24%,
+    rgba(20,15,10,.08) 60%,
+    rgba(20,15,10,.18) 100%);
 }
 
-/* In stadium mode the lamp is the most visible object — boost its
-   pool and make the bulb glow much hotter in the dark venue. */
+/* Stadium mode — bulb glow + pool intensified for the dark venue */
 body.stadium-mode.booth-light .booth-lamp{
   filter:drop-shadow(0 16px 36px rgba(0,0,0,.85))
-         drop-shadow(0 0 30px rgba(255,170,70,.35));
+         drop-shadow(0 0 28px rgba(255,170,70,.30));
 }
-body.stadium-mode.booth-light .bl-pool{
-  background:
-    radial-gradient(ellipse at 78% 18%,
-      rgba(255,220,150,.55) 0%,
-      rgba(255,180,90,.30) 18%,
-      rgba(255,150,60,.14) 40%,
-      rgba(255,130,40,.05) 65%,
-      transparent 85%);
+body.stadium-mode.booth-light .booth-lamp .bl-pool{
+  background:radial-gradient(ellipse at 50% 50%,
+    rgba(255,220,150,.55) 0%,
+    rgba(255,180,90,.30) 18%,
+    rgba(255,150,60,.14) 40%,
+    rgba(255,130,40,.05) 65%,
+    transparent 85%);
 }
-body.stadium-mode.booth-light .bl-vignette{
-  background:
-    radial-gradient(ellipse at 78% 28%,
-      transparent 14%,
-      rgba(0,0,0,.30) 50%,
-      rgba(0,0,0,.55) 100%);
+body.stadium-mode.booth-light .booth-lamps .bl-vignette{
+  background:radial-gradient(ellipse at 50% 100%,
+    transparent 18%,
+    rgba(0,0,0,.30) 55%,
+    rgba(0,0,0,.55) 100%);
 }
 
-/* Mirror the lamp horizontally in DJ-FOCUS / 6-deck-lineup so the
-   booth light reaches the controls regardless of which side hosts
-   the deck. (Right-side mount is the default; this is just a
-   safety mirror that can be toggled by a user preference later.) */
-.booth-lamp.bl-mirror{transform:scaleX(-1);right:auto;left:0}
-.booth-lamp.bl-mirror .bl-pool{right:auto;left:-220px;
-  background:
-    radial-gradient(ellipse at 22% 18%,
-      rgba(255,222,160,.30) 0%,
-      rgba(255,190,110,.18) 18%,
-      rgba(255,160,80,.10) 38%,
-      rgba(255,140,60,.04) 58%,
-      transparent 78%);
-}
-.booth-lamp.bl-mirror .bl-vignette{
-  background:
-    radial-gradient(ellipse at 22% 28%,
-      transparent 18%,
-      rgba(0,0,0,.20) 50%,
-      rgba(0,0,0,.42) 100%);
-}
-
-/* Mobile — shrink the lamp + pool so it stays elegant on phones */
+/* Mobile — shrink the head + clamp so the lamps don't dominate */
 @media (max-width:780px){
-  .booth-lamp{width:160px;height:340px}
-  .booth-lamp .bl-svg{width:160px;height:300px;top:14px;right:8px}
-  .booth-lamp .bl-pool{top:80px;right:-180px;width:1100px;height:800px}
+  .booth-lamp .bl-clamp{width:46px;height:38px}
+  .booth-lamp .bl-head{width:104px;height:72px;margin:-36px 0 0 -52px}
+  .booth-lamp .bl-pool{width:1000px;height:760px;margin:-380px 0 0 -500px}
 }
 
 /* Reduced motion — static bulb, no flicker/breathe/LED pulse */
