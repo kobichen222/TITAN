@@ -27,8 +27,12 @@ export default function DevLanding() {
         DJ TITAN — dev server
       </h1>
       <p>
-        The DJ studio UI is a static file. Open{" "}
+        The legacy DJ studio UI is a static file. Open{" "}
         <a href="/index.html" style={link}>/index.html</a> directly.
+      </p>
+      <p>
+        New React studio scaffold (Phase 3a):{" "}
+        <a href="/studio" style={link}>/studio</a>
       </p>
       <p>
         Admin panel: <a href="/office" style={link}>/office</a>

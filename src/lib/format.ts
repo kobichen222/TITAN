@@ -34,6 +34,19 @@ export function fmtDate(iso: string | null | undefined, withTime = false): strin
   return withTime ? d.toLocaleString() : d.toLocaleDateString();
 }
 
+/**
+ * HH:MM:SS wall-clock formatter — used by the Studio header and any
+ * other surface that wants the local time-of-day in tabular numerals.
+ * Falls back to "00:00:00" for invalid input rather than crashing.
+ */
+export function fmtClock(d: Date): string {
+  if (!(d instanceof Date) || Number.isNaN(d.getTime())) return '00:00:00';
+  const h = String(d.getHours()).padStart(2, '0');
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const s = String(d.getSeconds()).padStart(2, '0');
+  return `${h}:${m}:${s}`;
+}
+
 const HTML_ESCAPES: Readonly<Record<string, string>> = Object.freeze({
   '&': '&amp;',
   '<': '&lt;',

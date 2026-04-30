@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { escapeHtml, fmtDate, fmtTime, fmtTimeShort } from '../format';
+import {
+  escapeHtml,
+  fmtClock,
+  fmtDate,
+  fmtTime,
+  fmtTimeShort,
+} from '../format';
 
 describe('fmtTime — mm:ss.d (deck display)', () => {
   it('formats whole minutes', () => {
@@ -75,6 +81,26 @@ describe('fmtDate — ISO → locale', () => {
     const short = fmtDate(iso, false);
     const long = fmtDate(iso, true);
     expect(long.length).toBeGreaterThanOrEqual(short.length);
+  });
+});
+
+describe('fmtClock — HH:MM:SS wall clock', () => {
+  it('formats a deterministic Date with zero-padding', () => {
+    // Note: getHours/Minutes/Seconds are local-tz; pick a fixed UTC time and
+    // verify the parts match what new Date() returns in the runner's tz.
+    const d = new Date(2024, 0, 1, 9, 5, 7);
+    expect(fmtClock(d)).toBe('09:05:07');
+  });
+
+  it('handles midnight + the second before', () => {
+    expect(fmtClock(new Date(2024, 0, 1, 0, 0, 0))).toBe('00:00:00');
+    expect(fmtClock(new Date(2024, 0, 1, 23, 59, 59))).toBe('23:59:59');
+  });
+
+  it('returns 00:00:00 for invalid input rather than throwing', () => {
+    expect(fmtClock(new Date('not a date'))).toBe('00:00:00');
+    expect(fmtClock(undefined as unknown as Date)).toBe('00:00:00');
+    expect(fmtClock(null as unknown as Date)).toBe('00:00:00');
   });
 });
 
