@@ -10615,34 +10615,26 @@ body.tl-locked{overflow:hidden}
   #titan-landing *::after{animation:none !important;transition:none !important}
 }
 
-/* ===== TITAN LINEUP — full-width 3-decks · 6-ch mixer · 3-decks ===== */
-.t3d-overlay{position:fixed;inset:0;background:radial-gradient(ellipse at center,#0a0a10 0%,#000 75%);z-index:9999;display:none;flex-direction:column;align-items:stretch;justify-content:flex-start;padding:24px;overflow:auto}
-.t3d-overlay.open{display:flex}
-.t3d-head{width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap}
-.t3d-title{font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:4px;color:#fff;text-shadow:0 0 12px rgba(255,122,0,.55)}
+/* ===== TITAN ALL 6 — inline 3-decks · 6-ch mixer · 3-decks ===== */
+.t3d-inline{width:100%;max-width:1700px;margin:0 auto;padding:14px;background:linear-gradient(180deg,#1c1c20 0%,#0a0a0c 100%);border:1px solid var(--deck-border);border-radius:14px;box-shadow:0 18px 40px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05);position:relative}
+.t3d-inline[hidden]{display:none}
+.t3d-inline::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,122,0,.4) 30%,rgba(46,224,255,.35) 50%,rgba(255,122,0,.4) 70%,transparent);border-radius:14px 14px 0 0;pointer-events:none}
+.t3d-inline-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.t3d-title{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:3px;color:#fff;text-shadow:0 0 10px rgba(255,122,0,.45)}
 .t3d-title b{color:var(--orange)}
-.t3d-sub{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1.5px;color:var(--text-dim)}
-.t3d-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.t3d-btn{padding:8px 14px;background:linear-gradient(180deg,#26262c,#16161a);border:1px solid #3a3a42;border-radius:6px;color:#e8e8ec;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;cursor:pointer;transition:all .18s}
-.t3d-btn:hover{border-color:var(--orange);color:var(--orange);box-shadow:0 0 12px rgba(255,122,0,.25)}
-.t3d-btn.t3d-close{border-color:#5a2020;color:#ff8a8a}
-.t3d-btn.t3d-close:hover{background:linear-gradient(180deg,#3a1010,#200808);color:#ff5a5a;box-shadow:0 0 14px rgba(255,46,46,.35)}
-.t3d-stage{width:100%;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
-.t3d-rig{width:100%;filter:drop-shadow(0 18px 30px rgba(0,0,0,.7))}
+.t3d-sub{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--text-dim)}
+.t3d-stage{width:100%;display:flex;align-items:center;justify-content:center}
+.t3d-rig{width:100%;filter:drop-shadow(0 10px 18px rgba(0,0,0,.55))}
 .t3d-rig svg{width:100%;height:auto;display:block}
-.t3d-legend{width:100%;margin-top:14px;display:grid;grid-template-columns:repeat(7,1fr);gap:6px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.4px}
+.t3d-legend{width:100%;margin-top:12px;display:grid;grid-template-columns:repeat(7,1fr);gap:6px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.4px}
 .t3d-leg-cell{padding:8px 6px;background:linear-gradient(180deg,rgba(20,20,24,.85),rgba(8,8,10,.85));border:1px solid #2a2a30;border-radius:6px;text-align:center;color:var(--text-dim)}
 .t3d-leg-cell b{display:block;color:var(--orange);font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;margin-bottom:3px}
 .t3d-leg-cell.mid b{color:#2ee0ff}
-.dsb-3d{background:linear-gradient(180deg,rgba(46,224,255,.16),rgba(46,224,255,.04)) !important;color:#7ee8ff !important;border:1px solid rgba(46,224,255,.45) !important}
-.dsb-3d.active{background:linear-gradient(180deg,#2ee0ff,#1a8aa8) !important;color:#001020 !important;border-color:#7ee8ff !important;box-shadow:0 0 14px rgba(46,224,255,.55) !important}
+body.dsb-all6 #console{display:none !important}
+.dsb-all6.active{background:linear-gradient(180deg,#2ee0ff,#1a8aa8) !important;color:#001020 !important;border-color:#7ee8ff !important;box-shadow:0 0 14px rgba(46,224,255,.55) !important}
 @media (max-width:900px){
   .t3d-legend{grid-template-columns:repeat(2,1fr)}
-  .t3d-title{font-size:14px;letter-spacing:2.5px}
-}
-@media (max-width:560px){
-  .t3d-overlay{padding:14px 8px}
-  .t3d-actions .t3d-btn{padding:6px 10px;font-size:9px}
+  .t3d-title{font-size:11px;letter-spacing:2px}
 }
 </style>
 </head>
@@ -11196,9 +11188,9 @@ body.tl-locked{overflow:hidden}
   <button class="dsb-btn dsb-split" data-pair="AC">1 · 3</button>
   <button class="dsb-btn dsb-split" data-pair="BD">2 · 4</button>
   <button class="dsb-btn dsb-all" data-pair="ALL">ALL 4</button>
+  <button class="dsb-btn dsb-all dsb-all6" data-pair="ALL6" title="3 decks · 6-ch mixer · 3 decks — full-width lineup">ALL 6</button>
   <button class="dsb-btn dsb-dj-focus" data-pair="DJAB" title="2 big decks (1·2) — internal mixer hidden, use your external DJ mixer">🎛 DJ FOCUS 1·2</button>
   <button class="dsb-btn dsb-dj-focus" data-pair="DJCD" title="2 big decks (3·4) — internal mixer hidden, use your external DJ mixer">🎛 DJ FOCUS 3·4</button>
-  <button class="dsb-btn dsb-3d" id="t3dOpenBtn" title="6-deck lineup — 3 decks · 6-ch mixer · 3 decks">🎛 6-DECK LINEUP</button>
   <button class="dsb-btn dsb-work" id="workModeBtn" title="Stage-ready performance view">🎆 WORK MODE</button>
   <button class="dsb-btn dsb-wmlib" id="wmLibBtn" title="Show / hide the track library in work mode" style="display:none"><svg class="lib-svg" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><ellipse cx="11" cy="4.5" rx="7" ry="2.2"/><path d="M4 4.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 10.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 15.5v2.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-2.5"/></svg>LIBRARY</button>
   <button class="dsb-btn dsb-wmexit" id="wmExitInlineBtn" title="Exit work mode (Esc)" style="display:none">✕ EXIT WORK</button>
@@ -21936,7 +21928,7 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{['A','B','C','
 /* ========================================================
    Deck focus toggle — show any pair (AB/CD/AC/BD) or ALL 4
    ======================================================== */
-const DSB_PAIRS={AB:['A','B'],CD:['C','D'],AC:['A','C'],BD:['B','D'],ALL:['A','B','C','D'],DJAB:['A','B'],DJCD:['C','D']};
+const DSB_PAIRS={AB:['A','B'],CD:['C','D'],AC:['A','C'],BD:['B','D'],ALL:['A','B','C','D'],ALL6:[],DJAB:['A','B'],DJCD:['C','D']};
 let dsbPair='ALL';
 function applyDeckPair(pair){
   dsbPair=pair;
@@ -21949,6 +21941,10 @@ function applyDeckPair(pair){
   const console=document.getElementById('console');
   if(console)console.classList.toggle('show-all',pair==='ALL');
   document.body.classList.toggle('show-all',pair==='ALL');
+  const all6=(pair==='ALL6');
+  document.body.classList.toggle('dsb-all6',all6);
+  const lineup=document.getElementById('t3dInline');
+  if(lineup)lineup.hidden=!all6;
   const djFocus=(pair==='DJAB'||pair==='DJCD');
   document.body.classList.toggle('dj-focus-mode',djFocus);
   // DJ FOCUS and WORK MODE are mutually exclusive — leaving work-mode when entering DJ focus
@@ -26334,17 +26330,12 @@ setInterval(_audioWatchdogTick,60*1000);
 </script>
 
 <!-- ========================================================
-     TITAN LINEUP — full-width 3 decks + 6-channel mixer + 3 decks
+     TITAN ALL 6 — full-width 3 decks + 6-channel mixer + 3 decks
      ======================================================== -->
-<div class="t3d-overlay" id="t3dOverlay" role="dialog" aria-modal="true" aria-label="6-deck lineup view">
-  <div class="t3d-head">
-    <div>
-      <div class="t3d-title"><b>TITAN</b> 6-DECK LINEUP</div>
-      <div class="t3d-sub">3 DECKS · 6-CHANNEL MIXER · 3 DECKS — FULL WIDTH</div>
-    </div>
-    <div class="t3d-actions">
-      <button class="t3d-btn t3d-close" id="t3dCloseBtn" type="button" title="Close (Esc)">✕ CLOSE</button>
-    </div>
+<div class="t3d-inline" id="t3dInline" hidden aria-label="ALL 6 lineup">
+  <div class="t3d-inline-head">
+    <div class="t3d-title"><b>TITAN</b> ALL 6 — 3 DECKS · 6-CH MIXER · 3 DECKS</div>
+    <div class="t3d-sub">FULL-WIDTH LINEUP</div>
   </div>
   <div class="t3d-stage">
     <div class="t3d-rig" id="t3dRig">
@@ -26500,30 +26491,13 @@ setInterval(_audioWatchdogTick,60*1000);
 </div>
 
 <script>
-/* ===== TITAN LINEUP — toggle, Esc ===== */
+/* ===== ALL 6 — relocate the inline lineup next to .console ===== */
 (function(){
-  var openBtn=document.getElementById('t3dOpenBtn');
-  var closeBtn=document.getElementById('t3dCloseBtn');
-  var overlay=document.getElementById('t3dOverlay');
-  if(!openBtn||!overlay) return;
-  function open(){
-    overlay.classList.add('open');
-    openBtn.classList.add('active');
-    document.body.style.overflow='hidden';
+  var panel=document.getElementById('t3dInline');
+  var consoleEl=document.getElementById('console');
+  if(panel&&consoleEl&&consoleEl.parentNode){
+    consoleEl.parentNode.insertBefore(panel,consoleEl.nextSibling);
   }
-  function close(){
-    overlay.classList.remove('open');
-    openBtn.classList.remove('active');
-    document.body.style.overflow='';
-  }
-  openBtn.addEventListener('click',function(){
-    overlay.classList.contains('open')?close():open();
-  });
-  if(closeBtn) closeBtn.addEventListener('click',close);
-  overlay.addEventListener('click',function(e){if(e.target===overlay)close();});
-  window.addEventListener('keydown',function(e){
-    if(e.key==='Escape'&&overlay.classList.contains('open')){e.preventDefault();close();}
-  });
 })();
 </script>
 </body>
