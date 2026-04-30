@@ -234,6 +234,13 @@ body.show-all .console.show-all{max-width:none;width:calc(100vw - 16px)}
 .screen-bpm{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;color:var(--orange-glow);text-shadow:0 0 10px rgba(255,122,0,.6);line-height:1}
 .screen-bpm-label{font-size:9px;color:var(--text-dim);letter-spacing:2px}
 .screen-key{font-size:11px;color:var(--play-green);text-shadow:0 0 2px rgba(0,0,0,.9);margin-top:2px}
+.screen-phrase{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--screen-glow);letter-spacing:1px;margin-top:3px;opacity:.85}
+.key-shift-row{display:flex;align-items:center;gap:3px;margin-top:3px;justify-content:flex-end}
+.key-shift-btn{width:18px;height:18px;padding:0;background:linear-gradient(180deg,#2a2a2e 0%,#141416 100%);border:1px solid #3a3a3e;color:var(--play-green);font-size:9px;font-weight:700;border-radius:3px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1}
+.key-shift-btn:hover{filter:brightness(1.25);border-color:var(--play-green)}
+.key-shift-btn.key-shift-reset{color:var(--text-dim);font-size:11px}
+.key-shift-val{display:inline-block;min-width:24px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:11px;font-weight:700;color:var(--play-green);text-shadow:0 0 4px rgba(0,255,122,.45)}
+.key-shift-val.shifted{color:var(--orange-glow);text-shadow:0 0 4px rgba(255,165,68,.55)}
 .waveform{height:48px;background:#020608;border-radius:3px;margin:6px 0;position:relative;overflow:hidden;border:1px solid rgba(0,212,255,.1)}
 .waveform-canvas{width:100%;height:100%;display:block}
 .playhead{position:absolute;top:0;left:50%;width:2px;height:100%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.9);z-index:3}
@@ -243,7 +250,14 @@ body.show-all .console.show-all{max-width:none;width:calc(100vw - 16px)}
 .time-label{font-size:8px;color:var(--text-dim);letter-spacing:2px}
 .time-value{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;color:#fff;letter-spacing:1px;direction:ltr}
 .time-value.remain{color:var(--orange)}
-.loop-section,.beat-jump,.deck-utils{display:grid;gap:4px;margin-bottom:6px}
+.loop-section,.beat-jump,.deck-utils,.saved-loops{display:grid;gap:4px;margin-bottom:6px}
+.saved-loops{grid-template-columns:repeat(4,1fr)}
+.saved-loop-btn{padding:5px 2px;background:linear-gradient(180deg,#2a2a2e 0%,#141416 100%);border:1px solid #3a3a3e;color:var(--text-dim);font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;border-radius:3px;cursor:pointer;user-select:none;touch-action:manipulation;transition:all .12s}
+.saved-loop-btn.set{color:var(--screen-glow);border-color:rgba(0,212,255,.4)}
+.saved-loop-btn.active{background:linear-gradient(180deg,var(--screen-glow) 0%,#0088aa 100%);color:#000;border-color:var(--screen-glow);box-shadow:0 0 10px rgba(0,212,255,.6)}
+.jump-btn .jb-arr{font-size:13px;font-weight:700;opacity:.85}
+.jump-btn .jb-num{font-size:10px;font-weight:800;letter-spacing:.5px;margin:0 2px;color:var(--orange-glow)}
+.jump-btn.jump-size{color:var(--orange);font-size:14px;font-weight:800}
 .loop-section{grid-template-columns:repeat(4,1fr)}
 .beat-jump{grid-template-columns:repeat(4,1fr)}
 .deck-utils{grid-template-columns:repeat(5,1fr)}
@@ -13759,7 +13773,7 @@ let stats={totalTime:0,tracksPlayed:0,fxCount:0,cueCount:0,mixHistory:[],session
 let settings={theme:'dark',rgbAmbient:true,phraseMarkers:true,limiter:true,autoGain:false,autoSave:true};
 let aiDJ={active:false,style:'smooth',transLen:16,bpmTol:6,order:'energy-flow',transitionTimer:null};
 
-function createDeck(id){return{id,track:null,playing:false,startTime:0,offset:0,tempo:0,playbackRate:1,tempoRange:8,cuePoint:0,hotCues:{},savedLoops:{},loop:{active:false,start:null,end:null,loopInSet:false},keylock:false,quantize:false,slip:false,slipReturn:null,reverse:false,sync:false,source:null,volumeGain:null,trimGain:null,channelGain:null,eqLow:null,eqLoMid:null,eqHiMid:null,eqHigh:null,killLow:false,killMid:false,killHi:false,compressor:null,saturation:null,colorFilter:null,buffer:null,volume:0,eq:{low:0,loMid:0,hiMid:0,high:0},trim:1,analyser:null,padMode:'cue',waveZoom:1,energy:0,beatgrid:null,phraseOffset:0};}
+function createDeck(id){return{id,track:null,playing:false,startTime:0,offset:0,tempo:0,playbackRate:1,tempoRange:8,cuePoint:0,hotCues:{},savedLoops:{},loop:{active:false,start:null,end:null,loopInSet:false},keylock:false,keyShift:0,quantize:false,slip:false,slipReturn:null,reverse:false,sync:false,source:null,volumeGain:null,trimGain:null,channelGain:null,eqLow:null,eqLoMid:null,eqHiMid:null,eqHigh:null,killLow:false,killMid:false,killHi:false,compressor:null,saturation:null,colorFilter:null,buffer:null,volume:0,eq:{low:0,loMid:0,hiMid:0,high:0},trim:1,analyser:null,padMode:'cue',waveZoom:1,energy:0,beatgrid:null,phraseOffset:0,beatJumpSize:4};}
 const decks={A:createDeck('A'),B:createDeck('B'),C:createDeck('C'),D:createDeck('D')};
 const mixerState={crossfader:0.5,xfaderCurve:'smooth',master:0.9,booth:0.7,balance:0,hpMix:0.5,hpVol:0.7,hpCue:{A:false,B:false,C:false,D:false},micOn:false,micVol:0,micHi:0,micLow:0,fx:{type:'delay',channel:'master',beat:1,level:0.5,on:false},colorFx:{type:'filter',A:0,B:0,C:0,D:0},xfaderAssign:{A:'A',B:'B',C:'THRU',D:'THRU'},isRecording:false,sceneFx:{type:null,depth:0.5,xpadX:0.5,xpadY:0.5,xpadActive:false},isolator:{low:0,mid:0,hi:0}};
 
@@ -13774,7 +13788,7 @@ const DEMO_TRACKS=[
 /* ============ DECK HTML BUILDER ============ */
 function buildDeckHTML(d){
   return `<div class="deck-header"><div class="deck-label"><span class="model">TITAN-3K</span><span class="suffix">DECK</span></div><button class="deck-upload-btn" data-deck-upload="${d}" title="Upload audio files and load to deck ${d}"><span class="btn-icon">⬆</span><span class="btn-text">⬆ UPLOAD</span></button><button class="deck-lib-btn" data-deck-lib="${d}" title="Browse library and load to deck ${d}"><span class="btn-icon" aria-hidden="true"><svg class="lib-svg" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><ellipse cx="11" cy="4.5" rx="7" ry="2.2"/><path d="M4 4.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 10.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 15.5v2.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-2.5"/></svg></span><span class="btn-text">LIBRARY</span></button><div class="deck-number">${d}</div></div>
-  <div class="screen"><div class="screen-top"><div><div class="track-title" id="title-${d}">— NO TRACK LOADED —</div><div class="track-artist" id="artist-${d}">LOAD A TRACK</div></div><div class="screen-right"><div class="screen-bpm" id="bpm-${d}">---.--</div><div class="screen-bpm-label">BPM</div><div class="screen-key" id="key-${d}">--</div></div></div>
+  <div class="screen"><div class="screen-top"><div><div class="track-title" id="title-${d}">— NO TRACK LOADED —</div><div class="track-artist" id="artist-${d}">LOAD A TRACK</div><div class="screen-phrase" id="phraseDisp-${d}" title="Bar number · beats remaining in current 16-beat phrase">— · —</div></div><div class="screen-right"><div class="screen-bpm" id="bpm-${d}">---.--</div><div class="screen-bpm-label">BPM</div><div class="screen-key" id="key-${d}">--</div><div class="key-shift-row"><button class="key-shift-btn" data-keyshift="${d}" data-dir="-1" title="Key shift down 1 semitone">▼</button><span class="key-shift-val" id="keyShiftVal-${d}" title="Key shift in semitones">0</span><button class="key-shift-btn" data-keyshift="${d}" data-dir="1" title="Key shift up 1 semitone">▲</button><button class="key-shift-btn key-shift-reset" data-keyshift="${d}" data-dir="0" title="Reset key shift">⟲</button></div></div></div>
   <div class="waveform"><canvas class="waveform-canvas" id="wave-${d}" width="600" height="48"></canvas><div class="phrase-markers" id="phrase-${d}"></div><div class="playhead"></div></div>
   <div class="time-row"><div><div class="time-label">ELAPSED</div><div class="time-value" id="elapsed-${d}">00:00.0</div></div><div style="text-align:right;"><div class="time-label">REMAIN</div><div class="time-value remain" id="remain-${d}">-00:00.0</div></div></div></div>
   <div class="loop-section">
@@ -13786,11 +13800,14 @@ function buildDeckHTML(d){
       <option value="1">1</option><option value="2">2</option><option value="4">4</option>
       <option value="8">8</option><option value="16">16</option>
     </select></div>
-  <div class="beat-jump">
-    <button class="jump-btn" data-jump="-4" data-deck="${d}">← 4</button>
-    <button class="jump-btn" data-jump="-1" data-deck="${d}">← 1</button>
-    <button class="jump-btn" data-jump="1" data-deck="${d}">1 →</button>
-    <button class="jump-btn" data-jump="4" data-deck="${d}">4 →</button>
+  <div class="beat-jump" data-deck="${d}">
+    <button class="jump-btn jump-size" data-jump-size="halve" data-deck="${d}" title="Halve beat-jump size">÷</button>
+    <button class="jump-btn" data-jump="-1" data-deck="${d}" title="Jump back"><span class="jb-arr">←</span><span class="jb-num" data-jump-label="${d}">4</span></button>
+    <button class="jump-btn" data-jump="1" data-deck="${d}" title="Jump forward"><span class="jb-num" data-jump-label="${d}">4</span><span class="jb-arr">→</span></button>
+    <button class="jump-btn jump-size" data-jump-size="double" data-deck="${d}" title="Double beat-jump size">×</button>
+  </div>
+  <div class="saved-loops" data-deck="${d}">
+    ${[1,2,3,4].map(n=>`<button class="saved-loop-btn" data-saved-loop="${n}" data-deck="${d}" title="Saved loop ${n} — click to recall, shift-click to save / clear">L${n}</button>`).join('')}
   </div>
   <div class="deck-utils">
     <button class="util-btn sync" data-util="sync" data-deck="${d}">SYNC</button>
@@ -14698,43 +14715,93 @@ function loadYouTubeToDeck(deckId,track){
   }
 })();
 
+/**
+ * Compute (and cache) per-bar Low / Mid / High energy for a track buffer.
+ * Replaces the previous fake "low = first third of samples" trick with
+ * actual frequency-domain splits done via two cascaded 1-pole IIR low-pass
+ * filters at ~250 Hz and ~2.5 kHz. The result is what every pro CDJ shows:
+ * three colored bands so a kick / snare / hat sit visually distinct.
+ *
+ * Cached on track.buffer._titanBands keyed by bar count so a draw at a
+ * different zoom level doesn't reuse a stale resolution.
+ */
+function _computeBandEnergies(track,bars){
+  if(!track||!track.buffer||bars<=0)return null;
+  const buf=track.buffer;
+  const cache=buf._titanBands;
+  if(cache&&cache.bars===bars)return cache;
+  const dL=buf.getChannelData(0);
+  const dR=buf.numberOfChannels>1?buf.getChannelData(1):dL;
+  const sr=buf.sampleRate||44100;
+  const N=dL.length;
+  const spb=Math.max(1,Math.floor(N/bars));
+  // 1-pole low-pass coefficients. y[n] = a*y[n-1] + (1-a)*x[n]
+  // a ≈ exp(-2π·fc/sr) — tighter for lower cutoffs.
+  const a1=Math.exp(-2*Math.PI*250/sr);   // ≤250 Hz → low band
+  const a2=Math.exp(-2*Math.PI*2500/sr);  // ≤2.5kHz → low+mid (rest = high)
+  const peakL=new Float32Array(bars),peakR=new Float32Array(bars);
+  const low=new Float32Array(bars),mid=new Float32Array(bars),high=new Float32Array(bars);
+  let lp1=0,lp2=0; // IIR state must persist across bars for continuity
+  for(let i=0;i<bars;i++){
+    let pL=0,pR=0,sLow=0,sMid=0,sHigh=0;
+    const base=i*spb,end=Math.min(base+spb,N);
+    for(let j=base;j<end;j++){
+      const vL=dL[j]||0,vR=dR[j]||0;
+      const aL=Math.abs(vL),aR=Math.abs(vR);
+      if(aL>pL)pL=aL;if(aR>pR)pR=aR;
+      // Sum L+R / 2 for the frequency analysis, mono is fine for a meter.
+      const v=(vL+vR)*0.5;
+      lp1=a1*lp1+(1-a1)*v;          // sub-250 Hz
+      lp2=a2*lp2+(1-a2)*v;          // sub-2.5 kHz
+      const lo=lp1,hi=v-lp2,mi=lp2-lp1;
+      sLow+=lo*lo;sMid+=mi*mi;sHigh+=hi*hi;
+    }
+    peakL[i]=pL;peakR[i]=pR;
+    const k=1/Math.max(1,end-base);
+    low[i]=Math.sqrt(sLow*k);mid[i]=Math.sqrt(sMid*k);high[i]=Math.sqrt(sHigh*k);
+  }
+  const out={bars,peakL,peakR,low,mid,high};
+  buf._titanBands=out;
+  return out;
+}
+
 function drawWaveform(deckId,track){
   const c=document.getElementById(`wave-${deckId}`);if(!c)return;
   const ctx=c.getContext('2d');
   c.width=c.offsetWidth*2;c.height=c.offsetHeight*2;
   const w=c.width,h=c.height;ctx.clearRect(0,0,w,h);
   if(!track.buffer)return;
-  const dL=track.buffer.getChannelData(0);
-  const dR=track.buffer.numberOfChannels>1?track.buffer.getChannelData(1):dL;
-  const bars=Math.floor(w/2),spb=Math.floor(dL.length/bars),bw=w/bars;
+  const bars=Math.floor(w/2),bw=w/bars;
   const cy=h/2;
-  // Compute peaks + energy for color
+  const bands=_computeBandEnergies(track,bars);
+  if(!bands)return;
+  const {peakL,peakR,low,mid,high}=bands;
+  // Normalize each band's energy to [0,1] across the track so quiet
+  // sections still show shape and loud sections don't clip the gradient.
+  let lMax=0,mMax=0,hMax=0;
   for(let i=0;i<bars;i++){
-    let sumL=0,sumR=0,peakL=0,peakR=0,lowEnergy=0,highEnergy=0;
-    for(let j=0;j<spb;j++){
-      const idx=i*spb+j;
-      const vL=Math.abs(dL[idx]||0),vR=Math.abs(dR[idx]||0);
-      sumL+=vL;sumR+=vR;
-      if(vL>peakL)peakL=vL;if(vR>peakR)peakR=vR;
-      // Rough energy bands (lower half of indices = lows approx)
-      if(j<spb/3)lowEnergy+=vL;else highEnergy+=vL;
-    }
-    const ampL=(peakL*0.7+(sumL/spb)*0.6)*2,ampR=(peakR*0.7+(sumR/spb)*0.6)*2;
+    if(low[i]>lMax)lMax=low[i];
+    if(mid[i]>mMax)mMax=mid[i];
+    if(high[i]>hMax)hMax=high[i];
+  }
+  lMax=lMax||1;mMax=mMax||1;hMax=hMax||1;
+  for(let i=0;i<bars;i++){
+    const ampL=Math.min(1,peakL[i]*1.4),ampR=Math.min(1,peakR[i]*1.4);
     const bhL=Math.min(cy*0.95,ampL*cy),bhR=Math.min(cy*0.95,ampR*cy);
-    // Color based on frequency content: red=bass, yellow=mid, cyan=high
-    const bassRatio=lowEnergy/(lowEnergy+highEnergy+0.001);
-    let color;
-    if(bassRatio>0.6&&ampL>0.3){color=['#ffd400','#ff7a00','#ff2e2e'];}
-    else if(bassRatio>0.4){color=['#ffed00','#ffa500','#ff6600'];}
-    else if(ampL>0.2){color=['#00ffff','#00d4ff','#0088ff'];}
-    else{color=['#88eeff','#44a8dd','#0066aa'];}
-    // Top (L)
+    // Real spectral mix: lerp colors by per-band normalized energy.
+    const ln=low[i]/lMax,mn=mid[i]/mMax,hn=high[i]/hMax;
+    const tot=ln+mn+hn+1e-6;
+    const r=Math.round((ln*255+mn*255+hn*0)/tot);   // bass→red, mid→amber, high→cyan
+    const g=Math.round((ln*46+mn*180+hn*230)/tot);
+    const b=Math.round((ln*46+mn*0+hn*255)/tot);
+    const top=`rgb(${Math.min(255,r+30)},${Math.min(255,g+40)},${Math.min(255,b+40)})`;
+    const midC=`rgb(${r},${g},${b})`;
+    const bot=`rgb(${Math.max(0,r-50)},${Math.max(0,g-40)},${Math.max(0,b-40)})`;
     const gradT=ctx.createLinearGradient(0,cy-bhL,0,cy);
-    gradT.addColorStop(0,color[0]);gradT.addColorStop(0.5,color[1]);gradT.addColorStop(1,color[2]);
+    gradT.addColorStop(0,top);gradT.addColorStop(0.5,midC);gradT.addColorStop(1,bot);
     ctx.fillStyle=gradT;ctx.fillRect(i*bw,cy-bhL,Math.max(1,bw-0.5),bhL);
-    // Bottom (R)
     const gradB=ctx.createLinearGradient(0,cy,0,cy+bhR);
-    gradB.addColorStop(0,color[2]);gradB.addColorStop(0.5,color[1]);gradB.addColorStop(1,color[0]);
+    gradB.addColorStop(0,bot);gradB.addColorStop(0.5,midC);gradB.addColorStop(1,top);
     ctx.fillStyle=gradB;ctx.fillRect(i*bw,cy,Math.max(1,bw-0.5),bhR);
   }
   // Center line
@@ -14799,11 +14866,23 @@ async function ensureKeylockWorklet(){
   });
   return _titanKeylockReady;
 }
+// Effective pitch parameter for the keylock worklet:
+//   • undo the source's playbackRate-induced shift (1/r) so harmonic content
+//     stays at original pitch, AND
+//   • multiply by 2^(semitones/12) so the user's KEY-SHIFT is added on top.
+function _effectivePitch(deck){
+  const r=Math.max(0.5,Math.min(2,deck.playbackRate||1));
+  const semi=Math.max(-12,Math.min(12,deck.keyShift||0));
+  return (1/r)*Math.pow(2,semi/12);
+}
 function _makeKeylockNode(deck){
   try{
     const n=new AudioWorkletNode(audioCtx,'titan-keylock',{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2]});
-    n.parameters.get('pitch').value=1/Math.max(0.5,Math.min(2,deck.playbackRate));
-    n.parameters.get('wet').value=deck.keylock?1:0;
+    n.parameters.get('pitch').value=_effectivePitch(deck);
+    // Engage worklet whenever keylock OR keyshift is active — otherwise a
+    // user setting keyshift without enabling keylock would hear nothing.
+    const engaged=deck.keylock||(deck.keyShift||0)!==0;
+    n.parameters.get('wet').value=engaged?1:0;
     return n;
   }catch(e){console.warn('[keylock] node build failed',e);return null;}
 }
@@ -14816,7 +14895,9 @@ function playDeck(deckId){
   // When keylock is enabled, route source → keylockNode → trimGain so the
   // granular pitch-shifter can cancel out the speed-induced pitch change.
   // Otherwise we fall back to the original direct connection (still works).
-  if(d.keylock){
+  // Engage worklet when KEYLOCK is on OR a non-zero KEY-SHIFT is dialed.
+  const _needWorklet=d.keylock||(d.keyShift||0)!==0;
+  if(_needWorklet){
     ensureKeylockWorklet().then(ok=>{
       if(!ok||!d.source)return;
       try{
@@ -14970,7 +15051,7 @@ function setTempo(deckId,pct){
   // so the harmonic content stays at the original pitch. 1/r cancels the
   // speed-induced shift.
   if(d.keylockNode&&d.keylockNode.parameters){
-    try{d.keylockNode.parameters.get('pitch').setTargetAtTime(1/Math.max(0.5,Math.min(2,d.playbackRate)),audioCtx.currentTime,0.02);}catch(_){}
+    try{d.keylockNode.parameters.get('pitch').setTargetAtTime(_effectivePitch(d),audioCtx.currentTime,0.02);}catch(_){}
   }
   const valStr=`${pct>=0?'+':''}${pct.toFixed(2)}%`;
   const tv=document.getElementById(`tempoVal-${deckId}`);if(tv)tv.textContent=valStr;
@@ -14993,9 +15074,38 @@ function updateKeylockWet(deckId){
   const d=decks[deckId];
   if(!d||!d.keylockNode)return;
   try{
-    const wet=d.keylock?1:0;
-    d.keylockNode.parameters.get('wet').setTargetAtTime(wet,audioCtx.currentTime,0.02);
+    const engaged=d.keylock||(d.keyShift||0)!==0;
+    d.keylockNode.parameters.get('wet').setTargetAtTime(engaged?1:0,audioCtx.currentTime,0.02);
   }catch(_){}
+}
+
+// User clicked ▲/▼/⟲ on the deck KEY-SHIFT control. Persists the semitone
+// offset on the deck and pushes it into the keylock worklet's pitch param.
+function setKeyShift(deckId,semitones){
+  const d=decks[deckId];if(!d)return;
+  const semi=Math.max(-12,Math.min(12,Math.round(semitones)));
+  const wasZero=(d.keyShift||0)===0;
+  d.keyShift=semi;
+  const valEl=document.getElementById(`keyShiftVal-${deckId}`);
+  if(valEl){
+    valEl.textContent=(semi>0?'+':'')+semi;
+    valEl.classList.toggle('shifted',semi!==0);
+  }
+  // If the source isn't running, the worklet won't be in the chain — the
+  // value is stored and will apply on next playDeck via _makeKeylockNode.
+  if(d.keylockNode&&d.keylockNode.parameters){
+    try{d.keylockNode.parameters.get('pitch').setTargetAtTime(_effectivePitch(d),audioCtx.currentTime,0.02);}catch(_){}
+    updateKeylockWet(deckId);
+  }else if(d.playing&&!wasZero!==(semi!==0)){
+    // Worklet wasn't yet attached but engagement state just changed — rebuild
+    // the chain so the next render-quantum picks it up.
+    const cur=getCurrentTime(deckId);
+    pauseDeck(deckId);d.offset=cur;playDeck(deckId);
+  }
+  if(typeof toast==='function'&&semi!==(d._lastSemiToast??null)){
+    d._lastSemiToast=semi;
+    toast(`Key shift · Deck ${deckId}: ${semi>0?'+':''}${semi} st`);
+  }
 }
 
 /* Tempo step state per deck */
@@ -15086,6 +15196,55 @@ function setLoopOut(d){const dk=decks[d];if(!dk.loop.loopInSet)return;dk.loop.en
 function toggleReloop(d){const dk=decks[d];if(!dk.loop.start||!dk.loop.end)return;dk.loop.active=!dk.loop.active;_setReloopBtn(d,dk.loop.active);if(dk.loop.active)seekDeck(d,dk.loop.start);}
 function setAutoLoop(d,beats){const dk=decks[d];if(!dk.track)return;const bd=60/(dk.track.bpm*(1+dk.tempo/100)),pos=getCurrentTime(d);dk.loop.start=pos;dk.loop.end=pos+beats*bd;dk.loop.active=true;dk.loop.loopInSet=true;_setReloopBtn(d,true);toast(`Auto loop: ${beats} beats`);}
 function beatJump(d,beats){const dk=decks[d];if(!dk.track)return;const bd=60/(dk.track.bpm*(1+dk.tempo/100));seekDeck(d,getCurrentTime(d)+beats*bd);}
+const BEAT_JUMP_SIZES=[0.5,1,2,4,8,16,32,64];
+function cycleBeatJumpSize(deckId,direction){
+  const dk=decks[deckId];if(!dk)return;
+  const cur=dk.beatJumpSize||4;
+  let idx=BEAT_JUMP_SIZES.indexOf(cur);
+  if(idx<0)idx=BEAT_JUMP_SIZES.indexOf(4);
+  idx=Math.max(0,Math.min(BEAT_JUMP_SIZES.length-1,idx+(direction>0?1:-1)));
+  dk.beatJumpSize=BEAT_JUMP_SIZES[idx];
+  document.querySelectorAll(`[data-jump-label="${deckId}"]`).forEach(el=>{
+    el.textContent=dk.beatJumpSize<1?`1/${Math.round(1/dk.beatJumpSize)}`:String(dk.beatJumpSize);
+  });
+  if(typeof toast==='function')toast(`Beat jump · Deck ${deckId}: ${dk.beatJumpSize<1?'1/'+Math.round(1/dk.beatJumpSize):dk.beatJumpSize} beats`);
+}
+function triggerSavedLoop(deckId,slot,opts){
+  const dk=decks[deckId];if(!dk)return;
+  opts=opts||{};
+  const existing=dk.savedLoops[slot];
+  if(opts.clear){
+    delete dk.savedLoops[slot];
+    _refreshSavedLoopBtns(deckId);
+    if(typeof toast==='function')toast(`Saved loop ${slot} cleared`);
+    return;
+  }
+  if(opts.save||!existing){
+    // Save: capture current loop in/out (or just current pos as in-point if no loop).
+    const start=(dk.loop&&dk.loop.start!=null)?dk.loop.start:getCurrentTime(deckId);
+    const end=(dk.loop&&dk.loop.end!=null&&dk.loop.end>start)?dk.loop.end:start+4*(60/((dk.track?.bpm||120)*(1+dk.tempo/100)));
+    dk.savedLoops[slot]={start,end};
+    _refreshSavedLoopBtns(deckId);
+    if(typeof toast==='function')toast(`Saved loop ${slot}: ${fmtTime(start)}→${fmtTime(end)}`);
+    return;
+  }
+  // Recall: jump to saved loop and activate it.
+  dk.loop.start=existing.start;dk.loop.end=existing.end;dk.loop.active=true;dk.loop.loopInSet=true;
+  _setReloopBtn(deckId,true);
+  seekDeck(deckId,existing.start);
+  _refreshSavedLoopBtns(deckId);
+  if(typeof toast==='function')toast(`Recall loop ${slot}: ${fmtTime(existing.start)}→${fmtTime(existing.end)}`);
+}
+function _refreshSavedLoopBtns(deckId){
+  const dk=decks[deckId];if(!dk)return;
+  document.querySelectorAll(`.saved-loops[data-deck="${deckId}"] .saved-loop-btn`).forEach(btn=>{
+    const slot=parseInt(btn.dataset.savedLoop,10);
+    const has=!!dk.savedLoops[slot];
+    btn.classList.toggle('set',has);
+    const isActive=has&&dk.loop.active&&Math.abs(dk.loop.start-dk.savedLoops[slot].start)<0.001;
+    btn.classList.toggle('active',isActive);
+  });
+}
 
 /* ============ PAD MODES ============ */
 const PAD_LOOP_SIZES=[0.0625,0.125,0.25,0.5,1,2,4,8]; // 1/16 to 8 beats
@@ -16387,7 +16546,36 @@ function attachEvents(){
     sel.addEventListener('change',()=>{decks[sel.dataset.range].tempoRange=parseFloat(sel.value);});
   });
   document.querySelectorAll('.jump-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>beatJump(btn.dataset.deck,parseInt(btn.dataset.jump)));
+    btn.addEventListener('click',()=>{
+      const d=btn.dataset.deck;
+      if(btn.dataset.jumpSize==='halve')return cycleBeatJumpSize(d,-1);
+      if(btn.dataset.jumpSize==='double')return cycleBeatJumpSize(d,+1);
+      const dir=parseInt(btn.dataset.jump);
+      // Buttons that pass ±1 mean "use current beatJumpSize" (CDJ-3000 behaviour).
+      // Keyboard shortcuts still call beatJump(d, exactBeats) directly.
+      const dk=decks[d];
+      const size=dk?(dk.beatJumpSize||4):4;
+      beatJump(d,dir*size);
+    });
+  });
+  document.querySelectorAll('.saved-loop-btn').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      const slot=parseInt(btn.dataset.savedLoop,10);
+      const dk=decks[btn.dataset.deck];if(!dk)return;
+      if(e.shiftKey){
+        // Shift = save (or clear if already set on this slot at this exact spot)
+        if(dk.savedLoops[slot])triggerSavedLoop(btn.dataset.deck,slot,{clear:true});
+        else triggerSavedLoop(btn.dataset.deck,slot,{save:true});
+      }else triggerSavedLoop(btn.dataset.deck,slot);
+    });
+  });
+  document.querySelectorAll('.key-shift-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const deckId=btn.dataset.keyshift,dir=parseInt(btn.dataset.dir,10);
+      const dk=decks[deckId];if(!dk)return;
+      if(dir===0)setKeyShift(deckId,0);
+      else setKeyShift(deckId,(dk.keyShift||0)+dir);
+    });
   });
   document.querySelectorAll('.util-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
@@ -17060,6 +17248,19 @@ function tick(){
       if(rm)rm.textContent='-'+fmtTime(dur-t);
       const c=document.getElementById(`wave-${d}`);
       if(c){const pct=t/dur;const zoom=dk.waveZoom||1;c.style.transform=`translateX(${(0.5-pct)*100*zoom}%) scaleX(${zoom})`;c.style.transformOrigin=`${pct*100}% 50%`;}
+      // Phrase counter: which 16-beat phrase we're in + beats remaining.
+      // Anchored on the cue point (or beatgrid origin if available) so it
+      // matches the same downbeat the auto-mix engine uses.
+      const ph=document.getElementById(`phraseDisp-${d}`);
+      if(ph&&dk.track&&dk.track.bpm){
+        const bd=60/(dk.track.bpm*(1+(dk.tempo||0)/100));
+        const anchor=(dk.beatgrid&&dk.beatgrid.origin!=null)?dk.beatgrid.origin:(dk.cuePoint||0);
+        const beats=(t-anchor)/bd;
+        const bar=Math.floor(beats/4);                     // 0-indexed bar
+        const phraseIdx=Math.floor(beats/16);              // 0-indexed phrase
+        const beatsToNextPhrase=Math.max(0,16-(((beats%16)+16)%16));
+        ph.textContent=`BAR ${bar>=0?bar+1:'—'} · PH ${phraseIdx>=0?phraseIdx+1:'—'} · ${beatsToNextPhrase.toFixed(1)}↦`;
+      }
     }
   });
   if(decksTabActive)animateVU();
