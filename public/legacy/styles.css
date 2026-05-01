@@ -11010,3 +11010,92 @@ body.booth-light .cue-btn.active{
   body.booth-light .mixer button,
   body.booth-light .mixer-toolbar button{transition:none !important}
 }
+
+/* ============================================================
+   VINYL — ALL 4 mode (4 turntables + 4-channel mixer)
+   Toolbar at the top of the tab toggles between 2-deck and ALL 4.
+   In 2-deck mode the extra turntables (ttC, ttD) and the extra
+   mixer channels (CH C, CH D) are hidden so the page looks
+   identical to the original layout. ALL 4 mode reflows the stage
+   into 5 columns: ttL · ttR · mixer · ttC · ttD, mirroring the
+   existing decks ALL 4 layout (mixer in the middle).
+   ============================================================ */
+.vinyl-toolbar{
+  width:100%;max-width:1700px;margin:0 auto 10px;padding:0 22px;
+  display:flex;align-items:center;justify-content:flex-end;gap:10px;
+}
+.vinyl-mode-switch{
+  display:inline-flex;border:1px solid #2a2a32;border-radius:8px;overflow:hidden;
+  background:linear-gradient(180deg,#15151a 0%,#0a0a0c 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 2px 6px rgba(0,0,0,.55);
+}
+.vinyl-mode-btn{
+  padding:8px 14px;background:transparent;border:none;
+  color:#8a8a90;font-family:'Orbitron',sans-serif;font-size:11px;
+  letter-spacing:2.5px;font-weight:700;cursor:pointer;
+  border-right:1px solid #2a2a32;transition:color .15s, background .15s;
+}
+.vinyl-mode-btn:last-child{border-right:none}
+.vinyl-mode-btn:hover{color:#cfcfd2;background:rgba(255,255,255,.03)}
+.vinyl-mode-btn.active{
+  color:#1a0a00;background:linear-gradient(180deg,#d6924a 0%,#a86530 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -2px 3px rgba(0,0,0,.3);
+  text-shadow:0 1px 0 rgba(255,255,255,.2);
+}
+
+/* Hide extras by default (2-deck mode) */
+.turntable[data-tt="C"],
+.turntable[data-tt="D"],
+.vx-ch.vx-ch-extra{display:none}
+
+/* DOM order is: ttL, mixer, ttR, ttC, ttD. In default 2-deck mode
+   the grid stays 3-col and ttC/ttD are display:none, so the order
+   visually is: ttL · mixer · ttR. */
+.vinyl-stage{grid-template-areas:"ttL mix ttR"}
+.vinyl-stage > .turntable[data-tt="L"]{grid-area:ttL}
+.vinyl-stage > .turntable[data-tt="R"]{grid-area:ttR}
+.vinyl-stage > .vx-mixer{grid-area:mix}
+
+/* ALL 4 mode — 5 columns: ttL · ttR · mixer · ttC · ttD */
+body.vinyl-all-4 .vinyl-stage{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) 320px minmax(0,1fr) minmax(0,1fr);
+  grid-template-areas:"ttL ttR mix ttC ttD";
+  gap:14px;
+}
+body.vinyl-all-4 .vinyl-stage > .turntable[data-tt="C"]{display:block;grid-area:ttC}
+body.vinyl-all-4 .vinyl-stage > .turntable[data-tt="D"]{display:block;grid-area:ttD}
+body.vinyl-all-4 .vx-ch.vx-ch-extra{display:flex}
+
+/* In ALL 4 mode the mixer holds 4 channels — reflow the channels
+   row to a 4-column grid so they fit on the narrower mixer. */
+body.vinyl-all-4 .vx-channels{grid-template-columns:repeat(4,1fr)}
+
+/* Crossfader in ALL 4 still labels A↔B because that's how the
+   crossfader engine routes (decks C/D pass through). Add a small
+   note above the channel C/D faders so users understand. */
+body.vinyl-all-4 .vx-ch[data-ch="C"] .vx-fader-wrap::after,
+body.vinyl-all-4 .vx-ch[data-ch="D"] .vx-fader-wrap::after{
+  content:'THRU';position:absolute;top:-12px;left:50%;
+  transform:translateX(-50%);
+  font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;
+  color:#7a7a7e;
+}
+body.vinyl-all-4 .vx-ch .vx-fader-wrap{position:relative}
+
+/* Mobile / narrow viewport: stack rows to 2x3 (turntables 2x2 + mixer below) */
+@media (max-width:1280px){
+  body.vinyl-all-4 .vinyl-stage{
+    grid-template-columns:1fr 1fr;
+    grid-template-areas:
+      "ttL ttR"
+      "ttC ttD"
+      "mix mix";
+    gap:14px;
+  }
+}
+@media (max-width:780px){
+  body.vinyl-all-4 .vinyl-stage{
+    grid-template-columns:1fr;
+    grid-template-areas:"ttL" "ttR" "ttC" "ttD" "mix";
+  }
+}

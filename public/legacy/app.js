@@ -7170,16 +7170,38 @@ function setupTabs(){
   });
 }
 
-/* VINYL view — realistic twin turntables + mixer */
+/* VINYL view — realistic 2- or 4-turntable surface + matching mixer.
+   Sides L and R are always present. Sides C and D are rendered too
+   but hidden by CSS until body.vinyl-all-4 is toggled on, so the same
+   handlers wire up cleanly in either mode. */
 function setupVinylTurntables(){
-  const SIDE2DECK={L:'A',R:'B'};
-  const baseBpm={L:128.0,R:128.0};
+  const SIDE2DECK={L:'A',R:'B',C:'C',D:'D'};
+  const baseBpm={L:128.0,R:128.0,C:128.0,D:128.0};
+  const SIDES=['L','R','C','D'];
 
   // Make the Quick Library overlay a top-level child so it shows on any tab
   const qlOv=document.getElementById('quickLibOverlay');
   if(qlOv&&qlOv.parentElement&&qlOv.parentElement.id==='tab-deck'){
     document.body.appendChild(qlOv);
   }
+
+  // ── ALL 4 toggle — switches the vinyl tab between 2 turntables and 4
+  const VINYL_MODE_KEY='titanVinylMode';
+  function setVinylMode(mode){
+    const all4=mode==='4';
+    document.body.classList.toggle('vinyl-all-4',all4);
+    document.querySelectorAll('.vinyl-mode-btn').forEach(b=>{
+      b.classList.toggle('active', b.dataset.vinylMode === (all4?'4':'2'));
+    });
+    try{localStorage.setItem(VINYL_MODE_KEY, all4?'4':'2');}catch(_){}
+  }
+  document.querySelectorAll('.vinyl-mode-btn').forEach(b=>{
+    b.addEventListener('click',()=>setVinylMode(b.dataset.vinylMode));
+  });
+  try{
+    const saved=localStorage.getItem(VINYL_MODE_KEY);
+    if(saved==='4')setVinylMode('4');
+  }catch(_){}
 
   function deck(side){return (typeof decks!=='undefined')?decks[SIDE2DECK[side]]:null}
 
@@ -7207,8 +7229,11 @@ function setupVinylTurntables(){
     }
   }
 
-  ['L','R'].forEach(side=>{
+  SIDES.forEach(side=>{
     const dId=SIDE2DECK[side];
+    // Skip wiring for sides whose turntable element is not present
+    // (defensive — shouldn't happen since all 4 are rendered).
+    if(!document.getElementById(`tt${side}`))return;
     // START/STOP → real play/pause
     const startBtn=document.getElementById(`tt${side}-startstop`);
     startBtn?.addEventListener('click',()=>{
@@ -7412,7 +7437,7 @@ function setupVinylTurntables(){
   // Mixer knobs → real EQ/TRIM
   document.querySelectorAll('.vx-knob').forEach(knob=>{
     const raw=knob.dataset.vxknob||'';
-    const m=raw.match(/^(trim|hi|mid|low)([AB])$/);
+    const m=raw.match(/^(trim|hi|mid|low)([ABCD])$/);
     const kind=m?m[1]:null,dId=m?m[2]:null;
     let val=(kind==='trim')?0.33:0.5; // -1..1 center at 0 → val 0.5
     let dragY=0,dragging=false;
@@ -7438,8 +7463,8 @@ function setupVinylTurntables(){
     knob.addEventListener('pointercancel',stop);
     knob.addEventListener('dblclick',()=>{val=(kind==='trim')?0.33:0.5;render();applyVal();});
   });
-  // Channel faders → real volume
-  ['A','B'].forEach(dId=>{
+  // Channel faders → real volume (channels A-D; only the visible ones matter)
+  ['A','B','C','D'].forEach(dId=>{
     const f=document.getElementById(`vxFader${dId}`);
     if(!f)return;
     const apply=()=>{
@@ -7564,8 +7589,9 @@ function setupVinylTurntables(){
     const m=Math.floor(s/60),ss=Math.floor(s%60);
     return String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0');
   }
-  ['L','R'].forEach(side=>{
+  SIDES.forEach(side=>{
     const d=SIDE2DECK[side];
+    if(!document.getElementById(`tt${side}`))return;
 
     // PLAY / PAUSE — reuses the main togglePlay so both tabs stay in lockstep
     const playBtn=document.getElementById(`tt${side}-play`);
@@ -7676,10 +7702,11 @@ function setupVinylTurntables(){
   // both pro strips, regardless of whether the user is clicking here or
   // on the DECKS tab.
   setInterval(()=>{
-    ['L','R'].forEach(side=>{
+    SIDES.forEach(side=>{
       const d=SIDE2DECK[side];
       const deck=(typeof decks!=='undefined')?decks[d]:null;
       if(!deck)return;
+      if(!document.getElementById(`tt${side}`))return;
       // Time + bar
       const dur=(deck.buffer&&deck.buffer.duration)||0;
       const cur=(typeof getCurrentTime==='function'&&deck.track)?getCurrentTime(d):0;

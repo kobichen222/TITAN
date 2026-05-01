@@ -710,6 +710,12 @@
 <!-- ========== /LEARN TAB ========== -->
 
 <div class="tab-content" id="tab-vinyl">
+<div class="vinyl-toolbar">
+  <div class="vinyl-mode-switch" role="tablist" aria-label="Turntable layout">
+    <button class="vinyl-mode-btn active" data-vinyl-mode="2" type="button">2 DECKS</button>
+    <button class="vinyl-mode-btn" data-vinyl-mode="4" type="button">ALL 4</button>
+  </div>
+</div>
 <div class="vinyl-stage">
   <div class="vinyl-floor"></div>
 
@@ -858,6 +864,40 @@
         </div>
         <button class="vx-cue" data-vx-cue="B">CUE</button>
       </div>
+      <div class="vx-ch vx-ch-extra" data-ch="C">
+        <div class="vx-ch-head">CH C</div>
+        <div class="vx-eq">
+          <div class="vx-knob" data-vxknob="trimC"></div>
+          <span class="vx-knob-lbl">TRIM</span>
+          <div class="vx-knob" data-vxknob="hiC"></div>
+          <span class="vx-knob-lbl">HI</span>
+          <div class="vx-knob" data-vxknob="midC"></div>
+          <span class="vx-knob-lbl">MID</span>
+          <div class="vx-knob" data-vxknob="lowC"></div>
+          <span class="vx-knob-lbl">LOW</span>
+        </div>
+        <div class="vx-fader-wrap">
+          <input type="range" class="vx-fader" id="vxFaderC" min="0" max="100" value="85"/>
+        </div>
+        <button class="vx-cue" data-vx-cue="C">CUE</button>
+      </div>
+      <div class="vx-ch vx-ch-extra" data-ch="D">
+        <div class="vx-ch-head">CH D</div>
+        <div class="vx-eq">
+          <div class="vx-knob" data-vxknob="trimD"></div>
+          <span class="vx-knob-lbl">TRIM</span>
+          <div class="vx-knob" data-vxknob="hiD"></div>
+          <span class="vx-knob-lbl">HI</span>
+          <div class="vx-knob" data-vxknob="midD"></div>
+          <span class="vx-knob-lbl">MID</span>
+          <div class="vx-knob" data-vxknob="lowD"></div>
+          <span class="vx-knob-lbl">LOW</span>
+        </div>
+        <div class="vx-fader-wrap">
+          <input type="range" class="vx-fader" id="vxFaderD" min="0" max="100" value="85"/>
+        </div>
+        <button class="vx-cue" data-vx-cue="D">CUE</button>
+      </div>
     </div>
     <div class="vx-xfader-wrap">
       <div class="vx-xfader-head"><span class="xf-a">A</span><span>CROSSFADER</span><span class="xf-b">B</span></div>
@@ -955,6 +995,208 @@
         <button class="gotocue" data-nav="gotocue" title="Jump to CUE point">↩ CUE</button>
       </div>
       <div class="tt-pro-hotcues" data-tt-hc="R">
+        <button class="tt-pro-hc" data-hc="1">1</button>
+        <button class="tt-pro-hc" data-hc="2">2</button>
+        <button class="tt-pro-hc" data-hc="3">3</button>
+        <button class="tt-pro-hc" data-hc="4">4</button>
+      </div>
+    </div>
+    <div class="tt-bottom">
+      <button class="tt-btn cue" data-tt-btn="cue">CUE</button>
+      <button class="tt-btn" data-tt-btn="loop">LOOP</button>
+      <button class="tt-btn sync" data-tt-btn="sync">SYNC</button>
+      <button class="tt-btn" data-tt-btn="fx">FX</button>
+    </div>
+  </div>
+  <div class="turntable" data-tt="C" id="ttC" data-tt-deck="C">
+    <span class="corner-screw c-tl"></span><span class="corner-screw c-tr"></span>
+    <span class="corner-screw c-bl"></span><span class="corner-screw c-br"></span>
+    <div class="tt-topbar">
+      <span class="tt-brand">TITAN · <span class="brand-accent">V</span>INYL</span>
+      <div class="tt-screen">
+        <span class="tt-scr-title" id="ttC-title">— NO TRACK —</span>
+        <span class="tt-scr-bpm" id="ttC-bpm">128.0</span>
+      </div>
+      <button class="tt-load-btn" data-deck-upload="C" title="Upload audio → Deck C">⬆</button>
+      <button class="tt-load-btn lib" data-deck-lib="C" title="Browse library → Deck C" aria-label="Library"><svg class="lib-svg" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><ellipse cx="11" cy="4.5" rx="7" ry="2.2"/><path d="M4 4.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 10.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 15.5v2.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-2.5"/></svg></button>
+      <span class="tt-power" title="Power"></span>
+    </div>
+    <div class="tt-deck">
+      <div class="tt-leftctl">
+        <div class="tt-rpm">
+          <button class="tt-rpm-btn active" data-rpm="33">33⅓</button>
+          <button class="tt-rpm-btn" data-rpm="45">45</button>
+        </div>
+        <button class="tt-startstop" id="ttC-startstop" title="Start / Stop"></button>
+        <span class="tt-startstop-label">START/STOP</span>
+        <span class="tt-target" aria-hidden="true"></span>
+      </div>
+      <div class="tt-platter-wrap">
+        <div class="tt-platter" id="ttC-platter">
+          <div class="tt-vinyl" id="ttC-vinyl">
+            <div class="tt-label">
+              <span class="lbl-title">DJ TITAN</span>
+              <span class="lbl-sub">SIDE&nbsp;C · 33⅓</span>
+            </div>
+          </div>
+        </div>
+        <div class="tt-tonearm" id="ttC-tonearm">
+          <svg viewBox="0 0 140 180">
+            <defs>
+              <linearGradient id="ttarmC" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#f0f0f4"/>
+                <stop offset="50%" stop-color="#8a8a90"/>
+                <stop offset="100%" stop-color="#2a2a30"/>
+              </linearGradient>
+            </defs>
+            <path d="M 118 20 C 110 60 92 80 74 96 C 58 110 44 122 30 136" stroke="url(#ttarmC)" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+            <path d="M 30 136 L 20 152 L 34 156 Z" fill="#2a2a30" stroke="#0a0a0c" stroke-width="1"/>
+            <circle cx="22" cy="154" r="2.4" fill="#ff3c3c"/>
+          </svg>
+          <div class="ta-pivot"></div>
+          <div class="ta-cw"></div>
+        </div>
+      </div>
+      <div class="tt-rightctl">
+        <span class="tt-pitch-label">PITCH</span>
+        <span class="tt-pitch-val" id="ttC-pitch-val">+0.00%</span>
+        <div class="tt-pitch-track ttpv2" data-tt-pitch="C">
+          <div class="ttpv2-scale" aria-hidden="true">
+            <i class="major"><em>+8</em></i><i></i><i></i><i></i>
+            <i class="major"><em>0</em></i>
+            <i></i><i></i><i></i><i class="major"><em>-8</em></i>
+          </div>
+          <div class="ttpv2-rail" aria-hidden="true"></div>
+          <div class="ttpv2-zero" aria-hidden="true"></div>
+          <div class="ttpv2-thumb" id="ttC-pitch-thumb" tabindex="0" role="slider" aria-label="Pitch" aria-valuemin="-8" aria-valuemax="8" aria-valuenow="0"></div>
+          <input type="hidden" id="ttC-pitch" value="0"/>
+        </div>
+      </div>
+    </div>
+    <!-- ═══ PRO controls (turntable C) ═══ -->
+    <div class="tt-pro" data-tt-pro="C">
+      <div class="tt-pro-row">
+        <button class="tt-pro-play" id="ttC-play" title="Play / Pause">▶</button>
+        <div class="tt-pro-time">
+          <div class="tt-pro-time-row">
+            <span class="tt-pro-elapsed" id="ttC-elapsed">00:00</span>
+            <span class="tt-pro-dur" id="ttC-dur">— / 00:00</span>
+            <span class="tt-pro-remain" id="ttC-remain">-00:00</span>
+          </div>
+          <div class="tt-pro-bar" id="ttC-bar"><div class="tt-pro-bar-fill" id="ttC-barfill"></div></div>
+        </div>
+      </div>
+      <div class="tt-pro-nav" data-tt-nav="C">
+        <button data-nav="start"     title="Jump to beginning">⏮</button>
+        <button data-nav="back-4"    title="Back 4 beats">◀◀ 4</button>
+        <button data-nav="back-1"    title="Back 1 beat">◀ 1</button>
+        <button class="setcue" data-nav="setcue"   title="Set CUE point here">⏺ SET CUE</button>
+        <button data-nav="fwd-1"     title="Forward 1 beat">1 ▶</button>
+        <button data-nav="fwd-4"     title="Forward 4 beats">4 ▶▶</button>
+        <button class="gotocue" data-nav="gotocue" title="Jump to CUE point">↩ CUE</button>
+      </div>
+      <div class="tt-pro-hotcues" data-tt-hc="C">
+        <button class="tt-pro-hc" data-hc="1">1</button>
+        <button class="tt-pro-hc" data-hc="2">2</button>
+        <button class="tt-pro-hc" data-hc="3">3</button>
+        <button class="tt-pro-hc" data-hc="4">4</button>
+      </div>
+    </div>
+    <div class="tt-bottom">
+      <button class="tt-btn cue" data-tt-btn="cue">CUE</button>
+      <button class="tt-btn" data-tt-btn="loop">LOOP</button>
+      <button class="tt-btn sync" data-tt-btn="sync">SYNC</button>
+      <button class="tt-btn" data-tt-btn="fx">FX</button>
+    </div>
+  </div>
+  <div class="turntable" data-tt="D" id="ttD" data-tt-deck="D">
+    <span class="corner-screw c-tl"></span><span class="corner-screw c-tr"></span>
+    <span class="corner-screw c-bl"></span><span class="corner-screw c-br"></span>
+    <div class="tt-topbar">
+      <span class="tt-brand">TITAN · <span class="brand-accent">V</span>INYL</span>
+      <div class="tt-screen">
+        <span class="tt-scr-title" id="ttD-title">— NO TRACK —</span>
+        <span class="tt-scr-bpm" id="ttD-bpm">128.0</span>
+      </div>
+      <button class="tt-load-btn" data-deck-upload="D" title="Upload audio → Deck D">⬆</button>
+      <button class="tt-load-btn lib" data-deck-lib="D" title="Browse library → Deck D" aria-label="Library"><svg class="lib-svg" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><ellipse cx="11" cy="4.5" rx="7" ry="2.2"/><path d="M4 4.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 10.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 15.5v2.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-2.5"/></svg></button>
+      <span class="tt-power" title="Power"></span>
+    </div>
+    <div class="tt-deck">
+      <div class="tt-leftctl">
+        <div class="tt-rpm">
+          <button class="tt-rpm-btn active" data-rpm="33">33⅓</button>
+          <button class="tt-rpm-btn" data-rpm="45">45</button>
+        </div>
+        <button class="tt-startstop" id="ttD-startstop" title="Start / Stop"></button>
+        <span class="tt-startstop-label">START/STOP</span>
+        <span class="tt-target" aria-hidden="true"></span>
+      </div>
+      <div class="tt-platter-wrap">
+        <div class="tt-platter" id="ttD-platter">
+          <div class="tt-vinyl" id="ttD-vinyl">
+            <div class="tt-label">
+              <span class="lbl-title">DJ TITAN</span>
+              <span class="lbl-sub">SIDE&nbsp;D · 33⅓</span>
+            </div>
+          </div>
+        </div>
+        <div class="tt-tonearm" id="ttD-tonearm">
+          <svg viewBox="0 0 140 180">
+            <defs>
+              <linearGradient id="ttarmD" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#f0f0f4"/>
+                <stop offset="50%" stop-color="#8a8a90"/>
+                <stop offset="100%" stop-color="#2a2a30"/>
+              </linearGradient>
+            </defs>
+            <path d="M 118 20 C 110 60 92 80 74 96 C 58 110 44 122 30 136" stroke="url(#ttarmD)" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+            <path d="M 30 136 L 20 152 L 34 156 Z" fill="#2a2a30" stroke="#0a0a0c" stroke-width="1"/>
+            <circle cx="22" cy="154" r="2.4" fill="#ff3c3c"/>
+          </svg>
+          <div class="ta-pivot"></div>
+          <div class="ta-cw"></div>
+        </div>
+      </div>
+      <div class="tt-rightctl">
+        <span class="tt-pitch-label">PITCH</span>
+        <span class="tt-pitch-val" id="ttD-pitch-val">+0.00%</span>
+        <div class="tt-pitch-track ttpv2" data-tt-pitch="D">
+          <div class="ttpv2-scale" aria-hidden="true">
+            <i class="major"><em>+8</em></i><i></i><i></i><i></i>
+            <i class="major"><em>0</em></i>
+            <i></i><i></i><i></i><i class="major"><em>-8</em></i>
+          </div>
+          <div class="ttpv2-rail" aria-hidden="true"></div>
+          <div class="ttpv2-zero" aria-hidden="true"></div>
+          <div class="ttpv2-thumb" id="ttD-pitch-thumb" tabindex="0" role="slider" aria-label="Pitch" aria-valuemin="-8" aria-valuemax="8" aria-valuenow="0"></div>
+          <input type="hidden" id="ttD-pitch" value="0"/>
+        </div>
+      </div>
+    </div>
+    <!-- ═══ PRO controls (turntable D) ═══ -->
+    <div class="tt-pro" data-tt-pro="D">
+      <div class="tt-pro-row">
+        <button class="tt-pro-play" id="ttD-play" title="Play / Pause">▶</button>
+        <div class="tt-pro-time">
+          <div class="tt-pro-time-row">
+            <span class="tt-pro-elapsed" id="ttD-elapsed">00:00</span>
+            <span class="tt-pro-dur" id="ttD-dur">— / 00:00</span>
+            <span class="tt-pro-remain" id="ttD-remain">-00:00</span>
+          </div>
+          <div class="tt-pro-bar" id="ttD-bar"><div class="tt-pro-bar-fill" id="ttD-barfill"></div></div>
+        </div>
+      </div>
+      <div class="tt-pro-nav" data-tt-nav="D">
+        <button data-nav="start"     title="Jump to beginning">⏮</button>
+        <button data-nav="back-4"    title="Back 4 beats">◀◀ 4</button>
+        <button data-nav="back-1"    title="Back 1 beat">◀ 1</button>
+        <button class="setcue" data-nav="setcue"   title="Set CUE point here">⏺ SET CUE</button>
+        <button data-nav="fwd-1"     title="Forward 1 beat">1 ▶</button>
+        <button data-nav="fwd-4"     title="Forward 4 beats">4 ▶▶</button>
+        <button class="gotocue" data-nav="gotocue" title="Jump to CUE point">↩ CUE</button>
+      </div>
+      <div class="tt-pro-hotcues" data-tt-hc="D">
         <button class="tt-pro-hc" data-hc="1">1</button>
         <button class="tt-pro-hc" data-hc="2">2</button>
         <button class="tt-pro-hc" data-hc="3">3</button>
