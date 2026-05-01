@@ -10861,30 +10861,32 @@ html body .cue-hp-btn.cue-hp-btn:active{
    Colours are defined per [data-color="1..8"] above; the active
    state simply paints the pad with its own --cue-color. */
 html body .cue-btn.cue-btn.active{
-  background:var(--cue-color,#ff7a00) !important;
-  color:#000 !important;
-  border:1px solid rgba(255,255,255,.6) !important;
-  text-shadow:0 1px 0 rgba(255,255,255,.35) !important;
+  background:linear-gradient(180deg,
+    color-mix(in srgb,var(--cue-color,#ff7a00) 92%, #fff) 0%,
+    var(--cue-color,#ff7a00) 50%,
+    color-mix(in srgb,var(--cue-color,#ff7a00) 75%, #000) 100%) !important;
+  color:#0a0a0a !important;
+  border:1px solid rgba(0,0,0,.4) !important;
+  text-shadow:0 1px 0 rgba(255,255,255,.25) !important;
   box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.45),
-    inset 0 -2px 4px rgba(0,0,0,.3),
-    0 0 6px var(--cue-color,#ff7a00),
-    0 0 18px var(--cue-color,#ff7a00),
-    0 0 32px var(--cue-color,#ff7a00) !important;
-  filter:saturate(1.25) brightness(1.05) !important;
+    inset 0 1px 0 rgba(255,255,255,.4),
+    inset 0 -2px 3px rgba(0,0,0,.25),
+    0 1px 0 rgba(0,0,0,.5),
+    0 2px 4px rgba(0,0,0,.35) !important;
+  filter:none !important;
 }
-/* Hard-coded colour fallbacks — guarantees each pad lights its own
+/* Hard-coded colour fallbacks — guarantees each pad shows its own
    hue even if the --cue-color custom property is overridden by a
    theme. data-color 1..8 → cyan, pink, yellow, green, orange,
-   purple, teal, red-orange. */
-html body .cue-btn.cue-btn[data-color="1"].active{background:#00e5ff !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #00e5ff,0 0 22px #00e5ff,0 0 36px #00e5ff !important}
-html body .cue-btn.cue-btn[data-color="2"].active{background:#ff3c78 !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #ff3c78,0 0 22px #ff3c78,0 0 36px #ff3c78 !important}
-html body .cue-btn.cue-btn[data-color="3"].active{background:#ffd400 !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #ffd400,0 0 22px #ffd400,0 0 36px #ffd400 !important}
-html body .cue-btn.cue-btn[data-color="4"].active{background:#00ff7a !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #00ff7a,0 0 22px #00ff7a,0 0 36px #00ff7a !important}
-html body .cue-btn.cue-btn[data-color="5"].active{background:#ff7a00 !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #ff7a00,0 0 22px #ff7a00,0 0 36px #ff7a00 !important}
-html body .cue-btn.cue-btn[data-color="6"].active{background:#c800ff !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #c800ff,0 0 22px #c800ff,0 0 36px #c800ff !important}
-html body .cue-btn.cue-btn[data-color="7"].active{background:#00ffd4 !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #00ffd4,0 0 22px #00ffd4,0 0 36px #00ffd4 !important}
-html body .cue-btn.cue-btn[data-color="8"].active{background:#ff5a00 !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #ff5a00,0 0 22px #ff5a00,0 0 36px #ff5a00 !important}
+   purple, teal, red-orange. Clean fill, no neon glow. */
+html body .cue-btn.cue-btn[data-color="1"].active{background:linear-gradient(180deg,#80f4ff 0%,#00e5ff 50%,#00a5b8 100%) !important}
+html body .cue-btn.cue-btn[data-color="2"].active{background:linear-gradient(180deg,#ff8eb0 0%,#ff3c78 50%,#b82a55 100%) !important}
+html body .cue-btn.cue-btn[data-color="3"].active{background:linear-gradient(180deg,#ffe770 0%,#ffd400 50%,#b89800 100%) !important;color:#0a0a0a !important}
+html body .cue-btn.cue-btn[data-color="4"].active{background:linear-gradient(180deg,#80ffb8 0%,#00ff7a 50%,#00b855 100%) !important}
+html body .cue-btn.cue-btn[data-color="5"].active{background:linear-gradient(180deg,#ffb56b 0%,#ff7a00 50%,#b85700 100%) !important}
+html body .cue-btn.cue-btn[data-color="6"].active{background:linear-gradient(180deg,#e480ff 0%,#c800ff 50%,#8a00b0 100%) !important;color:#fff !important;text-shadow:0 1px 0 rgba(0,0,0,.4) !important}
+html body .cue-btn.cue-btn[data-color="7"].active{background:linear-gradient(180deg,#80ffea 0%,#00ffd4 50%,#00b89a 100%) !important}
+html body .cue-btn.cue-btn[data-color="8"].active{background:linear-gradient(180deg,#ffa56b 0%,#ff5a00 50%,#b83e00 100%) !important}
 html body .big-btn.cue.cue.active{
   background:linear-gradient(180deg,#1f1f24 0%,#0e0e12 55%,#040405 100%) !important;
   color:var(--cue-orange) !important;
