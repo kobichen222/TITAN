@@ -11056,19 +11056,28 @@ body.booth-light .cue-btn.active{
 .vinyl-stage > .turntable[data-tt="R"]{grid-area:ttR}
 .vinyl-stage > .vx-mixer{grid-area:mix}
 
-/* ALL 4 mode — 5 columns: ttL · ttR · mixer · ttC · ttD */
+/* ALL 4 mode — two rows of (turntable · mixer · turntable). The
+   mixer spans both rows so it stays full-height in the middle, and
+   each turntable keeps its full width / platter size. */
 body.vinyl-all-4 .vinyl-stage{
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr) 320px minmax(0,1fr) minmax(0,1fr);
-  grid-template-areas:"ttL ttR mix ttC ttD";
-  gap:14px;
+  grid-template-columns:minmax(0,1fr) 280px minmax(0,1fr);
+  grid-template-rows:auto auto;
+  grid-template-areas:
+    "ttL mix ttR"
+    "ttC mix ttD";
+  gap:18px;
 }
+body.vinyl-all-4 .vinyl-stage > .vx-mixer{grid-area:mix;align-self:stretch}
+body.vinyl-all-4 .vinyl-stage > .turntable[data-tt="L"]{grid-area:ttL}
+body.vinyl-all-4 .vinyl-stage > .turntable[data-tt="R"]{grid-area:ttR}
 body.vinyl-all-4 .vinyl-stage > .turntable[data-tt="C"]{display:block;grid-area:ttC}
 body.vinyl-all-4 .vinyl-stage > .turntable[data-tt="D"]{display:block;grid-area:ttD}
 body.vinyl-all-4 .vx-ch.vx-ch-extra{display:flex}
 
 /* In ALL 4 mode the mixer holds 4 channels — reflow the channels
    row to a 4-column grid so they fit on the narrower mixer. */
-body.vinyl-all-4 .vx-channels{grid-template-columns:repeat(4,1fr)}
+body.vinyl-all-4 .vx-channels{grid-template-columns:repeat(4,1fr);gap:6px}
+body.vinyl-all-4 .vx-knob{transform:scale(.85);transform-origin:center}
 
 /* Crossfader in ALL 4 still labels A↔B because that's how the
    crossfader engine routes (decks C/D pass through). Add a small
@@ -11082,20 +11091,21 @@ body.vinyl-all-4 .vx-ch[data-ch="D"] .vx-fader-wrap::after{
 }
 body.vinyl-all-4 .vx-ch .vx-fader-wrap{position:relative}
 
-/* Mobile / narrow viewport: stack rows to 2x3 (turntables 2x2 + mixer below) */
-@media (max-width:1280px){
+/* Tablet — collapse to single column of turntable rows + mixer last */
+@media (max-width:1100px){
   body.vinyl-all-4 .vinyl-stage{
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:1fr 1fr !important;
+    grid-template-rows:auto auto auto;
     grid-template-areas:
       "ttL ttR"
       "ttC ttD"
-      "mix mix";
-    gap:14px;
+      "mix mix" !important;
+    gap:14px !important;
   }
 }
 @media (max-width:780px){
   body.vinyl-all-4 .vinyl-stage{
-    grid-template-columns:1fr;
-    grid-template-areas:"ttL" "ttR" "ttC" "ttD" "mix";
+    grid-template-columns:1fr !important;
+    grid-template-areas:"ttL" "ttR" "ttC" "ttD" "mix" !important;
   }
 }
