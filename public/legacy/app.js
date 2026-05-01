@@ -10,7 +10,7 @@ let stats={totalTime:0,tracksPlayed:0,fxCount:0,cueCount:0,mixHistory:[],session
 let settings={theme:'dark',rgbAmbient:true,phraseMarkers:true,limiter:true,autoGain:false,autoSave:true};
 let aiDJ={active:false,style:'smooth',transLen:16,bpmTol:6,order:'energy-flow',transitionTimer:null};
 
-function createDeck(id){return{id,track:null,playing:false,startTime:0,offset:0,tempo:0,playbackRate:1,tempoRange:8,cuePoint:0,hotCues:{},savedLoops:{},loop:{active:false,start:null,end:null,loopInSet:false},keylock:false,quantize:false,slip:false,slipReturn:null,reverse:false,sync:false,source:null,volumeGain:null,trimGain:null,channelGain:null,eqLow:null,eqLoMid:null,eqHiMid:null,eqHigh:null,killLow:false,killMid:false,killHi:false,compressor:null,saturation:null,colorFilter:null,buffer:null,volume:1,eq:{low:0,loMid:0,hiMid:0,high:0},trim:1,analyser:null,padMode:'cue',waveZoom:1,energy:0,beatgrid:null,phraseOffset:0};}
+function createDeck(id){return{id,track:null,playing:false,startTime:0,offset:0,tempo:0,playbackRate:1,rpmScale:1,tempoRange:8,cuePoint:0,hotCues:{},savedLoops:{},loop:{active:false,start:null,end:null,loopInSet:false},keylock:false,quantize:false,slip:false,slipReturn:null,reverse:false,sync:false,source:null,volumeGain:null,trimGain:null,channelGain:null,eqLow:null,eqLoMid:null,eqHiMid:null,eqHigh:null,killLow:false,killMid:false,killHi:false,compressor:null,saturation:null,colorFilter:null,buffer:null,volume:1,eq:{low:0,loMid:0,hiMid:0,high:0},trim:1,analyser:null,padMode:'cue',waveZoom:1,energy:0,beatgrid:null,phraseOffset:0};}
 const decks={A:createDeck('A'),B:createDeck('B'),C:createDeck('C'),D:createDeck('D')};
 const mixerState={crossfader:0.5,xfaderCurve:'smooth',master:0.9,booth:0.7,balance:0,hpMix:0.5,hpVol:0.7,hpCue:{A:false,B:false,C:false,D:false},micOn:false,micVol:0,micHi:0,micLow:0,fx:{type:'delay',channel:'master',beat:1,level:0.5,on:false},colorFx:{type:'filter',A:0,B:0,C:0,D:0},xfaderAssign:{A:'A',B:'B',C:'THRU',D:'THRU'},isRecording:false,sceneFx:{type:null,depth:0.5,xpadX:0.5,xpadY:0.5,xpadActive:false},isolator:{low:0,mid:0,hi:0}};
 
@@ -1216,7 +1216,7 @@ function setTempo(deckId,pct){
   const d=decks[deckId];d.tempo=pct;
   const was=d.playing,pos=getCurrentTime(deckId);
   if(was)pauseDeck(deckId);
-  d.playbackRate=1+pct/100;d.offset=pos;
+  d.playbackRate=(1+pct/100)*(d.rpmScale||1);d.offset=pos;
   if(was)playDeck(deckId);
   // If the deck has a live keylock worklet, update its pitch inversion
   // so the harmonic content stays at the original pitch. 1/r cancels the
@@ -3406,7 +3406,8 @@ function setupKeyboard(){
 function nudgeTempo(d,pct){
   const dk=decks[d];if(!dk)return;
   dk.tempo=Math.max(-50,Math.min(50,(dk.tempo||0)+pct));
-  const newRate=1+dk.tempo/100;
+  const newRate=(1+dk.tempo/100)*(dk.rpmScale||1);
+  dk.playbackRate=newRate;
   if(dk.source&&dk.source.playbackRate)dk.source.playbackRate.value=newRate;
   const vEl=document.getElementById(`tempoVal-${d}`);if(vEl)vEl.textContent=(dk.tempo>=0?'+':'')+dk.tempo.toFixed(2)+'%';
   const bigEl=document.getElementById(`tempoBig-${d}`);if(bigEl)bigEl.textContent=(dk.tempo>=0?'+':'')+dk.tempo.toFixed(2)+'%';
@@ -7190,8 +7191,11 @@ function setupVinylTurntables(){
     if(!vinyl||!platter||!tonearm)return;
     const playing=!!(d&&d.playing);
     const pitch=d?d.tempo:0;
-    const rpm=33*(1+pitch/100);
-    const dur=(60/rpm).toFixed(3);
+    const rpmScale=(d&&d.rpmScale)||1;
+    // Base spin RPM follows the selected 33⅓ or 45 setting + pitch
+    const baseRpm=33.333*rpmScale;
+    const rpm=baseRpm*(1+pitch/100);
+    const dur=(60/Math.max(0.1,rpm)).toFixed(3);
     vinyl.style.setProperty('--tt-spin',dur+'s');
     vinyl.classList.toggle('spinning',playing);
     platter.classList.toggle('spinning',playing);
@@ -7199,7 +7203,7 @@ function setupVinylTurntables(){
     const bpmEl=document.getElementById(`tt${side}-bpm`);
     if(bpmEl){
       const src=d&&d.track&&d.track.bpm?+d.track.bpm:baseBpm[side];
-      bpmEl.textContent=(src*(1+pitch/100)).toFixed(1);
+      bpmEl.textContent=(src*(1+pitch/100)*rpmScale).toFixed(1);
     }
   }
 
@@ -7276,11 +7280,24 @@ function setupVinylTurntables(){
         else if(e.key===' '||e.key==='Enter'){setValue(0);e.preventDefault();}
       });
     })();
-    // RPM (visual only)
+    // RPM 33⅓ / 45 — drives the deck rpmScale so the audio actually
+    // speeds up by 35.4 % when 45 is selected (45/33⅓ = 1.354), like a
+    // real turntable. The pitch slider stacks on top.
     document.querySelectorAll(`#tt${side} .tt-rpm-btn`).forEach(btn=>{
       btn.addEventListener('click',()=>{
         document.querySelectorAll(`#tt${side} .tt-rpm-btn`).forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
+        const rpm=parseInt(btn.dataset.rpm,10)||33;
+        const d=decks&&decks[dId];
+        if(d){
+          d.rpmScale=(rpm===45)?(45/33.333333):1;
+          const newRate=(1+(d.tempo||0)/100)*d.rpmScale;
+          d.playbackRate=newRate;
+          if(d.source&&d.source.playbackRate&&typeof audioCtx!=='undefined'&&audioCtx){
+            try{d.source.playbackRate.setTargetAtTime(newRate,audioCtx.currentTime,0.04);}catch(_){}
+          }
+        }
+        applySpin(side);
       });
     });
     // Bottom actions → real cue/sync/loop/fx
@@ -7292,15 +7309,25 @@ function setupVinylTurntables(){
           btn.classList.add('armed');setTimeout(()=>btn.classList.remove('armed'),220);
         }else if(k==='sync'){
           const d=decks&&decks[dId];if(!d||!d.track)return;
-          const other=decks[dId==='A'?'B':'A'];
-          if(other&&other.track&&other.track.bpm&&d.track.bpm){
-            const pct=((other.track.bpm*(1+other.tempo/100))/d.track.bpm-1)*100;
-            const clamped=Math.max(-8,Math.min(8,pct));
-            if(typeof setTempo==='function')setTempo(dId,clamped);
-            const p=document.getElementById(`tt${side}-pitch`);
-            const pv=document.getElementById(`tt${side}-pitch-val`);
-            if(p)p.value=clamped;
-            if(pv)pv.textContent=(clamped>=0?'+':'')+clamped.toFixed(2)+'%';
+          // Delegate to the main syncDeck helper — it handles all 4
+          // decks (closest playing, then any loaded), phase alignment
+          // and tempo-range clamping. Then mirror the resulting
+          // tempo into the turntable's pitch slider.
+          if(typeof syncDeck==='function'){
+            const ok=syncDeck(dId);
+            if(ok){
+              const t=decks[dId].tempo||0;
+              const p=document.getElementById(`tt${side}-pitch`);
+              const pv=document.getElementById(`tt${side}-pitch-val`);
+              const thumb=document.getElementById(`tt${side}-pitch-thumb`);
+              if(p)p.value=t;
+              if(pv)pv.textContent=(t>=0?'+':'')+t.toFixed(2)+'%';
+              if(thumb){
+                const pct=(t-(-8))/16;
+                thumb.style.top=((1-pct)*100)+'%';
+                thumb.setAttribute('aria-valuenow',t);
+              }
+            }
           }
           btn.classList.add('active');setTimeout(()=>btn.classList.remove('active'),600);
           applySpin(side);
@@ -7348,7 +7375,7 @@ function setupVinylTurntables(){
         vinyl.style.transform=`rotate(${manualDeg}deg)`;
         const d=deck(side);
         if(bending&&d&&d.source&&typeof audioCtx!=='undefined'&&audioCtx){
-          const orig=1+((d.tempo||0)/100);
+          const orig=(1+((d.tempo||0)/100))*(d.rpmScale||1);
           const bend=1+(vel*160);                         // scale velocity to rate
           const clamped=Math.max(-2.5,Math.min(2.5,bend))*orig;
           try{d.source.playbackRate.setTargetAtTime(Math.abs(clamped)<0.02?0.02:clamped,audioCtx.currentTime,0.008);}catch(_){}
@@ -7360,7 +7387,7 @@ function setupVinylTurntables(){
         vinyl.classList.remove('scratching');
         const d=deck(side);
         if(bending&&d&&d.source&&typeof audioCtx!=='undefined'&&audioCtx){
-          const orig=1+((d.tempo||0)/100);
+          const orig=(1+((d.tempo||0)/100))*(d.rpmScale||1);
           try{d.source.playbackRate.setTargetAtTime(orig,audioCtx.currentTime,0.04);}catch(_){}
         }
         bending=false;
@@ -7552,30 +7579,65 @@ function setupVinylTurntables(){
     // request. The mixer channel fader for this deck is the source of
     // truth and any change there is still reflected via the main engine.)
 
-    // SEEK on the progress bar
+    // SEEK + drag-to-scrub on the progress bar
     const bar=document.getElementById(`tt${side}-bar`);
     if(bar){
-      bar.addEventListener('click',e=>{
+      let scrubbing=false;
+      const seekFromEvent=(e)=>{
         const deck=(typeof decks!=='undefined')?decks[d]:null;
         if(!deck||!deck.buffer)return;
         const rect=bar.getBoundingClientRect();
         const frac=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
         const target=frac*(deck.buffer.duration||0);
         if(typeof seekDeck==='function')seekDeck(d,target);
+      };
+      bar.addEventListener('pointerdown',e=>{
+        e.preventDefault();
+        scrubbing=true;
+        bar.classList.add('scrubbing');
+        try{bar.setPointerCapture(e.pointerId);}catch(_){}
+        seekFromEvent(e);
       });
+      bar.addEventListener('pointermove',e=>{
+        if(!scrubbing)return;
+        seekFromEvent(e);
+      });
+      const stopScrub=(e)=>{
+        if(!scrubbing)return;
+        scrubbing=false;
+        bar.classList.remove('scrubbing');
+        try{bar.releasePointerCapture(e.pointerId);}catch(_){}
+      };
+      bar.addEventListener('pointerup',stopScrub);
+      bar.addEventListener('pointercancel',stopScrub);
     }
 
-    // HOT CUES 1-4 — bridge to the main hot-cue handler
+    // HOT CUES 1-4 — bridge to the main hot-cue handler.
+    // Single click: set at current position if empty, otherwise jump.
+    // Right-click or double-click: clear the cue.
     document.querySelectorAll(`[data-tt-hc="${side}"] .tt-pro-hc`).forEach(pad=>{
       pad.addEventListener('click',()=>{
         const n=parseInt(pad.dataset.hc,10);
-        // Single-click: set at current position if empty, otherwise jump.
-        // Shift-click: clear.
         if(typeof triggerHotCue==='function'){
           window.event&&(window.event._fromVinyl=true);
           triggerHotCue(d,n);
         }
       });
+      const clearCue=(e)=>{
+        e.preventDefault();
+        const dk=decks&&decks[d];if(!dk)return;
+        const n=pad.dataset.hc;
+        if(dk.hotCues&&dk.hotCues[n]!=null){
+          delete dk.hotCues[n];
+          pad.classList.remove('set');
+          // Mirror to the main deck cue-btn so both UIs stay in sync
+          const mainBtn=document.querySelector(`.hot-cues[data-deck="${d}"] .cue-btn[data-cue="${n}"]`);
+          if(mainBtn)mainBtn.classList.remove('active');
+          toast&&toast(`Cue ${n} cleared`,'info');
+        }
+      };
+      pad.addEventListener('contextmenu',clearCue);
+      pad.addEventListener('dblclick',clearCue);
     });
 
     // ── Transport nav row: ⏮ / ◀◀4 / ◀1 / SET CUE / 1▶ / 4▶▶ / ↩CUE
