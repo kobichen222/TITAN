@@ -207,7 +207,7 @@ function buildMixerHTML(){
   </div>
   <div class="channels">${['A','B','C','D'].map((d,i)=>`
     <div class="channel">
-      <div class="channel-label">CH ${i+1}</div>
+      <div class="channel-label">CH ${d}</div>
       <div class="knob-wrap"><div class="knob small" data-knob="trim-${d}"><div class="knob-indicator"></div></div><span class="knob-label">TRIM</span></div>
       <div class="knob-wrap"><div class="knob small" data-knob="hi-${d}"><div class="knob-indicator"></div></div><span class="knob-label">HI</span></div>
       <div class="knob-wrap"><div class="knob small" data-knob="mid-${d}"><div class="knob-indicator"></div></div><span class="knob-label">MID</span></div>
