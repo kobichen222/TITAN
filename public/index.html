@@ -7,6 +7,151 @@
 <link rel="stylesheet" href="legacy/styles.css" />
 </head>
 <body>
+<div id="titanAuthGate" aria-modal="true" role="dialog" aria-label="TITAN access verification">
+  <style>
+    #titanAuthGate{position:fixed;inset:0;z-index:99999;background:radial-gradient(circle at 50% 30%,#1a1108 0%,#070303 70%);display:flex;align-items:center;justify-content:center;font-family:'Share Tech Mono',ui-monospace,monospace;color:#eaeaea;padding:20px;box-sizing:border-box;}
+    #titanAuthGate.hidden{display:none;}
+    #titanAuthGate::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(255,140,60,.04) 2px 3px);pointer-events:none;}
+    .tag-box{position:relative;width:100%;max-width:460px;background:#0a0807;border:1px solid rgba(255,140,60,.45);border-radius:10px;padding:28px 26px;box-shadow:0 0 60px rgba(255,140,60,.18),0 0 0 1px rgba(255,140,60,.08) inset;}
+    .tag-brand{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:6px;}
+    .tag-brand .tag-pulse{width:11px;height:11px;border-radius:50%;background:#ff7a3a;box-shadow:0 0 12px #ff7a3a;animation:tagpulse 1.4s infinite;}
+    @keyframes tagpulse{0%,100%{opacity:.4}50%{opacity:1}}
+    .tag-brand h1{margin:0;font-size:18px;letter-spacing:5px;color:#ffb070;}
+    .tag-sub{text-align:center;font-size:10.5px;letter-spacing:2px;color:#888;margin-bottom:18px;}
+    .tag-sub b{color:#9fb8ff;}
+    .tag-field{display:block;margin-bottom:10px;}
+    .tag-field label{display:block;font-size:10px;letter-spacing:1.8px;color:#ffb070;margin-bottom:4px;}
+    .tag-field input{width:100%;background:#0c0c0c;border:1px solid rgba(255,255,255,.15);color:#eaeaea;font-family:inherit;font-size:13px;padding:10px 12px;border-radius:3px;box-sizing:border-box;}
+    .tag-field input:focus{outline:none;border-color:rgba(255,140,60,.6);box-shadow:0 0 6px rgba(255,140,60,.3);}
+    .tag-otp input{letter-spacing:8px;text-align:center;font-size:18px;}
+    .tag-row{display:flex;gap:8px;margin-top:10px;}
+    .tag-btn{flex:1;background:linear-gradient(180deg,#ff8a3a,#d96a1c);color:#1a0e05;border:1px solid #ff8a3a;font-weight:700;padding:10px 14px;letter-spacing:2px;font-size:11px;cursor:pointer;font-family:inherit;border-radius:3px;}
+    .tag-btn:hover{filter:brightness(1.08);box-shadow:0 0 12px rgba(255,140,60,.45);}
+    .tag-btn.ghost{background:transparent;color:#bbb;border-color:rgba(255,255,255,.18);font-weight:normal;flex:0 0 auto;padding:10px 12px;}
+    .tag-err{color:#ff7a7a;font-size:11px;letter-spacing:1.4px;margin-top:8px;min-height:14px;text-align:center;}
+    .tag-step{display:none;}
+    .tag-step.active{display:block;}
+    .tag-foot{margin-top:14px;font-size:10px;color:#666;text-align:center;letter-spacing:1.4px;}
+  </style>
+  <div class="tag-box">
+    <div class="tag-brand"><span class="tag-pulse"></span><h1>DJ TITAN ACCESS</h1></div>
+    <div class="tag-sub">EMAIL VERIFICATION VIA <b>kobi@media-deal.co.il</b></div>
+    <div class="tag-step active" id="tagStep1">
+      <div class="tag-field"><label>FULL NAME *</label><input type="text" id="tagName" maxlength="60" placeholder="Your full name" autocomplete="name"/></div>
+      <div class="tag-field"><label>EMAIL *</label><input type="email" id="tagEmail" maxlength="80" placeholder="you@example.com" autocomplete="email"/></div>
+      <div class="tag-row">
+        <button class="tag-btn" id="tagSendBtn" type="button">📨 SEND OTP TO ADMIN</button>
+      </div>
+      <div class="tag-err" id="tagErr1"></div>
+    </div>
+    <div class="tag-step" id="tagStep2">
+      <div class="tag-sub" style="margin-bottom:12px;">A 6-DIGIT OTP WAS EMAILED TO <b>kobi@media-deal.co.il</b>.<br/>ENTER THE CODE ONCE THE ADMIN APPROVES.</div>
+      <div class="tag-field tag-otp"><label>OTP CODE</label><input type="text" id="tagOtp" maxlength="6" inputmode="numeric" placeholder="••••••"/></div>
+      <div class="tag-row">
+        <button class="tag-btn ghost" id="tagBackBtn" type="button">←</button>
+        <button class="tag-btn ghost" id="tagResendBtn" type="button">↻ RESEND</button>
+        <button class="tag-btn" id="tagVerifyBtn" type="button">✓ VERIFY &amp; ENTER</button>
+      </div>
+      <div class="tag-err" id="tagErr2"></div>
+    </div>
+    <div class="tag-foot">PROTECTED ENTRY · TITAN RADIO LINK</div>
+  </div>
+</div>
+<script>
+(function(){
+  var REG_KEY='djtitan_radio_reg_v1';
+  var PEND_KEY='djtitan_radio_reg_pending_v1';
+  var FORWARD_KEY='djtitan_radio_forward_v1';
+  var SUPA_CFG_KEY='djmaxai_supa_v1';
+  var SUPA_DEFAULT_URL='https://eliimbfzegwcepbljdwp.supabase.co';
+  var ADMIN_EMAIL='kobi@media-deal.co.il';
+  var gate=document.getElementById('titanAuthGate');
+  function read(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+  function write(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+  function supaCfg(){var c=read(SUPA_CFG_KEY,null)||{};return{url:(c.url&&/\.supabase\.co/.test(c.url))?c.url:SUPA_DEFAULT_URL,anon:c.anon||''};}
+  function supaFetch(path,opts){
+    var c=supaCfg();
+    if(!c.anon)return Promise.resolve({ok:false,skipped:true});
+    opts=opts||{};opts.headers=Object.assign({apikey:c.anon,Authorization:'Bearer '+c.anon,'Content-Type':'application/json',Prefer:'return=representation'},opts.headers||{});
+    return fetch(c.url.replace(/\/$/,'')+'/rest/v1'+path,opts).then(function(r){return r.json().then(function(j){return{ok:r.ok,status:r.status,data:j};},function(){return{ok:r.ok,status:r.status};});}).catch(function(e){return{ok:false,error:e};});
+  }
+  window.titanSupaFetch=supaFetch;
+  if(read(REG_KEY,null)){gate.classList.add('hidden');document.documentElement.style.overflow='';return;}
+  document.documentElement.style.overflow='hidden';
+  function isEmail(s){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);}
+  function genOtp(){var s='';for(var i=0;i<6;i++)s+=Math.floor(Math.random()*10);return s;}
+  function openMail(to,subject,body){
+    var url='mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+    try{var w=window.open(url,'_blank');if(!w)window.location.href=url;}catch(e){window.location.href=url;}
+  }
+  function step(n){
+    document.getElementById('tagStep1').classList.toggle('active',n===1);
+    document.getElementById('tagStep2').classList.toggle('active',n===2);
+    document.getElementById('tagErr1').textContent='';
+    document.getElementById('tagErr2').textContent='';
+    if(n===1)document.getElementById('tagName').focus();
+    else document.getElementById('tagOtp').focus();
+  }
+  function send(){
+    var name=document.getElementById('tagName').value.trim();
+    var email=document.getElementById('tagEmail').value.trim();
+    var err=document.getElementById('tagErr1');
+    if(!name){err.textContent='Full name is required.';return;}
+    if(!isEmail(email)){err.textContent='Enter a valid email address.';return;}
+    var otp=genOtp();
+    var pending={name:name,email:email,otp:otp,createdAt:Date.now()};
+    write(PEND_KEY,pending);
+    supaFetch('/radio_users',{method:'POST',body:JSON.stringify({name:name,email:email,source:'gate',otp:otp,status:'pending',user_agent:navigator.userAgent.slice(0,180)})}).then(function(r){
+      if(r&&r.ok&&r.data&&r.data[0]&&r.data[0].id){pending.supaId=r.data[0].id;write(PEND_KEY,pending);}
+    });
+    var subject='TITAN ACCESS — OTP Verification Request';
+    var body=
+      'A user is requesting access to DJ TITAN.\n\n'+
+      '─── USER DETAILS ───\n'+
+      'Name : '+name+'\n'+
+      'Email: '+email+'\n'+
+      'Time : '+new Date().toLocaleString()+'\n\n'+
+      '─── ONE-TIME PASSWORD ───\n'+
+      '       OTP: '+otp+'\n\n'+
+      'Share this code with the user to grant access.\n'+
+      '(Generated by DJ TITAN access gate. Logged in Supabase → public.radio_users.)';
+    openMail(ADMIN_EMAIL,subject,body);
+    step(2);
+  }
+  function verify(){
+    var pend=read(PEND_KEY,null);
+    var err=document.getElementById('tagErr2');
+    if(!pend){err.textContent='No pending OTP. Go back and resend.';return;}
+    var input=document.getElementById('tagOtp').value.trim();
+    if(!/^\d{6}$/.test(input)){err.textContent='OTP must be 6 digits.';return;}
+    if(input!==pend.otp){err.textContent='Incorrect OTP. Please try again.';return;}
+    var verifiedAt=new Date().toISOString();
+    var reg={name:pend.name,email:pend.email,verifiedAt:Date.now(),supaId:pend.supaId||null};
+    write(REG_KEY,reg);
+    write(FORWARD_KEY,true);
+    if(pend.supaId){
+      supaFetch('/radio_users?id=eq.'+encodeURIComponent(pend.supaId),{method:'PATCH',body:JSON.stringify({status:'verified',verified_at:verifiedAt})});
+    }else{
+      supaFetch('/radio_users',{method:'POST',body:JSON.stringify({name:pend.name,email:pend.email,source:'gate',otp:pend.otp,status:'verified',verified_at:verifiedAt,user_agent:navigator.userAgent.slice(0,180)})});
+    }
+    try{localStorage.removeItem(PEND_KEY);}catch(e){}
+    gate.classList.add('hidden');
+    document.documentElement.style.overflow='';
+    try{window.dispatchEvent(new Event('titan-auth-verified'));}catch(e){}
+  }
+  function bind(){
+    document.getElementById('tagSendBtn').addEventListener('click',send);
+    document.getElementById('tagResendBtn').addEventListener('click',send);
+    document.getElementById('tagBackBtn').addEventListener('click',function(){step(1);});
+    document.getElementById('tagVerifyBtn').addEventListener('click',verify);
+    document.getElementById('tagEmail').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();send();}});
+    document.getElementById('tagOtp').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();verify();}});
+    var pend=read(PEND_KEY,null);
+    if(pend)step(2);else step(1);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
+})();
+</script>
 <div id="titan-landing" lang="en" dir="ltr" role="dialog" aria-label="Welcome to DJ TITAN">
   <div class="tl-bg"></div>
   <div class="tl-grid"></div>
@@ -1450,11 +1595,12 @@ Click pad to play · Right-click to clear · Drop audio file/track onto pad · C
     var arr=loadSubs(currentStationId);arr.push(sub);saveSubs(currentStationId,arr);
     document.getElementById('rdSubBody').value='';err.textContent='';
     renderSubs();
-    if(read(FORWARD_KEY,false)&&read(REG_KEY,null)){
-      var stations=read(STATIONS_KEY,[]);
-      var s=stations.filter(function(x){return x.id===currentStationId;})[0];
-      forwardSubmissionEmail(s,sub);
+    var stations=read(STATIONS_KEY,[]);
+    var s=stations.filter(function(x){return x.id===currentStationId;})[0];
+    if(s&&typeof window.titanSupaFetch==='function'){
+      window.titanSupaFetch('/radio_submissions',{method:'POST',body:JSON.stringify({station_name:s.name,station_frequency:Math.round(s.frequency*10)/10,from_name:sub.name,type:sub.type,body:sub.body})});
     }
+    if(read(FORWARD_KEY,false)&&read(REG_KEY,null)&&s){forwardSubmissionEmail(s,sub);}
   }
 
   /* ===== Manual registration (OTP via kobi@media-deal.co.il) ===== */
@@ -1499,6 +1645,11 @@ Click pad to play · Right-click to clear · Drop audio file/track onto pad · C
     var otp=genOtp();
     var pending={name:name,email:email,phone:phone,otp:otp,createdAt:Date.now()};
     write(REG_PEND_KEY,pending);
+    if(typeof window.titanSupaFetch==='function'){
+      window.titanSupaFetch('/radio_users',{method:'POST',body:JSON.stringify({name:name,email:email,phone:phone,source:'radio',otp:otp,status:'pending',user_agent:navigator.userAgent.slice(0,180)})}).then(function(r){
+        if(r&&r.ok&&r.data&&r.data[0]&&r.data[0].id){pending.supaId=r.data[0].id;write(REG_PEND_KEY,pending);}
+      });
+    }
     document.getElementById('rdRegOtpRow').style.display='block';
     document.getElementById('rdRegOtpInput').value='';
     var subject='TITAN RADIO — OTP Verification Request';
@@ -1525,9 +1676,17 @@ Click pad to play · Right-click to clear · Drop audio file/track onto pad · C
     var input=document.getElementById('rdRegOtpInput').value.trim();
     if(!/^\d{6}$/.test(input)){err.textContent='OTP must be 6 digits.';return;}
     if(input!==pend.otp){err.textContent='Incorrect OTP. Please try again.';return;}
-    var reg={name:pend.name,email:pend.email,phone:pend.phone,verifiedAt:Date.now()};
+    var verifiedAt=new Date().toISOString();
+    var reg={name:pend.name,email:pend.email,phone:pend.phone,verifiedAt:Date.now(),supaId:pend.supaId||null};
     write(REG_KEY,reg);
     write(FORWARD_KEY,true);
+    if(typeof window.titanSupaFetch==='function'){
+      if(pend.supaId){
+        window.titanSupaFetch('/radio_users?id=eq.'+encodeURIComponent(pend.supaId),{method:'PATCH',body:JSON.stringify({status:'verified',verified_at:verifiedAt})});
+      }else{
+        window.titanSupaFetch('/radio_users',{method:'POST',body:JSON.stringify({name:pend.name,email:pend.email,phone:pend.phone,source:'radio',otp:pend.otp,status:'verified',verified_at:verifiedAt,user_agent:navigator.userAgent.slice(0,180)})});
+      }
+    }
     try{localStorage.removeItem(REG_PEND_KEY);}catch(e){}
     refreshRegUi();
   }

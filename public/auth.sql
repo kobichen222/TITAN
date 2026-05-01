@@ -95,6 +95,64 @@ create policy "sessions_admin" on public.user_sessions
 -- update public.profiles set role = 'admin' where email = 'you@example.com';
 
 -- ============================================================
+-- TITAN RADIO — manual OTP registration log (anon-writable)
+-- Stores each user that completed the email-OTP gate, so the admin
+-- (kobi@media-deal.co.il) has a permanent record of every entry.
+-- ============================================================
+create table if not exists public.radio_users (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  email text not null,
+  phone text,
+  source text not null default 'gate',          -- 'gate' (home) or 'radio' (tab)
+  otp text,                                     -- 6-digit code that was sent
+  status text not null default 'pending'        -- 'pending' | 'verified'
+    check (status in ('pending','verified')),
+  user_agent text,
+  created_at timestamptz not null default now(),
+  verified_at timestamptz
+);
+create index if not exists radio_users_email_idx on public.radio_users(email);
+create index if not exists radio_users_status_idx on public.radio_users(status);
+
+alter table public.radio_users enable row level security;
+
+-- Anonymous insert (so the static client can log entries with the anon key).
+drop policy if exists "radio_users_anon_insert" on public.radio_users;
+create policy "radio_users_anon_insert" on public.radio_users
+  for insert to anon, authenticated with check (true);
+
+-- Anonymous self-update by email + otp (lets the gate flip pending → verified).
+drop policy if exists "radio_users_anon_update" on public.radio_users;
+create policy "radio_users_anon_update" on public.radio_users
+  for update to anon, authenticated using (true) with check (true);
+
+-- Admins can read every row in the dashboard.
+drop policy if exists "radio_users_admin_read" on public.radio_users;
+create policy "radio_users_admin_read" on public.radio_users
+  for select using (public.current_role_is('admin'));
+
+-- ============================================================
+-- TITAN RADIO — submissions to user-built stations
+-- ============================================================
+create table if not exists public.radio_submissions (
+  id uuid primary key default gen_random_uuid(),
+  station_name text not null,
+  station_frequency numeric(6,1) not null,
+  from_name text,
+  type text not null check (type in ('request','shoutout','message')),
+  body text not null,
+  created_at timestamptz not null default now()
+);
+alter table public.radio_submissions enable row level security;
+drop policy if exists "radio_subs_anon_insert" on public.radio_submissions;
+create policy "radio_subs_anon_insert" on public.radio_submissions
+  for insert to anon, authenticated with check (true);
+drop policy if exists "radio_subs_admin_read" on public.radio_submissions;
+create policy "radio_subs_admin_read" on public.radio_submissions
+  for select using (public.current_role_is('admin'));
+
+-- ============================================================
 -- REQUIRED DASHBOARD STEPS AFTER RUNNING THIS SQL:
 -- 1. Authentication → Providers → Enable Google
 --    - Paste your Google OAuth Client ID + Secret (from console.cloud.google.com)
