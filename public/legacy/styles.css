@@ -11111,7 +11111,11 @@ body.vinyl-all-4 .vx-ch{padding:8px 5px;gap:8px}
 body.vinyl-all-4 .vx-ch-head{font-size:11px;letter-spacing:1.5px}
 body.vinyl-all-4 .vx-knob{width:38px;height:38px}
 body.vinyl-all-4 .vx-knob-lbl{font-size:9px;letter-spacing:1px}
-body.vinyl-all-4 .vx-fader{height:160px}
+/* The fader element is rotated -90deg, so its visible HEIGHT is
+   driven by `width` and the offsets must match. min-height on the
+   wrap reserves the slot in the column flow. */
+body.vinyl-all-4 .vx-fader-wrap{min-height:180px}
+body.vinyl-all-4 .vx-fader{width:160px;left:calc(50% - 80px);top:calc(50% - 11px)}
 body.vinyl-all-4 .vx-cue{padding:5px 6px;font-size:10px;letter-spacing:1px}
 
 /* Crossfader in ALL 4 still labels A↔B because that's how the
