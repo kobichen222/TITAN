@@ -10,7 +10,7 @@ let stats={totalTime:0,tracksPlayed:0,fxCount:0,cueCount:0,mixHistory:[],session
 let settings={theme:'dark',rgbAmbient:true,phraseMarkers:true,limiter:true,autoGain:false,autoSave:true};
 let aiDJ={active:false,style:'smooth',transLen:16,bpmTol:6,order:'energy-flow',transitionTimer:null};
 
-function createDeck(id){return{id,track:null,playing:false,startTime:0,offset:0,tempo:0,playbackRate:1,tempoRange:8,cuePoint:0,hotCues:{},savedLoops:{},loop:{active:false,start:null,end:null,loopInSet:false},keylock:false,quantize:false,slip:false,slipReturn:null,reverse:false,sync:false,source:null,volumeGain:null,trimGain:null,channelGain:null,eqLow:null,eqLoMid:null,eqHiMid:null,eqHigh:null,killLow:false,killMid:false,killHi:false,compressor:null,saturation:null,colorFilter:null,buffer:null,volume:0,eq:{low:0,loMid:0,hiMid:0,high:0},trim:1,analyser:null,padMode:'cue',waveZoom:1,energy:0,beatgrid:null,phraseOffset:0};}
+function createDeck(id){return{id,track:null,playing:false,startTime:0,offset:0,tempo:0,playbackRate:1,tempoRange:8,cuePoint:0,hotCues:{},savedLoops:{},loop:{active:false,start:null,end:null,loopInSet:false},keylock:false,quantize:false,slip:false,slipReturn:null,reverse:false,sync:false,source:null,volumeGain:null,trimGain:null,channelGain:null,eqLow:null,eqLoMid:null,eqHiMid:null,eqHigh:null,killLow:false,killMid:false,killHi:false,compressor:null,saturation:null,colorFilter:null,buffer:null,volume:1,eq:{low:0,loMid:0,hiMid:0,high:0},trim:1,analyser:null,padMode:'cue',waveZoom:1,energy:0,beatgrid:null,phraseOffset:0};}
 const decks={A:createDeck('A'),B:createDeck('B'),C:createDeck('C'),D:createDeck('D')};
 const mixerState={crossfader:0.5,xfaderCurve:'smooth',master:0.9,booth:0.7,balance:0,hpMix:0.5,hpVol:0.7,hpCue:{A:false,B:false,C:false,D:false},micOn:false,micVol:0,micHi:0,micLow:0,fx:{type:'delay',channel:'master',beat:1,level:0.5,on:false},colorFx:{type:'filter',A:0,B:0,C:0,D:0},xfaderAssign:{A:'A',B:'B',C:'THRU',D:'THRU'},isRecording:false,sceneFx:{type:null,depth:0.5,xpadX:0.5,xpadY:0.5,xpadActive:false},isolator:{low:0,mid:0,hi:0}};
 
@@ -300,10 +300,11 @@ function setupDeck(id){
   d.saturation.curve=curve;d.saturation.oversample='2x';
   // Color FX
   d.colorFilter=audioCtx.createBiquadFilter();d.colorFilter.type='allpass';d.colorFilter.frequency.value=1000;
-  // Volume + channel + analyser — volumeGain starts at 0 to match the
-  // mixer fader's bottom-default position. setY + playDeck ramp it to
-  // the tapered target on first user input.
-  d.volumeGain=audioCtx.createGain();d.volumeGain.gain.value=0;
+  // Volume + channel + analyser — decks start at unity gain so they
+  // play independently of the mixer's channel fader (the deck has its
+  // own internal output level). The channel fader still works; it
+  // just starts at the top instead of the bottom.
+  d.volumeGain=audioCtx.createGain();d.volumeGain.gain.value=1;
   d.channelGain=audioCtx.createGain();d.channelGain.gain.value=1;
   d.analyser=audioCtx.createAnalyser();d.analyser.fftSize=512;
   // Chain: trim → low → loMid → hiMid → high → compressor → saturation → color → volume → channel → master
@@ -2735,6 +2736,19 @@ function attachEvents(){
     const w=document.querySelector(`.fader-wrap[data-fader="${d}"]`);
     if(!w)return;
     const h=document.getElementById(`fader-${d}`);let drag=false;let pendingCy=null,rafId=null;
+    // Initial handle position — top of travel — to match the new
+    // unity-gain default. The deck plays at full level out of the box;
+    // dragging this fader DOWN now attenuates instead of enables.
+    if(h){
+      const _placeAtTop=()=>{
+        const r=w.getBoundingClientRect();
+        const handleH=h.offsetHeight||24;
+        const travel=Math.max(1,r.height-handleH);
+        h.style.bottom=`${travel}px`;
+      };
+      // Defer one frame so the wrap has its final layout height
+      requestAnimationFrame(_placeAtTop);
+    }
     /* Click → volume mapping. Full range, no dead zones:
          click at top of wrap        → v=1 (max)
          click at bottom of wrap     → v=0 (silent)
@@ -10771,442 +10785,27 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 
 /* ========================================================
-   TITAN STADIUM — DJ-on-stage festival view
-   Generates the crowd, lights, lasers, stars + pyro and
-   keeps the scene BPM-locked to the master tempo.
+   TITAN BOOTH LIGHT — LED halos around deck + mixer buttons
+   Toggles a body class that lights every interactive button on
+   the decks and mixer with a soft warm LED ring. Persists.
    ======================================================== */
 (function(){
-  const LIGHT_COUNT  = 14;
-  const LASER_COUNT  = 24;
-  const STAR_COUNT   = 90;
-  const PYRO_COUNT   = 28;
-  const COLORS = ['#ff7a1a','#00d4ff','#ff2e8a','#9c55ff','#ffd400','#7cff7a'];
-
-  // Crowd: total ~ 50,000 people. We render the dense back rows as
-  // tiny dots/heads (cheap) and the foreground as full silhouettes
-  // with arms + dance motion. Phones are a separate twinkling layer.
-  // Counts are tuned so even mid-tier laptops hit smooth 30-60 fps.
-  const AGENT_COUNT  = 12000;   // animated detailed silhouettes
-  const FAR_COUNT    = 38000;   // tiny distant dots (statically rendered, redrawn rarely)
-  const PHONE_COUNT  = 2200;
-
-  let agents = null;            // foreground/mid silhouettes
-  let farAgents = null;         // distant heads
-  let phones = null;            // lit phone dots
-  let bpm = 128;
-  let beatStart = performance.now();
-  let rafId = 0;
-  let lastFarDraw = 0;
-  let resizeQ = false;
-
-  function rand(a,b){return a + Math.random()*(b-a)}
-
-  function buildScene(){
-    const stadium = document.getElementById('titanStadium');
-    if(!stadium || stadium.dataset.built === '1') return;
-    stadium.dataset.built = '1';
-
-    const stars = stadium.querySelector('#tsStars');
-    for(let i=0;i<STAR_COUNT;i++){
-      const s = document.createElement('i');
-      s.style.left = (Math.random()*100)+'%';
-      s.style.top  = (Math.random()*100)+'%';
-      s.style.animationDelay = (Math.random()*4)+'s';
-      s.style.opacity = (0.3 + Math.random()*0.7).toFixed(2);
-      stars.appendChild(s);
-    }
-
-    const lights = stadium.querySelector('#tsLights');
-    for(let i=0;i<LIGHT_COUNT;i++){
-      const L = document.createElement('div');
-      L.className = 'ts-light';
-      const xPct = (i/(LIGHT_COUNT-1))*100;
-      L.style.left = `calc(${xPct}% - 9vw)`;
-      L.style.setProperty('--ts-c', COLORS[i % COLORS.length]);
-      L.style.setProperty('--ts-sweep', (5 + (i%4))+'s');
-      L.style.animationDelay = ((i*0.18)%2.4)+'s';
-      lights.appendChild(L);
-    }
-
-    const lasers = stadium.querySelector('#tsLasers');
-    ['left','right'].forEach(side=>{
-      const fan = document.createElement('div');
-      fan.className = `ts-laser-fan ${side}`;
-      for(let i=0;i<LASER_COUNT;i++){
-        const beam = document.createElement('div');
-        beam.className = 'ts-laser';
-        const ang = -22 + (44 * (i/(LASER_COUNT-1)));
-        beam.style.transform = `rotate(${ang}deg)`;
-        beam.style.setProperty('--ts-lc', COLORS[(i + (side==='left'?0:3)) % COLORS.length]);
-        fan.appendChild(beam);
-      }
-      lasers.appendChild(fan);
-    });
-
-    const pyro = stadium.querySelector('#tsPyro');
-    for(let i=0;i<PYRO_COUNT;i++){
-      const c = document.createElement('i');
-      c.style.left = (Math.random()*100)+'%';
-      c.style.setProperty('--c', COLORS[i % COLORS.length]);
-      c.style.setProperty('--td', (4 + Math.random()*6).toFixed(1)+'s');
-      c.style.setProperty('--dl', (Math.random()*8).toFixed(1)+'s');
-      pyro.appendChild(c);
-    }
-
-    const exitBtn = document.getElementById('tsExitBtn');
-    if(exitBtn) exitBtn.addEventListener('click', exitStadium);
-
-    initCrowd();
-    window.addEventListener('resize', ()=>{ resizeQ = true; });
+  const KEY = 'titanBoothLight';
+  function setLamp(on){
+    document.body.classList.toggle('booth-light', !!on);
+    document.getElementById('boothLightBtn')?.classList.toggle('active', !!on);
+    try{ localStorage.setItem(KEY, on ? '1' : '0'); }catch(_){}
   }
-
-  function initCrowd(){
-    const c1 = document.getElementById('tsCrowdCanvas');
-    const c2 = document.getElementById('tsPhonesCanvas');
-    if(!c1 || !c2) return;
-    sizeCanvases();
-
-    // Build foreground / mid silhouettes
-    agents = new Array(AGENT_COUNT);
-    for(let i=0;i<AGENT_COUNT;i++){
-      // depth z in [0..1]: 0 = front rail, 1 = far back
-      // front bias so front rows feel packed
-      const z = Math.pow(Math.random(), 1.4);
-      // Dance archetype: 0=jump, 1=sway, 2=arms-up, 3=fist-pump, 4=phone-up
-      let dance;
-      const r = Math.random();
-      if(r<0.35) dance=0; else if(r<0.55) dance=1;
-      else if(r<0.78) dance=2; else if(r<0.92) dance=3; else dance=4;
-      agents[i] = {
-        x: Math.random(),                // 0..1 normalized
-        z,
-        dance,
-        phase: Math.random()*Math.PI*2,  // off-beat offset
-        beatOff: (Math.random()*0.3) - 0.15,
-        wob:   rand(0.85, 1.15),         // body width ratio
-        tall:  rand(0.92, 1.10),         // body height ratio
-        sway:  rand(-1, 1),              // sway side bias
-        skin:  Math.random() < 0.55 ? 0 : 1,  // 0 silhouette, 1 lit-rim
-      };
-    }
-    // Sort back-to-front so foreground draws over distant rows
-    agents.sort((a,b)=>b.z-a.z);
-
-    // Distant dots
-    farAgents = new Array(FAR_COUNT);
-    for(let i=0;i<FAR_COUNT;i++){
-      farAgents[i] = {
-        x: Math.random(),
-        z: 0.9 + Math.random()*0.1,
-        phase: Math.random()*Math.PI*2,
-      };
-    }
-
-    // Phone lights
-    phones = new Array(PHONE_COUNT);
-    for(let i=0;i<PHONE_COUNT;i++){
-      phones[i] = {
-        x: Math.random(),
-        z: Math.pow(Math.random(),1.6),
-        phase: Math.random()*Math.PI*2,
-        twinkle: rand(2,5),
-        hue: 38 + Math.random()*30, // warm yellow/white
-      };
-    }
-
-    // Pre-render the static far layer once
-    drawFarLayer(c1.getContext('2d'));
-    lastFarDraw = performance.now();
-  }
-
-  function sizeCanvases(){
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    ['tsCrowdCanvas','tsPhonesCanvas'].forEach(id=>{
-      const el = document.getElementById(id);
-      if(!el) return;
-      const r = el.getBoundingClientRect();
-      el.width  = Math.max(1, Math.floor(r.width  * dpr));
-      el.height = Math.max(1, Math.floor(r.height * dpr));
-      const ctx = el.getContext('2d');
-      ctx.setTransform(dpr,0,0,dpr,0,0);
-    });
-  }
-
-  // Project an agent's depth (0..1) to (y, scale, alpha)
-  // Front row sits near the bottom of the crowd region; far rows up high near horizon.
-  function project(z, h){
-    // y in pixels: front (z=0) at h*0.95, far (z=1) at h*0.10
-    const y = h * (0.95 - 0.85 * z);
-    // scale: front big, far tiny
-    const scale = (1 - z*0.92);  // 1.0 .. 0.08
-    // alpha attenuates with depth (atmospheric haze)
-    const alpha = 1 - z*0.55;
-    return {y, scale, alpha};
-  }
-
-  function drawFarLayer(ctx){
-    if(!farAgents) return;
-    const c = document.getElementById('tsCrowdCanvas');
-    const w = c.clientWidth, h = c.clientHeight;
-    ctx.clearRect(0,0,w,h);
-    // very small heads, tightly packed
-    for(let i=0;i<farAgents.length;i++){
-      const a = farAgents[i];
-      const {y, scale, alpha} = project(a.z, h);
-      const x = a.x * w;
-      const r = Math.max(0.5, 1.2*scale);
-      ctx.fillStyle = `rgba(2,2,4,${(alpha*0.95).toFixed(3)})`;
-      ctx.fillRect(x-r, y-r*1.6, r*1.7, r*2.6);
-    }
-  }
-
-  function drawAgents(ctx, t){
-    const c = document.getElementById('tsCrowdCanvas');
-    const w = c.clientWidth, h = c.clientHeight;
-
-    const beatLen = 60 / Math.max(40, bpm);            // seconds per beat
-    const tBeat   = ((t - beatStart)/1000) / beatLen;  // beat phase fractional
-
-    // Compositing: full-quality silhouettes
-    for(let i=0;i<agents.length;i++){
-      const a = agents[i];
-      if(a.z > 0.88) continue; // far ones rendered on the static layer
-      const proj = project(a.z, h);
-      const baseY = proj.y, scale = proj.scale, alpha = proj.alpha;
-      const px = a.x * w;
-
-      // Beat phase per agent (with offset)
-      const phase = (tBeat + a.beatOff + a.phase/(Math.PI*2)) % 1;
-      // Bob amplitude — biggest on beat 0
-      const bob = Math.sin(phase*Math.PI*2) * 0.5 + 0.5; // 0..1
-
-      // Body geometry
-      const bodyH = 38 * scale * a.tall;
-      const bodyW = 12 * scale * a.wob;
-      const headR = 4.4 * scale;
-      // Vertical jump — strong for jumpers, milder otherwise
-      let jump = 0;
-      switch(a.dance){
-        case 0: jump = bob * bodyH * 0.55; break;          // big jump
-        case 1: jump = bob * bodyH * 0.10; break;          // sway, low jump
-        case 2: jump = bob * bodyH * 0.32; break;          // arms-up groove
-        case 3: jump = bob * bodyH * 0.40; break;          // fist pump
-        case 4: jump = bob * bodyH * 0.18; break;          // phone-up
-      }
-      const swayX = Math.sin(phase*Math.PI*2 + a.phase) * (a.dance===1 ? bodyW*0.6 : bodyW*0.15) * a.sway;
-      const cy = baseY - jump;
-      const cx = px + swayX;
-
-      // Silhouette color: pure black with slight rim highlight from stage lighting
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = '#000';
-
-      // Torso (trapezoid)
-      ctx.beginPath();
-      ctx.moveTo(cx - bodyW*0.45, cy);
-      ctx.lineTo(cx + bodyW*0.45, cy);
-      ctx.lineTo(cx + bodyW*0.30, cy - bodyH*0.65);
-      ctx.lineTo(cx - bodyW*0.30, cy - bodyH*0.65);
-      ctx.closePath();
-      ctx.fill();
-
-      // Legs hint (two thin rects)
-      ctx.fillRect(cx - bodyW*0.30, cy, bodyW*0.20, bodyH*0.18);
-      ctx.fillRect(cx + bodyW*0.10, cy, bodyW*0.20, bodyH*0.18);
-
-      // Head
-      ctx.beginPath();
-      ctx.arc(cx, cy - bodyH*0.78, headR, 0, Math.PI*2);
-      ctx.fill();
-
-      // Arms based on dance type
-      const shoulderY = cy - bodyH*0.65;
-      const armW = Math.max(1.4, bodyW*0.22);
-      const armH = bodyH*0.55;
-
-      if(a.dance===2 || a.dance===3 || a.dance===4){
-        // Arms raised; angle wobbles with the beat
-        const wob = Math.sin(phase*Math.PI*2)*0.18;
-        const ang = (a.dance===4 ? 0.35 : (a.dance===3 ? 0.55 : 0.25)) + wob;
-        // Left arm
-        ctx.save();
-        ctx.translate(cx - bodyW*0.40, shoulderY);
-        ctx.rotate(-ang);
-        ctx.fillRect(-armW*0.5, -armH, armW, armH);
-        ctx.restore();
-        // Right arm
-        ctx.save();
-        ctx.translate(cx + bodyW*0.40, shoulderY);
-        ctx.rotate(ang);
-        ctx.fillRect(-armW*0.5, -armH, armW, armH);
-        ctx.restore();
-      } else if(a.dance===1){
-        // Sway: arms hang and swing slightly
-        const wob = Math.sin(phase*Math.PI*2 + 0.5) * 0.5;
-        ctx.save(); ctx.translate(cx - bodyW*0.40, shoulderY);
-        ctx.rotate(-0.15 + wob*0.2);
-        ctx.fillRect(-armW*0.5, 0, armW, armH);
-        ctx.restore();
-        ctx.save(); ctx.translate(cx + bodyW*0.40, shoulderY);
-        ctx.rotate(0.15 - wob*0.2);
-        ctx.fillRect(-armW*0.5, 0, armW, armH);
-        ctx.restore();
-      } else {
-        // Jumpers: arms tucked, swing
-        const wob = Math.sin(phase*Math.PI*2)*0.25;
-        ctx.save(); ctx.translate(cx - bodyW*0.40, shoulderY);
-        ctx.rotate(-0.25 + wob);
-        ctx.fillRect(-armW*0.5, 0, armW, armH*0.9);
-        ctx.restore();
-        ctx.save(); ctx.translate(cx + bodyW*0.40, shoulderY);
-        ctx.rotate(0.25 - wob);
-        ctx.fillRect(-armW*0.5, 0, armW, armH*0.9);
-        ctx.restore();
-      }
-
-      // Tiny rim highlight from stage lights, only on closer rows
-      if(a.skin === 1 && a.z < 0.5){
-        ctx.globalAlpha = alpha * 0.35;
-        ctx.fillStyle = a.dance===4 ? '#ffd28a' : '#ff9050';
-        // outline along top of head + shoulders
-        ctx.fillRect(cx - headR, cy - bodyH*0.78 - headR, headR*2, 1.2);
-        ctx.fillRect(cx - bodyW*0.30, shoulderY - 1, bodyW*0.60, 1);
-      }
-    }
-    ctx.globalAlpha = 1;
-  }
-
-  function drawPhones(ctx, t){
-    const c = document.getElementById('tsPhonesCanvas');
-    const w = c.clientWidth, h = c.clientHeight;
-    ctx.clearRect(0,0,w,h);
-    if(!phones) return;
-    const beatLen = 60 / Math.max(40, bpm);
-    const tBeat   = ((t - beatStart)/1000) / beatLen;
-    for(let i=0;i<phones.length;i++){
-      const p = phones[i];
-      const proj = project(p.z, h);
-      const phase = (tBeat + p.phase/(Math.PI*2)) % 1;
-      const bob = Math.sin(phase*Math.PI*2)*0.5 + 0.5;
-      // Phones are held up around shoulder height; subtle vertical motion
-      const y = proj.y - 38*proj.scale*0.95 - bob*38*proj.scale*0.18;
-      const x = p.x * w;
-      // Twinkle with a slow individual sine
-      const tw = 0.7 + 0.3 * Math.sin((t/1000)*p.twinkle + p.phase);
-      const r = Math.max(0.7, 1.4*proj.scale);
-      // Outer glow
-      const grad = ctx.createRadialGradient(x,y, 0, x,y, r*4);
-      grad.addColorStop(0, `hsla(${p.hue},90%,75%,${(0.95*tw).toFixed(3)})`);
-      grad.addColorStop(0.5, `hsla(${p.hue},85%,55%,${(0.35*tw).toFixed(3)})`);
-      grad.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = grad;
-      ctx.beginPath(); ctx.arc(x,y, r*4, 0, Math.PI*2); ctx.fill();
-      // Bright core
-      ctx.fillStyle = `hsla(${p.hue},100%,90%,${tw})`;
-      ctx.fillRect(x-r*0.5, y-r*0.7, r, r*1.4);
-    }
-  }
-
-  function frame(t){
-    if(resizeQ){
-      sizeCanvases();
-      const c1 = document.getElementById('tsCrowdCanvas');
-      drawFarLayer(c1.getContext('2d'));
-      resizeQ = false;
-    }
-    const c1 = document.getElementById('tsCrowdCanvas');
-    const c2 = document.getElementById('tsPhonesCanvas');
-    if(c1 && c2 && agents){
-      const ctx = c1.getContext('2d');
-      // Re-render the far layer occasionally to keep colors honest
-      // and reset accumulated alpha edges from the foreground pass.
-      // Cheaper than per-frame: every 2s.
-      if(t - lastFarDraw > 2000){
-        drawFarLayer(ctx);
-        lastFarDraw = t;
-      } else {
-        // Repaint only foreground area while keeping far layer
-        const w = c1.clientWidth, h = c1.clientHeight;
-        // We clear roughly the foreground band and redraw silhouettes on top
-        ctx.clearRect(0, h*0.18, w, h*0.85);
-        drawFarLayer(ctx); // cheap enough — single fillRect per agent
-      }
-      drawAgents(ctx, t);
-      drawPhones(c2.getContext('2d'), t);
-    }
-    rafId = requestAnimationFrame(frame);
-  }
-
-  function syncBpm(){
-    const stadium = document.getElementById('titanStadium');
-    if(!stadium) return;
-    let v = 128;
-    try{
-      const el = document.getElementById('masterBpm');
-      if(el){
-        const parsed = parseFloat(el.textContent);
-        if(!Number.isNaN(parsed) && parsed >= 60 && parsed <= 220) v = parsed;
-      }
-    }catch(_){}
-    if(Math.abs(v - bpm) > 0.5){
-      // Re-anchor beat origin so the wave doesn't snap mid-cycle
-      const beatLen = 60 / Math.max(40, bpm);
-      const elapsed = (performance.now() - beatStart)/1000;
-      const phase = (elapsed % beatLen) / beatLen;
-      const newLen = 60 / Math.max(40, v);
-      beatStart = performance.now() - phase*newLen*1000;
-      bpm = v;
-    }
-    stadium.style.setProperty('--ts-bpm', bpm.toFixed(2));
-    const hudBpm = document.getElementById('tsHudBpm');
-    if(hudBpm) hudBpm.textContent = bpm.toFixed(2);
-  }
-
-  function enterStadium(){
-    buildScene();
-    document.body.classList.add('stadium-mode');
-    document.getElementById('stadiumModeBtn')?.classList.add('active');
-    syncBpm();
-    if(!window.__tsBpmTimer) window.__tsBpmTimer = setInterval(syncBpm, 750);
-    if(!rafId) rafId = requestAnimationFrame(frame);
-    const hudC = document.getElementById('tsHudCrowd');
-    if(hudC){
-      let n = 12000;
-      clearInterval(window.__tsCrowdTimer);
-      window.__tsCrowdTimer = setInterval(()=>{
-        n = Math.min(50000, n + 500 + ((Math.random()*900)|0));
-        hudC.textContent = n.toLocaleString();
-        if(n>=50000) clearInterval(window.__tsCrowdTimer);
-      }, 60);
-    }
-  }
-  function exitStadium(){
-    document.body.classList.remove('stadium-mode');
-    document.getElementById('stadiumModeBtn')?.classList.remove('active');
-    if(window.__tsBpmTimer){clearInterval(window.__tsBpmTimer);window.__tsBpmTimer=null;}
-    if(window.__tsCrowdTimer){clearInterval(window.__tsCrowdTimer);window.__tsCrowdTimer=null;}
-    if(rafId){cancelAnimationFrame(rafId); rafId = 0;}
-  }
-  function toggleStadium(){
-    if(document.body.classList.contains('stadium-mode')) exitStadium();
-    else enterStadium();
-  }
-
+  function toggle(){ setLamp(!document.body.classList.contains('booth-light')); }
   function init(){
-    const btn = document.getElementById('stadiumModeBtn');
-    if(btn) btn.addEventListener('click', toggleStadium);
-    window.addEventListener('keydown',(e)=>{
-      if(e.key==='Escape' && document.body.classList.contains('stadium-mode')){
-        e.preventDefault(); exitStadium();
-      }
-    });
-    window.titanStadium = { enter:enterStadium, exit:exitStadium, toggle:toggleStadium };
+    document.getElementById('boothLightBtn')?.addEventListener('click', toggle);
+    try{ if(localStorage.getItem(KEY) === '1') setLamp(true); }catch(_){}
+    window.titanBoothLight = { on:()=>setLamp(true), off:()=>setLamp(false), toggle };
   }
-
   if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', ()=>setTimeout(init,300));
+    document.addEventListener('DOMContentLoaded', ()=>setTimeout(init,200));
   } else {
-    setTimeout(init, 300);
+    setTimeout(init, 200);
   }
 })();
 
