@@ -10856,24 +10856,35 @@ html body .cue-hp-btn.cue-hp-btn:active{
     inset 0 2px 4px rgba(0,0,0,.9),
     0 1px 2px rgba(0,0,0,.5) !important;
 }
-/* Active hot-cues fully light up in their assigned cue colour —
-   each pad glows a different colour so the deck reads at a glance
-   which cues are armed. */
+/* Active hot-cues — each pad lights up SOLID in its own assigned
+   cue colour. Eight distinct vibrant hues, no wash, no dark mix.
+   Colours are defined per [data-color="1..8"] above; the active
+   state simply paints the pad with its own --cue-color. */
 html body .cue-btn.cue-btn.active{
-  background:
-    radial-gradient(ellipse at 50% 35%,rgba(255,255,255,.55) 0%,transparent 60%),
-    linear-gradient(180deg,var(--cue-color,var(--orange)) 0%,color-mix(in srgb,var(--cue-color,var(--orange)) 60%, #000) 100%) !important;
+  background:var(--cue-color,#ff7a00) !important;
   color:#000 !important;
-  border-color:rgba(255,255,255,.55) !important;
-  text-shadow:0 1px 0 rgba(255,255,255,.45) !important;
+  border:1px solid rgba(255,255,255,.6) !important;
+  text-shadow:0 1px 0 rgba(255,255,255,.35) !important;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.55),
-    inset 0 -2px 3px rgba(0,0,0,.45),
-    0 0 12px var(--cue-color,var(--orange)),
-    0 0 24px var(--cue-color,var(--orange)),
-    0 0 2px rgba(255,255,255,.9) !important;
-  filter:none !important;
+    inset 0 2px 0 rgba(255,255,255,.45),
+    inset 0 -2px 4px rgba(0,0,0,.3),
+    0 0 6px var(--cue-color,#ff7a00),
+    0 0 18px var(--cue-color,#ff7a00),
+    0 0 32px var(--cue-color,#ff7a00) !important;
+  filter:saturate(1.25) brightness(1.05) !important;
 }
+/* Hard-coded colour fallbacks — guarantees each pad lights its own
+   hue even if the --cue-color custom property is overridden by a
+   theme. data-color 1..8 → cyan, pink, yellow, green, orange,
+   purple, teal, red-orange. */
+html body .cue-btn.cue-btn[data-color="1"].active{background:#00e5ff !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #00e5ff,0 0 22px #00e5ff,0 0 36px #00e5ff !important}
+html body .cue-btn.cue-btn[data-color="2"].active{background:#ff3c78 !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #ff3c78,0 0 22px #ff3c78,0 0 36px #ff3c78 !important}
+html body .cue-btn.cue-btn[data-color="3"].active{background:#ffd400 !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #ffd400,0 0 22px #ffd400,0 0 36px #ffd400 !important}
+html body .cue-btn.cue-btn[data-color="4"].active{background:#00ff7a !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #00ff7a,0 0 22px #00ff7a,0 0 36px #00ff7a !important}
+html body .cue-btn.cue-btn[data-color="5"].active{background:#ff7a00 !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #ff7a00,0 0 22px #ff7a00,0 0 36px #ff7a00 !important}
+html body .cue-btn.cue-btn[data-color="6"].active{background:#c800ff !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #c800ff,0 0 22px #c800ff,0 0 36px #c800ff !important}
+html body .cue-btn.cue-btn[data-color="7"].active{background:#00ffd4 !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #00ffd4,0 0 22px #00ffd4,0 0 36px #00ffd4 !important}
+html body .cue-btn.cue-btn[data-color="8"].active{background:#ff5a00 !important;box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -2px 4px rgba(0,0,0,.3),0 0 8px #ff5a00,0 0 22px #ff5a00,0 0 36px #ff5a00 !important}
 html body .big-btn.cue.cue.active{
   background:linear-gradient(180deg,#1f1f24 0%,#0e0e12 55%,#040405 100%) !important;
   color:var(--cue-orange) !important;
