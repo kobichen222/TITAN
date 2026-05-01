@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--deck-bg:#1a1a1c;--deck-panel:#242428;--deck-border:#3a3a3e;--screen-glow:#00d4ff;--orange:#ff7a00;--orange-glow:#ffa544;--cue-orange:#ff5a00;--play-green:#00ff7a;--red:#ff2e2e;--yellow:#ffd400;--purple:#c800ff;--pink:#ff3c78;--text:#e8e8ea;--text-dim:#9a9a9e;--bg:#0a0a0a}
+:root{--deck-bg:#1a1a1c;--deck-panel:#242428;--deck-border:#3a3a3e;--screen-glow:#7a96a8;--orange:#c88a52;--orange-glow:#d8a87a;--cue-orange:#b8723a;--play-green:#6a9882;--red:#b04848;--yellow:#b89858;--purple:#7a6a8a;--pink:#a87884;--text:#e2e2e4;--text-dim:#8a8a8e;--bg:#0a0a0a}
 body.theme-light{--deck-bg:#e5e5e7;--deck-panel:#f5f5f7;--deck-border:#b0b0b2;--text:#1a1a1c;--text-dim:#5a5a5e;--bg:#f0f0f2}
 body.theme-neon{--orange:#ff00ff;--screen-glow:#00ffff;--play-green:#00ff00}
 body.theme-gold{--orange:#3a2a0a;--orange-glow:#5a3f12;--cue-orange:#6b4a18;--play-green:#2a3a1a;--screen-glow:#2a1a08;--yellow:#c8a848;--red:#8a2020;--purple:#5a4020;--pink:#a8886a;--text:#1a1208;--text-dim:#4a3a1a;--bg:#0a0806;--deck-bg:#c8a656;--deck-panel:#d4b468;--deck-border:#8a6a2e}
@@ -59,7 +59,7 @@ body.work-mode .header-bar .header-dsb{
 .fx-onoff.active{background:var(--orange);color:#000;border-color:var(--orange-glow);box-shadow:0 0 25px rgba(255,122,0,.8)}
 .tap-btn{padding:9px 14px;background:#1a1a1c;border:1px solid #444;color:var(--text-dim);font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;border-radius:4px;cursor:pointer}
 .tap-btn:active{background:var(--orange);color:#000}
-.rgb-ambient{width:100%;max-width:1700px;height:5px;background:linear-gradient(90deg,var(--orange),var(--pink),var(--purple),var(--screen-glow),var(--play-green),var(--yellow),var(--orange));background-size:200% 100%;border-radius:3px;animation:ambient 8s linear infinite;filter:blur(3px);opacity:.6}
+.rgb-ambient{width:100%;max-width:1700px;height:3px;background:linear-gradient(90deg,transparent 0%,rgba(180,180,184,.18) 20%,rgba(200,138,82,.35) 50%,rgba(180,180,184,.18) 80%,transparent 100%);background-size:200% 100%;border-radius:2px;animation:ambient 18s linear infinite;filter:blur(2px);opacity:.45}
 @keyframes ambient{from{background-position:0% 0%}to{background-position:200% 0%}}
 /* ── Mixer toolbar — pixel-perfect horizontal bar above the decks ── */
 .mixer-toolbar{width:100%;max-width:1700px;display:grid;grid-template-columns:minmax(340px,2fr) minmax(230px,1.2fr) minmax(230px,1.1fr) minmax(200px,.95fr);gap:8px;padding:8px;background:linear-gradient(180deg,#2a2a2e 0%,#16161a 100%);border:1px solid var(--deck-border);border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 8px 24px rgba(0,0,0,.6);align-items:stretch;position:relative}
@@ -1097,10 +1097,10 @@ button:active:not(:disabled),.big-btn:active,.loop-btn:active,.jump-btn:active,
   box-shadow:inset 0 0 28px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.05);
 }
 
-/* RGB AMBIENT bar — upgraded */
+/* RGB AMBIENT bar — muted, professional */
 .rgb-ambient{
-  height:6px;opacity:.75;
-  filter:blur(4px) saturate(1.3);
+  height:3px;opacity:.45;
+  filter:blur(2px) saturate(.7);
 }
 
 /* REC BUTTON polish */
