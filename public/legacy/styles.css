@@ -10853,16 +10853,21 @@ body.theme-light .cdj,body.theme-light .mixer{
     inset 0 2px 4px rgba(0,0,0,.9),
     0 1px 2px rgba(0,0,0,.5) !important;
 }
-/* Active hot-cues keep their assigned cue colour as a glow ring,
-   but the body stays matte for a consistent surface. */
+/* Active hot-cues fully light up in their assigned cue colour —
+   each pad glows a different colour so the deck reads at a
+   glance which cues are armed. */
 .cue-btn.active{
-  background:linear-gradient(180deg,#1d1d20 0%,#0d0d0f 55%,#040405 100%) !important;
-  color:var(--cue-color,var(--orange)) !important;
+  background:
+    radial-gradient(ellipse at 50% 35%,rgba(255,255,255,.55) 0%,transparent 60%),
+    linear-gradient(180deg,var(--cue-color,var(--orange)) 0%,color-mix(in srgb,var(--cue-color,var(--orange)) 60%, #000) 100%) !important;
+  color:#000 !important;
+  text-shadow:0 1px 0 rgba(255,255,255,.45) !important;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.1),
-    inset 0 -2px 3px rgba(0,0,0,.85),
+    inset 0 1px 0 rgba(255,255,255,.55),
+    inset 0 -2px 3px rgba(0,0,0,.45),
     0 0 12px var(--cue-color,var(--orange)),
-    0 0 22px var(--cue-color,var(--orange)) !important;
+    0 0 24px var(--cue-color,var(--orange)),
+    0 0 2px rgba(255,255,255,.9) !important;
 }
 .big-btn.cue.active{
   color:var(--cue-orange) !important;
