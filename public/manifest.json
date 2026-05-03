@@ -5,19 +5,23 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "orientation": "any",
   "theme_color": "#0a0a0a",
   "background_color": "#0a0a0a",
   "lang": "en",
-  "dir": "auto",
+  "dir": "ltr",
   "icons": [
-    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
   ],
   "categories": ["music", "entertainment", "productivity"],
   "shortcuts": [
     { "name": "Work Mode", "short_name": "Stage", "description": "Open stage performance view", "url": "./?wm=1" },
-    { "name": "Studio", "short_name": "Studio", "description": "Open mastering studio", "url": "./?tab=studio" }
+    { "name": "Studio Mastering", "short_name": "Studio", "description": "Open mastering studio", "url": "./?tab=studio" },
+    { "name": "Discover", "short_name": "Discover", "description": "Browse music catalog", "url": "./?tab=discover" }
   ],
-  "screenshots": [],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "handle_links": "preferred",
+  "launch_handler": { "client_mode": "auto" }
 }

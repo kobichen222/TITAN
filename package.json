@@ -19,7 +19,8 @@
     "typecheck": "tsc --noEmit --project tsconfig.src.json",
     "e2e": "playwright test",
     "e2e:install": "playwright install --with-deps chromium",
-    "ci": "npm run typecheck && npm test"
+    "budget": "node tools/check-bundle-budget.js",
+    "ci": "npm run typecheck && npm test && npm run budget"
   },
   "dependencies": {
     "electron-updater": "^6.3.0",
