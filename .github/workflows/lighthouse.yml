@@ -1,0 +1,78 @@
+name: Lighthouse
+
+on:
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  audit:
+    name: Lighthouse audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install http-server (already a devDep)
+        run: npx --yes http-server --version
+
+      - name: Serve public/ in background
+        run: npx http-server public -p 8080 --silent &
+        # Give it a moment to come up
+      - run: sleep 2
+
+      - name: Install Lighthouse CLI
+        run: npm install --no-save lighthouse@12
+
+      - name: Run Lighthouse on /index.html
+        run: |
+          npx lighthouse http://localhost:8080/index.html \
+            --output=json --output=html \
+            --output-path=./lighthouse-report \
+            --chrome-flags="--headless --no-sandbox --disable-gpu" \
+            --only-categories=performance,accessibility,best-practices,seo,pwa \
+            --quiet || true
+
+      - name: Parse scores + enforce minimums
+        run: |
+          node -e "
+            const fs=require('fs');
+            const r=JSON.parse(fs.readFileSync('./lighthouse-report.report.json','utf8'));
+            const cats=r.categories;
+            const scores={
+              perf:Math.round(cats.performance.score*100),
+              a11y:Math.round(cats.accessibility.score*100),
+              best:Math.round(cats['best-practices'].score*100),
+              seo:Math.round(cats.seo.score*100),
+            };
+            console.log('Lighthouse scores:',JSON.stringify(scores,null,2));
+            // Append to PR step summary
+            const sum='## Lighthouse scores\n\n'+
+              '| Category | Score |\n|---|---|\n'+
+              '| Performance | '+scores.perf+' |\n'+
+              '| Accessibility | '+scores.a11y+' |\n'+
+              '| Best Practices | '+scores.best+' |\n'+
+              '| SEO | '+scores.seo+' |\n';
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,sum);
+            // Enforce minimums — bump as the codebase improves
+            const min={perf:50,a11y:80,best:75,seo:70};
+            const fails=Object.keys(min).filter(k=>scores[k]<min[k]);
+            if(fails.length){
+              console.error('Below minimum:',fails.map(k=>k+'='+scores[k]+'<'+min[k]).join(', '));
+              process.exit(1);
+            }
+          "
+
+      - name: Upload Lighthouse HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: lighthouse-report.report.html

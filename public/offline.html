@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<meta name="theme-color" content="#0a0a0a" />
+<meta name="color-scheme" content="dark" />
+<title>DJ TITAN — Offline</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:radial-gradient(ellipse at center,#1a1a1f 0%,#0a0a0a 70%);
+    color:#e8e8ea;
+    font-family:'Orbitron','Share Tech Mono',system-ui,sans-serif;
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;
+  }
+  .card{
+    max-width:480px;width:100%;
+    background:linear-gradient(180deg,#1c1c20 0%,#111114 100%);
+    border:1px solid rgba(255,138,26,.35);
+    border-radius:14px;padding:36px 28px;text-align:center;
+    box-shadow:0 12px 48px rgba(0,0,0,.6),0 0 28px rgba(255,138,26,.12);
+  }
+  .icon{font-size:56px;margin-bottom:14px;line-height:1}
+  .title{
+    font-size:22px;letter-spacing:4px;font-weight:900;
+    color:#ff8a1a;text-shadow:0 0 12px rgba(255,138,26,.55);
+    margin-bottom:10px;
+  }
+  .sub{font-size:13px;letter-spacing:1.5px;color:#9a9a9e;margin-bottom:24px}
+  .status{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:8px 14px;border-radius:999px;
+    background:rgba(255,46,46,.12);border:1px solid rgba(255,46,46,.4);
+    color:#ff8080;font-size:11px;letter-spacing:2px;font-weight:700;
+    margin-bottom:24px;
+  }
+  .status.online{background:rgba(28,255,143,.12);border-color:rgba(28,255,143,.4);color:#46e09b}
+  .dot{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+  .btn{
+    display:inline-block;padding:12px 28px;
+    background:linear-gradient(180deg,#ff8a1a 0%,#c85a00 100%);
+    color:#0a0a0a;border:none;border-radius:8px;cursor:pointer;
+    font-family:inherit;font-size:13px;letter-spacing:2.5px;font-weight:900;
+    text-decoration:none;transition:all .15s ease;
+    box-shadow:0 4px 16px rgba(255,138,26,.4);
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(255,138,26,.55)}
+  .btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+  .footer{margin-top:24px;font-size:10px;letter-spacing:2px;color:#5a5a5e}
+  @media (prefers-reduced-motion:reduce){
+    .btn{transition:none}
+  }
+</style>
+</head>
+<body>
+  <main class="card" role="main">
+    <div class="icon" aria-hidden="true">📡</div>
+    <h1 class="title">OFFLINE</h1>
+    <p class="sub">DJ TITAN can't reach the network right now.</p>
+    <div class="status" id="netStatus" role="status" aria-live="polite">
+      <span class="dot"></span><span id="netLabel">NO CONNECTION</span>
+    </div>
+    <div>
+      <a href="./index.html" class="btn" id="retryBtn">↻ RETRY</a>
+    </div>
+    <p class="footer">Cached studio sessions remain accessible from the main app.</p>
+  </main>
+<script>
+  (function(){
+    var status=document.getElementById('netStatus');
+    var label=document.getElementById('netLabel');
+    function update(){
+      var online=navigator.onLine;
+      status.classList.toggle('online',online);
+      label.textContent=online?'BACK ONLINE — TAP RETRY':'NO CONNECTION';
+    }
+    addEventListener('online',update);
+    addEventListener('offline',update);
+    update();
+  })();
+</script>
+</body>
+</html>

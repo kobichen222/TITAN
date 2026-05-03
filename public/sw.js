@@ -5,10 +5,10 @@
    - CDN assets (Google Fonts, jsDelivr) → cache-first once seen
    - Everything cached stays reachable offline forever */
 
-const CACHE = 'djtitan-shell-v132-pwa';
-const CDN_CACHE = 'djtitan-cdn-v132';
+const CACHE = 'djtitan-shell-v133-offline';
+const CDN_CACHE = 'djtitan-cdn-v133';
 const SHELL = [
-  './','./index.html',
+  './','./index.html','./offline.html',
   './analyzer.worker.js','./manifest.json','./icon.svg','./auth.sql',
   './legacy/error-reporter.js','./legacy/radio.js',
   './legacy/clock.js','./legacy/support.js','./legacy/discover.js','./legacy/downloads.js',
@@ -65,7 +65,7 @@ self.addEventListener('fetch', (event) => {
       fetch(req).then(fresh => {
         if (fresh && fresh.ok) caches.open(CACHE).then(c => c.put(req, fresh.clone())).catch(()=>{});
         return fresh;
-      }).catch(() => caches.match(req).then(c => c || caches.match('./index.html')))
+      }).catch(() => caches.match(req).then(c => c || caches.match('./index.html').then(s => s || caches.match('./offline.html'))))
     );
     return;
   }
