@@ -3639,35 +3639,6 @@ function setupAdminDownload(){
 }
 
 /* ====================================================================
-   SECRET OFFICE — settings shortcut: type the secret code to open the
-   /office admin panel. Validates locally, persists the unlock flag in
-   localStorage so the new tab skips the gate, and opens /office.
-   ==================================================================== */
-function setupSecretOffice(){
-  const SECRET='kobi!@#£';
-  const UNLOCK_KEY='titan_office_unlocked_v1';
-  const input=document.getElementById('secretOfficeCode');
-  const btn=document.getElementById('secretOfficeBtn');
-  const errEl=document.getElementById('secretOfficeErr');
-  if(!input||!btn)return;
-  function go(){
-    const v=input.value||'';
-    if(v===SECRET){
-      errEl.textContent='';
-      try{localStorage.setItem(UNLOCK_KEY,'1');}catch(e){}
-      try{sessionStorage.setItem(UNLOCK_KEY,'1');}catch(e){}
-      input.value='';
-      if(typeof toast==='function')toast('Office unlocked','success');
-      window.open('/office','_blank','noopener');
-    }else{
-      errEl.textContent='Wrong secret code';
-    }
-  }
-  btn.addEventListener('click',go);
-  input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go();}});
-}
-
-/* ====================================================================
    DISCOVER — world music catalog search (iTunes + Deezer)
    ==================================================================== */
 function setupDiscover(){
@@ -7831,7 +7802,7 @@ function init(){
   const mtbBot=document.getElementById('mixer-toolbar-bottom');if(mtbBot)mtbBot.innerHTML=buildMixerToolbarBottomHTML();
   setupVU('vu-A',20);setupVU('vu-B',20);setupVU('vu-C',20);setupVU('vu-D',20);
   setupVU('masterHVuL',20);setupVU('masterHVuR',20);
-  attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();setupOfflineDownload();setupDesktopDownloads();setupAdminDownload();setupSecretOffice();setupDiscover();setupTitanClock();setupSupport();setupStudioPro();
+  attachKnobs();attachEvents();setupBeatFxUI();setupSceneFx();setupKeyboard();setupTabs();setupSettings();setupVinylTurntables();setupOfflineDownload();setupDesktopDownloads();setupAdminDownload();setupDiscover();setupTitanClock();setupSupport();setupStudioPro();
   // Restart-tour button + first-run auto-tour
   document.getElementById('restartTourBtn')?.addEventListener('click',()=>spStartTour(true));
   setTimeout(()=>{try{spStartTour(false);}catch(e){console.warn('tour failed',e);}},1100);
