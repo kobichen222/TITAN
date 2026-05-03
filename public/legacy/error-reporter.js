@@ -52,4 +52,48 @@
 
   window.titanGetErrors=function(){return buf.slice();};
   window.titanClearErrors=function(){buf.length=0;persist();};
+
+  /* ---------------- Web Vitals (LCP, CLS, INP, TTFB) -----------------
+     Lightweight in-place implementation — no external dep. Stored on
+     window._titanVitals and exposed via window.titanGetVitals(). */
+  var vitals={lcp:null,cls:0,inp:null,ttfb:null,fcp:null};
+  window._titanVitals=vitals;
+  window.titanGetVitals=function(){return Object.assign({},vitals);};
+
+  try{
+    var navEntry=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];
+    if(navEntry)vitals.ttfb=Math.round(navEntry.responseStart-navEntry.requestStart);
+  }catch(_){}
+
+  try{
+    new PerformanceObserver(function(list){
+      var entries=list.getEntries();
+      var last=entries[entries.length-1];
+      if(last)vitals.lcp=Math.round(last.startTime);
+    }).observe({type:'largest-contentful-paint',buffered:true});
+  }catch(_){}
+
+  try{
+    new PerformanceObserver(function(list){
+      list.getEntries().forEach(function(e){
+        if(!e.hadRecentInput)vitals.cls=+(vitals.cls+e.value).toFixed(4);
+      });
+    }).observe({type:'layout-shift',buffered:true});
+  }catch(_){}
+
+  try{
+    new PerformanceObserver(function(list){
+      list.getEntries().forEach(function(e){
+        var d=e.processingEnd-e.startTime;
+        if(vitals.inp===null||d>vitals.inp)vitals.inp=Math.round(d);
+      });
+    }).observe({type:'event',buffered:true,durationThreshold:40});
+  }catch(_){}
+
+  try{
+    new PerformanceObserver(function(list){
+      var fcp=list.getEntries().find(function(e){return e.name==='first-contentful-paint';});
+      if(fcp)vitals.fcp=Math.round(fcp.startTime);
+    }).observe({type:'paint',buffered:true});
+  }catch(_){}
 })();

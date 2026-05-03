@@ -68,4 +68,33 @@ test.describe('TITAN boots cleanly', () => {
     await page.selectOption('#sortSelect', 'title');
     await page.selectOption('#filterSource', 'all');
   });
+
+  test('error reporter is installed and exposes its API', async ({ page }) => {
+    await page.goto('/index.html');
+    const api = await page.evaluate(() => ({
+      hasGet: typeof (window as any).titanGetErrors === 'function',
+      hasClear: typeof (window as any).titanClearErrors === 'function',
+      hasVitals: typeof (window as any).titanGetVitals === 'function',
+      bufIsArray: Array.isArray((window as any)._titanErrors),
+    }));
+    expect(api).toEqual({ hasGet: true, hasClear: true, hasVitals: true, bufIsArray: true });
+  });
+
+  test('deck switch bar renders all focus/mode buttons', async ({ page }) => {
+    await page.goto('/index.html');
+    const bar = page.locator('.deck-switch-bar').first();
+    await expect(bar).toBeVisible();
+    for (const pair of ['AB', 'CD', 'AC', 'BD', 'ALL', 'DJAB', 'DJCD']) {
+      await expect(page.locator(`.dsb-btn[data-pair="${pair}"]`).first()).toBeVisible();
+    }
+    await expect(page.locator('#workModeBtn')).toBeVisible();
+    await expect(page.locator('#boothLightBtn')).toBeVisible();
+  });
+
+  test('deck pair switching toggles the active class', async ({ page }) => {
+    await page.goto('/index.html');
+    const cd = page.locator('.dsb-btn[data-pair="CD"]').first();
+    await cd.click();
+    await expect(cd).toHaveClass(/active/);
+  });
 });
