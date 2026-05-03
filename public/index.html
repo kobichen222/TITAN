@@ -293,17 +293,17 @@
 <script src="legacy/bootstrap.js"></script>
 <div class="header-bar">
 <div class="brand"><span class="max">DJ</span> <span>TITAN</span> — Professional DJ Studio</div>
-<div class="deck-switch-bar header-dsb">
-  <span class="dsb-label">DECK FOCUS</span>
-  <button class="dsb-btn active" data-pair="AB">1 · 2</button>
-  <button class="dsb-btn" data-pair="CD">3 · 4</button>
-  <button class="dsb-btn dsb-split" data-pair="AC">1 · 3</button>
-  <button class="dsb-btn dsb-split" data-pair="BD">2 · 4</button>
-  <button class="dsb-btn dsb-all" data-pair="ALL">ALL 4</button>
-  <button class="dsb-btn dsb-dj-focus" data-pair="DJAB" title="2 big decks (1·2) — internal mixer hidden, use your external DJ mixer">🎛 DJ FOCUS 1·2</button>
-  <button class="dsb-btn dsb-dj-focus" data-pair="DJCD" title="2 big decks (3·4) — internal mixer hidden, use your external DJ mixer">🎛 DJ FOCUS 3·4</button>
-  <button class="dsb-btn dsb-work" id="workModeBtn" title="Stage-ready performance view">🎆 WORK MODE</button>
-  <button class="dsb-btn dsb-boothlight" id="boothLightBtn" title="Booth light — LED halos around the deck and mixer buttons">💡 BOOTH LIGHT</button>
+<div class="deck-switch-bar header-dsb" role="toolbar" aria-label="Deck focus and stage modes">
+  <span class="dsb-label" id="dsbLabel">DECK FOCUS</span>
+  <button class="dsb-btn active" data-pair="AB" aria-label="Show decks 1 and 2" aria-pressed="true">1 · 2</button>
+  <button class="dsb-btn" data-pair="CD" aria-label="Show decks 3 and 4" aria-pressed="false">3 · 4</button>
+  <button class="dsb-btn dsb-split" data-pair="AC" aria-label="Show decks 1 and 3" aria-pressed="false">1 · 3</button>
+  <button class="dsb-btn dsb-split" data-pair="BD" aria-label="Show decks 2 and 4" aria-pressed="false">2 · 4</button>
+  <button class="dsb-btn dsb-all" data-pair="ALL" aria-label="Show all four decks" aria-pressed="false">ALL 4</button>
+  <button class="dsb-btn dsb-dj-focus" data-pair="DJAB" aria-label="DJ focus mode for decks 1 and 2" aria-pressed="false" title="2 big decks (1·2) — internal mixer hidden, use your external DJ mixer">🎛 DJ FOCUS 1·2</button>
+  <button class="dsb-btn dsb-dj-focus" data-pair="DJCD" aria-label="DJ focus mode for decks 3 and 4" aria-pressed="false" title="2 big decks (3·4) — internal mixer hidden, use your external DJ mixer">🎛 DJ FOCUS 3·4</button>
+  <button class="dsb-btn dsb-work" id="workModeBtn" aria-label="Toggle stage-ready Work Mode" aria-pressed="false" title="Stage-ready performance view">🎆 WORK MODE</button>
+  <button class="dsb-btn dsb-boothlight" id="boothLightBtn" aria-label="Toggle booth light halos" aria-pressed="false" title="Booth light — LED halos around the deck and mixer buttons">💡 BOOTH LIGHT</button>
   <button class="dsb-btn dsb-wmlib" id="wmLibBtn" title="Show / hide the track library in work mode" style="display:none"><svg class="lib-svg" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px"><ellipse cx="11" cy="4.5" rx="7" ry="2.2"/><path d="M4 4.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 10.5v4c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-4"/><path d="M4 15.5v2.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2v-2.5"/></svg>LIBRARY</button>
   <button class="dsb-btn dsb-wmexit" id="wmExitInlineBtn" title="Exit work mode (Esc)" style="display:none">✕ EXIT WORK</button>
   <span class="dsb-monitor" id="dsbMonitor" style="display:none"></span>

@@ -7516,7 +7516,11 @@ function applyDeckPair(pair){
     const c=document.getElementById('deck'+d+'-container');
     if(c)c.style.display=visible.has(d)?'':'none';
   });
-  document.querySelectorAll('.dsb-btn').forEach(b=>b.classList.toggle('active',b.dataset.pair===pair));
+  document.querySelectorAll('.dsb-btn').forEach(b=>{
+    var on=b.dataset.pair===pair;
+    b.classList.toggle('active',on);
+    if(b.hasAttribute('aria-pressed'))b.setAttribute('aria-pressed',on?'true':'false');
+  });
   const console=document.getElementById('console');
   if(console)console.classList.toggle('show-all',pair==='ALL');
   document.body.classList.toggle('show-all',pair==='ALL');
@@ -10087,6 +10091,7 @@ document.addEventListener('DOMContentLoaded',()=>{
           }
           document.body.classList.toggle('work-mode',on);
           btn.classList.toggle('active',on);
+          btn.setAttribute('aria-pressed',on?'true':'false');
           const libBtn=document.getElementById('wmLibBtn');if(libBtn)libBtn.classList.toggle('active',on);
         });
       }
@@ -10130,7 +10135,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   const KEY = 'titanBoothLight';
   function setLamp(on){
     document.body.classList.toggle('booth-light', !!on);
-    document.getElementById('boothLightBtn')?.classList.toggle('active', !!on);
+    var btn=document.getElementById('boothLightBtn');
+    if(btn){btn.classList.toggle('active', !!on); btn.setAttribute('aria-pressed', on?'true':'false');}
     try{ localStorage.setItem(KEY, on ? '1' : '0'); }catch(_){}
   }
   function toggle(){ setLamp(!document.body.classList.contains('booth-light')); }

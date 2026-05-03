@@ -139,4 +139,27 @@ test.describe('TITAN boots cleanly', () => {
     await cd.click();
     await expect(cd).toHaveClass(/active/);
   });
+
+  test('a11y: deck-switch bar exposes role=toolbar and aria-pressed', async ({ page }) => {
+    await page.goto('/index.html');
+    await expect(page.locator('.deck-switch-bar.header-dsb')).toHaveAttribute('role', 'toolbar');
+    const ab = page.locator('.dsb-btn[data-pair="AB"]').first();
+    await expect(ab).toHaveAttribute('aria-pressed', 'true');
+    const cd = page.locator('.dsb-btn[data-pair="CD"]').first();
+    await expect(cd).toHaveAttribute('aria-pressed', 'false');
+    await cd.click();
+    await expect(cd).toHaveAttribute('aria-pressed', 'true');
+    await expect(ab).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  test('a11y: every deck-bar button has an accessible label', async ({ page }) => {
+    await page.goto('/index.html');
+    const buttons = page.locator('.deck-switch-bar.header-dsb .dsb-btn');
+    const count = await buttons.count();
+    expect(count).toBeGreaterThanOrEqual(7);
+    for (let i = 0; i < count; i++) {
+      const label = await buttons.nth(i).getAttribute('aria-label');
+      expect(label, `button #${i} missing aria-label`).toBeTruthy();
+    }
+  });
 });

@@ -11003,3 +11003,52 @@ body.booth-light .cue-btn.active{
   body.booth-light .mixer button,
   body.booth-light .mixer-toolbar button{transition:none !important}
 }
+
+/* ============================================================
+   ACCESSIBILITY LAYER — keyboard focus, reduced-motion,
+   high-contrast support. Append-only so existing styling is
+   not affected.
+   ============================================================ */
+
+/* Visible keyboard focus on every interactive control. Mouse
+   clicks won't show the ring (focus-visible only triggers from
+   keyboard / programmatic focus). */
+.dsb-btn:focus-visible,
+.tab-btn:focus-visible,
+.tool-btn:focus-visible,
+.big-btn:focus-visible,
+.cue-btn:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible{
+  outline:3px solid #ff8a1a;
+  outline-offset:2px;
+  box-shadow:0 0 0 4px rgba(255,138,26,.25);
+  z-index:2;
+}
+
+/* Honour the OS-level "reduce motion" preference. We turn off
+   the heaviest visual effects: vinyl spin, scrolling waveforms,
+   pulsing glows. Functionality is unchanged. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+}
+
+/* Screen-reader only utility — visually hidden but readable
+   by assistive tech. Use for icon-only labels we can't move
+   inline without breaking the visual layout. */
+.sr-only{
+  position:absolute !important;
+  width:1px !important; height:1px !important;
+  padding:0 !important; margin:-1px !important;
+  overflow:hidden !important; clip:rect(0,0,0,0) !important;
+  white-space:nowrap !important; border:0 !important;
+}
