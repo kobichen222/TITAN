@@ -75,9 +75,51 @@ test.describe('TITAN boots cleanly', () => {
       hasGet: typeof (window as any).titanGetErrors === 'function',
       hasClear: typeof (window as any).titanClearErrors === 'function',
       hasVitals: typeof (window as any).titanGetVitals === 'function',
+      hasReport: typeof (window as any).titanReportVitals === 'function',
+      hasYtLoader: typeof (window as any).titanLoadYouTube === 'function',
       bufIsArray: Array.isArray((window as any)._titanErrors),
     }));
-    expect(api).toEqual({ hasGet: true, hasClear: true, hasVitals: true, bufIsArray: true });
+    expect(api).toEqual({
+      hasGet: true,
+      hasClear: true,
+      hasVitals: true,
+      hasReport: true,
+      hasYtLoader: true,
+      bufIsArray: true,
+    });
+  });
+
+  test('extracted legacy modules expose their setup globals', async ({ page }) => {
+    await page.goto('/index.html');
+    // These are declared in clock.js / support.js / discover.js (defer)
+    // and called from app.js init() at DOMContentLoaded. Verify the
+    // global function declarations resolved correctly.
+    const fns = await page.evaluate(() => ({
+      clock: typeof (window as any).setupTitanClock === 'function',
+      support: typeof (window as any).setupSupport === 'function',
+      discover: typeof (window as any).setupDiscover === 'function',
+      offline: typeof (window as any).setupOfflineDownload === 'function',
+      desktop: typeof (window as any).setupDesktopDownloads === 'function',
+      admin: typeof (window as any).setupAdminDownload === 'function',
+    }));
+    expect(fns).toEqual({
+      clock: true,
+      support: true,
+      discover: true,
+      offline: true,
+      desktop: true,
+      admin: true,
+    });
+  });
+
+  test('YouTube IFrame API is NOT eagerly loaded on page open', async ({ page }) => {
+    let ytRequested = false;
+    page.on('request', (req) => {
+      if (req.url().includes('youtube.com/iframe_api')) ytRequested = true;
+    });
+    await page.goto('/index.html', { waitUntil: 'load' });
+    await page.waitForTimeout(500);
+    expect(ytRequested).toBe(false);
   });
 
   test('deck switch bar renders all focus/mode buttons', async ({ page }) => {

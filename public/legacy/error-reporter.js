@@ -109,4 +109,32 @@
       if(fcp)vitals.fcp=Math.round(fcp.startTime);
     }).observe({type:'paint',buffered:true});
   }catch(_){}
+
+  /* ------------- Vitals + errors beacon (opt-in) -----------------
+     Call window.titanReportVitals('https://example.com/beacon') to
+     ship the captured metrics + last 10 errors via sendBeacon on
+     pagehide. Uses navigator.sendBeacon when available so it survives
+     unload reliably. */
+  window.titanReportVitals=function(url){
+    if(!url||typeof url!=='string')return;
+    function send(){
+      var payload={
+        ts:Date.now(),
+        ua:navigator.userAgent,
+        url:location.href,
+        vitals:vitals,
+        errors:buf.slice(-10)
+      };
+      try{
+        var data=JSON.stringify(payload);
+        if(navigator.sendBeacon){
+          navigator.sendBeacon(url,new Blob([data],{type:'application/json'}));
+        }else{
+          fetch(url,{method:'POST',body:data,keepalive:true,headers:{'Content-Type':'application/json'}}).catch(function(){});
+        }
+      }catch(_){}
+    }
+    addEventListener('pagehide',send,{once:true});
+    addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')send();},{once:true});
+  };
 })();
