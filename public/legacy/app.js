@@ -837,8 +837,9 @@ function loadYouTubeToDeck(deckId,track){
     toast('YouTube player area missing — open the MUSIC tab once','error');
     return;
   }
-  // If API hasn't loaded yet, retry up to ~5s
+  // If API hasn't loaded yet, kick off lazy load and retry up to ~5s
   if(!window.YT||!window.YT.Player){
+    if(typeof window.titanLoadYouTube==='function')window.titanLoadYouTube();
     if(!track._ytRetry)track._ytRetry=0;
     if(track._ytRetry<25){
       track._ytRetry++;

@@ -53,6 +53,19 @@
   window.titanGetErrors=function(){return buf.slice();};
   window.titanClearErrors=function(){buf.length=0;persist();};
 
+  /* ------------- YouTube IFrame API — lazy loader ---------------
+     The legacy app polls window.YT in a 200ms retry loop when a
+     YouTube track is loaded, so we only inject the API when actually
+     needed instead of pulling 100KB+ on every page load. */
+  window.titanLoadYouTube=function(){
+    if(window.titanLoadYouTube._done)return;
+    window.titanLoadYouTube._done=true;
+    var s=document.createElement('script');
+    s.src='https://www.youtube.com/iframe_api';
+    s.async=true;
+    document.head.appendChild(s);
+  };
+
   /* ---------------- Web Vitals (LCP, CLS, INP, TTFB) -----------------
      Lightweight in-place implementation — no external dep. Stored on
      window._titanVitals and exposed via window.titanGetVitals(). */
