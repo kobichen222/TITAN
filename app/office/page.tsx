@@ -10,7 +10,6 @@ import {
 } from "@/src/lib/license-verify";
 
 /* ---------- constants ---------- */
-const OFFICE_CODE = "KOBI2100";
 const SUPABASE_CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js";
 
 /* ---------- types ---------- */
@@ -49,9 +48,6 @@ function readSupaCfg(): { url: string; anon: string } | null {
  * ============================================================= */
 export default function OfficePage() {
   const [mounted, setMounted] = useState(false);
-  const [unlocked, setUnlocked] = useState(false);
-  const [code, setCode] = useState("");
-  const [codeErr, setCodeErr] = useState("");
   const [tab, setTab] = useState<Tab>("users");
   const [toast, setToast] = useState<Toast>(null);
   const [supa, setSupa] = useState<any>(null);
@@ -59,17 +55,7 @@ export default function OfficePage() {
 
   useEffect(() => {
     setMounted(true);
-    if (
-      sessionStorage.getItem(STORAGE_KEYS.officeUnlocked) === "1" ||
-      localStorage.getItem(STORAGE_KEYS.officeUnlocked) === "1"
-    ) {
-      sessionStorage.setItem(STORAGE_KEYS.officeUnlocked, "1");
-      setUnlocked(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!unlocked) return;
+    sessionStorage.setItem(STORAGE_KEYS.officeUnlocked, "1");
     const cfg = readSupaCfg();
     if (!cfg) {
       setSupaErr("no-config");
@@ -86,7 +72,7 @@ export default function OfficePage() {
         setSupaErr(e?.message || "Supabase init failed");
       }
     })();
-  }, [unlocked]);
+  }, []);
 
   function notify(text: string, kind: "ok" | "err" = "ok") {
     const id = Date.now();
@@ -94,52 +80,7 @@ export default function OfficePage() {
     setTimeout(() => setToast((t) => (t?.id === id ? null : t)), 2600);
   }
 
-  function submitCode(e?: React.FormEvent) {
-    e?.preventDefault();
-    if (code.trim() === OFFICE_CODE) {
-      sessionStorage.setItem(STORAGE_KEYS.officeUnlocked, "1");
-      setUnlocked(true);
-      setCodeErr("");
-    } else {
-      setCodeErr("✗ Invalid code");
-      setCode("");
-    }
-  }
-
-  function lock() {
-    sessionStorage.removeItem(STORAGE_KEYS.officeUnlocked);
-    localStorage.removeItem(STORAGE_KEYS.officeUnlocked);
-    setUnlocked(false);
-    setCode("");
-    setTab("users");
-  }
-
   if (!mounted) return null;
-
-  if (!unlocked) {
-    return (
-      <div className="office-shell">
-        <form className="gate-wrap" onSubmit={submitCode}>
-          <div className="gate-icon">🔒</div>
-          <div className="gate-title">TITAN · OFFICE</div>
-          <div className="gate-sub">Admin access code required</div>
-          <input
-            className="gate-input"
-            type="password"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            placeholder="— — — — — —"
-            autoFocus
-            autoComplete="off"
-          />
-          <div className="gate-err">{codeErr}</div>
-          <button className="gate-btn" type="submit" disabled={!code}>
-            UNLOCK
-          </button>
-        </form>
-      </div>
-    );
-  }
 
   return (
     <div className="office-shell">
@@ -152,7 +93,6 @@ export default function OfficePage() {
             <span className="dot" /> LIVE
           </span>
           <span>{supa ? "SUPABASE · CONNECTED" : supaErr === "no-config" ? "NO SUPABASE CONFIG" : "CONNECTING…"}</span>
-          <button className="signout-btn" onClick={lock}>LOCK</button>
         </div>
       </header>
 
