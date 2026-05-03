@@ -8606,7 +8606,7 @@ let _supa=null;let _supaUser=null;let _supaProfile=null;
 // load.
 const SUPA_DEFAULTS={
   url:'https://eliimbfzegwcepbljdwp.supabase.co',
-  anon:'' // filled in by owner via SETTINGS → SUPABASE if not replaced here
+  anon:'sb_publishable_jBlBlUNP74IDyUYP8eldBg_elQu0-og'
 };
 let supaCfg={...SUPA_DEFAULTS};
 try{const raw=localStorage.getItem(SUPA_CFG_KEY);if(raw){const saved=JSON.parse(raw);
@@ -8717,8 +8717,8 @@ function saveSupaCfg(){
     return;
   }
   u=u.replace(/\/+$/,''); // strip trailing slash
-  if(a && !a.startsWith('eyJ')){
-    toast&&toast('Anon key should start with "eyJ..." — you pasted something else','error');
+  if(a && !(a.startsWith('eyJ')||a.startsWith('sb_publishable_'))){
+    toast&&toast('Anon/publishable key should start with "eyJ..." or "sb_publishable_..." — you pasted something else','error');
     return;
   }
   supaCfg={url:u,anon:a};
@@ -8759,9 +8759,9 @@ async function runAuthDiagnostic(){
 
   // 2. Anon key shape
   const anon=(supaCfg.anon||'').trim();
-  if(!anon){log(false,'Anon key is empty','Supabase → Settings → API → copy the anon public key.');return;}
-  if(!anon.startsWith('eyJ')){log(false,'Anon key shape wrong (must start with eyJ)','Did you paste the service_role by mistake? Use the ANON public key.');return;}
-  log(true,`Anon key shape OK (${anon.slice(0,12)}…)`);
+  if(!anon){log(false,'Anon/publishable key is empty','Supabase → Settings → API Keys → copy the publishable key (sb_publishable_…) or legacy anon key (eyJ…).');return;}
+  if(!(anon.startsWith('eyJ')||anon.startsWith('sb_publishable_'))){log(false,'Key shape wrong (must start with eyJ… or sb_publishable_…)','Did you paste the secret/service_role by mistake? Use the publishable / anon key.');return;}
+  log(true,`Key shape OK (${anon.slice(0,16)}…)`);
 
   // 3. SDK loaded
   try{await loadSupabaseLib();log(true,'Supabase JS SDK loaded');}
