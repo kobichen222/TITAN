@@ -10982,3 +10982,366 @@ body.booth-light .cue-btn.active{
   body.booth-light .mixer button,
   body.booth-light .mixer-toolbar button{transition:none !important}
 }
+
+/* ─── First-run checklist ─── */
+.frc-item{
+  display:flex;align-items:flex-start;gap:9px;
+  padding:8px 10px;border-radius:6px;cursor:pointer;
+  font-family:'Share Tech Mono',monospace;font-size:12px;line-height:1.45;
+  color:var(--text);transition:background .15s ease;
+}
+.frc-item:hover{background:rgba(255,255,255,.04)}
+.frc-item input[type="checkbox"]{
+  appearance:none;-webkit-appearance:none;
+  width:14px;height:14px;flex:0 0 14px;margin:2px 0 0;
+  border:1.5px solid rgba(255,255,255,.35);border-radius:3px;
+  background:transparent;cursor:pointer;position:relative;
+  transition:all .15s ease;
+}
+.frc-item input[type="checkbox"]:checked{
+  background:#37d67a;border-color:#37d67a;
+}
+.frc-item input[type="checkbox"]:checked::after{
+  content:'';position:absolute;left:3px;top:0px;width:4px;height:8px;
+  border:solid #0a0a0a;border-width:0 2px 2px 0;transform:rotate(45deg);
+}
+.frc-item .frc-dot{display:none}
+.frc-item .frc-hint{color:var(--text-dim);font-size:10.5px;letter-spacing:.5px}
+.frc-item.frc-done b{text-decoration:line-through;color:var(--text-dim)}
+.frc-item.frc-auto input[type="checkbox"]{cursor:default;opacity:.85}
+
+/* ================================================================
+   ALL-4 TURNTABLE FIX — keep platter, disc, center-screen and
+   indicator proportional across every viewport bucket.
+   The base rules in this file size .jog-wheel responsively but
+   leave .jog-platter / .jog-platter-disc with fixed pixel insets,
+   which makes the visible "vinyl" shrink faster than the rim and
+   look wrong (off-centre, undersized) at 160 / 170 / 190 px wheels.
+   These overrides convert insets to percentages so every inner
+   layer scales together, and tighten the center screen so it
+   never crushes the wheel.
+   ================================================================ */
+.console.show-all .cdj .jog-wrapper,
+body.show-all .jog-wrapper{
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-width:0;
+}
+.console.show-all .cdj .jog-wheel,
+body.show-all .jog-wheel{
+  margin-left:auto;margin-right:auto;
+  flex:0 0 auto;
+  max-width:100%;
+}
+.console.show-all .cdj .jog-platter,
+body.show-all .jog-platter{
+  inset:11% !important;
+}
+.console.show-all .cdj .jog-platter-disc,
+body.show-all .jog-platter-disc{
+  inset:5% !important;
+}
+/* Center screen ~ 36 % of the wheel — readable but not crushing it. */
+.console.show-all .cdj .jog-center-screen,
+body.show-all .jog-center-screen{
+  width:36% !important;
+  height:36% !important;
+  max-width:108px;
+  max-height:108px;
+  min-width:48px;
+  min-height:48px;
+}
+.console.show-all .cdj .jog-center-screen .bpm-display,
+body.show-all .jog-center-screen .bpm-display{
+  font-size:clamp(11px,1.2vw,18px) !important;
+  line-height:1 !important;
+}
+.console.show-all .cdj .jog-center-screen .bpm-sub,
+body.show-all .jog-center-screen .bpm-sub{
+  font-size:clamp(5px,.55vw,8px) !important;
+  letter-spacing:2px !important;
+  margin-top:2px !important;
+}
+.console.show-all .cdj .jog-center-screen .deck-badge,
+body.show-all .jog-center-screen .deck-badge{
+  font-size:clamp(7px,.65vw,10px) !important;
+}
+/* Indicator: percentage-based so it sits on the rim regardless of size. */
+.console.show-all .cdj .jog-indicator,
+body.show-all .jog-indicator{
+  width:9% !important;
+  height:11% !important;
+  min-width:12px;min-height:14px;
+  max-width:22px;max-height:26px;
+  top:1.8% !important;
+}
+
+/* ================================================================
+   HEADER POLISH v2 — sealed visual layer.
+   Goal: one consistent height for every control in the header (32px),
+   one set of greys for inactive, one accent (orange) for active, a
+   refined TITAN wordmark, and clean tab buttons that share the same
+   geometry regardless of theme.
+
+   Everything here is additive and uses :where() / specific selectors
+   so it overrides the older fragmented rules without touching them.
+   ================================================================ */
+
+/* — Brand wordmark — */
+.header-bar .brand{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'Orbitron',sans-serif;font-weight:900;
+  font-size:21px;letter-spacing:3.5px;line-height:1;
+  text-transform:uppercase;color:#f6f6f8;
+  text-shadow:0 1px 0 rgba(0,0,0,.85), 0 0 24px rgba(255,138,26,.10);
+  padding:2px 0;
+}
+.header-bar .brand .max{
+  display:inline-flex;align-items:center;justify-content:center;
+  height:22px;min-width:34px;
+  font-size:10px;font-weight:900;letter-spacing:2px;
+  background:linear-gradient(180deg,#ffb066 0%,#ff7a1a 55%,#d65b00 100%);
+  color:#0a0a0c;border-radius:4px;padding:0 8px;margin-right:2px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.45),
+    inset 0 -1px 0 rgba(0,0,0,.35),
+    0 4px 12px rgba(255,122,0,.32);
+}
+.header-bar .brand > span:not(.max){
+  background:linear-gradient(135deg,#ff8a1a 0%,#ffb168 50%,#ffd9a8 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 14px rgba(255,138,26,.25));
+}
+/* The "— Professional DJ Studio" tag — quieter, kerned, refined. */
+.header-bar .brand{white-space:nowrap}
+.header-bar .brand::after{
+  content:'';display:inline-block;width:1px;height:18px;
+  background:linear-gradient(180deg,transparent,rgba(255,138,26,.55),transparent);
+  margin:0 6px 0 4px;align-self:center;
+}
+
+/* — Header bar layout polish — */
+.header-bar{
+  padding:8px 12px !important;
+  border-bottom:1px solid rgba(255,138,26,.08);
+}
+
+/* — Deck-focus button row: one shape, one set of states — */
+.header-bar .header-dsb .dsb-label{
+  height:32px;display:inline-flex;align-items:center;
+  font-size:10px !important;letter-spacing:2.4px !important;
+  padding:0 12px !important;border-radius:6px !important;
+  background:rgba(255,138,26,.08) !important;
+  border:1px solid rgba(255,138,26,.28) !important;
+  color:#ffb368 !important;font-weight:700;
+}
+.header-bar .header-dsb .dsb-btn{
+  height:32px !important;min-height:32px !important;
+  padding:0 12px !important;
+  font-size:10px !important;letter-spacing:1.6px !important;
+  font-weight:700;border-radius:6px !important;
+  display:inline-flex !important;align-items:center;justify-content:center;
+  gap:6px;line-height:1 !important;
+  background:linear-gradient(180deg,#23232a,#16161b) !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  color:#c8c8cc !important;
+  transition:transform .12s ease, border-color .15s ease,
+             color .15s ease, box-shadow .2s ease, background .2s ease;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04), 0 1px 0 rgba(0,0,0,.4);
+}
+.header-bar .header-dsb .dsb-btn:hover{
+  color:#fff !important;
+  border-color:rgba(255,138,26,.55) !important;
+  background:linear-gradient(180deg,#2c2c34,#1c1c22) !important;
+  transform:translateY(-1px);
+}
+.header-bar .header-dsb .dsb-btn.active{
+  background:linear-gradient(180deg,#ff9a40 0%,#ff7a1a 55%,#cc5a00 100%) !important;
+  border-color:rgba(255,180,90,.7) !important;
+  color:#0b0b0d !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.35),
+    inset 0 -1px 0 rgba(0,0,0,.25),
+    0 0 18px rgba(255,122,0,.45) !important;
+}
+/* Special variants — keep their identity but share the same shell. */
+.header-bar .header-dsb .dsb-btn.dsb-dj-focus{
+  border-color:rgba(255,122,0,.32) !important;
+  color:#ffb070 !important;
+  background:linear-gradient(180deg,#2a1c14,#1a120c) !important;
+}
+.header-bar .header-dsb .dsb-btn.dsb-dj-focus:hover{
+  border-color:rgba(255,122,0,.65) !important;color:#ffd1a0 !important;
+}
+.header-bar .header-dsb .dsb-btn.dsb-dj-focus.active{
+  background:linear-gradient(180deg,#ff7a1a,#cc5a00) !important;color:#0b0b0d !important;
+}
+.header-bar .header-dsb .dsb-btn.dsb-work{
+  border-color:rgba(170,120,255,.32) !important;
+  color:#caa6ff !important;
+  background:linear-gradient(180deg,#1d1828,#13101c) !important;
+}
+.header-bar .header-dsb .dsb-btn.dsb-work:hover{border-color:rgba(170,120,255,.65) !important;color:#e0caff !important}
+.header-bar .header-dsb .dsb-btn.dsb-work.active{
+  background:linear-gradient(180deg,#a07fff,#6c4cff) !important;color:#0b0b0d !important;
+  border-color:rgba(190,160,255,.7) !important;
+  box-shadow:0 0 18px rgba(140,100,255,.5) !important;
+}
+.header-bar .header-dsb .dsb-btn.dsb-boothlight{
+  border-color:rgba(255,200,90,.32) !important;
+  color:#ffd58a !important;
+  background:linear-gradient(180deg,#241c10,#1a140a) !important;
+}
+.header-bar .header-dsb .dsb-btn.dsb-boothlight:hover{border-color:rgba(255,200,90,.65) !important;color:#ffe6b0 !important}
+.header-bar .header-dsb .dsb-btn.dsb-boothlight.active{
+  background:linear-gradient(180deg,#ffd07a,#e09a30) !important;color:#0b0b0d !important;
+  border-color:rgba(255,220,150,.7) !important;
+  box-shadow:0 0 18px rgba(240,180,80,.5) !important;
+}
+
+/* — Header-right cluster (BPM / clock / REC / SIGN IN) — uniform height — */
+.header-bar .header-right{gap:8px}
+.header-bar .header-right .master-bpm{
+  height:32px;display:inline-flex;align-items:center;justify-content:center;
+  padding:0 12px;border-radius:6px;
+  background:#06070a;border:1px solid #2a2a30;
+  font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:1px;
+  color:#ff8a1a;text-shadow:0 0 10px rgba(255,138,26,.45);
+  min-width:78px;
+}
+.header-bar .header-right .titan-clock{
+  height:32px;display:inline-flex;align-items:center;
+  padding:0 12px;border-radius:6px;
+  background:#06070a;border:1px solid #2a2a30;
+}
+.header-bar .header-right .titan-clock .tc-time{
+  font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:1.5px;
+  color:#2ee0ff;text-shadow:0 0 10px rgba(46,224,255,.5);
+}
+.header-bar .header-right .rec-btn{
+  height:32px;padding:0 14px;display:inline-flex;align-items:center;gap:7px;
+  border-radius:6px;letter-spacing:2px;font-size:10px;
+  background:#2a0a0a;border:1px solid rgba(255,46,46,.55);color:#ff5555;
+  transition:background .15s, color .15s, box-shadow .2s, transform .12s;
+}
+.header-bar .header-right .rec-btn:hover{
+  color:#fff;background:#3a0e0e;border-color:#ff2e2e;transform:translateY(-1px);
+  box-shadow:0 0 14px rgba(255,46,46,.45);
+}
+.header-bar .header-right .rec-btn.recording{
+  background:linear-gradient(180deg,#ff3a3a,#c81818);color:#fff;border-color:#ff5555;
+}
+.header-bar .header-right .auth-btn{
+  height:32px;padding:0 14px;display:inline-flex;align-items:center;gap:6px;
+  border-radius:6px;letter-spacing:1.6px;font-size:10px;font-weight:700;
+  background:linear-gradient(180deg,#0e1a14,#0a1410);
+  border:1px solid rgba(28,255,143,.45);color:#1cff8f;
+  font-family:'Orbitron',sans-serif;cursor:pointer;
+  transition:background .15s, color .15s, box-shadow .2s, transform .12s;
+}
+.header-bar .header-right .auth-btn:hover{
+  color:#0a0a0c;background:linear-gradient(180deg,#1cff8f,#0fc66a);
+  border-color:rgba(28,255,143,.85);transform:translateY(-1px);
+  box-shadow:0 0 16px rgba(28,255,143,.55);
+}
+.header-bar .header-right > span:first-of-type{
+  /* "BPM" label */
+  font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;
+  color:rgba(255,255,255,.45);
+}
+
+/* — Main tabs polish — consistent height + refined active state — */
+.main-tabs{
+  padding:5px !important;border-radius:9px !important;
+  background:linear-gradient(180deg,#0c0c10,#070709) !important;
+  border:1px solid rgba(255,255,255,.05) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
+.main-tabs .tab-btn{
+  height:34px !important;min-height:34px !important;
+  padding:0 14px !important;border-radius:6px !important;
+  font-size:10px !important;letter-spacing:2px !important;
+  display:inline-flex !important;align-items:center;justify-content:center;
+  gap:6px;line-height:1 !important;
+  color:#9c9ca2 !important;
+  transition:color .15s, background .2s, box-shadow .2s, transform .1s;
+}
+.main-tabs .tab-btn:hover{
+  color:#f0f0f4 !important;background:rgba(255,255,255,.03) !important;
+}
+.main-tabs .tab-btn.active{
+  background:linear-gradient(180deg,#ff9a40 0%,#ff7a1a 55%,#cc5a00 100%) !important;
+  color:#0b0b0d !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.4),
+    inset 0 -1px 0 rgba(0,0,0,.25),
+    0 0 16px rgba(255,122,0,.45) !important;
+}
+/* Coloured tabs (LEARN, RADIO, AI MIX) — quiet baseline; bright active. */
+.main-tabs .tab-btn.learn-tab-btn{
+  background:linear-gradient(180deg,rgba(92,240,160,.10),rgba(92,240,160,.02)) !important;
+  border:1px solid rgba(92,240,160,.30) !important;color:#7cf0b5 !important;
+}
+.main-tabs .tab-btn.learn-tab-btn:hover{
+  background:linear-gradient(180deg,rgba(92,240,160,.18),rgba(92,240,160,.05)) !important;
+  color:#aef5cf !important;border-color:rgba(92,240,160,.55) !important;
+}
+.main-tabs .tab-btn.learn-tab-btn.active{
+  background:linear-gradient(180deg,#5cf0a0,#1fb872) !important;
+  color:#072014 !important;border-color:rgba(92,240,160,.7) !important;
+  box-shadow:0 0 18px rgba(92,240,160,.55) !important;
+}
+.main-tabs .tab-btn[data-tab="radio"]{
+  background:linear-gradient(180deg,rgba(255,140,60,.10),rgba(255,140,60,.02)) !important;
+  border:1px solid rgba(255,140,60,.30) !important;color:#ffb070 !important;
+}
+.main-tabs .tab-btn[data-tab="radio"]:hover{
+  background:linear-gradient(180deg,rgba(255,140,60,.18),rgba(255,140,60,.05)) !important;
+  color:#ffd1a0 !important;border-color:rgba(255,140,60,.55) !important;
+}
+.main-tabs .tab-btn[data-tab="ai"]{
+  background:linear-gradient(180deg,rgba(200,90,255,.10),rgba(200,90,255,.02)) !important;
+  border:1px solid rgba(200,90,255,.30) !important;color:#d68aff !important;
+}
+.main-tabs .tab-btn[data-tab="ai"]:hover{
+  background:linear-gradient(180deg,rgba(200,90,255,.18),rgba(200,90,255,.05)) !important;
+  color:#ecbfff !important;border-color:rgba(200,90,255,.55) !important;
+}
+.main-tabs .tab-btn[data-tab="ai"].active{
+  background:linear-gradient(180deg,#d680ff,#9c2cff) !important;
+  color:#0a0210 !important;border-color:rgba(220,150,255,.7) !important;
+  box-shadow:0 0 18px rgba(200,90,255,.6) !important;
+}
+
+@media (max-width:1100px){
+  .header-bar .brand{font-size:18px;letter-spacing:2.5px}
+  .header-bar .header-dsb .dsb-btn,
+  .header-bar .header-right .master-bpm,
+  .header-bar .header-right .titan-clock,
+  .header-bar .header-right .rec-btn,
+  .header-bar .header-right .auth-btn{height:30px !important;font-size:9.5px !important}
+  .main-tabs .tab-btn{height:32px !important;font-size:9.5px !important;padding:0 11px !important}
+}
+
+/* — Refined brand: TITAN wordmark + tagline pill — */
+.header-bar .brand{gap:10px}
+.header-bar .brand .brand-mark{
+  background:linear-gradient(135deg,#ff8a1a 0%,#ffb168 50%,#ffd9a8 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 14px rgba(255,138,26,.25));
+  letter-spacing:4px;font-weight:900;
+}
+.header-bar .brand .brand-tag{
+  display:inline-flex;align-items:center;height:22px;
+  margin-left:8px;padding:0 10px;border-radius:11px;
+  font-family:'Share Tech Mono',monospace;font-weight:600;
+  font-size:9.5px;letter-spacing:2.4px;
+  color:rgba(255,255,255,.55);
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.07);
+}
+@media (max-width:1100px){
+  .header-bar .brand .brand-tag{display:none}
+}
